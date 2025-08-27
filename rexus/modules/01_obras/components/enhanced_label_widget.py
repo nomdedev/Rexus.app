@@ -36,10 +36,7 @@ class EnhancedLabel(QLabel):
     hover_enter = pyqtSignal()
     hover_leave = pyqtSignal()
 
-    def __init__(self,
-text: str = "",
-        label_type: str = "default",
-        parent=None):
+    def __init__(self, text: str = "", label_type: str = "default", parent=None):
         super().__init__(text, parent)
 
         # Configuración
@@ -115,7 +112,7 @@ text: str = "",
                 'color': '#d97706',
                 'bg_color': '#fef3c7',
                 'border': '1px solid #fde68a',
-                'padding': '8px 12px',
+                'padding': '8px',
                 'border_radius': '6px'
             },
             'error': {
@@ -141,11 +138,11 @@ text: str = "",
         # Estados específicos para obras
         self.obra_status_colors = {
             'EN_PROCESO': {'color': '#059669', 'bg': '#d1fae5', 'icon': '🚧'},
-            'PLANIFICACION': {'color': '#d97706', 'bg': '#fef3c7', 'icon': '[CLIPBOARD]'},
+            'PLANIFICACION': {'color': '#d97706', 'bg': '#fef3c7', 'icon': '📋'},
             'PAUSADA': {'color': '#dc2626', 'bg': '#fecaca', 'icon': '⏸️'},
-            'FINALIZADA': {'color': '#3730a3', 'bg': '#e0e7ff', 'icon': '[OK]'},
-            'CANCELADA': {'color': '#6b7280', 'bg': '#f3f4f6', 'icon': '[ERROR]'},
-            'VENCIDA': {'color': '#dc2626', 'bg': '#fee2e2', 'icon': '[WARNING]'},
+            'FINALIZADA': {'color': '#3730a3', 'bg': '#e0e7ff', 'icon': '✅'},
+            'CANCELADA': {'color': '#6b7280', 'bg': '#f3f4f6', 'icon': '❌'},
+            'VENCIDA': {'color': '#dc2626', 'bg': '#fee2e2', 'icon': '⚠️'},
             'PROXIMA_VENCER': {'color': '#d97706', 'bg': '#fde68a', 'icon': '⏰'},
             'EN_TIEMPO': {'color': '#059669', 'bg': '#dcfce7', 'icon': '🟢'}
         }
@@ -336,12 +333,9 @@ text: str = "",
         if content_type == "date_countdown":
             self._update_date_countdown(data.get('target_date'))
         elif content_type == "progress":
-            self._update_progress_display(data.get('current',
-0),
-                data.get('total',
-                100))
+            self._update_progress_display(data.get('current', 0), data.get('total', 100))
         elif content_type == "status_live":
-            self._update_live_status(data.get('status'), data.get('last_update'))
+            self._update_live_status(data.get('status', ''), data.get('last_update'))
 
     def _update_date_countdown(self, target_date):
         """Actualiza cuenta regresiva a una fecha."""
@@ -362,13 +356,13 @@ text: str = "",
                 self.setText(f"⏳ {diff.days} días restantes")
                 self.set_obra_status('EN_TIEMPO')
             elif diff.days == 0:
-                self.setText(f"🕐 Vence hoy")
+                self.setText("🕐 Vence hoy")
                 self.set_obra_status('PROXIMA_VENCER')
             else:
                 self.setText(f"[WARNING] Vencida hace {abs(diff.days)} días")
                 self.set_obra_status('VENCIDA')
 
-        except (ValueError, TypeError, AttributeError) as e:
+        except (ValueError, TypeError, AttributeError):
             # ValueError: fecha mal formateada
             # TypeError: tipo de dato incorrecto
             # AttributeError: objeto sin atributos de fecha
@@ -450,23 +444,40 @@ text: str = "",
         self.current_theme = "dark" if dark_mode else "light"
 
         if dark_mode:
-            # Ajustar colores para tema oscuro
+            # Definir mapa de colores para tema oscuro
+            color_map = {
+                '#374151': '#f9fafb',  # Gris oscuro -> Gris claro
+                '#1f2937': '#ffffff',  # Gris muy oscuro -> Blanco
+                '#4b5563': '#d1d5db',  # Gris medio -> Gris claro
+                '#6b7280': '#9ca3af',  # Gris claro -> Gris más claro
+                '#059669': '#10b981',  # Verde -> Verde más claro
+                '#d97706': '#f59e0b',  # Naranja -> Naranja más claro
+                '#dc2626': '#ef4444',  # Rojo -> Rojo más claro
+                '#3730a3': '#6366f1',  # Azul oscuro -> Azul más claro
+                '#ffffff': '#ffffff',  # Blanco -> Blanco
+                'transparent': 'transparent'  # Transparente -> Transparente
+            }
+
+            bg_map = {
+                '#f9fafb': '#374151',  # Fondo claro -> Fondo oscuro
+                '#fef3c7': '#451a03',  # Fondo naranja claro -> Fondo naranja oscuro
+                '#fecaca': '#7f1d1d',  # Fondo rojo claro -> Fondo rojo oscuro
+                '#d1fae5': '#064e3b',  # Fondo verde claro -> Fondo verde oscuro
+                '#e0e7ff': '#1e1b4b',  # Fondo azul claro -> Fondo azul oscuro
+                '#f3f4f6': '#1f2937',  # Fondo gris claro -> Fondo gris oscuro
+                '#dcfce7': '#14532d',  # Fondo verde muy claro -> Fondo verde oscuro
+                '#fde68a': '#92400e',  # Fondo amarillo claro -> Fondo amarillo oscuro
+                '#fee2e2': '#7f1d1d',  # Fondo rojo muy claro -> Fondo rojo oscuro
+                'transparent': 'transparent'
+            }
+
+            # Aplicar transformación de colores
             if self.label_type in self.type_configs:
                 config = self.type_configs[self.label_type].copy()
 
-                # Invertir colores principales
-                if config['color'] == '#374151':
-                    config['color'] = '#f9fafb'
-                elif config['color'] == '#1f2937':
-                    config['color'] = '#ffffff'
-                elif config['color'] == '#4b5563':
-                    config['color'] = '#d1d5db'
-
-                # Ajustar fondos
-                if config['bg_color'] == 'transparent':
-                    config['bg_color'] = 'transparent'
-                elif config['bg_color'] == '#f9fafb':
-                    config['bg_color'] = '#374151'
+                # Transformar colores usando el mapa
+                config['color'] = color_map.get(config['color'], config['color'])
+                config['bg_color'] = bg_map.get(config['bg_color'], config['bg_color'])
 
                 # Aplicar estilos ajustados
                 style = f"""
@@ -483,11 +494,11 @@ text: str = "",
             # Aplicar tema claro normal
             self._apply_type_style()
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, ev):
         """Maneja el click del mouse."""
-        if self.is_clickable and event.button() == Qt.MouseButton.LeftButton:
+        if ev and self.is_clickable and ev.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
-        super().mousePressEvent(event)
+        super().mousePressEvent(ev)
 
     def enterEvent(self, event):
         """Maneja la entrada del mouse."""
@@ -503,12 +514,12 @@ text: str = "",
             self.scale_animation.start()
         super().enterEvent(event)
 
-    def leaveEvent(self, event):
+    def leaveEvent(self, a0):
         """Maneja la salida del mouse."""
         self.hover_leave.emit()
         if self.scale_animation:
             self.scale_animation.stop()
-        super().leaveEvent(event)
+        super().leaveEvent(a0)
 
 
 class StatusIndicatorLabel(EnhancedLabel):
@@ -521,7 +532,7 @@ class StatusIndicatorLabel(EnhancedLabel):
         self.update_timer.timeout.connect(self._update_display)
         self.update_timer.start(30000)  # Actualizar cada 30 segundos
 
-    def set_obra_status_with_history(self, status: str, timestamp: datetime.datetime = None):
+    def set_obra_status_with_history(self, status: str, timestamp: Optional[datetime.datetime] = None):
         """
         Establece estado con historial.
 
@@ -568,10 +579,7 @@ class MetricDisplayLabel(EnhancedLabel):
         self.previous_value = None
         self.trend_indicator = ""
 
-    def update_metric(self,
-value: Union[int,
-        float],
-        format_type: str = "number"):
+    def update_metric(self, value: Union[int, float], format_type: str = "number"):
         """
         Actualiza la métrica con indicador de tendencia.
 

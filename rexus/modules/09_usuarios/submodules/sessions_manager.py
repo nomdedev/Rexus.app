@@ -13,7 +13,22 @@ Responsabilidades:
 import datetime
 import secrets
 import logging
-                def obtener_estadisticas_sesiones(self) -> Dict[str, Any]:
+from typing import Dict, Any
+
+logger = logging.getLogger(__name__)
+
+class SessionsManager:
+    """Gestor de sesiones de usuarios."""
+    
+    def __init__(self, db_connection=None):
+        """Inicializa el gestor de sesiones."""
+        self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
+        self.logger = logger
+        self.max_concurrent_sessions = 3
+        self.session_timeout_minutes = 30
+
+    def obtener_estadisticas_sesiones(self) -> Dict[str, Any]:
         """
         Obtiene estadísticas de sesiones del sistema.
 
@@ -153,12 +168,12 @@ created_at,
             # Calcular tiempo límite
             tiempo_limite = datetime.datetime.now() - datetime.timedelta(minutes=self.session_timeout_minutes)
 
-            # Cerrar sesiones expiradas
-            cursor.execute("""
-                UPDATE sesiones
-                SET activa = 0, closed_at = GETDATE()
-                WHERE activa = 1 AND last_activity < ?
-            """, (tiempo_limite,))
+            # Cerrar sesiones expiradas usando archivo SQL externo
+            params = {'tiempo_limite': tiempo_limite}
+            cursor.execute(
+                self.sql_manager.get_query('sql/09_usuarios', 'update_cerrar_sesiones_expiradas.sql'),
+                params
+            )
 
             sesiones_cerradas = cursor.rowcount
             if sesiones_cerradas > 0:

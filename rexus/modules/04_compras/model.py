@@ -14,7 +14,7 @@ from typing import Dict, List, Any, Optional
 
 # Importar logging
 try:
-    from ...utils.app_logger import get_logger
+    from rexus.utils.app_logger import get_logger
     logger = get_logger(__name__)
 except ImportError:
     import logging
@@ -22,7 +22,7 @@ except ImportError:
 
 # Importar utilidades de sanitización
 try:
-    from ...utils.data_sanitizer import sanitize_string, validate_input
+    from rexus.utils.unified_sanitizer import sanitize_string, unified_sanitizer
     SANITIZER_AVAILABLE = True
 except ImportError:
     logger.warning("Sanitizador no disponible, usando métodos básicos")

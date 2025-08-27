@@ -13,7 +13,7 @@ from pathlib import Path
 root_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
-from rexus.modules.pedidos.model import PedidosModel
+from rexus.modules.03_pedidos.model import PedidosModel
 
 
 class TestPedidosModel(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestPedidosModel(unittest.TestCase):
         model_with_db = PedidosModel(db_connection=mock_db)
         self.assertEqual(model_with_db.db_connection, mock_db)
 
-    @patch('rexus.modules.pedidos.model.unified_sanitizer')
+    @patch('rexus.modules.03_pedidos.model.unified_sanitizer')
     def test_crear_pedido(self, mock_sanitizer):
         """Test de creación de pedido."""
         # Mock sanitizer
@@ -224,7 +224,7 @@ class TestPedidosModel(unittest.TestCase):
         result = self.model.crear_pedido(datos)
         self.assertFalse(result)
 
-    @patch('rexus.modules.pedidos.model.unified_sanitizer')
+    @patch('rexus.modules.03_pedidos.model.unified_sanitizer')
     def test_sanitizacion_datos(self, mock_sanitizer):
         """Test de sanitización de datos."""
         mock_sanitizer.sanitize_dict.return_value = {

@@ -6,8 +6,14 @@ Gestión de obras del sistema
 import logging
 import os
 from typing import Dict, List, Any, Optional, Tuple
+from sqlite3 import IntegrityError
+
+from rexus.utils.unified_sanitizer import sanitize_string
 
 logger = logging.getLogger(__name__)
+
+# Constantes
+DB_ERROR_MESSAGE = "Error de base de datos. Verifique la conexión."
 
 class ObrasModel:
     """Modelo para gestión de obras."""
@@ -17,9 +23,34 @@ class ObrasModel:
         self.db_connection = db_connection
         self.logger = logger
         self.sql_manager = None
+        self.sql_loader = None  # Inicializar sql_loader
         self.data_sanitizer = None
         self.tabla_obras = "obras"
         self.tabla_detalles_obra = "detalles_obra"
+
+    def _get_sql_manager(self):
+        """Obtiene el SQL manager con verificación."""
+        if not self.sql_manager:
+            raise RuntimeError("SQL Manager no ha sido inicializado")
+        return self.sql_manager
+
+    def _get_data_sanitizer(self):
+        """Obtiene el data sanitizer con verificación."""
+        if not self.data_sanitizer:
+            # Usar sanitizer básico si no hay uno específico
+            from rexus.utils.unified_sanitizer import sanitize_string
+            return type('BasicSanitizer', (), {
+                'sanitize_dict': lambda self, d: d,
+                'sanitize_sql_input': lambda self, s: sanitize_string(str(s)) if s else "",
+                'sanitize_html': lambda self, s: str(s).replace('<', '&lt;').replace('>', '&gt;') if s else ""
+            })()
+        return self.data_sanitizer
+
+    def _get_sql_loader(self):
+        """Obtiene el SQL loader con verificación."""
+        if not self.sql_loader:
+            raise RuntimeError("SQL Loader no ha sido inicializado")
+        return self.sql_loader
         
     def verificar_estructura_tabla(self):
         """Verifica la estructura de la tabla de obras."""
@@ -30,6 +61,11 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
+
+            # Verificar que sql_manager esté disponible
+            if not self.sql_manager:
+                self.logger.warning("SQL Manager no disponible para verificar estructura de tabla")
+                return
 
             # Verificar tabla de obras con query más compatible
             try:
@@ -102,6 +138,11 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
+            # Verificar que sql_manager esté disponible
+            if not self.sql_manager:
+                logger.warning("SQL Manager no disponible para validar duplicados")
+                return False
+
             # Usar SQLQueryManager para consultas seguras
             if id_obra_actual:
                 sql_query = self.sql_manager.get_query('obras', 'count_duplicados_codigo_exclude')
@@ -128,7 +169,10 @@ class ObrasModel:
         cursor = None
         try:
             # Sanitizar y validar datos
-            datos_limpios = self.data_sanitizer.sanitize_dict(datos_obra)
+            if self.data_sanitizer:
+                datos_limpios = self.data_sanitizer.sanitize_dict(datos_obra)
+            else:
+                datos_limpios = datos_obra
 
             # Validaciones específicas
             if not datos_limpios.get("codigo"):
@@ -413,9 +457,6 @@ page=1,
             if cursor:
                 cursor.close()
 
-    @cached_query(cache_key="todas_obras", ttl=300)
-    @track_performance
-    @paginated(page_size=50)
     def obtener_todas_obras(self, limit=None, offset=0):
         """
         Obtiene todas las obras activas con paginación y cache.
@@ -449,9 +490,6 @@ page=1,
             if cursor:
                 cursor.close()
 
-    @cached_query(ttl=600)
-    @track_performance
-    @prevent_n_plus_one(batch_key="obras_by_id")
     def obtener_obra_por_id(self, obra_id: int):
         """
         Obtiene una obra por su ID con cache y prevención N+1.
@@ -550,7 +588,7 @@ obra_id: int,
                 return False, "No se pudo actualizar la obra"
 
             self.db_connection.commit()
-            return True, f"Obra actualizada exitosamente"
+            return True, "Obra actualizada exitosamente"
 
         except Exception as e:
             logger.info(f"[ERROR OBRAS] Error actualizando obra: {e}")
@@ -636,7 +674,6 @@ obra_id: int,
                 return False, "ID de obra inválido"
 
             estado_limpio = str(nuevo_estado)[:20] if nuevo_estado else ""
-            usuario_limpio = str(usuario_cambio)[:50] if usuario_cambio else ""
 
             estados_validos = ['PLANIFICACION', 'EN_PROCESO', 'PAUSADA', 'FINALIZADA', 'CANCELADA']
             if estado_limpio not in estados_validos:
@@ -666,8 +703,6 @@ obra_id: int,
             if cursor:
                 cursor.close()
 
-    @cached_query(cache_key="estadisticas_obras", ttl=900)
-    @track_performance
     def obtener_estadisticas_obras(self):
         """Obtiene estadísticas generales de obras con cache de 15 minutos."""
         if not self.db_connection:

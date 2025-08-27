@@ -13,7 +13,7 @@ from pathlib import Path
 root_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
-from rexus.modules.inventario.controller import InventarioController
+from rexus.modules.02_inventario.controller import InventarioController
 
 
 class TestInventarioController(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestInventarioController(unittest.TestCase):
         controller = InventarioController()
         self.assertIsNotNone(controller)
 
-    @patch('rexus.modules.inventario.controller.InventarioModel')
+    @patch('rexus.modules.02_inventario.controller.InventarioModel')
     def test_cargar_inventario(self, mock_model_class):
         """Test de carga de inventario."""
         # Mock del modelo

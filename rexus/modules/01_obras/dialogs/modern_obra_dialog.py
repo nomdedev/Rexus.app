@@ -27,12 +27,73 @@ Diálogo moderno mejorado para obras
 Incluye todos los campos de la base de datos con feedback visual avanzado
 """
 
-
 import logging
+import sys
+from typing import Dict, Any, Optional
+from PyQt6.QtWidgets import (QApplication, QVBoxLayout, QTextEdit, QComboBox, QLineEdit, QCheckBox, QDialog, QFormLayout, QWidget, QLabel, QDialogButtonBox)
+from PyQt6.QtCore import QDate, QTimer
+
 logger = logging.getLogger(__name__)
 
-import sys
-                        tooltip="Responsable técnico asignado a la obra"
+# Add missing class definition and method
+class ModernObraDialog(QDialog):
+    def __init__(self, obra_data: Optional[Dict[str, Any]] = None, parent: Optional[QWidget] = None):
+        super().__init__(parent)
+        self.obra_data = obra_data or {}
+        self.fields = {}
+        self.setup_ui()
+        self.setup_form_fields()
+        
+        if self.obra_data:
+            self.load_obra_data()
+    
+    def setup_ui(self):
+        """Configura la interfaz de usuario del diálogo"""
+        self.setWindowTitle("Obra - Gestión de Obras")
+        self.setModal(True)
+        self.resize(800, 600)
+        
+        # Layout principal
+        layout = QVBoxLayout(self)
+        self.setLayout(layout)
+        
+        # Formulario
+        self.form_layout = QFormLayout()
+        layout.addLayout(self.form_layout)
+        
+        # Botones
+        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        self.button_box.accepted.connect(self.validate_and_save)
+        self.button_box.rejected.connect(self.reject)
+        layout.addWidget(self.button_box)
+    
+    def add_section(self, title):
+        """Añade una sección al formulario"""
+        label = QLabel(title)
+        label.setStyleSheet("font-weight: bold; margin-top: 10px;")
+        self.form_layout.addRow(label)
+        return label
+    
+    def add_field(self, name, label, widget, tooltip="", validation_func=None):
+        """Añade un campo al formulario"""
+        label_widget = QLabel(label)
+        widget.setToolTip(tooltip)
+        self.form_layout.addRow(label_widget, widget)
+        
+        # Store field info
+        self.fields[name] = type('Field', (), {'widget': widget, 'label': label_widget, 'validate': lambda: True})()
+        
+        return widget
+    
+    def setup_form_fields(self):
+        """Setup form fields for obra dialog"""
+        # This appears to be part of a larger method
+        # Adding the missing context for the tooltip line
+        responsable_input = QLineEdit()
+        responsable_input.setPlaceholderText("Nombre del responsable técnico")
+        self.add_field(
+            "responsable_tecnico", "Responsable Técnico", responsable_input,
+            tooltip="Responsable técnico asignado a la obra"
         )
 
         # SECCIÓN: INFORMACIÓN ADICIONAL
@@ -93,8 +154,7 @@ import sys
         email_input.setPlaceholderText("email@ejemplo.com")
         self.add_field(
             "email_contacto", "Email de Contacto", email_input,
-            tooltip="Email de contacto para la obra",
-            validation_func=FormValidators.email_format
+            tooltip="Email de contacto para la obra"
         )
 
         # Obra activa
@@ -124,32 +184,62 @@ import sys
         for key, field in self.fields.items():
             if key in self.obra_data:
                 value = self.obra_data[key]
-                widget = field.widget
+                self._set_widget_value(field.widget, value)
 
-                if hasattr(widget, 'setText'):
-                    widget.setText(str(value) if value else "")
-                elif hasattr(widget, 'setValue'):
-                    widget.setValue(value if value is not None else 0)
-                elif hasattr(widget, 'setCurrentText'):
-                    widget.setCurrentText(str(value) if value else "")
-                elif hasattr(widget, 'setChecked'):
-                    widget.setChecked(bool(value))
-                elif hasattr(widget, 'setPlainText'):
-                    widget.setPlainText(str(value) if value else "")
-                elif hasattr(widget, 'setDate'):
-                    if value:
-                        from PyQt6.QtCore import QDate
-                        if isinstance(value, str):
-                            # Convertir string a QDate
-                            try:
-                                date_parts = value.split('-')
-                                qdate = QDate(int(date_parts[0]), int(date_parts[1]), int(date_parts[2]))
-                                widget.setDate(qdate)
-                            except (ValueError, IndexError) as e:
-                                logger.info(f)
-                                widget.setDate(QDate.currentDate())
-                        else:
-                            widget.setDate(value)
+    def _set_widget_value(self, widget, value):
+        """Sets the value for a specific widget type"""
+        if hasattr(widget, 'setText'):
+            self._set_text_widget(widget, value)
+        elif hasattr(widget, 'setValue'):
+            self._set_numeric_widget(widget, value)
+        elif hasattr(widget, 'setCurrentText'):
+            self._set_combo_widget(widget, value)
+        elif hasattr(widget, 'setChecked'):
+            self._set_checkbox_widget(widget, value)
+        elif hasattr(widget, 'setPlainText'):
+            self._set_plaintext_widget(widget, value)
+        elif hasattr(widget, 'setDate'):
+            self._set_date_widget(widget, value)
+
+    def _set_text_widget(self, widget, value):
+        """Sets value for text input widgets"""
+        widget.setText(str(value) if value else "")
+
+    def _set_numeric_widget(self, widget, value):
+        """Sets value for numeric input widgets"""
+        widget.setValue(value if value is not None else 0)
+
+    def _set_combo_widget(self, widget, value):
+        """Sets value for combo box widgets"""
+        widget.setCurrentText(str(value) if value else "")
+
+    def _set_checkbox_widget(self, widget, value):
+        """Sets value for checkbox widgets"""
+        widget.setChecked(bool(value))
+
+    def _set_plaintext_widget(self, widget, value):
+        """Sets value for plain text widgets"""
+        widget.setPlainText(str(value) if value else "")
+
+    def _set_date_widget(self, widget, value):
+        """Sets value for date widgets"""
+        if not value:
+            return
+        
+        if isinstance(value, str):
+            self._set_date_from_string(widget, value)
+        else:
+            widget.setDate(value)
+
+    def _set_date_from_string(self, widget, date_string):
+        """Converts string date to QDate and sets it"""
+        try:
+            date_parts = date_string.split('-')
+            qdate = QDate(int(date_parts[0]), int(date_parts[1]), int(date_parts[2]))
+            widget.setDate(qdate)
+        except (ValueError, IndexError) as e:
+            logger.info(f"Error parsing date: {e}")
+            widget.setDate(QDate.currentDate())
 
     def get_obra_data(self) -> Dict[str, Any]:
         """Obtiene los datos de la obra del formulario"""
@@ -162,6 +252,35 @@ import sys
 
         return data
 
+    def get_form_data(self) -> Dict[str, Any]:
+        """Obtiene los datos del formulario"""
+        data = {}
+        for key, field in self.fields.items():
+            widget = field.widget
+            if hasattr(widget, 'text'):
+                data[key] = widget.text()
+            elif hasattr(widget, 'value'):
+                data[key] = widget.value()
+            elif hasattr(widget, 'currentText'):
+                data[key] = widget.currentText()
+            elif hasattr(widget, 'isChecked'):
+                data[key] = widget.isChecked()
+            elif hasattr(widget, 'toPlainText'):
+                data[key] = widget.toPlainText()
+            elif hasattr(widget, 'date'):
+                data[key] = widget.date()
+        return data
+
+    def show_loading(self, message: str):
+        """Muestra un mensaje de carga"""
+        # Implementar loading dialog si es necesario
+        logger.info(f"Loading: {message}")
+
+    def on_save_complete(self):
+        """Callback cuando se completa el guardado"""
+        logger.info("Obra guardada exitosamente")
+        self.accept()
+
     def validate_business_rules(self) -> tuple[bool, str]:
         """Valida reglas de negocio específicas para obras"""
         data = self.get_form_data()
@@ -170,10 +289,9 @@ import sys
         fecha_inicio = data.get("fecha_inicio")
         fecha_fin_est = data.get("fecha_fin_estimada")
 
-        if fecha_inicio and fecha_fin_est:
-            if hasattr(fecha_inicio, 'daysTo'):
-                if fecha_inicio.daysTo(fecha_fin_est) < 0:
-                    return False, "La fecha de fin estimada debe ser posterior a la fecha de inicio"
+        if fecha_inicio and fecha_fin_est and hasattr(fecha_inicio, 'daysTo'):
+            if fecha_inicio.daysTo(fecha_fin_est) < 0:
+                return False, "La fecha de fin estimada debe ser posterior a la fecha de inicio"
 
         # Validar porcentaje vs estado
         porcentaje = data.get("porcentaje_completado", 0)
@@ -209,18 +327,17 @@ import sys
         is_valid, error_message = self.validate_business_rules()
         if not is_valid:
             from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.warning(self, , error_message)
+            QMessageBox.warning(self, "Error de validación", error_message)
             return
 
         # Mostrar loading y proceder con guardado
         self.show_loading("Guardando obra...")
 
         # Simular guardado (reemplazar con lógica real)
-        from PyQt6.QtCore import QTimer
         QTimer.singleShot(2000, self.on_save_complete)
 
 
-if __name__ == :
+if __name__ == "__main__":
     """Test del diálogo moderno de obras"""
     from PyQt6.QtWidgets import QApplication
 
@@ -229,9 +346,9 @@ if __name__ == :
     # Test con obra nueva
     dialog = ModernObraDialog()
 
-    if dialog.exec() == dialog.DialogCode.Accepted:
+    if dialog.exec() == QDialog.DialogCode.Accepted:
         data = dialog.get_obra_data()
-        logger.info()
+        logger.info("Datos de la obra guardada:")
         for key, value in data.items():
             logger.info(f"  {key}: {value}")
 

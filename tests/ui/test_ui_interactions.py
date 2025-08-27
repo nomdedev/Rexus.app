@@ -96,7 +96,7 @@ class TestUIInteractions:
     def test_inventario_form_interactions(self, qtbot, mock_db, sample_data):
         """Test interacciones de formulario de inventario."""
         try:
-            from rexus.modules.inventario.view import InventarioView
+            from rexus.modules.02_inventario.view import InventarioView
             
             with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
@@ -127,7 +127,7 @@ class TestUIInteractions:
     def test_compras_form_workflow(self, qtbot, mock_db, sample_data):
         """Test flujo completo de formulario de compras."""
         try:
-            from rexus.modules.compras.view import ComprasView
+            from rexus.modules.04_compras.view import ComprasView
             
             with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
@@ -163,7 +163,7 @@ class TestUIInteractions:
     def test_form_validation_feedback(self, qtbot, mock_db):
         """Test feedback visual de validaciones de formulario."""
         try:
-            from rexus.modules.inventario.view import InventarioView
+            from rexus.modules.02_inventario.view import InventarioView
             
             with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
@@ -196,7 +196,7 @@ class TestUIInteractions:
     def test_table_interactions(self, qtbot, mock_db):
         """Test interacciones con tablas de datos."""
         try:
-            from rexus.modules.inventario.view import InventarioView
+            from rexus.modules.02_inventario.view import InventarioView
             
             # Mock datos para la tabla
             mock_db.cursor.return_value.fetchall.return_value = [
@@ -234,7 +234,7 @@ class TestUIInteractions:
     def test_dialog_interactions(self, qtbot, mock_db):
         """Test interacciones con diálogos modales."""
         try:
-            from rexus.modules.inventario.view import InventarioView
+            from rexus.modules.02_inventario.view import InventarioView
             
             with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
@@ -262,7 +262,7 @@ class TestUIInteractions:
     def test_keyboard_navigation(self, qtbot, mock_db):
         """Test navegación por teclado en formularios."""
         try:
-            from rexus.modules.compras.view import ComprasView
+            from rexus.modules.04_compras.view import ComprasView
             
             with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
@@ -299,7 +299,7 @@ class TestUIInteractions:
         mock_db.cursor.side_effect = Exception("Database error")
         
         try:
-            from rexus.modules.inventario.view import InventarioView
+            from rexus.modules.02_inventario.view import InventarioView
             
             with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
@@ -320,7 +320,7 @@ class TestUIInteractions:
     def test_performance_ui_load(self, qtbot, mock_db):
         """Test rendimiento de carga de UI."""
         try:
-            from rexus.modules.inventario.view import InventarioView
+            from rexus.modules.02_inventario.view import InventarioView
             
             with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 start_time = time.time()

@@ -21,13 +21,13 @@ from datetime import datetime, date
 
 # Configurar logging
 try:
-    from ...utils.app_logger import get_logger
+    from rexus.utils.app_logger import get_logger
     logger = get_logger(__name__)
 except ImportError:
     logger = logging.getLogger(__name__)
 
 try:
-    from ...utils.security_utils import SecurityUtils
+    from rexus.utils.security import SecurityUtils
 except ImportError:
     class SecurityUtils:
         @staticmethod
@@ -38,9 +38,9 @@ except ImportError:
 
 # SQLQueryManager para consultas seguras
 try:
-    from ...utils.sql_query_manager import SQLQueryManager
+    from rexus.utils.sql_query_manager import SQLQueryManager
 except ImportError:
-    from ...core.sql_query_manager import SQLQueryManager
+    from rexus.core.sql_query_manager import SQLQueryManager
 
 
 class LogisticaModel:

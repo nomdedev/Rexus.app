@@ -12,8 +12,18 @@ Responsabilidades:
 import logging
 import re
 import sqlite3
+from typing import Dict, Any
+from datetime import datetime
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 class PermissionsManager:
+    """Gestor de permisos de usuarios."""
+    
+    def __init__(self, db_connection=None):
+        """Inicializa el gestor de permisos."""
+        self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
+        self.logger = logging.getLogger(__name__)
 
     def cambiar_rol_usuario(self,
 usuario_id: int,
@@ -47,12 +57,15 @@ usuario_id: int,
 
             cursor = self.db_connection.cursor()
 
-            # Actualizar rol
-            cursor.execute("""
-                UPDATE usuarios
-                SET rol = ?, updated_at = ?
-                WHERE id = ? AND activo = 1
-            """, (nuevo_rol, datetime.now(), usuario_id))
+            # Actualizar rol usando archivo SQL externo
+            params = {
+                'nuevo_rol': nuevo_rol,
+                'usuario_id': usuario_id
+            }
+            cursor.execute(
+                self.sql_manager.get_query('sql/09_usuarios', 'update_cambiar_rol_usuario.sql'),
+                params
+            )
 
             if cursor.rowcount == 0:
                 return {'success': False, 'message': 'Usuario no encontrado'}

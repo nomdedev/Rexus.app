@@ -138,15 +138,15 @@ def apply_auth_patches():
         'rexus.core.auth_decorators.admin_required',
         'rexus.core.auth_decorators.auth_required',
         'rexus.core.auth_decorators.permission_required',
-        'rexus.modules.notificaciones.model.admin_required',
-        'rexus.modules.notificaciones.model.auth_required',
-        'rexus.modules.vidrios.model.auth_required',
-        'rexus.modules.vidrios.submodules.productos_manager.auth_required',
-        'rexus.modules.vidrios.submodules.productos_manager.permission_required',
-        'rexus.modules.pedidos.model.auth_required',
-        'rexus.modules.compras.model.auth_required',
-        'rexus.modules.obras.model.auth_required',
-        'rexus.modules.inventario.model.auth_required'
+        'rexus.modules.13_notificaciones.model.admin_required',
+        'rexus.modules.13_notificaciones.model.auth_required',
+        'rexus.modules.07_vidrios.model.auth_required',
+        'rexus.modules.07_vidrios.submodules.productos_manager.auth_required',
+        'rexus.modules.07_vidrios.submodules.productos_manager.permission_required',
+        'rexus.modules.03_pedidos.model.auth_required',
+        'rexus.modules.04_compras.model.auth_required',
+        'rexus.modules.01_obras.model.auth_required',
+        'rexus.modules.02_inventario.model.auth_required'
     ]
     
     for decorator_path in decorators_to_patch:

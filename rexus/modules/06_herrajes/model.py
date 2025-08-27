@@ -327,28 +327,24 @@ class HerrajesModel:
 
             cursor = self.db_connection.cursor()
 
-            # Query de inserción
-            query = """
-                INSERT INTO herrajes (
-                    codigo, nombre, descripcion, categoria, proveedor,
-                    precio_unitario, stock_actual, stock_minimo, unidad_medida, activo
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """
+            # Usar archivo SQL externo para inserción
+            params = {
+                'codigo': data.get('codigo', ''),
+                'nombre': data.get('nombre', ''),
+                'descripcion': data.get('descripcion', ''),
+                'categoria': data.get('categoria', ''),
+                'proveedor': data.get('proveedor', ''),
+                'precio_unitario': float(data.get('precio_unitario', 0)),
+                'stock_actual': int(data.get('stock_actual', 0)),
+                'stock_minimo': int(data.get('stock_minimo', 0)),
+                'unidad_medida': data.get('unidad_medida', 'unidad'),
+                'activo': bool(data.get('activo', True))
+            }
 
-            params = (
-                data.get('codigo', ''),
-                data.get('nombre', ''),
-                data.get('descripcion', ''),
-                data.get('categoria', ''),
-                data.get('proveedor', ''),
-                float(data.get('precio_unitario', 0)),
-                int(data.get('stock_actual', 0)),
-                int(data.get('stock_minimo', 0)),
-                data.get('unidad_medida', 'unidad'),
-                bool(data.get('activo', True))
+            cursor.execute(
+                self.sql_manager.get_query('sql/06_herrajes', 'insert_herraje_completo.sql'),
+                params
             )
-
-            cursor.execute(query, params)
             self.db_connection.commit()
 
             print(f"[HERRAJES] Herraje creado: {data.get('codigo')}")
@@ -369,29 +365,24 @@ class HerrajesModel:
 
             cursor = self.db_connection.cursor()
 
-            # Query de actualización
-            query = """
-                UPDATE herrajes SET
-                    nombre = ?, descripcion = ?, categoria = ?, proveedor = ?,
-                    precio_unitario = ?, stock_actual = ?, stock_minimo = ?,
-                    unidad_medida = ?, activo = ?, fecha_actualizacion = GETDATE()
-                WHERE codigo = ?
-            """
+            # Usar archivo SQL externo para actualización
+            params = {
+                'nombre': data.get('nombre', ''),
+                'descripcion': data.get('descripcion', ''),
+                'categoria': data.get('categoria', ''),
+                'proveedor': data.get('proveedor', ''),
+                'precio_unitario': float(data.get('precio_unitario', 0)),
+                'stock_actual': int(data.get('stock_actual', 0)),
+                'stock_minimo': int(data.get('stock_minimo', 0)),
+                'unidad_medida': data.get('unidad_medida', 'unidad'),
+                'activo': bool(data.get('activo', True)),
+                'codigo': codigo
+            }
 
-            params = (
-                data.get('nombre', ''),
-                data.get('descripcion', ''),
-                data.get('categoria', ''),
-                data.get('proveedor', ''),
-                float(data.get('precio_unitario', 0)),
-                int(data.get('stock_actual', 0)),
-                int(data.get('stock_minimo', 0)),
-                data.get('unidad_medida', 'unidad'),
-                bool(data.get('activo', True)),
-                codigo
+            cursor.execute(
+                self.sql_manager.get_query('sql/06_herrajes', 'update_herraje_completo.sql'),
+                params
             )
-
-            cursor.execute(query, params)
             rows_affected = cursor.rowcount
             self.db_connection.commit()
 

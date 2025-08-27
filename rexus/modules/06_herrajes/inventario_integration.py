@@ -30,6 +30,7 @@ y movimientos unificados.
 """
 
 import logging
+from rexus.utils.sql_query_manager import SQLQueryManager
 def corregir_discrepancias(self) -> Tuple[bool, str, int]:
     """
     Corrige discrepancias de stock entre herrajes y su inventario.
@@ -37,8 +38,12 @@ def corregir_discrepancias(self) -> Tuple[bool, str, int]:
     Returns:
     Tuple[bool, str, int]: (éxito, mensaje, correcciones realizadas)
     """
+    # Inicializar sql_manager si no existe
+    if not hasattr(self, 'sql_manager'):
+        self.sql_manager = SQLQueryManager()
+        
     if not self.db_connection:
-    return False, "Sin conexión a la base de datos", 0
+        return False, "Sin conexión a la base de datos", 0
 
     try:
         pass  # TODO: Implementar lógica
@@ -61,29 +66,29 @@ def corregir_discrepancias(self) -> Tuple[bool, str, int]:
     for herraje_id, codigo, stock_herrajes, stock_inventario in discrepancias:
     # Usar stock_herrajes como fuente de verdad
     if stock_inventario is None:
-    # Crear entrada en herrajes_inventario
-    cursor.execute("""
-    INSERT INTO herrajes_inventario (herraje_id, stock_actual)
-    VALUES (?, ?)
-    """, (herraje_id, stock_herrajes))
+    # Crear entrada en herrajes_inventario usando archivo SQL externo
+    params = {'herraje_id': herraje_id, 'stock_actual': stock_herrajes}
+    cursor.execute(
+        self.sql_manager.get_query('sql/06_herrajes', 'insert_herraje_inventario.sql'),
+        params
+    )
     else:
-    # Actualizar stock en herrajes_inventario
-    cursor.execute("""
-    UPDATE herrajes_inventario
-    SET stock_actual = ?
-    WHERE herraje_id = ?
-    """, (stock_herrajes, herraje_id))
+    # Actualizar stock en herrajes_inventario usando archivo SQL externo
+    params = {'stock_actual': stock_herrajes, 'herraje_id': herraje_id}
+    cursor.execute(
+        self.sql_manager.get_query('sql/06_herrajes', 'update_stock_inventario.sql'),
+        params
+    )
 
-    # Registrar corrección
-    cursor.execute("""
-    INSERT INTO historial (tabla, operacion, registro_id, usuario,
-    fecha, observaciones)
-    VALUES ('herrajes_inventario',
-    'CORRECCION',
-    ?,
-    USER_NAME(),
-    GETDATE(), ?)
-    """, (herraje_id, f"Corrección automática de stock: {stock_inventario} -> {stock_herrajes}"))
+    # Registrar corrección usando archivo SQL externo
+    params = {
+        'registro_id': herraje_id,
+        'observaciones': f"Corrección automática de stock: {stock_inventario} -> {stock_herrajes}"
+    }
+    cursor.execute(
+        self.sql_manager.get_query('sql/06_herrajes', 'insert_historial_correccion.sql'),
+        params
+    )
 
     correcciones += 1
 

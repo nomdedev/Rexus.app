@@ -1848,36 +1848,29 @@ fecha_fin,
                     precio_anterior = row[0]
 
                     # Actualizar precio
-                    cursor.execute(
-                        """
-                    UPDATE inventario
-                    SET precio_unitario = ?,
-                        fecha_modificacion = GETDATE(),
-                        usuario_modificacion = ?
-                    WHERE id = ?
-                    """,
-                        (precio_nuevo, usuario, producto_id),
+                    self.sql_manager.ejecutar_consulta_archivo(
+                        'sql/02_inventario/update_precio_producto.sql',
+                        {
+                            'precio_nuevo': precio_nuevo,
+                            'usuario': usuario,
+                            'producto_id': producto_id
+                        }
                     )
 
                     # Registrar historial de precio si existe la tabla
-                    cursor.execute(
-                        self.sql_manager.get_query('inventario', 'verificar_tabla_historial_precios')
+                    resultado_verificacion = self.sql_manager.ejecutar_consulta_archivo(
+                        'sql/02_inventario/verificar_tabla_historial_precios.sql'
                     )
-                    if cursor.fetchone():
-                        cursor.execute(
-                            """
-                        INSERT INTO historial
-                        (producto_id, precio_anterior, precio_nuevo,
-                         fecha_cambio, usuario, motivo)
-                        VALUES (?, ?, ?, GETDATE(), ?, ?)
-                        """,
-                            (
-                                producto_id,
-                                precio_anterior,
-                                precio_nuevo,
-                                usuario,
-                                item.get("motivo", "Actualización masiva"),
-                            ),
+                    if resultado_verificacion:
+                        self.sql_manager.ejecutar_consulta_archivo(
+                            'sql/02_inventario/insert_historial_precio.sql',
+                            {
+                                'producto_id': producto_id,
+                                'precio_anterior': precio_anterior,
+                                'precio_nuevo': precio_nuevo,
+                                'usuario': usuario,
+                                'motivo': item.get("motivo", "Actualización masiva")
+                            }
                         )
 
                     exitosos += 1

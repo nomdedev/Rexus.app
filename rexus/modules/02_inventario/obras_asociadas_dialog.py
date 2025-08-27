@@ -17,6 +17,15 @@ from PyQt6.QtGui import QFont
 
 from rexus.core.database import get_inventario_connection
 
+# Importar sql_script_loader para externalizar consultas
+try:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    SQL_LOADER_AVAILABLE = True
+except ImportError:
+    logger.warning("SQL script loader not available in obras_asociadas_dialog")
+    SQL_LOADER_AVAILABLE = False
+    sql_script_loader = None
+
 class ObrasAsociadasDialog(QDialog):
     """Ventana que muestra las obras donde se usa un material específico"""
 
@@ -147,21 +156,25 @@ class ObrasAsociadasDialog(QDialog):
 
             logger.info(f"[DEBUG] Buscando obras para código específico: '{item_codigo}'")
 
-            # Query para buscar obras que usan exactamente este código de inventario
-            query = """
-            SELECT DISTINCT
-                o.id as obra_id,
-                o.nombre as obra_nombre,
-                d.detalle,
-                d.cantidad,
-                d.precio_unitario,
-                d.precio_total,
-                ISNULL(o.estado, 'Activa') as estado
-            FROM obras o
-            INNER JOIN detalles_obra d ON o.id = d.obra_id
-            WHERE d.codigo_inventario = ?
-            ORDER BY o.nombre, d.detalle
-            """
+            # Cargar query externalizada para buscar obras por código de inventario
+            if SQL_LOADER_AVAILABLE and sql_script_loader:
+                query = sql_script_loader.load_script('02_inventario/select_obras_por_codigo_inventario')
+            else:
+                # Fallback query si sql_loader no está disponible
+                query = """
+                SELECT DISTINCT
+                    o.id as obra_id,
+                    o.nombre as obra_nombre,
+                    d.detalle,
+                    d.cantidad,
+                    d.precio_unitario,
+                    d.precio_total,
+                    ISNULL(o.estado, 'Activa') as estado
+                FROM obras o
+                INNER JOIN detalles_obra d ON o.id = d.obra_id
+                WHERE d.codigo_inventario = ?
+                ORDER BY o.nombre, d.detalle
+                """
 
             cursor.execute(query, (item_codigo,))
             obras = cursor.fetchall()

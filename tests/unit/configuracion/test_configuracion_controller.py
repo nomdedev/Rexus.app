@@ -29,8 +29,8 @@ class TestConfiguracionController:
     @pytest.fixture
     def mock_dependencies(self):
         """Configura dependencias mockeadas."""
-        with patch('rexus.modules.configuracion.model.ConfiguracionModel') as mock_model, \
-             patch('rexus.modules.configuracion.view.ConfiguracionView') as mock_view:
+        with patch('rexus.modules.10_configuracion.model.ConfiguracionModel') as mock_model, \
+             patch('rexus.modules.10_configuracion.view.ConfiguracionView') as mock_view:
             
             # Mock del modelo
             mock_model_instance = Mock()
@@ -50,7 +50,7 @@ class TestConfiguracionController:
     def test_controller_import_succeeds(self):
         """Test crítico: El controlador se puede importar sin errores."""
         try:
-            from rexus.modules.configuracion.controller import ConfiguracionController
+            from rexus.modules.10_configuracion.controller import ConfiguracionController
             assert ConfiguracionController is not None
         except ImportError as e:
             pytest.fail(f)
@@ -58,10 +58,10 @@ class TestConfiguracionController:
     def test_controller_instantiation_basic(self, mock_dependencies):
         """Test crítico: El controlador se puede instanciar."""
         try:
-            from rexus.modules.configuracion.controller import ConfiguracionController
+            from rexus.modules.10_configuracion.controller import ConfiguracionController
             
-            with patch('rexus.modules.configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
+            with patch('rexus.modules.10_configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.10_configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
                 
                 controller = ConfiguracionController()
                 assert controller is not None
@@ -74,10 +74,10 @@ class TestConfiguracionController:
     def test_controller_has_required_methods(self, mock_dependencies):
         """Test crítico: El controlador tiene los métodos requeridos."""
         try:
-            from rexus.modules.configuracion.controller import ConfiguracionController
+            from rexus.modules.10_configuracion.controller import ConfiguracionController
             
-            with patch('rexus.modules.configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
+            with patch('rexus.modules.10_configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.10_configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
                 
                 controller = ConfiguracionController()
                 
@@ -104,10 +104,10 @@ class TestConfiguracionController:
     def test_cargar_configuracion_exists_and_callable(self, mock_dependencies):
         """Test crítico: cargar_configuracion existe y es llamable."""
         try:
-            from rexus.modules.configuracion.controller import ConfiguracionController
+            from rexus.modules.10_configuracion.controller import ConfiguracionController
             
-            with patch('rexus.modules.configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
+            with patch('rexus.modules.10_configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.10_configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
                 
                 controller = ConfiguracionController()
                 
@@ -131,13 +131,13 @@ class TestConfiguracionController:
     def test_controller_handles_missing_database(self, mock_dependencies):
         """Test crítico: El controlador maneja graciosamente la falta de BD."""
         try:
-            from rexus.modules.configuracion.controller import ConfiguracionController
+            from rexus.modules.10_configuracion.controller import ConfiguracionController
             
             # Mock modelo que falla por falta de BD
             mock_dependencies['model'].obtener_configuracion.side_effect = Exception()
             
-            with patch('rexus.modules.configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
+            with patch('rexus.modules.10_configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.10_configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
                 
                 controller = ConfiguracionController()
                 
@@ -158,11 +158,11 @@ class TestConfiguracionController:
     def test_controller_advanced_features_integration(self, mock_dependencies):
         """Test crítico: Integración con advanced_features.py."""
         try:
-            from rexus.modules.configuracion.controller import ConfiguracionController
-            from rexus.modules.configuracion.advanced_features import AdvancedConfigurationManager
+            from rexus.modules.10_configuracion.controller import ConfiguracionController
+            from rexus.modules.10_configuracion.advanced_features import AdvancedConfigurationManager
             
-            with patch('rexus.modules.configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
+            with patch('rexus.modules.10_configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.10_configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
                 
                 controller = ConfiguracionController()
                 
@@ -194,7 +194,7 @@ class TestConfiguracionController:
     def test_configuration_types_validation(self, mock_dependencies, config_key, expected_type):
         """Test crítico: Validación de tipos de configuración."""
         try:
-            from rexus.modules.configuracion.controller import ConfiguracionController
+            from rexus.modules.10_configuracion.controller import ConfiguracionController
             
             # Mock que retorna configuración válida
             mock_config = {
@@ -205,8 +205,8 @@ class TestConfiguracionController:
             }
             mock_dependencies['model'].obtener_configuracion.return_value = mock_config
             
-            with patch('rexus.modules.configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
+            with patch('rexus.modules.10_configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.10_configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
                 
                 controller = ConfiguracionController()
                 

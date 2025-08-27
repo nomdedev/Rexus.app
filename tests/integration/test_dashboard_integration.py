@@ -139,8 +139,8 @@ class TestDashboardIntegration:
             
             assert original_theme != new_theme
     
-    @patch('rexus.modules.usuarios.controller.UsuariosController')
-    @patch('rexus.modules.inventario.controller.InventarioController')
+    @patch('rexus.modules.09_usuarios.controller.UsuariosController')
+    @patch('rexus.modules.02_inventario.controller.InventarioController')
     def test_dashboard_data_integration(self, mock_inventario, mock_usuarios):
         """Test de integración con datos reales de módulos."""
         # Configurar mocks con datos dinámicos seguros

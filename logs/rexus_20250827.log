@@ -139,3 +139,67 @@
 2025-08-27 12:32:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-27 12:33:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-27 12:34:54 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:38:17 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:38:23 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:38:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:38:42 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:38:53 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:39:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:39:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:39:16 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:39:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:39:44 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:39:53 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:40:13 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:40:19 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 12:42:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:46:17 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:46:27 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:46:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:46:47 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:46:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:47:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:47:34 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:48:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:48:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:48:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 14:50:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:28:39 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:28:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:28:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:29:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:29:06 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:29:12 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:29:19 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:29:26 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:29:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:29:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:29:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:30:06 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:31:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:33:43 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:33:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:34:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 16:34:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:16:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:22:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:22:46 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-27 18:22:46 | INFO     | rexus.core.module_manager | ModuleManager inicializado
+2025-08-27 18:23:12 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:23:12 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-27 18:23:12 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-27 18:23:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:24:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:24:02 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-27 18:24:02 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-27 18:53:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:53:56 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-27 18:53:56 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-27 18:55:33 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:56:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:56:39 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:56:39 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-27 18:56:39 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-27 18:59:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-27 18:59:59 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-27 18:59:59 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado

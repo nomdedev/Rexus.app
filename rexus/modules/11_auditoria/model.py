@@ -23,7 +23,7 @@ except ImportError:
 
 # Importar utilidades de sanitización
 try:
-    from ...utils.data_sanitizer import sanitize_string, validate_input
+    from rexus.utils.unified_sanitizer import sanitize_string, unified_sanitizer
     SANITIZER_AVAILABLE = True
 except ImportError:
     logger.warning("Sanitizador no disponible, usando métodos básicos")
@@ -67,12 +67,21 @@ class AuditoriaModel:
             ]
             
             for config in configuraciones_default:
-                cursor.execute("""
-                    INSERT OR IGNORE INTO auditoria_configuracion 
-                    (modulo, tabla, auditoria_activa, auditoria_inserts, 
-                     auditoria_updates, auditoria_deletes, retencion_dias, nivel_detalle) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, config)
+                # Usar archivo SQL externo para insertar configuración
+                params = {
+                    'modulo': config[0],
+                    'tabla': config[1], 
+                    'auditoria_activa': config[2],
+                    'auditoria_inserts': config[3],
+                    'auditoria_updates': config[4],
+                    'auditoria_deletes': config[5],
+                    'retencion_dias': config[6],
+                    'nivel_detalle': config[7]
+                }
+                cursor.execute(
+                    self.sql_manager.get_query('sql/11_auditoria', 'insert_configuracion_auditoria.sql'),
+                    params
+                )
             
             self.db_connection.commit()
             logger.debug("Configuraciones de auditoría insertadas")
@@ -129,17 +138,25 @@ class AuditoriaModel:
             datos_ant_json = json.dumps(datos_anteriores) if datos_anteriores else None
             datos_new_json = json.dumps(datos_nuevos) if datos_nuevos else None
             
-            cursor.execute("""
-                INSERT INTO auditoria_eventos 
-                (usuario, accion, modulo, tabla_afectada, registro_id, 
-                 datos_anteriores, datos_nuevos, detalles, nivel_riesgo,
-                 ip_address, user_agent, resultado)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                usuario, accion, modulo, tabla_afectada, registro_id,
-                datos_ant_json, datos_new_json, detalles, nivel_riesgo,
-                ip_address, user_agent, "SUCCESS"
-            ))
+            # Usar archivo SQL externo para registrar evento
+            params = {
+                'usuario': usuario,
+                'accion': accion,
+                'modulo': modulo,
+                'tabla_afectada': tabla_afectada,
+                'registro_id': registro_id,
+                'datos_anteriores': datos_ant_json,
+                'datos_nuevos': datos_new_json,
+                'detalles': detalles,
+                'nivel_riesgo': nivel_riesgo,
+                'ip_address': ip_address,
+                'user_agent': user_agent,
+                'resultado': "SUCCESS"
+            }
+            cursor.execute(
+                self.sql_manager.get_query('sql/11_auditoria', 'insert_evento_auditoria.sql'),
+                params
+            )
             
             self.db_connection.commit()
             
@@ -330,11 +347,12 @@ class AuditoriaModel:
             
             cursor = self.db_connection.cursor()
             
-            # Eliminar eventos antiguos
-            cursor.execute("""
-                DELETE FROM auditoria_eventos 
-                WHERE timestamp < datetime('now', '-{} days')
-            """.format(dias_retencion))
+            # Eliminar eventos antiguos usando archivo SQL externo
+            params = {'dias_retencion': dias_retencion}
+            cursor.execute(
+                self.sql_manager.get_query('sql/11_auditoria', 'delete_eventos_antiguos.sql'),
+                params
+            )
             
             eliminados = cursor.rowcount
             self.db_connection.commit()

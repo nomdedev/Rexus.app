@@ -64,12 +64,12 @@ class ProfilesManager:
 
             cursor = self.db_connection.cursor()
 
-            # Soft delete
-            cursor.execute("""
-                UPDATE usuarios
-                SET activo = 0, updated_at = GETDATE()
-                WHERE id = ?
-            """, (usuario_id,))
+            # Soft delete usando archivo SQL externo
+            params = {'usuario_id': usuario_id}
+            cursor.execute(
+                self.sql_manager.get_query('sql/09_usuarios', 'update_eliminar_usuario_logico.sql'),
+                params
+            )
 
             if cursor.rowcount == 0:
                 return {'success': False, 'message': 'No se pudo eliminar el usuario'}

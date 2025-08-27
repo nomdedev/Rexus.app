@@ -90,18 +90,18 @@ class AdministracionModel(ContabilidadModel):
             cursor = self.db_connection.cursor()  # type: ignore
             
             # Verificar código duplicado
-            cursor.execute(
-                "SELECT COUNT(*) FROM departamentos WHERE codigo = ? AND estado = 'ACTIVO'",
-                (codigo,)
+            resultado_codigo = self.sql_manager.ejecutar_consulta_archivo(
+                'sql/12_administracion/count_departamento_codigo_activo.sql',
+                {'codigo': codigo}
             )
-            codigo_duplicado = cursor.fetchone()[0] > 0
+            codigo_duplicado = resultado_codigo[0]['total'] > 0 if resultado_codigo else False
 
             # Verificar nombre duplicado
-            cursor.execute(
-                "SELECT COUNT(*) FROM departamentos WHERE nombre = ? AND estado = 'ACTIVO'",
-                (nombre,)
+            resultado_nombre = self.sql_manager.ejecutar_consulta_archivo(
+                'sql/12_administracion/count_departamento_nombre_activo.sql',
+                {'nombre': nombre}
             )
-            nombre_duplicado = cursor.fetchone()[0] > 0
+            nombre_duplicado = resultado_nombre[0]['total'] > 0 if resultado_nombre else False
 
             return {
                 "codigo_duplicado": codigo_duplicado,
