@@ -12,6 +12,7 @@ FUNCIONALIDADES DE SEGURIDAD:
 import datetime
 import json
 import logging
+import sqlite3
 from typing import Optional, List, Dict, Any
 from enum import Enum
 
@@ -22,9 +23,6 @@ try:
 except ImportError:
     import logging
     audit_logger = logging.getLogger(__name__)
-
-from ..utils.database import Database
-from ..utils.sql_query_manager import SQLQueryManager
 
 
 class AuditEvent(Enum):
@@ -59,7 +57,6 @@ class AuditSystem:
     def __init__(self, db_connection=None):
         """Inicializa el sistema de auditoría."""
         self.db_connection = db_connection
-        self.sql_manager = SQLQueryManager()
         self._create_audit_table()
     
     def _create_audit_table(self):
@@ -68,16 +65,16 @@ class AuditSystem:
             return
         
         try:
-            create_table_query = self.sql_manager.get_query("audit", "create_audit_system_table")
-            with self.db_connection.get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(create_table_query)
-                conn.commit()
-        except Exception as e:
+            cursor = self.db_connection.connection.cursor()
+            cursor.execute("""
+                -- Tabla auditoria_sistema ya existe en SQL Server
+            """)
+            self.db_connection.connection.commit()
+        except sqlite3.Error as e:
             audit_logger.error(f"Error creando tabla de auditoría: {e}")
     
     def log_event(self, event_type: AuditEvent, level: AuditLevel, modulo: str, 
-                  accion: str, resultado: Optional[str] = None, **kwargs):
+                  accion: str, resultado: str = None, **kwargs):
         """Registra un evento de auditoría."""
         try:
             # Preparar datos del evento
@@ -127,29 +124,32 @@ class AuditSystem:
     def _persist_audit_event(self, **event_data):
         """Persiste evento en base de datos."""
         try:
-            insert_query = self.sql_manager.get_query("audit", "insert_audit_event")
-            with self.db_connection.get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(insert_query, (
-                    event_data.get('event_type'),
-                    event_data.get('level'),
-                    event_data.get('usuario_id'),
-                    event_data.get('usuario_nombre'),
-                    event_data.get('ip_address'),
-                    event_data.get('user_agent'),
-                    event_data.get('modulo'),
-                    event_data.get('accion'),
-                    event_data.get('detalles'),
-                    event_data.get('resultado'),
-                    event_data.get('session_id')
-                ))
-                conn.commit()
-        except Exception as e:
+            cursor = self.db_connection.connection.cursor()
+            cursor.execute("""
+                INSERT INTO auditoria_sistema 
+                (event_type, level, usuario_id, usuario_nombre, ip_address, 
+                 user_agent, modulo, accion, detalles, resultado, session_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                event_data.get('event_type'),
+                event_data.get('level'),
+                event_data.get('usuario_id'),
+                event_data.get('usuario_nombre'),
+                event_data.get('ip_address'),
+                event_data.get('user_agent'),
+                event_data.get('modulo'),
+                event_data.get('accion'),
+                event_data.get('detalles'),
+                event_data.get('resultado'),
+                event_data.get('session_id')
+            ))
+            self.db_connection.connection.commit()
+        except sqlite3.Error as e:
             audit_logger.error(f"Error persistiendo evento: {e}")
     
     def log_login_success(self, usuario_id: int, usuario_nombre: str,
-                         ip_address: Optional[str] = None, user_agent: Optional[str] = None,
-                         session_id: Optional[str] = None):
+                         ip_address: str = None, user_agent: str = None,
+                         session_id: str = None):
         """Registra un login exitoso."""
         self.log_event(
             event_type=AuditEvent.LOGIN_SUCCESS,
@@ -164,8 +164,8 @@ class AuditSystem:
             session_id=session_id
         )
     
-    def log_login_failed(self, usuario_nombre: str, razon: Optional[str] = None,
-                        ip_address: Optional[str] = None, user_agent: Optional[str] = None):
+    def log_login_failed(self, usuario_nombre: str, razon: str = None,
+                        ip_address: str = None, user_agent: str = None):
         """Registra un intento de login fallido."""
         self.log_event(
             event_type=AuditEvent.LOGIN_FAILED,
@@ -180,7 +180,7 @@ class AuditSystem:
         )
 
     def log_account_locked(self, usuario_nombre: str, intentos: int,
-                           ip_address: Optional[str] = None):
+                           ip_address: str = None):
         """Registra el bloqueo de una cuenta."""
         self.log_event(
             event_type=AuditEvent.ACCOUNT_LOCKED,
@@ -288,68 +288,67 @@ class AuditSystem:
             return []
 
         try:
-            # Construir query con filtros dinámicos
+            cursor = self.db_connection.connection.cursor()
+
+            # Construir query con filtros
             where_clauses = []
             params = []
-            
+
             if usuario_id:
                 where_clauses.append("usuario_id = ?")
                 params.append(usuario_id)
-            
+
             if event_type:
                 where_clauses.append("event_type = ?")
                 params.append(event_type.value)
-            
+
             if level:
                 where_clauses.append("level = ?")
                 params.append(level.value)
-            
+
             if modulo:
                 where_clauses.append("modulo = ?")
                 params.append(modulo)
-            
+
             if fecha_inicio:
                 where_clauses.append("timestamp >= ?")
                 params.append(fecha_inicio)
-            
+
             if fecha_fin:
                 where_clauses.append("timestamp <= ?")
                 params.append(fecha_fin)
-            
+
             where_sql = " AND ".join(where_clauses) if where_clauses else "1=1"
-            
-            # Construir query completa
+
             query = f"""
-                SELECT TOP ({limit})
+                SELECT TOP {limit}
                     id, timestamp, event_type, level, usuario_id, usuario_nombre,
                     ip_address, user_agent, modulo, accion, detalles, resultado, session_id
                 FROM auditoria_sistema
                 WHERE {where_sql}
                 ORDER BY timestamp DESC
             """
-            
-            with self.db_connection.get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(query, params)
-                
-                logs = []
-                columns = [desc[0] for desc in cursor.description]
-                
-                for row in cursor.fetchall():
-                    log_entry = dict(zip(columns, row))
-                    # Parsear detalles JSON
-                    if log_entry.get('detalles'):
-                        try:
-                            log_entry['detalles'] = json.loads(log_entry['detalles'])
-                        except (json.JSONDecodeError, TypeError):
-                            log_entry['detalles'] = {}
-                    
-                    logs.append(log_entry)
-                
-                return logs
-                
-        except Exception as e:
-            audit_logger.error(f"Error obteniendo logs de auditoría: {e}")
+
+            cursor.execute(query, params)
+
+            logs = []
+            columns = [desc[0] for desc in cursor.description]
+
+            for row in cursor.fetchall():
+                log_entry = dict(zip(columns, row))
+                # Parsear detalles JSON
+                if log_entry.get('detalles'):
+                    try:
+                        log_entry['detalles'] = json.loads(log_entry['detalles'])
+                    except (json.JSONDecodeError, TypeError) as e:
+                        audit_logger.warning(f"[WARNING AUDIT] Error parsing JSON details: {e}")
+                        log_entry['detalles'] = str(log_entry['detalles'])
+                logs.append(log_entry)
+
+            return logs
+
+        except (sqlite3.Error, AttributeError) as e:
+            audit_logger.error(f"[ERROR] [AUDIT] Error obteniendo logs de auditoría: {e}", exc_info=True)
             return []
 
     def get_security_summary(self, dias: int = 30) -> Dict[str, Any]:
@@ -363,43 +362,59 @@ class AuditSystem:
             return {}
 
         try:
+            cursor = self.db_connection.connection.cursor()
             fecha_inicio = datetime.datetime.now() - datetime.timedelta(days=dias)
 
-            with self.db_connection.get_connection() as conn:
-                cursor = conn.cursor()
-                
-                # Contar eventos por tipo
-                eventos_por_tipo_query = self.sql_manager.get_query("audit", "count_events_by_type")
-                cursor.execute(eventos_por_tipo_query, (fecha_inicio,))
-                eventos_por_tipo = {row[0]: row[1] for row in cursor.fetchall()}
+            # Contar eventos por tipo
+            cursor.execute("""
+                SELECT event_type, COUNT(*) as total
+                FROM auditoria_sistema
+                WHERE timestamp >= ?
+                GROUP BY event_type
+                ORDER BY total DESC
+            """, (fecha_inicio,))
 
-                # Eventos críticos
-                eventos_criticos_query = self.sql_manager.get_query("audit", "count_critical_events")
-                cursor.execute(eventos_criticos_query, (fecha_inicio,))
-                eventos_criticos = cursor.fetchone()[0]
+            eventos_por_tipo = {row[0]: row[1] for row in cursor.fetchall()}
 
-                # Intentos de login fallidos
-                login_fallidos_query = self.sql_manager.get_query("audit", "count_failed_logins")
-                cursor.execute(login_fallidos_query, (fecha_inicio,))
-                login_fallidos = cursor.fetchone()[0]
+            # Eventos críticos
+            cursor.execute("""
+                SELECT COUNT(*) as total
+                FROM auditoria_sistema
+                WHERE timestamp >= ? AND level IN ('CRITICAL', 'SECURITY')
+            """, (fecha_inicio,))
 
-                # Cuentas bloqueadas
-                cuentas_bloqueadas_query = self.sql_manager.get_query("audit", "count_locked_accounts")
-                cursor.execute(cuentas_bloqueadas_query, (fecha_inicio,))
-                cuentas_bloqueadas = cursor.fetchone()[0]
+            eventos_criticos = cursor.fetchone()[0]
 
-                return {
-                    "periodo_dias": dias,
-                    "eventos_por_tipo": eventos_por_tipo,
-                    "eventos_criticos": eventos_criticos,
-                    "login_fallidos": login_fallidos,
-                    "cuentas_bloqueadas": cuentas_bloqueadas,
-                    "fecha_inicio": fecha_inicio,
-                    "fecha_fin": datetime.datetime.now()
-                }
+            # Intentos de login fallidos
+            cursor.execute("""
+                SELECT COUNT(*) as total
+                FROM auditoria_sistema
+                WHERE timestamp >= ? AND event_type = 'LOGIN_FAILED'
+            """, (fecha_inicio,))
 
-        except Exception as e:
-            audit_logger.error(f"Error obteniendo resumen de seguridad: {e}")
+            login_fallidos = cursor.fetchone()[0]
+
+            # Cuentas bloqueadas
+            cursor.execute("""
+                SELECT COUNT(*) as total
+                FROM auditoria_sistema
+                WHERE timestamp >= ? AND event_type = 'ACCOUNT_LOCKED'
+            """, (fecha_inicio,))
+
+            cuentas_bloqueadas = cursor.fetchone()[0]
+
+            return {
+                "periodo_dias": dias,
+                "eventos_por_tipo": eventos_por_tipo,
+                "eventos_criticos": eventos_criticos,
+                "login_fallidos": login_fallidos,
+                "cuentas_bloqueadas": cuentas_bloqueadas,
+                "fecha_inicio": fecha_inicio,
+                "fecha_fin": datetime.datetime.now()
+            }
+
+        except (sqlite3.Error, AttributeError, ValueError) as e:
+            audit_logger.error(f"[ERROR] [AUDIT] Error obteniendo resumen de seguridad: {e}", exc_info=True)
             return {}
 
 
@@ -407,7 +422,7 @@ class AuditSystem:
 _audit_system = None
 
 
-def get_audit_system() -> Optional[AuditSystem]:
+def get_audit_system() -> AuditSystem:
     """Obtiene la instancia global del sistema de auditoría."""
     return _audit_system
 

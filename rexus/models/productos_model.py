@@ -56,7 +56,7 @@ class ProductosModel:
         self.sql_manager = get_sql_manager()
         self.security_manager = get_security_manager()
         self.tabla_productos = "productos"
-        self.tabla_movimientos = "movimientos_inventario"
+        self.tabla_movimientos = "productos_movimientos"
         self.tabla_obras = "productos_obras"
         self.tabla_historial = "productos_historial"
 
@@ -591,7 +591,7 @@ product_data: Dict[str,
             cursor = self.db_connection.cursor()
 
             cursor.execute("""
-                INSERT INTO movimientos_inventario (
+                INSERT INTO productos_movimientos (
                     producto_id, tipo_movimiento, cantidad, stock_anterior, stock_nuevo,
                     documento_referencia, motivo, usuario_creacion, fecha_creacion
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())

@@ -93,7 +93,7 @@ class AdministracionModel(ContabilidadModel):
                 raise Exception(f"Nombre de tabla inválido: {table_name}")
         # Si no hay validación avanzada, retornar el nombre recibido (o aplicar validación básica si se desea)
         return str(table_name)
-                
+
     def _validate_limit(self, limite):
         """
         Valida el parámetro de límite para prevenir SQL injection.
@@ -252,15 +252,15 @@ class AdministracionModel(ContabilidadModel):
             logger.error(f"Error obteniendo departamentos: {e}")
             return []
 
-# GESTIÓN DE EMPLEADOS
-def crear_empleado(
-self,
-codigo,
-nombre,
-apellido,
-documento,
-email="",
-telefono="",
+    # GESTIÓN DE EMPLEADOS
+    def crear_empleado(
+        self,
+        codigo,
+        nombre,
+        apellido,
+        documento,
+        email="",
+        telefono="",
         departamento_id=None,
         cargo="",
         salario=0,
@@ -273,28 +273,22 @@ telefono="",
             if fecha_ingreso is None:
                 fecha_ingreso = date.today()
 
-            cursor.execute(
-                """
-                INSERT INTO [{self._validate_table_name(self.tabla_empleados)}]
-                (codigo, nombre, apellido, documento, email, telefono, departamento_id,
-                 cargo, salario, fecha_ingreso, usuario_creacion, usuario_actualizacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    codigo,
-                    nombre,
-                    apellido,
-                    documento,
-                    email,
-                    telefono,
-                    departamento_id,
-                    cargo,
-                    salario,
-                    fecha_ingreso,
-                    self.usuario_actual,
-                    self.usuario_actual,
-                ),
-            )
+            # Usar consulta externa para crear empleado
+            query = self.sql_manager.get_query("administracion", "insertar_empleado")
+            cursor.execute(query, (
+                codigo,
+                nombre,
+                apellido,
+                documento,
+                email,
+                telefono,
+                departamento_id,
+                cargo,
+                salario,
+                fecha_ingreso,
+                self.usuario_actual,
+                self.usuario_actual,
+            ))
 
             empleado_id = cursor.lastrowid
             self.db_connection.commit()
@@ -389,9 +383,7 @@ telefono="",
             cursor = self.db_connection.cursor()
 
             # Generar número de asiento usando SQL externa
-            sql_siguiente_numero = self.sql_manager.load_sql("select_siguiente_numero_asiento.sql")
-            tabla_libro_contable = self._validate_table_name(self.tabla_libro_contable)
-            query_numero = sql_siguiente_numero.format(tabla_libro_contable=tabla_libro_contable)
+            query_numero = self.sql_manager.get_query("administracion", "select_siguiente_numero_asiento")
             
             cursor.execute(query_numero)
             numero = cursor.fetchone()[0]
@@ -401,8 +393,7 @@ telefono="",
             saldo = debe - haber
 
             # Insertar asiento usando SQL externa
-            sql_insert = self.sql_manager.load_sql("insert_asiento_contable.sql")
-            query_insert = sql_insert.format(tabla_libro_contable=tabla_libro_contable)
+            query_insert = self.sql_manager.get_query("administracion", "insertar_asiento_contable")
             
             cursor.execute(
                 query_insert,
@@ -598,120 +589,108 @@ telefono="",
             return None
 
     def obtener_recibos(
-self,
-fecha_desde=None,
-fecha_hasta=None,
-tipo_recibo=None,
-obra_id=None,
-limite=100,
-):
+        self,
+        fecha_desde=None,
+        fecha_hasta=None,
+        tipo_recibo=None,
+        obra_id=None,
+        limite=100,
+    ):
         """Obtiene la lista de recibos."""
-try:
-        cursor = self.db_connection.cursor()
+        try:
+            cursor = self.db_connection.cursor()
 
-query = """
-SELECT r.id, r.numero_recibo, r.fecha_emision, r.tipo_recibo,
-r.concepto, r.beneficiario, r.obra_id, r.proveedor_id,
-r.empleado_id, r.monto, r.moneda, r.metodo_pago,
-r.numero_comprobante, r.estado, r.impreso, r.archivo_pdf,
-r.observaciones, r.fecha_creacion, r.usuario_creacion
-FROM [{self._validate_table_name('recibos')}] r
-"""
+            # Usar consulta externa para obtener recibos
+            query = self.sql_manager.get_query("administracion", "obtener_recibos")
 
-conditions = []
-params = []
+            conditions = []
+            params = []
 
-if fecha_desde:
+            if fecha_desde:
                 conditions.append("r.fecha_emision >= ?")
-params.append(fecha_desde)
+                params.append(fecha_desde)
 
-if fecha_hasta:
+            if fecha_hasta:
                 conditions.append("r.fecha_emision <= ?")
-params.append(fecha_hasta)
+                params.append(fecha_hasta)
 
-if tipo_recibo:
+            if tipo_recibo:
                 conditions.append("r.tipo_recibo = ?")
-params.append(tipo_recibo)
+                params.append(tipo_recibo)
 
-if obra_id:
+            if obra_id:
                 conditions.append("r.obra_id = ?")
-params.append(obra_id)
+                params.append(obra_id)
 
-if conditions:
-                query += " WHERE " + " AND ".join(conditions)
+            # Construir WHERE clause
+            where_clause = " AND ".join(conditions) if conditions else "1=1"
+            query = query.replace("{{WHERE_CONDITIONS}}", where_clause)
 
-query += " ORDER BY r.fecha_emision DESC, r.numero_recibo DESC"
-
-if limite:
+            # Agregar límite si se especifica
+            if limite:
                 limite_validado = self._validate_limit(limite)
-query += f" OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY"
+                query = query.replace("{{LIMIT_CLAUSE}}", f"TOP {limite_validado}")
+            else:
+                query = query.replace("{{LIMIT_CLAUSE}}", "")
 
-cursor.execute(query, params)
+            cursor.execute(query, params)
 
-recibos = []
-for row in cursor.fetchall():
-                recibos.append(
-{
-"id": row[0],
-"numero_recibo": row[1],
-"fecha_emision": row[2],
-"tipo_recibo": row[3],
-"concepto": row[4],
-"beneficiario": row[5],
-"obra_id": row[6],
-"proveedor_id": row[7],
-"empleado_id": row[8],
-"monto": float(row[9]),
-"moneda": row[10],
-"metodo_pago": row[11],
-"numero_comprobante": row[12],
-"estado": row[13],
-"impreso": bool(row[14]),
-"archivo_pdf": row[15],
-"observaciones": row[16],
-"fecha_creacion": row[17],
-"usuario_creacion": row[18],
-}
-)
+            recibos = []
+            for row in cursor.fetchall():
+                recibos.append({
+                    "id": row[0],
+                    "numero_recibo": row[1],
+                    "fecha_emision": row[2],
+                    "tipo_recibo": row[3],
+                    "concepto": row[4],
+                    "beneficiario": row[5],
+                    "obra_id": row[6],
+                    "proveedor_id": row[7],
+                    "empleado_id": row[8],
+                    "monto": float(row[9]),
+                    "moneda": row[10],
+                    "metodo_pago": row[11],
+                    "numero_comprobante": row[12],
+                    "estado": row[13],
+                    "impreso": bool(row[14]),
+                    "archivo_pdf": row[15],
+                    "observaciones": row[16],
+                    "fecha_creacion": row[17],
+                    "usuario_creacion": row[18],
+                })
 
-return recibos
+            return recibos
 
-except Exception as e:
-        logger.info(f"Error obteniendo recibos: {e}")
-return []
+        except Exception as e:
+            logger.info(f"Error obteniendo recibos: {e}")
+            return []
 
-def marcar_recibo_impreso(self, recibo_id, archivo_pdf=None):
+    def marcar_recibo_impreso(self, recibo_id, archivo_pdf=None):
         """Marca un recibo como impreso."""
-try:
-        cursor = self.db_connection.cursor()
+        try:
+            cursor = self.db_connection.cursor()
 
-cursor.execute(
-"""
-UPDATE [{self._validate_table_name(self.tabla_recibos)}]
-SET impreso = 1, archivo_pdf = ?, fecha_actualizacion = GETDATE(),
-usuario_actualizacion = ?
-WHERE id = ?
-""",
-(archivo_pdf, self.usuario_actual, recibo_id),
-)
+            # Usar consulta externa para marcar recibo como impreso
+            query = self.sql_manager.get_query("administracion", "marcar_recibo_impreso")
+            cursor.execute(query, (archivo_pdf, self.usuario_actual, recibo_id))
 
-self.db_connection.commit()
+            self.db_connection.commit()
 
-# Registrar auditoría
-self.registrar_auditoria(
-"recibos",
-recibo_id,
-"UPDATE",
-None,
-{"impreso": True, "archivo_pdf": archivo_pdf},
-)
+            # Registrar auditoría
+            self.registrar_auditoria(
+                "recibos",
+                recibo_id,
+                "UPDATE",
+                None,
+                {"impreso": True, "archivo_pdf": archivo_pdf},
+            )
 
-return True
+            return True
 
-except Exception as e:
-        logger.info(f"Error marcando recibo como impreso: {e}")
-self.db_connection.rollback()
-return False
+        except Exception as e:
+            logger.info(f"Error marcando recibo como impreso: {e}")
+            self.db_connection.rollback()
+            return False
 
 # GESTIÓN DE PAGOS POR OBRA
 def registrar_pago_obra(

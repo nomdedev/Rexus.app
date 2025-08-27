@@ -37,74 +37,63 @@ class DashboardWidget(QWidget):
         
         # Tarjetas de métricas
         self.crear_tarjeta_metrica("[USERS] Empleados Activos", "0", 0, 0, layout)
-        self.crear_tarjeta_metrica("[MONEY] Balance General", "$0.00",
-0,
-1,
-layout)
-self.crear_tarjeta_metrica("[CHART] Transacciones Mes",
-"0",
-1,
-0,
-layout)
-self.crear_tarjeta_metrica("[WARN] Alertas Pendientes",
-"0",
-1,
-1,
-layout)
+        self.crear_tarjeta_metrica("[MONEY] Balance General", "$0.00", 0, 1, layout)
+        self.crear_tarjeta_metrica("[CHART] Transacciones Mes", "0", 1, 0, layout)
+        self.crear_tarjeta_metrica("[WARN] Alertas Pendientes", "0", 1, 1, layout)
 
-# Gráfico de resumen (placeholder)
-grafico_frame = RexusGroupBox("Resumen Financiero")
-grafico_layout = QVBoxLayout(grafico_frame)
+        # Gráfico de resumen (placeholder)
+        grafico_frame = RexusGroupBox("Resumen Financiero")
+        grafico_layout = QVBoxLayout(grafico_frame)
 
-self.grafico_label = RexusLabel("Gráfico de tendencias financieras", "body")
-self.grafico_label.setMinimumHeight(200)
-self.grafico_label.setStyleSheet(f"""
-QLabel {{
-background-color: {RexusColors.BACKGROUND_LIGHT};
-border: 2px dashed {RexusColors.BORDER};
-border-radius: 8px;
-padding: 20px;
-text-align: center;
-}}
-""")
-grafico_layout.addWidget(self.grafico_label)
+        self.grafico_label = RexusLabel("Gráfico de tendencias financieras", "body")
+        self.grafico_label.setMinimumHeight(200)
+        self.grafico_label.setStyleSheet(f"""
+        QLabel {{
+            background-color: {RexusColors.BACKGROUND_LIGHT};
+            border: 2px dashed {RexusColors.BORDER};
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }}
+        """)
+        grafico_layout.addWidget(self.grafico_label)
 
-layout.addWidget(grafico_frame, 2, 0, 1, 2)
+        layout.addWidget(grafico_frame, 2, 0, 1, 2)
 
-def crear_tarjeta_metrica(self, titulo, valor, fila, columna, layout):
+    def crear_tarjeta_metrica(self, titulo, valor, fila, columna, layout):
         """Crea una tarjeta de métrica."""
-tarjeta = RexusGroupBox(titulo)
-tarjeta_layout = QVBoxLayout(tarjeta)
+        tarjeta = RexusGroupBox(titulo)
+        tarjeta_layout = QVBoxLayout(tarjeta)
 
-valor_label = RexusLabel(valor, "title")
-valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-tarjeta_layout.addWidget(valor_label)
+        valor_label = RexusLabel(valor, "title")
+        valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        tarjeta_layout.addWidget(valor_label)
 
-# Guardar referencia para actualizar
-setattr(self, f"valor_{fila}_{columna}", valor_label)
+        # Guardar referencia para actualizar
+        setattr(self, f"valor_{fila}_{columna}", valor_label)
 
-layout.addWidget(tarjeta, fila, columna)
+        layout.addWidget(tarjeta, fila, columna)
 
-def actualizar_metricas(self, datos):
+    def actualizar_metricas(self, datos):
         """Actualiza las métricas del dashboard."""
-try:
-        if hasattr(self, 'valor_0_0'):  # Empleados
-self.valor_0_0.setText(str(datos.get('empleados_activos', 0)))
-if hasattr(self, 'valor_0_1'):  # Balance
-balance = datos.get('balance_actual', 0)
-self.valor_0_1.setText(f"${balance:,.2f}")
-if hasattr(self, 'valor_1_0'):  # Transacciones
-self.valor_1_0.setText(str(datos.get('transacciones_mes', 0)))
-if hasattr(self, 'valor_1_1'):  # Alertas
-alertas = datos.get('alertas_pendientes', 0)
-self.valor_1_1.setText(str(alertas))
+        try:
+            if hasattr(self, 'valor_0_0'):  # Empleados
+                self.valor_0_0.setText(str(datos.get('empleados_activos', 0)))
+            if hasattr(self, 'valor_0_1'):  # Balance
+                balance = datos.get('balance_actual', 0)
+                self.valor_0_1.setText(f"${balance:,.2f}")
+            if hasattr(self, 'valor_1_0'):  # Transacciones
+                self.valor_1_0.setText(str(datos.get('transacciones_mes', 0)))
+            if hasattr(self, 'valor_1_1'):  # Alertas
+                alertas = datos.get('alertas_pendientes', 0)
+                self.valor_1_1.setText(str(alertas))
 
-except Exception as e:
-        logging.getLogger(__name__).error(f"Error actualizando métricas: {e}")
+        except Exception as e:
+            logging.getLogger(__name__).error(f"Error actualizando métricas: {e}")
 
 
 class ContabilidadWidget(QWidget):
-"""Widget de contabilidad integrado."""
+    """Widget de contabilidad integrado."""
 
 # Señales
 solicitud_crear_asiento = pyqtSignal(dict)
@@ -185,14 +174,14 @@ QTableWidgetItem(str(asiento.get('estado',
 
 
 class RecursosHumanosWidget(QWidget):
-"""Widget de recursos humanos integrado."""
+    """Widget de recursos humanos integrado."""
 
-# Señales
-solicitud_crear_empleado = pyqtSignal(dict)
+    # Señales
+    solicitud_crear_empleado = pyqtSignal(dict)
 
-def __init__(self, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-self.init_ui()
+        self.init_ui()
 
 def init_ui(self):
         layout = QVBoxLayout(self)
@@ -261,22 +250,22 @@ QTableWidgetItem(str(empleado.get('estado',
 
 
 class AdministracionViewFuncional(QWidget):
-"""
-Vista funcional principal del módulo de administración.
-Integra dashboard, contabilidad y recursos humanos.
-"""
+    """
+    Vista funcional principal del módulo de administración.
+    Integra dashboard, contabilidad y recursos humanos.
+    """
 
-# Señales principales
-solicitud_datos_dashboard = pyqtSignal()
-solicitud_crear_asiento = pyqtSignal(dict)
-solicitud_crear_empleado = pyqtSignal(dict)
+    # Señales principales
+    solicitud_datos_dashboard = pyqtSignal()
+    solicitud_crear_asiento = pyqtSignal(dict)
+    solicitud_crear_empleado = pyqtSignal(dict)
 
-def __init__(self):
+    def __init__(self):
         super().__init__()
-self.controller = None
-self.form_protector = None
-self.init_ui()
-self.init_xss_protection()
+        self.controller = None
+        self.form_protector = None
+        self.init_ui()
+        self.init_xss_protection()
 
 def init_ui(self):
         """Inicializa la interfaz de usuario."""
@@ -506,107 +495,107 @@ background-color: #bbb;
 }
 """)
 
-def init_xss_protection(self):
+    def init_xss_protection(self):
         """Inicializa la protección XSS."""
-try:
-        self.form_protector = FormProtector()
-logging.info("Protección XSS inicializada en AdministracionViewFuncional")
-except Exception as e:
-        logging.error(f"Error inicializando protección XSS: {e}")
+        try:
+            self.form_protector = FormProtector()
+            logging.info("Protección XSS inicializada en AdministracionViewFuncional")
+        except Exception as e:
+            logging.error(f"Error inicializando protección XSS: {e}")
 
-def solicitar_datos_iniciales(self):
+    def solicitar_datos_iniciales(self):
         """Solicita los datos iniciales al controlador."""
-self.solicitud_datos_dashboard.emit()
+        self.solicitud_datos_dashboard.emit()
 
-def actualizar_datos(self):
+    def actualizar_datos(self):
         """Actualiza todos los datos."""
-self.status_label.setText("🔄 Actualizando datos...")
-self.solicitud_datos_dashboard.emit()
+        self.status_label.setText("🔄 Actualizando datos...")
+        self.solicitud_datos_dashboard.emit()
 
-def actualizar_dashboard(self, datos):
+    def actualizar_dashboard(self, datos):
         """Actualiza el dashboard con nuevos datos."""
-try:
-        if 'resumen' in datos:
+        try:
+            if 'resumen' in datos:
                 resumen = datos['resumen']
-metricas = {
-'empleados_activos': resumen.get('total_empleados', 0),
-'balance_actual': resumen.get('balance_total', 0),
-'transacciones_mes': resumen.get('transacciones_mes', 0),
-'alertas_pendientes': resumen.get('alertas_pendientes', 0)
-}
-self.dashboard_widget.actualizar_metricas(metricas)
+                metricas = {
+                    'empleados_activos': resumen.get('total_empleados', 0),
+                    'balance_actual': resumen.get('balance_total', 0),
+                    'transacciones_mes': resumen.get('transacciones_mes', 0),
+                    'alertas_pendientes': resumen.get('alertas_pendientes', 0)
+                }
+                self.dashboard_widget.actualizar_metricas(metricas)
 
-self.status_label.setText("[CHECK] Datos actualizados correctamente")
+                self.status_label.setText("[CHECK] Datos actualizados correctamente")
 
-except Exception as e:
-        logging.error(f"Error actualizando dashboard: {e}")
-self.status_label.setText(f"[ERROR] Error actualizando datos: {str(e)}")
+        except Exception as e:
+            logging.error(f"Error actualizando dashboard: {e}")
+            self.status_label.setText(f"[ERROR] Error actualizando datos: {str(e)}")
 
-def cargar_datos_en_tabla(self, datos):
+    def cargar_datos_en_tabla(self, datos):
         """Carga datos en las tablas correspondientes."""
-try:
-        # Método de compatibilidad con vista genérica
-# Los datos se manejan específicamente en cada widget
-self.status_label.setText("[CHART] Datos cargados en tablas específicas")
+        try:
+            # Método de compatibilidad con vista genérica
+            # Los datos se manejan específicamente en cada widget
+            self.status_label.setText("[CHART] Datos cargados en tablas específicas")
 
-except Exception as e:
-        logging.error(f"Error cargando datos en tabla: {e}")
+        except Exception as e:
+            logging.error(f"Error cargando datos en tabla: {e}")
 
-def nuevo_registro(self):
+    def nuevo_registro(self):
         """Manejo de nuevo registro - mostrar opciones."""
-show_warning(
-self,
-"Crear Nuevo Registro",
-"Seleccione la pestaña correspondiente:\\n\\n" +
-"• Contabilidad: Para asientos contables\n" +
-"• Recursos Humanos: Para empleados\n\n" +
-"Luego use el botón específico de cada sección."
-)
+        show_warning(
+            self,
+            "Crear Nuevo Registro",
+            "Seleccione la pestaña correspondiente:\n\n" +
+            "• Contabilidad: Para asientos contables\n" +
+            "• Recursos Humanos: Para empleados\n\n" +
+            "Luego use el botón específico de cada sección."
+        )
 
-def buscar(self, filtros=None):
+    def buscar(self, filtros=None):
         """Búsqueda global en el módulo."""
-if not filtros:
-        filtros = {'busqueda': ''}
+        if not filtros:
+            filtros = {'busqueda': ''}
 
-termino = filtros.get('busqueda', '').strip()
-if termino:
-        self.status_label.setText(f"[SEARCH] Buscando: {termino}")
-# La búsqueda específica se maneja en el controlador
-else:
-        self.actualizar_datos()
+        termino = filtros.get('busqueda', '').strip()
+        if termino:
+            self.status_label.setText(f"[SEARCH] Buscando: {termino}")
+            # La búsqueda específica se maneja en el controlador
+        else:
+            self.actualizar_datos()
 
-def mostrar_mensaje(self, titulo, mensaje, tipo="info"):
+    def mostrar_mensaje(self, titulo, mensaje, tipo="info"):
         """Muestra un mensaje al usuario."""
-if tipo == "error":
-        show_error(self, titulo, mensaje)
-elif tipo == "warning":
-        show_warning(self, titulo, mensaje)
-else:
-        show_success(self, titulo, mensaje)
+        if tipo == "error":
+            show_error(self, titulo, mensaje)
+        elif tipo == "warning":
+            show_warning(self, titulo, mensaje)
+        else:
+            show_success(self, titulo, mensaje)
 
-def actualizar_status(self, mensaje):
+    def actualizar_status(self, mensaje):
         """Actualiza el mensaje de estado."""
-self.status_label.setText(mensaje)
+        self.status_label.setText(mensaje)
 
-def set_controller(self, controller):
+    def set_controller(self, controller):
         """Establece el controlador para la vista."""
-self.controller = controller
+        self.controller = controller
 
-# Conectar señales del controlador si existen
-if hasattr(controller, 'set_view'):
-        controller.set_view(self)
+        # Conectar señales del controlador si existen
+        if hasattr(controller, 'set_view'):
+            controller.set_view(self)
 
 
 # Diálogos auxiliares
 
 class AsientoContableDialog(QDialog):
-"""Diálogo para crear asientos contables."""
+    """Diálogo para crear asientos contables."""
 
-def __init__(self, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-self.setWindowTitle("Nuevo Asiento Contable")
-self.setFixedSize(500, 400)
-self.init_ui()
+        self.setWindowTitle("Nuevo Asiento Contable")
+        self.setFixedSize(500, 400)
+        self.init_ui()
 
 def init_ui(self):
         layout = QVBoxLayout(self)

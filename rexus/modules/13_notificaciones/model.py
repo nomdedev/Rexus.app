@@ -12,8 +12,9 @@ from pathlib import Path
 from typing import Dict, List, Optional
 from enum import Enum
 
-from rexus.core.auth_manager import admin_required, auth_required
+# from rexus.core.auth_manager import admin_required, auth_required  # Decoradores no existen
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 # Sistema de cache para optimizar consultas de notificaciones
 from rexus.utils.intelligent_cache import cached_query, invalidate_cache
@@ -74,6 +75,9 @@ class NotificacionesModel:
         self.tabla_notificaciones = "notificaciones"
         self.tabla_usuarios_notificaciones = "usuarios_notificaciones"
         self.tabla_plantillas = "plantillas_notificacion"
+
+        # Inicializar SQLQueryManager
+        self.sql_manager = SQLQueryManager()
 
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
@@ -176,17 +180,7 @@ warning,
             cursor = self.db_connection.cursor()
 
             # Crear notificación principal
-            query = """
-                INSERT INTO notificaciones
-                (titulo,
-mensaje,
-                    tipo,
-                    prioridad,
-                    modulo_origen,
-                    fecha_expiracion,
-                    metadata)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """
+            query = self.sql_manager.get_query('notificaciones', 'insert_notificacion')
 
             metadata_json = json.dumps(metadata) if metadata else None
 
@@ -240,16 +234,7 @@ mensaje,
             cursor = self.db_connection.cursor()
 
             # Query base
-            query = """
-                SELECT n.id, n.titulo, n.mensaje, n.tipo, n.prioridad,
-                       n.modulo_origen, n.fecha_creacion, n.fecha_expiracion,
-                       un.leida, un.fecha_lectura, un.archivada
-                FROM notificaciones n
-                LEFT JOIN usuarios_notificaciones un ON n.id = un.notificacion_id
-                WHERE (un.usuario_id = ? OR un.usuario_id IS NULL)
-                AND n.activa = 1
-                AND (n.fecha_expiracion IS NULL OR n.fecha_expiracion > GETDATE())
-            """
+            query = self.sql_manager.get_query('notificaciones', 'select_notificaciones_usuario_base')
 
             params = [usuario_id]
 

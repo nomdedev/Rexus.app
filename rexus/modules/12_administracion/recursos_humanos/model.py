@@ -194,15 +194,15 @@ class RecursosHumanosModel:
 
     def actualizar_empleado(self, empleado_id, datos_empleado):
         """
-Actualiza un empleado existente.
+        Actualiza un empleado existente.
 
-Args:
-        empleado_id (int): ID del empleado
-datos_empleado (dict): Nuevos datos del empleado
+        Args:
+            empleado_id (int): ID del empleado
+            datos_empleado (dict): Nuevos datos del empleado
 
-Returns:
-        bool: True si fue exitoso
-"""
+        Returns:
+            bool: True si fue exitoso
+        """
         if not self.db_connection:
             return False
 

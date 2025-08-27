@@ -503,7 +503,8 @@ class ReservasManager:
         """Obtiene el ID de la última reserva insertada."""
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute("SELECT SCOPE_IDENTITY()")
+            query = self.sql_manager.get_query("02_inventario/reservas", "get_scope_identity")
+            cursor.execute(query)
             resultado = cursor.fetchone()
             cursor.close()
             return int(resultado[0]) if resultado and resultado[0] else None
@@ -571,11 +572,7 @@ class ReservasManager:
 
         try:
             cursor = self.db_connection.cursor()
-            query = """UPDATE reservas_materiales 
-                      SET estado = ?, 
-                          observaciones = ?,
-                          fecha_modificacion = ?
-                      WHERE id = ?"""
+            query = self.sql_manager.get_query("02_inventario/reservas", "update_estado_reserva_fallback")
             
             cursor.execute(query, (
                 nuevo_estado,

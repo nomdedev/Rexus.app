@@ -1,1168 +1,518 @@
 """
-Optimizador de Base de Datos SQL Server - Rexus.app v2.0.0
+Optimizador de Base de Datos - Sistema Inteligente de Optimización
+Proporciona herramientas avanzadas para optimizar el rendimiento de la base de datos
 
-Sistema inteligente de optimización para SQL Server.
-Proporciona análisis de rendimiento, sugerencias de índices, 
-monitoreo de consultas lentas y optimización automática.
-
-Características:
-- Análisis de rendimiento de bases de datos SQL Server
-- Sugerencias inteligentes de índices
-- Monitoreo de consultas lentas
-- Optimización automática de estadísticas
-- Métricas de rendimiento históricas
-- Perfilado de consultas con planes de ejecución
-
-Fecha: 26/08/2025
-Autor: Sistema Rexus
+Fecha: 23/08/2025
 """
 
+import sqlite3
 import logging
-import pyodbc
+import time
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Union
-from dataclasses import dataclass, field
+from typing import Dict, List, Any, Optional, Tuple
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 import threading
 import json
-import time
-import os
-
-# Importar configuración de BD
-try:
-    from rexus.core.sql_query_manager import SQLQueryManager
-except ImportError:
-    from rexus.utils.sql_script_loader import sql_script_loader
-    class SQLQueryManager:
-        def __init__(self):
-            self.sql_loader = sql_script_loader
-        def get_query(self, path, filename):
-            return self.sql_loader.load_script(filename)
 
 logger = logging.getLogger(__name__)
 
 @dataclass
 class QueryMetrics:
-    """Métricas de rendimiento de consultas."""
     query: str
     execution_time: float
     rows_affected: int
     timestamp: datetime
     database: str
-    cpu_time: float = 0.0
-    logical_reads: int = 0
-    physical_reads: int = 0
-    plan_hash: str = ""
 
 @dataclass
 class IndexSuggestion:
-    """Sugerencia de índice para optimización."""
     table: str
     columns: List[str]
     reason: str
     estimated_improvement: float
-    index_type: str = "NONCLUSTERED"
-    include_columns: List[str] = field(default_factory=list)
-    estimated_size_mb: float = 0.0
-
-@dataclass
-class DatabaseStats:
-    """Estadísticas generales de la base de datos."""
-    database_name: str
-    size_mb: float
-    table_count: int
-    index_count: int
-    used_space_mb: float
-    free_space_mb: float
-    fragmentation_avg: float
-    last_backup: Optional[datetime] = None
 
 class DatabaseOptimizer:
-    """Optimizador inteligente para SQL Server."""
+    """Optimizador inteligente de base de datos."""
     
-    def __init__(self, db_connection=None, connection_string: Optional[str] = None):
-        """
-        Inicializa el optimizador de SQL Server.
+    def __init__(self, db_path: Optional[str] = None):
+        self.db_path = Path(db_path) if db_path else Path("rexus.db")
+        self.metrics_db = Path("db_optimization_metrics.db")
+        self.query_log = []
+        self.optimization_history = []
+        self.init_metrics_db()
         
-        Args:
-            db_connection: Conexión existente a SQL Server
-            connection_string: String de conexión para crear nueva conexión
-        """
-        self.db_connection = db_connection
-        self.connection_string = connection_string
-        self.sql_manager = SQLQueryManager()
-        self.query_log: List[QueryMetrics] = []
-        self.optimization_history: List[Dict[str, Any]] = []
-        self._lock = threading.RLock()
-        
-        # Configuración por defecto
-        self.slow_query_threshold = 1.0  # segundos
-        self.max_query_log_size = 1000
-        self.enable_auto_stats = True
-        
-        logger.info("DatabaseOptimizer para SQL Server inicializado")
-
-    def _get_connection(self) -> Optional[pyodbc.Connection]:
-        """Obtiene una conexión a SQL Server."""
-        if self.db_connection:
-            return self.db_connection
-        
-        if self.connection_string:
-            try:
-                return pyodbc.connect(self.connection_string)
-            except Exception as e:
-                logger.error(f"Error conectando a SQL Server: {e}")
-                return None
-        
-        # Intentar usar variables de entorno
+    def init_metrics_db(self):
+        """Inicializa la base de datos de métricas."""
         try:
-            server = os.getenv('DB_SERVER', 'localhost')
-            database = os.getenv('DB_NAME', 'rexus')
-            username = os.getenv('DB_USER')
-            password = os.getenv('DB_PASSWORD')
-            
-            if username and password:
-                conn_str = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
-            else:
-                conn_str = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Trusted_Connection=yes"
-            
-            return pyodbc.connect(conn_str)
+            with sqlite3.connect(str(self.metrics_db)) as conn:
+                conn.execute("""
+                    CREATE TABLE IF NOT EXISTS query_metrics (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        query TEXT NOT NULL,
+                        execution_time REAL NOT NULL,
+                        rows_affected INTEGER,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        database_name TEXT
+                    )
+                """)
+                
+                conn.execute("""
+                    CREATE TABLE IF NOT EXISTS optimization_actions (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        action_type TEXT NOT NULL,
+                        table_name TEXT,
+                        details TEXT,
+                        performance_gain REAL,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
+                
+                conn.execute("""
+                    CREATE TABLE IF NOT EXISTS table_stats (
+                        table_name TEXT PRIMARY KEY,
+                        row_count INTEGER,
+                        avg_query_time REAL,
+                        most_frequent_queries TEXT,
+                        last_analyzed DATETIME DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
+                
+                conn.commit()
+                logger.info("Base de datos de métricas inicializada correctamente")
+                
         except Exception as e:
-            logger.error(f"Error conectando con variables de entorno: {e}")
-            return None
-
-    def init_metrics_db(self) -> bool:
-        """
-        Inicializa las tablas de métricas en SQL Server.
-        
-        Returns:
-            True si se inicializó correctamente
-        """
-        try:
-            conn = self._get_connection()
-            if not conn:
-                logger.error("No se pudo obtener conexión para inicializar métricas")
-                return False
+            logger.error(f"Error inicializando base de datos de métricas: {e}")
             
-            cursor = conn.cursor()
-            
-            # Crear tabla de métricas de consultas usando SQL externalizado
-            sql_create_metrics = self.sql_manager.get_query('optimizer', 'create_query_metrics_table')
-            cursor.execute(sql_create_metrics)
-            
-            # Crear tabla de acciones de optimización usando SQL externalizado
-            sql_create_actions = self.sql_manager.get_query('optimizer', 'create_optimization_actions_table')
-            cursor.execute(sql_create_actions)
-            
-            conn.commit()
-            logger.info("Tablas de métricas de SQL Server inicializadas correctamente")
-            return True
-            
-        except Exception as e:
-            logger.error(f"Error inicializando métricas de SQL Server: {e}")
-            return False
-        finally:
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-
-    def analyze_database_performance(self, database_name: Optional[str] = None) -> Dict[str, Any]:
-        """
-        Analiza el rendimiento actual de la base de datos SQL Server.
-        
-        Args:
-            database_name: Nombre de la base de datos a analizar
-            
-        Returns:
-            Diccionario con estadísticas de rendimiento
-        """
+    def analyze_database_performance(self) -> Dict[str, Any]:
+        """Analiza el rendimiento actual de la base de datos."""
         analysis = {
-            'databases': [],
-            'total_size_mb': 0,
+            'database_size': 0,
             'table_count': 0,
             'index_count': 0,
-            'fragmented_indexes': [],
-            'missing_indexes': [],
             'slow_queries': [],
-            'recommendations': [],
-            'analysis_timestamp': datetime.now().isoformat()
+            'table_statistics': {},
+            'recommendations': []
         }
         
         try:
-            conn = self._get_connection()
-            if not conn:
-                logger.error("No se pudo obtener conexión para análisis")
+            if not self.db_path.exists():
+                logger.warning(f"Base de datos no encontrada: {self.db_path}")
                 return analysis
-            
-            cursor = conn.cursor()
-            
-            # Obtener información de bases de datos
-            if database_name:
-                sql_check_db = self.sql_manager.get_query('optimizer', 'check_database_exists')
-                cursor.execute(sql_check_db, (database_name,))
-                databases = [database_name] if cursor.fetchone() else []
-            else:
-                sql_get_dbs = self.sql_manager.get_query('optimizer', 'get_user_databases')
-                cursor.execute(sql_get_dbs)
-                databases = [row[0] for row in cursor.fetchall()]
-            
-            for db_name in databases:
-                db_stats = self._analyze_single_database(cursor, db_name)
-                if db_stats:
-                    analysis['databases'].append(db_stats)
-                    analysis['total_size_mb'] += db_stats.size_mb
-                    analysis['table_count'] += db_stats.table_count
-                    analysis['index_count'] += db_stats.index_count
-            
-            # Obtener índices fragmentados
-            analysis['fragmented_indexes'] = self._get_fragmented_indexes(cursor)
-            
-            # Obtener sugerencias de índices faltantes
-            analysis['missing_indexes'] = self._get_missing_indexes(cursor)
-            
-            # Obtener consultas lentas recientes
-            analysis['slow_queries'] = self._get_slow_queries(cursor)
-            
-            # Generar recomendaciones
-            analysis['recommendations'] = self._generate_recommendations(analysis)
-            
-            logger.info(f"Análisis de rendimiento completado para {len(databases)} base(s) de datos")
-            
+                
+            with sqlite3.connect(str(self.db_path)) as conn:
+                # Tamaño de la base de datos
+                analysis['database_size'] = self.db_path.stat().st_size / (1024 * 1024)  # MB
+                
+                # Contar tablas
+                cursor = conn.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='table'")
+                analysis['table_count'] = cursor.fetchone()[0]
+                
+                # Contar índices
+                cursor = conn.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='index'")
+                analysis['index_count'] = cursor.fetchone()[0]
+                
+                # Estadísticas de tablas
+                cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                tables = [row[0] for row in cursor.fetchall()]
+                
+                for table in tables:
+                    try:
+                        # Contar filas
+                        cursor = conn.execute(f"SELECT COUNT(*) FROM {table}")
+                        row_count = cursor.fetchone()[0]
+                        
+                        # Información de la tabla
+                        cursor = conn.execute(f"PRAGMA table_info({table})")
+                        columns = cursor.fetchall()
+                        
+                        analysis['table_statistics'][table] = {
+                            'row_count': row_count,
+                            'column_count': len(columns),
+                            'columns': [col[1] for col in columns]
+                        }
+                        
+                    except Exception as e:
+                        logger.warning(f"Error analizando tabla {table}: {e}")
+                        
+                # Generar recomendaciones
+                analysis['recommendations'] = self._generate_recommendations(analysis)
+                
+                logger.info(f"Análisis completado: {analysis['table_count']} tablas, {analysis['database_size']:.2f}MB")
+                
         except Exception as e:
-            logger.error(f"Error analizando rendimiento: {e}")
-            analysis['error'] = str(e)
-        finally:
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-        
+            logger.error(f"Error analizando base de datos: {e}")
+            
         return analysis
-
-    def _analyze_single_database(self, cursor: pyodbc.Cursor, db_name: str) -> Optional[DatabaseStats]:
-        """Analiza una base de datos específica."""
-        try:
-            # Cambiar contexto a la base de datos
-            cursor.execute(f"USE [{db_name}]")
-            
-            # Obtener tamaño de la base de datos
-            sql_get_size = self.sql_manager.get_query('optimizer', 'get_database_size')
-            cursor.execute(sql_get_size)
-            size_result = cursor.fetchone()
-            used_mb = size_result[0] if size_result and size_result[0] else 0
-            total_mb = size_result[1] if size_result and size_result[1] else 0
-            
-            # Obtener número de tablas
-            sql_count_tables = self.sql_manager.get_query('optimizer', 'count_user_tables')
-            cursor.execute(sql_count_tables)
-            table_result = cursor.fetchone()
-            table_count = table_result[0] if table_result else 0
-            
-            # Obtener número de índices
-            sql_count_indexes = self.sql_manager.get_query('optimizer', 'count_indexes')
-            cursor.execute(sql_count_indexes)
-            index_result = cursor.fetchone()
-            index_count = index_result[0] if index_result else 0
-            
-            # Obtener fragmentación promedio
-            sql_get_fragmentation = self.sql_manager.get_query('optimizer', 'get_average_fragmentation')
-            cursor.execute(sql_get_fragmentation)
-            fragmentation_result = cursor.fetchone()
-            fragmentation_avg = fragmentation_result[0] if fragmentation_result and fragmentation_result[0] else 0
-            
-            return DatabaseStats(
-                database_name=db_name,
-                size_mb=total_mb,
-                table_count=table_count,
-                index_count=index_count,
-                used_space_mb=used_mb,
-                free_space_mb=total_mb - used_mb,
-                fragmentation_avg=fragmentation_avg
-            )
-            
-        except Exception as e:
-            logger.error(f"Error analizando base de datos {db_name}: {e}")
-            return None
-
-    def _get_fragmented_indexes(self, cursor: pyodbc.Cursor) -> List[Dict[str, Any]]:
-        """Obtiene índices con alta fragmentación."""
-        try:
-            sql_get_fragmented = self.sql_manager.get_query('optimizer', 'get_fragmented_indexes')
-            cursor.execute(sql_get_fragmented)
-            
-            return [
-                {
-                    'schema': row[0],
-                    'table': row[1],
-                    'index': row[2],
-                    'fragmentation_percent': round(row[3], 2),
-                    'page_count': row[4]
-                }
-                for row in cursor.fetchall()
-            ]
-        except Exception as e:
-            logger.error(f"Error obteniendo índices fragmentados: {e}")
-            return []
-
-    def _get_missing_indexes(self, cursor: pyodbc.Cursor) -> List[IndexSuggestion]:
-        """Obtiene sugerencias de índices faltantes."""
-        try:
-            sql_get_missing = self.sql_manager.get_query('optimizer', 'get_missing_indexes')
-            cursor.execute(sql_get_missing)
-            
-            suggestions = []
-            for row in cursor.fetchall():
-                table_full = f"{row[0]}.{row[1]}"
-                key_cols = [col.strip() for col in row[5].split(',') if col.strip()]
-                include_cols = [col.strip() for col in row[6].split(',') if col.strip()]
-                
-                suggestions.append(IndexSuggestion(
-                    table=table_full,
-                    columns=key_cols,
-                    reason=f"Missing index with {row[4]:.1f}% improvement potential",
-                    estimated_improvement=row[4],
-                    index_type="NONCLUSTERED",
-                    include_columns=include_cols
-                ))
-            
-            return suggestions
-        except Exception as e:
-            logger.error(f"Error obteniendo índices faltantes: {e}")
-            return []
-
-    def _get_slow_queries(self, cursor: pyodbc.Cursor) -> List[QueryMetrics]:
-        """Obtiene consultas lentas recientes."""
-        try:
-            sql_get_slow_queries = self.sql_manager.get_query('optimizer', 'get_slow_queries')
-            cursor.execute(sql_get_slow_queries, (self.slow_query_threshold * 1000000,))  # Convertir a microsegundos
-            
-            slow_queries = []
-            for row in cursor.fetchall():
-                # Obtener nombre de la base de datos actual
-                sql_get_current_db = self.sql_manager.get_query('optimizer', 'get_current_database_name')
-                cursor.execute(sql_get_current_db)
-                current_db_result = cursor.fetchone()
-                current_db = current_db_result[0] if current_db_result else "Unknown"
-                
-                slow_queries.append(QueryMetrics(
-                    query=row[6][:500] + "..." if len(row[6]) > 500 else row[6],
-                    execution_time=row[1] / 1000000.0,  # Convertir a segundos
-                    rows_affected=0,
-                    timestamp=row[5],
-                    database=current_db,
-                    logical_reads=row[3],
-                    physical_reads=row[4]
-                ))
-            
-            return slow_queries
-        except Exception as e:
-            logger.error(f"Error obteniendo consultas lentas: {e}")
-            return []
-
+    
     def _generate_recommendations(self, analysis: Dict[str, Any]) -> List[str]:
-        """Genera recomendaciones basadas en el análisis."""
+        """Genera recomendaciones de optimización."""
         recommendations = []
         
-        # Recomendaciones basadas en fragmentación
-        if analysis['fragmented_indexes']:
-            high_frag = len([idx for idx in analysis['fragmented_indexes'] 
-                           if idx['fragmentation_percent'] > 50])
-            if high_frag > 0:
-                recommendations.append(
-                    f"Reorganizar o reconstruir {high_frag} índice(s) con alta fragmentación (>50%)"
-                )
-        
-        # Recomendaciones basadas en índices faltantes
-        if analysis['missing_indexes']:
-            high_impact = len([idx for idx in analysis['missing_indexes'] 
-                             if idx.estimated_improvement > 50])
-            if high_impact > 0:
-                recommendations.append(
-                    f"Crear {high_impact} índice(s) con alto impacto potencial (>50% mejora)"
-                )
-        
-        # Recomendaciones basadas en consultas lentas
-        if analysis['slow_queries']:
-            recommendations.append(
-                f"Optimizar {len(analysis['slow_queries'])} consulta(s) lenta(s) identificada(s)"
-            )
-        
-        # Recomendaciones basadas en tamaño
-        if analysis['total_size_mb'] > 10240:  # 10GB
-            recommendations.append(
-                "Considerar particionamiento de tablas grandes o archivado de datos históricos"
-            )
-        
-        return recommendations
-
-    def create_performance_indexes(self, execute: bool = False) -> Dict[str, Any]:
-        """
-        Crea índices para mejorar el rendimiento.
-        
-        Args:
-            execute: Si True, ejecuta las creaciones. Si False, solo genera scripts.
+        # Recomendación por tamaño
+        if analysis['database_size'] > 100:  # MB
+            recommendations.append("Base de datos grande (>100MB): Considerar particionado de tablas")
             
-        Returns:
-            Resultado de la operación
-        """
-        result = {
-            'success': False,
-            'indexes_created': 0,
-            'indexes_failed': 0,
-            'scripts_generated': [],
-            'errors': [],
-            'execution_time': 0
-        }
-        
-        start_time = time.time()
-        
-        try:
-            conn = self._get_connection()
-            if not conn:
-                result['errors'].append("No se pudo obtener conexión")
-                return result
+        # Recomendación por número de tablas
+        if analysis['table_count'] > 50:
+            recommendations.append("Muchas tablas detectadas: Revisar normalización")
             
-            cursor = conn.cursor()
-            
-            # Obtener sugerencias de índices
-            missing_indexes = self._get_missing_indexes(cursor)
-            
-            for suggestion in missing_indexes[:5]:  # Limitar a 5 índices por ejecución
-                try:
-                    # Generar script de creación
-                    cols_str = ', '.join([f"[{col}]" for col in suggestion.columns])
-                    include_str = ""
-                    if suggestion.include_columns:
-                        include_cols = ', '.join([f"[{col}]" for col in suggestion.include_columns])
-                        include_str = f" INCLUDE ({include_cols})"
-                    
-                    index_name = f"IX_{suggestion.table.replace('.', '_')}_auto_{int(time.time())}"
-                    create_script = f"""
-                        CREATE NONCLUSTERED INDEX [{index_name}] 
-                        ON [{suggestion.table}] ({cols_str}){include_str}
-                        WITH (ONLINE = ON, FILLFACTOR = 90)
-                    """
-                    
-                    result['scripts_generated'].append(create_script)
-                    
-                    if execute:
-                        cursor.execute(create_script)
-                        result['indexes_created'] += 1
-                        logger.info(f"Índice creado: {index_name}")
-                        
-                        # Log de la acción
-                        self._log_optimization_action(
-                            "CREATE_INDEX",
-                            suggestion.table,
-                            f"Index: {index_name}, Columns: {cols_str}",
-                            True,
-                            time.time() - start_time
-                        )
+        # Recomendaciones específicas por tabla
+        for table, stats in analysis['table_statistics'].items():
+            if stats['row_count'] > 10000 and stats['row_count'] / max(analysis['index_count'], 1) > 5000:
+                recommendations.append(f"Tabla '{table}': Considerar añadir índices (>{stats['row_count']} filas)")
                 
-                except Exception as e:
-                    error_msg = f"Error creando índice para {suggestion.table}: {e}"
-                    result['errors'].append(error_msg)
-                    result['indexes_failed'] += 1
-                    logger.error(error_msg)
+        if not recommendations:
+            recommendations.append("Base de datos en buen estado, sin optimizaciones críticas necesarias")
             
-            if execute:
-                conn.commit()
-            
-            result['success'] = result['indexes_failed'] == 0
-            
-        except Exception as e:
-            result['errors'].append(f"Error general: {e}")
-            logger.error(f"Error en create_performance_indexes: {e}")
-        finally:
-            result['execution_time'] = time.time() - start_time
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-        
-        return result
-
-    def vacuum_and_analyze(self) -> Dict[str, Any]:
-        """
-        Actualiza estadísticas de las tablas (equivalente a VACUUM ANALYZE en PostgreSQL).
-        
-        Returns:
-            Resultado de la operación
-        """
-        result = {
-            'success': False,
-            'tables_updated': 0,
-            'tables_failed': 0,
-            'execution_time': 0,
-            'errors': []
-        }
-        
-        start_time = time.time()
-        
-        try:
-            conn = self._get_connection()
-            if not conn:
-                result['errors'].append("No se pudo obtener conexión")
-                return result
-            
-            cursor = conn.cursor()
-            
-            # Obtener todas las tablas de usuario
-            sql_get_tables = self.sql_manager.get_query('optimizer', 'get_user_tables_for_stats')
-            cursor.execute(sql_get_tables)
-            
-            tables = cursor.fetchall()
-            
-            for schema_name, table_name in tables:
-                try:
-                    # Actualizar estadísticas de la tabla
-                    full_table_name = f"[{schema_name}].[{table_name}]"
-                    cursor.execute(f"UPDATE STATISTICS {full_table_name} WITH FULLSCAN")
-                    result['tables_updated'] += 1
-                    
-                    logger.debug(f"Estadísticas actualizadas para {full_table_name}")
-                    
-                except Exception as e:
-                    error_msg = f"Error actualizando estadísticas de {schema_name}.{table_name}: {e}"
-                    result['errors'].append(error_msg)
-                    result['tables_failed'] += 1
-                    logger.error(error_msg)
-            
-            # Log de la acción
-            if result['tables_updated'] > 0:
-                self._log_optimization_action(
-                    "UPDATE_STATISTICS",
-                    None,
-                    f"Updated {result['tables_updated']} tables",
-                    result['tables_failed'] == 0,
-                    time.time() - start_time
-                )
-            
-            result['success'] = result['tables_failed'] == 0
-            
-        except Exception as e:
-            result['errors'].append(f"Error general: {e}")
-            logger.error(f"Error en vacuum_and_analyze: {e}")
-        finally:
-            result['execution_time'] = time.time() - start_time
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-        
-        return result
-
-    def create_performance_indexes(self, execute: bool = False) -> Dict[str, Any]:
-        """
-        Crea índices de rendimiento basados en las sugerencias del sistema.
-        
-        Args:
-            execute: Si ejecutar realmente las creaciones de índices
-            
-        Returns:
-            Resultado de la operación
-        """
-        result = {
-            'success': False,
+        return recommendations
+    
+    def create_performance_indexes(self) -> Dict[str, Any]:
+        """Crea índices para mejorar el rendimiento."""
+        results = {
             'indexes_created': 0,
             'indexes_failed': 0,
-            'suggested_indexes': [],
-            'execution_time': 0,
-            'errors': []
+            'details': []
         }
         
-        start_time = time.time()
+        try:
+            with sqlite3.connect(str(self.db_path)) as conn:
+                # Índices sugeridos basados en patrones comunes
+                suggested_indexes = [
+                    ("idx_users_username", "usuarios", ["username"]),
+                    ("idx_users_email", "usuarios", ["email"]),
+                    ("idx_inventario_codigo", "inventario", ["codigo"]),
+                    ("idx_obras_fecha", "obras", ["fecha_inicio"]),
+                    ("idx_compras_fecha", "compras", ["fecha"]),
+                    ("idx_pedidos_estado", "pedidos", ["estado"]),
+                    ("idx_notificaciones_usuario", "notificaciones", ["usuario_id"]),
+                    ("idx_log_timestamp", "system_logs", ["timestamp"])
+                ]
+                
+                for index_name, table_name, columns in suggested_indexes:
+                    try:
+                        # Verificar si la tabla existe
+                        cursor = conn.execute(
+                            "SELECT name FROM sqlite_master WHERE type='table' AND name=?", 
+                            (table_name,)
+                        )
+                        if not cursor.fetchone():
+                            continue
+                            
+                        # Verificar si el índice ya existe
+                        cursor = conn.execute(
+                            "SELECT name FROM sqlite_master WHERE type='index' AND name=?", 
+                            (index_name,)
+                        )
+                        if cursor.fetchone():
+                            continue
+                            
+                        # Crear índice
+                        columns_str = ", ".join(columns)
+                        query = f"CREATE INDEX IF NOT EXISTS {index_name} ON {table_name} ({columns_str})"
+                        
+                        start_time = time.time()
+                        conn.execute(query)
+                        execution_time = time.time() - start_time
+                        
+                        results['indexes_created'] += 1
+                        results['details'].append({
+                            'index': index_name,
+                            'table': table_name,
+                            'columns': columns,
+                            'time': execution_time,
+                            'status': 'created'
+                        })
+                        
+                        logger.info(f"Índice creado: {index_name} en {table_name}")
+                        
+                    except Exception as e:
+                        results['indexes_failed'] += 1
+                        results['details'].append({
+                            'index': index_name,
+                            'table': table_name,
+                            'error': str(e),
+                            'status': 'failed'
+                        })
+                        logger.warning(f"Error creando índice {index_name}: {e}")
+                        
+                conn.commit()
+                
+        except Exception as e:
+            logger.error(f"Error creando índices de rendimiento: {e}")
+            
+        return results
+    
+    def vacuum_and_analyze(self) -> Dict[str, Any]:
+        """Ejecuta VACUUM y ANALYZE para optimizar la base de datos."""
+        results = {
+            'vacuum_completed': False,
+            'analyze_completed': False,
+            'size_before': 0,
+            'size_after': 0,
+            'time_taken': 0
+        }
         
         try:
-            conn = self._get_connection()
-            if not conn:
-                result['errors'].append("No se pudo obtener conexión")
-                return result
+            if not self.db_path.exists():
+                logger.warning("Base de datos no encontrada para optimización")
+                return results
+                
+            start_time = time.time()
+            results['size_before'] = self.db_path.stat().st_size
             
-            cursor = conn.cursor()
+            with sqlite3.connect(str(self.db_path)) as conn:
+                # VACUUM para desfragmentar
+                logger.info("Ejecutando VACUUM...")
+                conn.execute("VACUUM")
+                results['vacuum_completed'] = True
+                
+                # ANALYZE para actualizar estadísticas
+                logger.info("Ejecutando ANALYZE...")
+                conn.execute("ANALYZE")
+                results['analyze_completed'] = True
+                
+            results['size_after'] = self.db_path.stat().st_size
+            results['time_taken'] = time.time() - start_time
             
-            # Obtener sugerencias de índices
-            missing_indexes = self._get_missing_indexes(cursor)
+            size_saved = results['size_before'] - results['size_after']
+            logger.info(f"Optimización completada en {results['time_taken']:.2f}s")
+            logger.info(f"Espacio liberado: {size_saved / 1024:.2f} KB")
             
-            for suggestion in missing_indexes:
-                try:
-                    # Crear nombre único para el índice
-                    table_parts = suggestion.table.split('.')
-                    if len(table_parts) == 2:
-                        schema, table = table_parts
-                    else:
-                        schema, table = 'dbo', suggestion.table
-                    
-                    index_name = f"IX_{table}_Performance_{result['indexes_created'] + 1}"
-                    columns = ', '.join(f"[{col}]" for col in suggestion.columns)
-                    
-                    create_sql = f"CREATE NONCLUSTERED INDEX [{index_name}] ON [{schema}].[{table}] ({columns})"
-                    
-                    if suggestion.include_columns:
-                        include_cols = ', '.join(f"[{col}]" for col in suggestion.include_columns)
-                        create_sql += f" INCLUDE ({include_cols})"
-                    
-                    result['suggested_indexes'].append({
-                        'table': suggestion.table,
-                        'index_name': index_name,
-                        'sql': create_sql,
-                        'estimated_improvement': suggestion.estimated_improvement
-                    })
-                    
-                    if execute:
-                        cursor.execute(create_sql)
-                        result['indexes_created'] += 1
-                        logger.info(f"Índice creado: {index_name} en {suggestion.table}")
-                        
-                        # Log de la acción
-                        self._log_optimization_action(
-                            "CREATE_INDEX",
-                            suggestion.table,
-                            f"Created index {index_name}",
-                            True,
-                            time.time() - start_time
-                        )
-                    
-                except Exception as e:
-                    error_msg = f"Error creando índice en {suggestion.table}: {e}"
-                    result['errors'].append(error_msg)
-                    result['indexes_failed'] += 1
-                    logger.error(error_msg)
-            
-            result['success'] = result['indexes_failed'] == 0
+            # Registrar optimización
+            self._log_optimization_action(
+                "vacuum_analyze", 
+                None, 
+                f"Size reduction: {size_saved} bytes",
+                size_saved / max(results['size_before'], 1) * 100
+            )
             
         except Exception as e:
-            result['errors'].append(f"Error general: {e}")
-            logger.error(f"Error en create_performance_indexes: {e}")
-        finally:
-            result['execution_time'] = time.time() - start_time
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-        
-        return result
-
+            logger.error(f"Error en optimización VACUUM/ANALYZE: {e}")
+            
+        return results
+    
     def monitor_slow_queries(self, threshold_seconds: float = 1.0) -> List[QueryMetrics]:
-        """
-        Monitorea consultas lentas en SQL Server.
+        """Monitorea y registra consultas lentas."""
+        slow_queries = []
         
-        Args:
-            threshold_seconds: Umbral en segundos para considerar una consulta lenta
-            
-        Returns:
-            Lista de métricas de consultas lentas
-        """
         try:
-            conn = self._get_connection()
-            if not conn:
-                logger.error("No se pudo obtener conexión para monitoreo")
-                return []
-            
-            cursor = conn.cursor()
-            
-            # Consultar estadísticas de consultas
-            sql_get_performance_stats = self.sql_manager.get_query('optimizer', 'get_query_performance_stats')
-            cursor.execute(sql_get_performance_stats, (threshold_seconds * 1000000,))  # Convertir a microsegundos
-            
-            slow_queries = []
-            
-            # Obtener nombre de la base de datos actual
-            sql_get_current_db = self.sql_manager.get_query('optimizer', 'get_current_database_name')
-            cursor.execute(sql_get_current_db)
-            current_db_result = cursor.fetchone()
-            current_db = current_db_result[0] if current_db_result else "Unknown"
-            
-            for row in cursor.fetchall():
-                query_metric = QueryMetrics(
-                    query=row[6][:1000] + "..." if len(row[6]) > 1000 else row[6],
-                    execution_time=row[0] / 1000000.0,  # Convertir a segundos
-                    rows_affected=0,
-                    timestamp=row[5],
-                    database=current_db,
-                    cpu_time=row[4] / 1000000.0,  # Convertir a segundos
-                    logical_reads=row[2],
-                    physical_reads=row[3]
-                )
-                slow_queries.append(query_metric)
-            
-            # Agregar al log local
-            with self._lock:
-                self.query_log.extend(slow_queries)
-                # Mantener solo las últimas N consultas
-                if len(self.query_log) > self.max_query_log_size:
-                    self.query_log = self.query_log[-self.max_query_log_size:]
-            
-            return slow_queries
-            
+            with sqlite3.connect(str(self.metrics_db)) as conn:
+                cursor = conn.execute("""
+                    SELECT query, execution_time, rows_affected, timestamp, database_name
+                    FROM query_metrics 
+                    WHERE execution_time > ? 
+                    ORDER BY execution_time DESC 
+                    LIMIT 50
+                """, (threshold_seconds,))
+                
+                for row in cursor.fetchall():
+                    slow_queries.append(QueryMetrics(
+                        query=row[0],
+                        execution_time=row[1],
+                        rows_affected=row[2] or 0,
+                        timestamp=datetime.fromisoformat(row[3]),
+                        database=row[4] or "unknown"
+                    ))
+                    
         except Exception as e:
             logger.error(f"Error monitoreando consultas lentas: {e}")
-            return []
-        finally:
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-
+            
+        return slow_queries
+    
     def log_query_performance(self, query: str, execution_time: float, rows_affected: int = 0):
-        """
-        Registra el rendimiento de una consulta.
-        
-        Args:
-            query: Texto de la consulta
-            execution_time: Tiempo de ejecución en segundos
-            rows_affected: Número de filas afectadas
-        """
+        """Registra el rendimiento de una consulta."""
         try:
-            query_metric = QueryMetrics(
-                query=query[:1000],  # Limitar longitud
-                execution_time=execution_time,
-                rows_affected=rows_affected,
-                timestamp=datetime.now(),
-                database="unknown"
-            )
-            
-            # Agregar al log local
-            with self._lock:
-                self.query_log.append(query_metric)
-                if len(self.query_log) > self.max_query_log_size:
-                    self.query_log = self.query_log[-self.max_query_log_size:]
-            
-            # Si es una consulta lenta, registrar en BD
-            if execution_time > self.slow_query_threshold:
-                self._persist_query_metric(query_metric)
-            
+            with sqlite3.connect(str(self.metrics_db)) as conn:
+                conn.execute("""
+                    INSERT INTO query_metrics (query, execution_time, rows_affected, database_name)
+                    VALUES (?, ?, ?, ?)
+                """, (query[:500], execution_time, rows_affected, str(self.db_path.name)))
+                conn.commit()
+                
         except Exception as e:
-            logger.error(f"Error registrando rendimiento de consulta: {e}")
-
-    def _persist_query_metric(self, metric: QueryMetrics):
-        """Persiste una métrica de consulta en la base de datos."""
-        try:
-            conn = self._get_connection()
-            if not conn:
-                return
-            
-            cursor = conn.cursor()
-            
-            # Calcular hash de la consulta
-            import hashlib
-            query_hash = hashlib.md5(metric.query.encode(), usedforsecurity=False).hexdigest()
-            
-            sql_insert_metric = self.sql_manager.get_query('optimizer', 'insert_query_metrics')
-            cursor.execute(sql_insert_metric, (
-                query_hash, metric.query, metric.execution_time, metric.rows_affected,
-                metric.cpu_time, metric.logical_reads, metric.physical_reads,
-                metric.database, metric.timestamp
-            ))
-            
-            conn.commit()
-            
-        except Exception as e:
-            logger.error(f"Error persistiendo métrica: {e}")
-        finally:
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-
+            logger.error(f"Error registrando métricas de consulta: {e}")
+    
     def _log_optimization_action(self, action_type: str, table_name: Optional[str], 
-                                details: str, success: bool, execution_time: float):
+                                details: str, performance_gain: float = 0.0):
         """Registra una acción de optimización."""
         try:
-            conn = self._get_connection()
-            if not conn:
-                return
-            
-            cursor = conn.cursor()
-            sql_insert_action = self.sql_manager.get_query('optimizer', 'insert_optimization_action')
-            cursor.execute(sql_insert_action, (action_type, table_name, details, success, execution_time, datetime.now()))
-            
-            conn.commit()
-            
+            with sqlite3.connect(str(self.metrics_db)) as conn:
+                conn.execute("""
+                    INSERT INTO optimization_actions (action_type, table_name, details, performance_gain)
+                    VALUES (?, ?, ?, ?)
+                """, (action_type, table_name, details, performance_gain))
+                conn.commit()
+                
         except Exception as e:
             logger.error(f"Error registrando acción de optimización: {e}")
-        finally:
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-
+    
     def get_optimization_report(self) -> Dict[str, Any]:
-        """
-        Genera un reporte completo de optimización.
-        
-        Returns:
-            Reporte detallado de optimización
-        """
+        """Genera un reporte completo de optimización."""
         report = {
-            'timestamp': datetime.now().isoformat(),
-            'query_metrics': {
-                'total_queries_logged': len(self.query_log),
-                'slow_queries_count': 0,
-                'average_execution_time': 0,
-                'top_slow_queries': []
-            },
-            'optimization_actions': [],
+            'database_analysis': self.analyze_database_performance(),
+            'slow_queries': self.monitor_slow_queries(),
+            'optimization_history': [],
             'recommendations': [],
-            'database_health': {}
+            'timestamp': datetime.now().isoformat()
         }
         
         try:
-            # Análisis de consultas en memoria
-            if self.query_log:
-                slow_queries = [q for q in self.query_log if q.execution_time > self.slow_query_threshold]
-                report['query_metrics']['slow_queries_count'] = len(slow_queries)
+            with sqlite3.connect(str(self.metrics_db)) as conn:
+                # Historial de optimizaciones
+                cursor = conn.execute("""
+                    SELECT action_type, table_name, details, performance_gain, timestamp
+                    FROM optimization_actions 
+                    ORDER BY timestamp DESC 
+                    LIMIT 20
+                """)
                 
-                total_time = sum(q.execution_time for q in self.query_log)
-                report['query_metrics']['average_execution_time'] = total_time / len(self.query_log)
-                
-                # Top 10 consultas más lentas
-                sorted_queries = sorted(self.query_log, key=lambda x: x.execution_time, reverse=True)[:10]
-                report['query_metrics']['top_slow_queries'] = [
-                    {
-                        'query': q.query[:200] + "..." if len(q.query) > 200 else q.query,
-                        'execution_time': q.execution_time,
-                        'timestamp': q.timestamp.isoformat()
-                    }
-                    for q in sorted_queries
-                ]
-            
-            # Obtener acciones de optimización recientes
-            conn = self._get_connection()
-            if conn:
-                cursor = conn.cursor()
-                sql_get_recent_actions = self.sql_manager.get_query('optimizer', 'get_recent_optimization_actions')
-                cursor.execute(sql_get_recent_actions)
-                
-                report['optimization_actions'] = [
-                    {
-                        'action_type': row[0],
-                        'table_name': row[1],
+                for row in cursor.fetchall():
+                    report['optimization_history'].append({
+                        'action': row[0],
+                        'table': row[1],
                         'details': row[2],
-                        'success': bool(row[3]),
-                        'execution_time': row[4],
-                        'timestamp': row[5].isoformat() if row[5] else None
-                    }
-                    for row in cursor.fetchall()
-                ]
-            
-            # Obtener análisis actual de rendimiento
-            current_analysis = self.analyze_database_performance()
-            report['database_health'] = {
-                'total_size_mb': current_analysis.get('total_size_mb', 0),
-                'table_count': current_analysis.get('table_count', 0),
-                'index_count': current_analysis.get('index_count', 0),
-                'fragmented_indexes_count': len(current_analysis.get('fragmented_indexes', [])),
-                'missing_indexes_count': len(current_analysis.get('missing_indexes', []))
-            }
-            
-            report['recommendations'] = current_analysis.get('recommendations', [])
-            
+                        'gain': row[3],
+                        'timestamp': row[4]
+                    })
+                    
         except Exception as e:
             logger.error(f"Error generando reporte de optimización: {e}")
-            report['error'] = str(e)
-        finally:
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-        
-        return report
-
-    def auto_optimize(self, create_indexes: bool = True, update_statistics: bool = True,
-                     reorganize_indexes: bool = True) -> Dict[str, Any]:
-        """
-        Ejecuta optimización automática de la base de datos.
-        
-        Args:
-            create_indexes: Si crear índices sugeridos
-            update_statistics: Si actualizar estadísticas
-            reorganize_indexes: Si reorganizar índices fragmentados
             
-        Returns:
-            Resultado de la optimización automática
-        """
-        result = {
-            'success': False,
-            'actions_completed': [],
-            'actions_failed': [],
+        return report
+    
+    def auto_optimize(self, create_indexes: bool = True, vacuum_analyze: bool = True) -> Dict[str, Any]:
+        """Ejecuta optimización automática completa."""
+        optimization_results = {
+            'started_at': datetime.now().isoformat(),
+            'indexes_result': {},
+            'vacuum_result': {},
             'total_time': 0,
-            'summary': {}
+            'success': False
         }
         
         start_time = time.time()
         
         try:
-            logger.info("Iniciando optimización automática de SQL Server")
+            logger.info("Iniciando optimización automática de base de datos")
             
-            # 1. Actualizar estadísticas
-            if update_statistics:
-                stats_result = self.vacuum_and_analyze()
-                if stats_result['success']:
-                    result['actions_completed'].append('update_statistics')
-                    result['summary']['statistics_updated'] = stats_result['tables_updated']
-                else:
-                    result['actions_failed'].append('update_statistics')
-                    result['summary']['statistics_errors'] = len(stats_result['errors'])
-            
-            # 2. Crear índices de rendimiento
+            # Crear índices de rendimiento
             if create_indexes:
-                index_result = self.create_performance_indexes(execute=True)
-                if index_result['success']:
-                    result['actions_completed'].append('create_indexes')
-                    result['summary']['indexes_created'] = index_result['indexes_created']
-                else:
-                    result['actions_failed'].append('create_indexes')
-                    result['summary']['index_errors'] = len(index_result['errors'])
+                logger.info("Creando índices de rendimiento...")
+                optimization_results['indexes_result'] = self.create_performance_indexes()
+                
+            # VACUUM y ANALYZE
+            if vacuum_analyze:
+                logger.info("Ejecutando VACUUM y ANALYZE...")
+                optimization_results['vacuum_result'] = self.vacuum_and_analyze()
+                
+            optimization_results['total_time'] = time.time() - start_time
+            optimization_results['success'] = True
+            optimization_results['completed_at'] = datetime.now().isoformat()
             
-            # 3. Reorganizar índices fragmentados
-            if reorganize_indexes:
-                reorg_result = self._reorganize_fragmented_indexes()
-                if reorg_result['success']:
-                    result['actions_completed'].append('reorganize_indexes')
-                    result['summary']['indexes_reorganized'] = reorg_result['indexes_processed']
-                else:
-                    result['actions_failed'].append('reorganize_indexes')
-                    result['summary']['reorganize_errors'] = len(reorg_result['errors'])
-            
-            result['success'] = len(result['actions_failed']) == 0
-            
-            # Log de la acción completa
-            self._log_optimization_action(
-                "AUTO_OPTIMIZE",
-                None,
-                f"Completed: {', '.join(result['actions_completed'])}, Failed: {', '.join(result['actions_failed'])}",
-                result['success'],
-                time.time() - start_time
-            )
-            
-            logger.info(f"Optimización automática completada. Éxito: {result['success']}")
+            logger.info(f"Optimización automática completada en {optimization_results['total_time']:.2f}s")
             
         except Exception as e:
-            result['actions_failed'].append('general_error')
-            result['error'] = str(e)
+            optimization_results['error'] = str(e)
+            optimization_results['total_time'] = time.time() - start_time
             logger.error(f"Error en optimización automática: {e}")
-        finally:
-            result['total_time'] = time.time() - start_time
-        
-        return result
-
-    def _reorganize_fragmented_indexes(self) -> Dict[str, Any]:
-        """Reorganiza índices con alta fragmentación."""
-        result = {
-            'success': False,
-            'indexes_processed': 0,
-            'indexes_failed': 0,
-            'errors': []
-        }
-        
-        try:
-            conn = self._get_connection()
-            if not conn:
-                result['errors'].append("No se pudo obtener conexión")
-                return result
             
-            cursor = conn.cursor()
-            fragmented_indexes = self._get_fragmented_indexes(cursor)
-            
-            for index_info in fragmented_indexes:
-                try:
-                    schema = index_info['schema']
-                    table = index_info['table']
-                    index_name = index_info['index']
-                    fragmentation = index_info['fragmentation_percent']
-                    
-                    # Decidir si reorganizar o reconstruir
-                    if fragmentation > 70:
-                        # Reconstruir índice
-                        sql = f"ALTER INDEX [{index_name}] ON [{schema}].[{table}] REBUILD WITH (ONLINE = ON)"
-                        action = "REBUILD"
-                    else:
-                        # Reorganizar índice
-                        sql = f"ALTER INDEX [{index_name}] ON [{schema}].[{table}] REORGANIZE"
-                        action = "REORGANIZE"
-                    
-                    cursor.execute(sql)
-                    result['indexes_processed'] += 1
-                    logger.info(f"{action} index {index_name} on {schema}.{table}")
-                    
-                except Exception as e:
-                    error_msg = f"Error procesando índice {index_info.get('index', 'unknown')}: {e}"
-                    result['errors'].append(error_msg)
-                    result['indexes_failed'] += 1
-                    logger.error(error_msg)
-            
-            result['success'] = result['indexes_failed'] == 0
-            
-        except Exception as e:
-            result['errors'].append(f"Error general: {e}")
-            logger.error(f"Error en _reorganize_fragmented_indexes: {e}")
-        finally:
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-        
-        return result
-
-    def profile_query(self, query: str, params: Tuple = ()) -> Dict[str, Any]:
-        """
-        Perfila una consulta específica obteniendo su plan de ejecución.
-        
-        Args:
-            query: Consulta SQL a perfilar
-            params: Parámetros de la consulta
-            
-        Returns:
-            Información detallada del perfilado
-        """
-        profile_result = {
-            'query': query[:500] + "..." if len(query) > 500 else query,
-            'execution_time': 0,
-            'rows_returned': 0,
-            'execution_plan': {},
-            'recommendations': [],
-            'metrics': {}
-        }
-        
-        try:
-            conn = self._get_connection()
-            if not conn:
-                profile_result['error'] = "No se pudo obtener conexión"
-                return profile_result
-            
-            cursor = conn.cursor()
-            
-            # Habilitar estadísticas
-            cursor.execute("SET STATISTICS IO ON")
-            cursor.execute("SET STATISTICS TIME ON")
-            
-            start_time = time.time()
-            
-            # Ejecutar consulta
-            if params:
-                cursor.execute(query, params)
-            else:
-                cursor.execute(query)
-            
-            # Obtener resultados
-            try:
-                results = cursor.fetchall()
-                profile_result['rows_returned'] = len(results)
-            except:
-                profile_result['rows_returned'] = cursor.rowcount if cursor.rowcount >= 0 else 0
-            
-            execution_time = time.time() - start_time
-            profile_result['execution_time'] = execution_time
-            
-            # Obtener plan de ejecución
-            cursor.execute("SET SHOWPLAN_XML ON")
-            cursor.execute(query, params) if params else cursor.execute(query)
-            plan_result = cursor.fetchone()
-            if plan_result:
-                profile_result['execution_plan'] = {
-                    'xml_plan': str(plan_result[0])[:1000] + "..." if len(str(plan_result[0])) > 1000 else str(plan_result[0])
-                }
-            cursor.execute("SET SHOWPLAN_XML OFF")
-            
-            # Generar recomendaciones básicas
-            if execution_time > self.slow_query_threshold:
-                profile_result['recommendations'].append("Consulta lenta detectada - considerar optimización")
-            
-            if profile_result['rows_returned'] > 10000:
-                profile_result['recommendations'].append("Consulta retorna muchas filas - considerar paginación")
-            
-            # Métricas adicionales
-            profile_result['metrics'] = {
-                'is_slow': execution_time > self.slow_query_threshold,
-                'high_row_count': profile_result['rows_returned'] > 10000,
-                'query_length': len(query)
-            }
-            
-            # Registrar en log
-            self.log_query_performance(query, execution_time, profile_result['rows_returned'])
-            
-        except Exception as e:
-            profile_result['error'] = str(e)
-            logger.error(f"Error perfilando consulta: {e}")
-        finally:
-            if 'conn' in locals() and conn and not self.db_connection:
-                conn.close()
-        
-        return profile_result
-
+        return optimization_results
 
 class QueryProfiler:
-    """Perfilador avanzado de consultas SQL Server."""
+    """Profiler para analizar y optimizar consultas SQL."""
     
     def __init__(self, optimizer: DatabaseOptimizer):
         self.optimizer = optimizer
-        self.profile_history = []
-
+        
     def profile_query(self, query: str, params: Tuple = ()) -> Dict[str, Any]:
-        """Versión extendida del perfilado de consultas."""
-        return self.optimizer.profile_query(query, params)
-
-    def analyze_query_patterns(self) -> Dict[str, Any]:
-        """Analiza patrones en consultas ejecutadas."""
-        analysis = {
-            'total_queries': len(self.optimizer.query_log),
-            'slow_queries_ratio': 0,
-            'common_patterns': [],
-            'performance_trends': {}
+        """Perfila una consulta específica."""
+        profile_result = {
+            'query': query,
+            'execution_time': 0,
+            'explain_plan': [],
+            'suggestions': []
         }
         
-        if self.optimizer.query_log:
-            slow_count = len([q for q in self.optimizer.query_log 
-                            if q.execution_time > self.optimizer.slow_query_threshold])
-            analysis['slow_queries_ratio'] = slow_count / len(self.optimizer.query_log)
+        try:
+            with sqlite3.connect(str(self.optimizer.db_path)) as conn:
+                # Ejecutar EXPLAIN QUERY PLAN
+                explain_cursor = conn.execute(f"EXPLAIN QUERY PLAN {query}", params)
+                profile_result['explain_plan'] = explain_cursor.fetchall()
+                
+                # Medir tiempo de ejecución
+                start_time = time.time()
+                cursor = conn.execute(query, params)
+                cursor.fetchall()  # Asegurar ejecución completa
+                profile_result['execution_time'] = time.time() - start_time
+                
+                # Generar sugerencias
+                profile_result['suggestions'] = self._analyze_query_plan(
+                    profile_result['explain_plan'], query
+                )
+                
+        except Exception as e:
+            profile_result['error'] = str(e)
+            logger.error(f"Error perfilando consulta: {e}")
             
-            # Análisis de patrones comunes (simplificado)
-            query_types = {}
-            for query_metric in self.optimizer.query_log:
-                query_start = query_metric.query.strip().upper()[:20]
-                query_types[query_start] = query_types.get(query_start, 0) + 1
-            
-            analysis['common_patterns'] = sorted(
-                query_types.items(), 
-                key=lambda x: x[1], 
-                reverse=True
-            )[:10]
+        return profile_result
+    
+    def _analyze_query_plan(self, explain_plan: List, query: str) -> List[str]:
+        """Analiza el plan de ejecución y sugiere optimizaciones."""
+        suggestions = []
         
-        return analysis
-
+        for row in explain_plan:
+            detail = str(row).lower()
+            
+            if 'scan table' in detail and 'using index' not in detail:
+                table_name = self._extract_table_name(detail)
+                suggestions.append(f"Considerar agregar índice a la tabla '{table_name}'")
+                
+            if 'temp b-tree' in detail:
+                suggestions.append("Consulta requiere ordenamiento temporal - considerar índice para ORDER BY")
+                
+            if 'nested loop' in detail:
+                suggestions.append("Join anidado detectado - verificar índices en claves foráneas")
+                
+        if not suggestions:
+            suggestions.append("Plan de ejecución eficiente")
+            
+        return suggestions
+    
+    def _extract_table_name(self, detail: str) -> str:
+        """Extrae el nombre de tabla del detalle del plan."""
+        try:
+            words = detail.split()
+            table_idx = words.index('table') + 1
+            return words[table_idx] if table_idx < len(words) else "unknown"
+        except (ValueError, IndexError):
+            return "unknown"
 
 # Instancia global del optimizador
 _optimizer_instance = None
 
-def get_database_optimizer(db_connection=None, connection_string: Optional[str] = None) -> DatabaseOptimizer:
-    """
-    Obtiene la instancia global del optimizador de SQL Server.
-    
-    Args:
-        db_connection: Conexión existente a SQL Server
-        connection_string: String de conexión para crear nueva conexión
-        
-    Returns:
-        Instancia del DatabaseOptimizer
-    """
+def get_database_optimizer(db_path: Optional[str] = None) -> DatabaseOptimizer:
+    """Obtiene la instancia global del optimizador."""
     global _optimizer_instance
     if _optimizer_instance is None:
-        _optimizer_instance = DatabaseOptimizer(db_connection, connection_string)
+        _optimizer_instance = DatabaseOptimizer(db_path)
     return _optimizer_instance
 
-
 if __name__ == "__main__":
-    # Test del optimizador SQL Server
-    print("=== Test DatabaseOptimizer SQL Server ===")
+    # Test del optimizador
+    optimizer = DatabaseOptimizer()
     
-    try:
-        optimizer = DatabaseOptimizer()
-        
-        print("\n1. Inicializando métricas...")
-        init_result = optimizer.init_metrics_db()
-        print(f"Métricas inicializadas: {init_result}")
-        
-        print("\n2. Analizando rendimiento...")
-        analysis = optimizer.analyze_database_performance()
-        print(f"Bases de datos analizadas: {len(analysis.get('databases', []))}")
-        print(f"Tamaño total: {analysis.get('total_size_mb', 0):.2f} MB")
-        print(f"Tablas: {analysis.get('table_count', 0)}")
-        print(f"Índices: {analysis.get('index_count', 0)}")
-        
-        print("\n3. Recomendaciones:")
-        for rec in analysis.get('recommendations', []):
-            print(f"- {rec}")
-        
-        print("\n4. Optimización automática...")
-        result = optimizer.auto_optimize()
-        print(f"Éxito: {result['success']}")
-        print(f"Tiempo total: {result['total_time']:.2f}s")
-        print(f"Acciones completadas: {', '.join(result['actions_completed'])}")
-        
-        if result['actions_failed']:
-            print(f"Acciones fallidas: {', '.join(result['actions_failed'])}")
-        
-    except Exception as e:
-        print(f"Error en test: {e}")
+    print("=== Análisis de Base de Datos ===")
+    analysis = optimizer.analyze_database_performance()
+    print(f"Tablas: {analysis['table_count']}")
+    print(f"Tamaño: {analysis['database_size']:.2f} MB")
+    print(f"Índices: {analysis['index_count']}")
+    
+    print("\n=== Recomendaciones ===")
+    for rec in analysis['recommendations']:
+        print(f"- {rec}")
+    
+    print("\n=== Optimización Automática ===")
+    result = optimizer.auto_optimize()
+    print(f"Completada en: {result['total_time']:.2f}s")
+    print(f"Éxito: {result['success']}")

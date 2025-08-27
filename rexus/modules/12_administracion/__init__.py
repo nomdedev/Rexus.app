@@ -9,5 +9,14 @@ from .controller import AdministracionController
 # from .model import AdministracionModel
 # from .view import AdministracionView
 
-__all__ = ["AdministracionController"]
+# Importar submódulos
+try:
+    from .recursos_humanos import RecursosHumanosModel, RecursosHumanosController
+    logger.info("[ADMINISTRACION] Submódulo Recursos Humanos importado correctamente")
+except ImportError as e:
+    logger.warning(f"[ADMINISTRACION] Error importando Recursos Humanos: {e}")
+    RecursosHumanosModel = None
+    RecursosHumanosController = None
+
+__all__ = ["AdministracionController", "RecursosHumanosModel", "RecursosHumanosController"]
 # Comentado temporalmente: "AdministracionModel", "AdministracionView"

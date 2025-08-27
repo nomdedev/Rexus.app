@@ -137,31 +137,9 @@ class VidriosModel:
             if tipo == 'string':
                 return sanitize_string(value, kwargs.get('max_length'))
             elif tipo == 'numeric':
-                # Fallback seguro para números ya que sanitize_numeric no existe
-                try:
-                    result = float(value) if value is not None else 0.0
-                    min_val = kwargs.get('min_val')
-                    max_val = kwargs.get('max_val')
-                    if min_val is not None and result < min_val:
-                        result = min_val
-                    if max_val is not None and result > max_val:
-                        result = max_val
-                    return result
-                except (ValueError, TypeError):
-                    return 0.0
+                return self.data_sanitizer.sanitize_numeric(value, kwargs.get('min_val'), kwargs.get('max_val'))
             elif tipo == 'integer':
-                # Fallback seguro para enteros ya que sanitize_integer no existe
-                try:
-                    result = int(float(value)) if value is not None else 0
-                    min_val = kwargs.get('min_val')
-                    max_val = kwargs.get('max_val')
-                    if min_val is not None and result < min_val:
-                        result = min_val
-                    if max_val is not None and result > max_val:
-                        result = max_val
-                    return result
-                except (ValueError, TypeError):
-                    return 0
+                return self.data_sanitizer.sanitize_integer(value, kwargs.get('min_val'), kwargs.get('max_val'))
             else:
                 return value
         except Exception as e:
@@ -311,34 +289,33 @@ class VidriosModel:
             with self.db_connection.get_connection() as conn:
                 cursor = conn.cursor()
 
-                # Usar query externalizada base
-                query = sql_script_loader.load_script('sql/vidrios/select_todos_vidrios_base.sql')
-                if not query:
-                    logger.error("No se pudo cargar la query select_todos_vidrios_base.sql")
-                    return []
-                
-                # Si hay filtros, construir WHERE dinámicamente
+                # Construir query con filtros dinámicamente
+                conditions = ["activo = 1"]  # Solo vidrios activos
                 params = []
-                additional_conditions = []
-                
+
                 if filtros:
                     if filtros.get("proveedor"):
-                        additional_conditions.append("proveedor LIKE ?")
+                        conditions.append("proveedor LIKE ?")
                         params.append(f"%{filtros['proveedor']}%")
 
                     if filtros.get("tipo"):
-                        additional_conditions.append("tipo LIKE ?")
+                        conditions.append("tipo LIKE ?")
                         params.append(f"%{filtros['tipo']}%")
 
                     if filtros.get("espesor"):
-                        additional_conditions.append("espesor = ?")
+                        conditions.append("espesor = ?")
                         params.append(filtros["espesor"])
-                
-                # Agregar condiciones adicionales si existen
-                if additional_conditions:
-                    query = query.replace("WHERE activo = 1", 
-                                        f"WHERE activo = 1 AND {' AND '.join(additional_conditions)}")
-                
+
+                # Construir query completa
+                where_clause = " AND ".join(conditions)
+                query = f"""
+                    SELECT id, tipo, espesor, color, precio_m2, proveedor, 
+                           especificaciones, propiedades, activo, fecha_creacion, 
+                           fecha_actualizacion, dimensiones, stock, estado
+                    FROM vidrios
+                    WHERE {where_clause}
+                    ORDER BY tipo
+                """
                 cursor.execute(query, params)
                 columnas = [column[0] for column in cursor.description]
                 resultados = cursor.fetchall()
@@ -370,9 +347,16 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            # Usar query externalizada
-            query = sql_script_loader.load_script('sql/vidrios/select_vidrios_por_obra.sql')
-            cursor.execute(query, {'obra_id': obra_id})
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor.execute("""
+                SELECT v.id, v.tipo as codigo, v.especificaciones as descripcion, v.tipo, v.proveedor,
+                       v.espesor, v.color, v.precio_m2, v.estado, v.dimensiones as ubicacion,
+                       vo.cantidad_utilizada, vo.fecha_asignacion
+                FROM vidrios v
+                INNER JOIN vidrios_por_obra vo ON v.id = vo.vidrio_id
+                WHERE vo.obra_id = ?
+                ORDER BY v.tipo
+            """, (obra_id,))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -415,15 +399,22 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = sql_script_loader.load_script('sql/vidrios/insert_vidrio_obra.sql')
+            query = """
+                INSERT INTO vidrios_por_obra
+                (vidrio_id, obra_id, metros_cuadrados_requeridos, medidas_especificas, fecha_asignacion, observaciones)
+                VALUES (?, ?, ?, ?, GETDATE(), ?)
+            """
 
-            cursor.execute(query, {
-                'vidrio_id': vidrio_id,
-                'obra_id': obra_id,
-                'metros_cuadrados': metros_cuadrados,
-                'medidas_especificas': medidas_especificas,
-                'observaciones': observaciones or ''
-            })
+            cursor.execute(
+                query,
+                (
+                    vidrio_id,
+                    obra_id,
+                    metros_cuadrados,
+                    medidas_especificas,
+                    propiedades,
+                ),
+            )
             self.db_connection.connection.commit()
 
             logger.info(f"Vidrio {vidrio_id} asignado a obra {obra_id}")
@@ -453,16 +444,16 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Crear pedido principal
-            query_pedido = sql_script_loader.load_script('sql/vidrios/insert_pedido_vidrios.sql')
+            query_pedido = """
+                INSERT INTO pedidos_vidrios
+                (obra_id, proveedor, fecha_pedido, estado, total_estimado)
+                VALUES (?, ?, GETDATE(), 'PENDIENTE', ?)
+            """
 
             total_estimado = sum(
                 item["metros_cuadrados"] * item["precio_m2"] for item in vidrios_lista
             )
-            cursor.execute(query_pedido, {
-                'obra_id': obra_id,
-                'proveedor': proveedor,
-                'total_estimado': total_estimado
-            })
+            cursor.execute(query_pedido, (obra_id, proveedor, total_estimado))
 
             # Obtener ID del pedido creado
             query = self.sql_manager.get_query("vidrios", "get_last_identity")
@@ -470,13 +461,13 @@ class VidriosModel:
             pedido_id = cursor.fetchone()[0]
 
             # Actualizar cantidades pedidas en vidrios_por_obra
-            query_update = sql_script_loader.load_script('sql/vidrios/update_metros_pedidos_obra.sql')
             for vidrio in vidrios_lista:
-                cursor.execute(query_update, {
-                    'metros_cuadrados': vidrio["metros_cuadrados"],
-                    'vidrio_id': vidrio["vidrio_id"],
-                    'obra_id': obra_id
-                })
+                # FIXED: Usar consulta parametrizada segura en lugar de script_content
+                cursor.execute("""
+                    UPDATE vidrios_por_obra 
+                    SET metros_pedidos = metros_pedidos + ?
+                    WHERE vidrio_id = ? AND obra_id = ?
+                """, (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id))
 
             self.db_connection.connection.commit()
             logger.info(f"Pedido {pedido_id} creado para obra {obra_id}")
@@ -513,13 +504,15 @@ class VidriosModel:
             estadisticas["total_vidrios"] = cursor.fetchone()[0]
 
             # Tipos de vidrio disponibles
-            query_tipos = sql_script_loader.load_script('sql/vidrios/count_tipos_activos.sql')
-            cursor.execute(query_tipos)
+            cursor.execute(
+                "SELECT COUNT(DISTINCT tipo) FROM vidrios WHERE estado = 'ACTIVO'"
+            )
             estadisticas["tipos_disponibles"] = cursor.fetchone()[0]
 
             # Proveedores activos
-            query_proveedores = sql_script_loader.load_script('sql/vidrios/count_proveedores_activos.sql')
-            cursor.execute(query_proveedores)
+            cursor.execute(
+                "SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE estado = 'ACTIVO'"
+            )
             estadisticas["proveedores_activos"] = cursor.fetchone()[0]
 
             # Valor total del inventario (estimado por m2)
@@ -707,10 +700,10 @@ class VidriosModel:
 
         try:
             # Validar ID
-            vidrio_id_limpio = self._sanitizar_entrada_segura(
-                vidrio_id, tipo='integer', min_val=1
+            vidrio_id_limpio = self.data_sanitizer.sanitize_integer(
+                vidrio_id, min_val=1
             )
-            if vidrio_id_limpio is None or vidrio_id_limpio <= 0:
+            if vidrio_id_limpio is None:
                 return False, "ID de vidrio inválido"
 
             # Sanitizar y validar todos los datos igual que en crear_vidrio
@@ -746,17 +739,17 @@ class VidriosModel:
                 datos_vidrio.get("observaciones", ""), max_length=500
             )
 
-            datos_limpios["espesor"] = self._sanitizar_entrada_segura(
-                datos_vidrio.get("espesor", 0), tipo='numeric', min_val=0, max_val=50
+            datos_limpios["espesor"] = self.data_sanitizer.sanitize_numeric(
+                datos_vidrio.get("espesor", 0), min_val=0, max_val=50
             )
 
             # Validar precio
             precio_original = datos_vidrio.get("precio_m2")
             if precio_original and precio_original != "":
-                precio_limpio = self._sanitizar_entrada_segura(
-                    precio_original, tipo='numeric', min_val=0
+                precio_limpio = self.data_sanitizer.sanitize_numeric(
+                    precio_original, min_val=0
                 )
-                if precio_limpio is None or precio_limpio < 0:
+                if precio_limpio is None:
                     return False, "Precio por m2 inválido"
                 datos_limpios["precio_m2"] = precio_limpio
             else:
@@ -821,10 +814,10 @@ class VidriosModel:
 
         try:
             # Validar ID
-            vidrio_id_limpio = self._sanitizar_entrada_segura(
-                vidrio_id, tipo='integer', min_val=1
+            vidrio_id_limpio = self.data_sanitizer.sanitize_integer(
+                vidrio_id, min_val=1
             )
-            if vidrio_id_limpio is None or vidrio_id_limpio <= 0:
+            if vidrio_id_limpio is None:
                 return False, "ID de vidrio inválido"
 
             cursor = self.db_connection.connection.cursor()
@@ -887,10 +880,10 @@ class VidriosModel:
 
         try:
             # Validar ID
-            vidrio_id_limpio = self._sanitizar_entrada_segura(
-                vidrio_id, tipo='integer', min_val=1
+            vidrio_id_limpio = self.data_sanitizer.sanitize_integer(
+                vidrio_id, min_val=1
             )
-            if vidrio_id_limpio is None or vidrio_id_limpio <= 0:
+            if vidrio_id_limpio is None:
                 return False, None
 
             cursor = self.db_connection.connection.cursor()

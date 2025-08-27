@@ -1,5 +1,5 @@
 {
-  "critical_queries": 189,
+  "critical_queries": 169,
   "non_critical_queries": 243,
   "modules": {
     "api": {
@@ -584,131 +584,6 @@
           ],
           "count": 2
         },
-        "modules\\inventario\\submodules\\categorias_manager.py": {
-          "critical_queries": [
-            {
-              "line": 262,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 262,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 262,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 262,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 277,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 277,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 277,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 277,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 374,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 374,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 374,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 374,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 666,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 666,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 666,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 666,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 674,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 674,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 674,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            },
-            {
-              "line": 674,
-              "sql": "SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
-              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1\",",
-              "reason": "SQL with string interpolation (injection risk)"
-            }
-          ],
-          "count": 20
-        },
         "modules\\inventario\\submodules\\consultas_manager.py": {
           "critical_queries": [
             {
@@ -782,25 +657,25 @@
         "modules\\inventario\\submodules\\reservas_manager.py": {
           "critical_queries": [
             {
-              "line": 562,
+              "line": 552,
               "sql": "INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})",
               "context": "query = f\"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})\"",
               "reason": "SQL with string interpolation (injection risk)"
             },
             {
-              "line": 562,
+              "line": 552,
               "sql": "INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})",
               "context": "query = f\"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})\"",
               "reason": "SQL with string interpolation (injection risk)"
             },
             {
-              "line": 562,
+              "line": 552,
               "sql": "INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})",
               "context": "query = f\"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})\"",
               "reason": "SQL with string interpolation (injection risk)"
             },
             {
-              "line": 562,
+              "line": 552,
               "sql": "INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})",
               "context": "query = f\"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})\"",
               "reason": "SQL with string interpolation (injection risk)"
@@ -809,9 +684,9 @@
           "count": 4
         }
       },
-      "critical_count": 37,
+      "critical_count": 17,
       "non_critical_count": 30,
-      "total_queries": 67
+      "total_queries": 47
     },
     "logistica": {
       "critical_files": {
