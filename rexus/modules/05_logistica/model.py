@@ -80,7 +80,7 @@ class LogisticaModel:
             # Sanitizar datos
             datos_sanitizados = self._sanitizar_datos_servicio(datos_servicio)
             
-            with open('sql/logistica/insert_servicio_transporte.sql', 'r', encoding='utf-8') as f:
+            with open('sql/05_logistica/insert_servicio_transporte.sql', 'r', encoding='utf-8') as f:
                 insert_query = f.read()
             cursor.execute(insert_query, (
                 datos_sanitizados['codigo'],
@@ -130,11 +130,11 @@ class LogisticaModel:
             cursor = self.db_connection.cursor()
             
             if activos_solo:
-                with open('sql/logistica/select_servicios_transporte_activos.sql', 'r', encoding='utf-8') as f:
+                with open('sql/05_logistica/select_servicios_transporte_activos.sql', 'r', encoding='utf-8') as f:
                     select_query = f.read()
                 cursor.execute(select_query)
             else:
-                with open('sql/logistica/select_servicios_transporte_all.sql', 'r', encoding='utf-8') as f:
+                with open('sql/05_logistica/select_servicios_transporte_all.sql', 'r', encoding='utf-8') as f:
                     select_query = f.read()
                 cursor.execute(select_query)
             
@@ -236,7 +236,7 @@ class LogisticaModel:
             # Sanitizar datos
             datos_sanitizados = self._sanitizar_datos_proveedor_transporte(datos_proveedor)
             
-            with open('sql/logistica/insert_proveedor_transporte.sql', 'r', encoding='utf-8') as f:
+            with open('sql/05_logistica/insert_proveedor_transporte.sql', 'r', encoding='utf-8') as f:
                 insert_query = f.read()
             cursor.execute(insert_query, (
                 datos_sanitizados['codigo'],

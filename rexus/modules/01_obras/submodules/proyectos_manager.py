@@ -66,7 +66,7 @@ class ProyectosManager:
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
-        self.sql_path = "scripts/sql/obras/proyectos"
+        self.sql_path = "scripts/sql/01_obras/proyectos"
 
     def _validate_table_name(self, table_name: str) -> str:
         """Valida nombre de tabla contra lista blanca."""

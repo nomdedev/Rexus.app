@@ -62,7 +62,7 @@ class ConsultasManager:
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
-        self.sql_path = "scripts/sql/vidrios/consultas"
+        self.sql_path = "scripts/sql/07_vidrios/consultas"
 
     def obtener_todos_vidrios(
         self, filtros: Optional[Dict[str, Any]] = None

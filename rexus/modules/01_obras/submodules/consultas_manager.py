@@ -63,7 +63,7 @@ class ConsultasManager:
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
-        self.sql_path = "scripts/sql/obras/consultas"
+        self.sql_path = "scripts/sql/01_obras/consultas"
     def obtener_todas_obras(
         self, filtros: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:

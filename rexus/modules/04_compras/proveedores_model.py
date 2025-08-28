@@ -59,7 +59,7 @@ class ProveedoresModel:
 
             # Sanitizar datos de entrada
             datos_sanitizados = self._sanitizar_datos_proveedor(datos_proveedor)
-            with open('sql/compras/insert_proveedor.sql', 'r', encoding='utf-8') as f:
+            with open('sql/04_compras/insert_proveedor.sql', 'r', encoding='utf-8') as f:
                 insert_query = f.read()
             cursor.execute(insert_query, (
                 datos_sanitizados['codigo'],
@@ -104,7 +104,7 @@ class ProveedoresModel:
                 return None
 
             cursor = self.db_connection.cursor()
-            with open('sql/compras/select_proveedor_by_id.sql', 'r', encoding='utf-8') as f:
+            with open('sql/04_compras/select_proveedor_by_id.sql', 'r', encoding='utf-8') as f:
                 select_query = f.read()
             cursor.execute(select_query, (proveedor_id,))
             result = cursor.fetchone()
@@ -149,10 +149,10 @@ class ProveedoresModel:
             cursor = self.db_connection.cursor()
             
             if activos_solo:
-                with open('sql/compras/select_proveedores_activos.sql', 'r', encoding='utf-8') as f:
+                with open('sql/04_compras/select_proveedores_activos.sql', 'r', encoding='utf-8') as f:
                     select_query = f.read()
             else:
-                with open('sql/compras/select_proveedores_all.sql', 'r', encoding='utf-8') as f:
+                with open('sql/04_compras/select_proveedores_all.sql', 'r', encoding='utf-8') as f:
                     select_query = f.read()
                     
             cursor.execute(select_query)

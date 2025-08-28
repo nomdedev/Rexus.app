@@ -44,7 +44,7 @@ class SessionsManager:
             stats = {}
 
             # Sesiones activas totales
-            self.sql_manager.ejecutar_consulta_archivo('sql/usuarios/count_sesiones_1.sql', params))
+            self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_sesiones_1.sql', params))
             stats['sesiones_activas'] = cursor.fetchone()[0]
 
             # Usuarios únicos con sesiones activas

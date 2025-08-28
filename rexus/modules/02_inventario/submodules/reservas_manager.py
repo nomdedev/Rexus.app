@@ -301,16 +301,16 @@ class ReservasManager:
         try:
             # Determinar qué query usar según los filtros
             if obra_id and producto_id:
-                query = self.sql_manager.get_query('sql/inventario/select_reservas_activas_obra_producto.sql')
+                query = self.sql_manager.get_query('sql/02_inventario/select_reservas_activas_obra_producto.sql')
                 params = {'obra_id': obra_id, 'producto_id': producto_id}
             elif obra_id:
-                query = self.sql_manager.get_query('sql/inventario/select_reservas_activas_por_obra.sql')
+                query = self.sql_manager.get_query('sql/02_inventario/select_reservas_activas_por_obra.sql')
                 params = {'obra_id': obra_id}
             elif producto_id:
-                query = self.sql_manager.get_query('sql/inventario/select_reservas_activas_por_producto.sql')
+                query = self.sql_manager.get_query('sql/02_inventario/select_reservas_activas_por_producto.sql')
                 params = {'producto_id': producto_id}
             else:
-                query = self.sql_manager.get_query('sql/inventario/select_reservas_activas.sql')
+                query = self.sql_manager.get_query('sql/02_inventario/select_reservas_activas.sql')
                 params = {}
 
             cursor = self.db_connection.cursor()
@@ -485,7 +485,7 @@ class ReservasManager:
         """Obtiene una reserva por su ID."""
         try:
             cursor = self.db_connection.cursor()
-            self.sql_manager.ejecutar_consulta_archivo('sql/inventario/select_reservas_materiales_1.sql', params)
+            self.sql_manager.ejecutar_consulta_archivo('sql/02_inventario/select_reservas_materiales_1.sql', params)
             cursor.execute(query, (reserva_id,))
             fila = cursor.fetchone()
             cursor.close()
@@ -605,7 +605,7 @@ class ReservasManager:
         """Obtiene el stock disponible de un producto."""
         try:
             cursor = self.db_connection.cursor()
-            self.sql_manager.ejecutar_consulta_archivo('sql/inventario/select_inventario_2.sql', params)
+            self.sql_manager.ejecutar_consulta_archivo('sql/02_inventario/select_inventario_2.sql', params)
             cursor.execute(query, (producto_id,))
             resultado = cursor.fetchone()
             cursor.close()

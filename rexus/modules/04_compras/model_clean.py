@@ -124,7 +124,7 @@ class ComprasModel:
             cursor = self.db_connection.cursor()
 
             # Usar archivo SQL externo
-            with open('sql/compras/crear_proveedor.sql', 'r', encoding='utf-8') as f:
+            with open('sql/04_compras/crear_proveedor.sql', 'r', encoding='utf-8') as f:
                 insert_query = f.read()
 
             cursor.execute(insert_query, (
@@ -168,7 +168,7 @@ class ComprasModel:
             cursor = self.db_connection.cursor()
 
             # Usar archivo SQL externo
-            with open('sql/compras/obtener_proveedores.sql', 'r', encoding='utf-8') as f:
+            with open('sql/04_compras/obtener_proveedores.sql', 'r', encoding='utf-8') as f:
                 select_query = f.read()
 
             cursor.execute(select_query)
@@ -229,7 +229,7 @@ class ComprasModel:
             cursor = self.db_connection.cursor()
 
             # Usar archivo SQL externo para crear orden
-            with open('sql/compras/crear_orden_compra.sql', 'r', encoding='utf-8') as f:
+            with open('sql/04_compras/crear_orden_compra.sql', 'r', encoding='utf-8') as f:
                 insert_orden_query = f.read()
 
             cursor.execute(insert_orden_query, (
@@ -250,7 +250,7 @@ class ComprasModel:
             orden_id = cursor.lastrowid
 
             # Insertar detalles
-            with open('sql/compras/crear_detalle_orden.sql', 'r', encoding='utf-8') as f:
+            with open('sql/04_compras/crear_detalle_orden.sql', 'r', encoding='utf-8') as f:
                 insert_detalle_query = f.read()
 
             for detalle in datos_orden['detalles']:

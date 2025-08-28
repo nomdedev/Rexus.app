@@ -64,7 +64,7 @@ class RecursosManager:
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
-        self.sql_path = "scripts/sql/obras/recursos"
+        self.sql_path = "scripts/sql/01_obras/recursos"
     def asignar_material_obra(
         self,
         obra_id: int,

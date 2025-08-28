@@ -454,7 +454,7 @@ cursor = self.db_connection.cursor()
 kpis = {}
 
 # Total productos activos
-self.sql_manager.ejecutar_consulta_archivo('sql/inventario/count_inventario_1.sql', params))
+self.sql_manager.ejecutar_consulta_archivo('sql/02_inventario/count_inventario_1.sql', params))
 kpis['total_productos'] = cursor.fetchone()[0] or 0
 
 # Productos bajo stock mínimo

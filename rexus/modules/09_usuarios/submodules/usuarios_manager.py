@@ -68,7 +68,7 @@ class UsuariosManager:
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
-        self.sql_path = "scripts/sql/usuarios/gestion"
+        self.sql_path = "scripts/sql/09_usuarios/gestion"
         self.logger = get_logger("usuarios.usuarios_manager")
 
     def _validate_table_name(self, table_name: str) -> str:
