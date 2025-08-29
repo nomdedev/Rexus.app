@@ -235,7 +235,7 @@ usuario_id: int,
         """
         try:
             cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='permisos_usuarios' AND xtype='U')
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='permisos_usuarios' AND xtype='U', {})
                 -- Tabla permisos_usuarios ya existe en SQL Server PRIMARY KEY,
                     usuario_id INT NOT NULL,
                     modulo NVARCHAR(50) NOT NULL,
@@ -282,7 +282,7 @@ usuario_id: int,
 
             # Permisos específicos asignados
             cursor.execute("""
-                SELECT COUNT(*) FROM permisos_usuarios WHERE activo = 1
+                SELECT COUNT(*), {} FROM permisos_usuarios WHERE activo = 1
             """)
             stats['permisos_especificos'] = cursor.fetchone()[0]
 

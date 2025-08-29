@@ -144,27 +144,27 @@ class ProgramacionMantenimientoModel:
             cursor = self.db_connection.cursor()
             
             # Total de mantenimientos
-            cursor.execute("SELECT COUNT(*) FROM mantenimientos")
+            cursor.execute("SELECT COUNT(*), {} FROM mantenimientos")
             self.contadores['total'] = cursor.fetchone()[0]
             
             # Completados
-            cursor.execute("SELECT COUNT(*) FROM mantenimientos WHERE estado = 'COMPLETADO'")
+            cursor.execute("SELECT COUNT(*), {} FROM mantenimientos WHERE estado = 'COMPLETADO'")
             self.contadores['completados'] = cursor.fetchone()[0]
             
             # Pendientes
-            cursor.execute("SELECT COUNT(*) FROM mantenimientos WHERE estado = 'PENDIENTE'")
+            cursor.execute("SELECT COUNT(*), {} FROM mantenimientos WHERE estado = 'PENDIENTE'")
             self.contadores['pendientes'] = cursor.fetchone()[0]
             
             # Vencidos
             cursor.execute("""
-                SELECT COUNT(*) FROM mantenimientos 
+                SELECT COUNT(*), {} FROM mantenimientos 
                 WHERE estado = 'PENDIENTE' AND fecha_programada < GETDATE()
             """)
             self.contadores['vencidos'] = cursor.fetchone()[0]
             
             # Próximos 7 días
             cursor.execute("""
-                SELECT COUNT(*) FROM mantenimientos 
+                SELECT COUNT(*), {} FROM mantenimientos 
                 WHERE estado = 'PENDIENTE' 
                 AND fecha_programada BETWEEN GETDATE() AND DATEADD(DAY, 7, GETDATE())
             """)
@@ -172,7 +172,7 @@ class ProgramacionMantenimientoModel:
             
             # Próximos 30 días
             cursor.execute("""
-                SELECT COUNT(*) FROM mantenimientos 
+                SELECT COUNT(*), {} FROM mantenimientos 
                 WHERE estado = 'PENDIENTE' 
                 AND fecha_programada BETWEEN GETDATE() AND DATEADD(DAY, 30, GETDATE())
             """)

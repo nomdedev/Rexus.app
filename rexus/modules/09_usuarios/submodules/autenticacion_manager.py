@@ -88,7 +88,7 @@ class AutenticacionManager:
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("""
-                SELECT COUNT(*) FROM intentos_login 
+                SELECT COUNT(*), {} FROM intentos_login 
                 WHERE username = ? 
                 AND exitoso = 0 
                 AND fecha_intento > DATEADD(MINUTE, -?, GETDATE())
@@ -126,7 +126,7 @@ class AutenticacionManager:
             cursor = self.db_connection.cursor()
             cursor.execute("""
                 DELETE FROM intentos_login 
-                WHERE username = (SELECT username FROM usuarios WHERE id = ?)
+                WHERE username = (SELECT username FROM usuarios WHERE id = ?, {})
             """, (user_id,))
             self.db_connection.commit()
             
@@ -142,7 +142,7 @@ class AutenticacionManager:
             cursor = self.db_connection.cursor()
             cursor.execute("""
                 UPDATE usuarios 
-                SET ultimo_acceso = GETDATE() 
+                SET ultimo_acceso = GETDATE(, {}) 
                 WHERE id = ?
             """, (user_id,))
             self.db_connection.commit()

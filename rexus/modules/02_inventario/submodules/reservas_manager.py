@@ -504,7 +504,7 @@ class ReservasManager:
         try:
             cursor = self.db_connection.cursor()
             query = self.sql_manager.get_query("02_inventario/reservas", "get_scope_identity")
-            cursor.execute(query)
+            cursor.execute(query, {})
             resultado = cursor.fetchone()
             cursor.close()
             return int(resultado[0]) if resultado and resultado[0] else None

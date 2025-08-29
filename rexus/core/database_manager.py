@@ -82,7 +82,7 @@ class DatabaseManager:
     def table_exists(self, table_name: str) -> bool:
         """Verifica si una tabla existe."""
         try:
-            self.sql_manager.ejecutar_consulta_archivo('sql/core/select_sqlite_master_1.sql', params)table' AND name=?"
+            query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
             result = self.execute_query(query, (table_name,))
             return len(result) > 0
         except Exception as e:

@@ -415,7 +415,7 @@ page=1,
 
                 # Contar total
                 sql_count = self.sql_manager.get_query('obras', 'contar_obras_activas')
-                cursor.execute(sql_count)
+                cursor.execute(sql_count, {})
                 total_count = cursor.fetchone()[0]
 
             # Obtener datos
@@ -719,7 +719,7 @@ obra_id: int,
 
             # Query optimizada usando SQLQueryManager
             sql_stats = self.sql_manager.get_query('obras', 'select_estadisticas_completas_obras')
-            cursor.execute(sql_stats)
+            cursor.execute(sql_stats, {})
 
             row = cursor.fetchone()
             if row:
@@ -734,7 +734,7 @@ obra_id: int,
 
             # Presupuesto total
             sql = self.sql_manager.get_query('obras', 'calcular_presupuesto_total')
-            cursor.execute(sql)
+            cursor.execute(sql, {})
             result = cursor.fetchone()[0]
             estadisticas['presupuesto_total'] = float(result) if result else 0.0
 

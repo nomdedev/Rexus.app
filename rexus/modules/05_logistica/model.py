@@ -444,7 +444,7 @@ class LogisticaModel:
             # Estadísticas generales
             cursor.execute("""
                 SELECT 
-                    COUNT(*) as total_servicios,
+                    COUNT(*), {} as total_servicios,
                     COUNT(CASE WHEN estado = 'COMPLETADO' THEN 1 END) as completados,
                     COUNT(CASE WHEN estado = 'CANCELADO' THEN 1 END) as cancelados,
                     AVG(costo_real) as promedio_costo,

@@ -39,3 +39,26 @@
 2025-08-29 17:07:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-29 17:07:02 | INFO     | rexus.inventario.model | Submódulos especializados cargados
 2025-08-29 17:07:02 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 17:11:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 17:11:10 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 17:11:10 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 17:11:39 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 17:11:41 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 17:11:41 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 17:15:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 17:15:02 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 17:15:02 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 17:15:02 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 17:15:02 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 17:15:02 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 17:15:02 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 17:15:02 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 17:15:02 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 17:15:02 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 17:19:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 17:19:45 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 17:19:46 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 17:19:46 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 17:20:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 17:20:22 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 17:20:22 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)

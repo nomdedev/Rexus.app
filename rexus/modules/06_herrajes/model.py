@@ -42,7 +42,7 @@ class HerrajesModel:
 
             # Verificar tabla herrajes
             cursor.execute("""
-                SELECT COUNT(*)
+                SELECT COUNT(*, {})
                 FROM INFORMATION_SCHEMA.TABLES
                 WHERE TABLE_NAME = 'herrajes'
             """)
@@ -50,7 +50,7 @@ class HerrajesModel:
 
             # Verificar tabla herrajes_obra
             cursor.execute("""
-                SELECT COUNT(*)
+                SELECT COUNT(*, {})
                 FROM INFORMATION_SCHEMA.TABLES
                 WHERE TABLE_NAME = 'herrajes_obra'
             """)

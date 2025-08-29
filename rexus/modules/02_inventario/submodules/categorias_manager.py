@@ -76,7 +76,7 @@ class CategoriasManager:
                     ORDER BY COUNT(*) DESC
                 """
 
-                cursor.execute(query)
+                cursor.execute(query, {})
                 columnas = [desc[0] for desc in cursor.description]
                 filas = cursor.fetchall()
 
@@ -104,7 +104,7 @@ class CategoriasManager:
                     ORDER BY categoria
                 """
 
-                cursor.execute(query)
+                cursor.execute(query, {})
                 filas = cursor.fetchall()
 
                 categorias = []
@@ -441,7 +441,7 @@ class CategoriasManager:
                 WHERE i.categoria IS NULL AND c.activa = 1
             """
 
-            cursor.execute(query_vacias)
+            cursor.execute(query_vacias, {})
             categorias_vacias = [row[0] for row in cursor.fetchall()]
 
             if not categorias_vacias:
@@ -524,7 +524,7 @@ class CategoriasManager:
                 ORDER BY SUM(stock_actual * precio_unitario) DESC
             """
 
-            cursor.execute(query_principal)
+            cursor.execute(query_principal, {})
             columnas = [desc[0] for desc in cursor.description]
             filas_principales = cursor.fetchall()
 
@@ -540,7 +540,7 @@ class CategoriasManager:
                 ORDER BY COUNT(*) DESC
             """
 
-            cursor.execute(query_tendencias)
+            cursor.execute(query_tendencias, {})
             tendencias = {row[0]: row[1] for row in cursor.fetchall()}
 
             cursor.close()
@@ -633,7 +633,7 @@ class CategoriasManager:
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("""
-                SELECT COUNT(*)
+                SELECT COUNT(*, {})
                 FROM INFORMATION_SCHEMA.TABLES
                 WHERE TABLE_NAME = ?
             """, (self.TABLA_CATEGORIAS,))

@@ -83,7 +83,7 @@ class ConsultasManager:
                 cursor.execute(query, filtros_sanitizados)
             else:
                 query = self.sql_manager.get_query(self.sql_path, "obtener_todas_obras")
-                cursor.execute(query)
+                cursor.execute(query, {})
 
             obras = []
             columns = [column[0] for column in cursor.description]
@@ -150,7 +150,7 @@ class ConsultasManager:
             query_total = self.sql_manager.get_query(
                 self.sql_path, "contar_total_obras"
             )
-            cursor.execute(query_total)
+            cursor.execute(query_total, {})
             result = cursor.fetchone()
             estadisticas["total_obras"] = result[0] if result else 0
 
@@ -158,7 +158,7 @@ class ConsultasManager:
             query_estados = self.sql_manager.get_query(
                 self.sql_path, "obras_por_estado"
             )
-            cursor.execute(query_estados)
+            cursor.execute(query_estados, {})
             estadisticas["por_estado"] = {}
             for row in cursor.fetchall():
                 estadisticas["por_estado"][row[0]] = row[1]
@@ -167,7 +167,7 @@ class ConsultasManager:
             query_valor = self.sql_manager.get_query(
                 self.sql_path, "calcular_valor_total_obras"
             )
-            cursor.execute(query_valor)
+            cursor.execute(query_valor, {})
             result = cursor.fetchone()
             estadisticas["valor_total"] = result[0] if result else 0.0
 
@@ -175,7 +175,7 @@ class ConsultasManager:
             query_activas = self.sql_manager.get_query(
                 self.sql_path, "contar_obras_activas"
             )
-            cursor.execute(query_activas)
+            cursor.execute(query_activas, {})
             result = cursor.fetchone()
             estadisticas["obras_activas"] = result[0] if result else 0
 
@@ -183,7 +183,7 @@ class ConsultasManager:
             query_duracion = self.sql_manager.get_query(
                 self.sql_path, "promedio_duracion_obras"
             )
-            cursor.execute(query_duracion)
+            cursor.execute(query_duracion, {})
             result = cursor.fetchone()
             estadisticas["duracion_promedio_dias"] = result[0] if result else 0
 
@@ -226,7 +226,7 @@ min(100,
                 query_count = self.sql_manager.get_query(
                     self.sql_path, "contar_total_obras"
                 )
-                cursor.execute(query_count)
+                cursor.execute(query_count, {})
 
             total = cursor.fetchone()[0] if cursor.fetchone() else 0
 

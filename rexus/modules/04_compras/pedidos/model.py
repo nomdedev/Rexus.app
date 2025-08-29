@@ -245,7 +245,7 @@ class PedidosModel:
                 ORDER BY pc.fecha_creacion DESC
             """
 
-            cursor.execute(query)
+            cursor.execute(query, {})
             columns = [column[0] for column in cursor.description]
             pedidos = []
 

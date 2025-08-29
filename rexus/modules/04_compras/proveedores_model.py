@@ -155,7 +155,7 @@ class ProveedoresModel:
                 with open('sql/04_compras/select_proveedores_all.sql', 'r', encoding='utf-8') as f:
                     select_query = f.read()
                     
-            cursor.execute(select_query)
+            cursor.execute(select_query, {})
             
             proveedores = []
             for row in cursor.fetchall():

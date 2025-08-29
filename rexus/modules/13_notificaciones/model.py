@@ -118,7 +118,7 @@ class NotificacionesModel:
 
             # Verificar tabla principal de notificaciones
             cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='notificaciones' AND xtype='U')
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='notificaciones' AND xtype='U', {})
                 CREATE TABLE notificaciones (
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     titulo NVARCHAR(200) NOT NULL,
@@ -137,7 +137,7 @@ class NotificacionesModel:
 
             # Verificar tabla de notificaciones por usuario
             cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='usuarios_notificaciones' AND xtype='U')
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='usuarios_notificaciones' AND xtype='U', {})
                 CREATE TABLE usuarios_notificaciones (
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     notificacion_id INT,
@@ -324,7 +324,7 @@ warning,
             # Actualizar o insertar relación usuario-notificación
             cursor.execute("""
                 IF EXISTS (SELECT 1 FROM usuarios_notificaciones
-                          WHERE notificacion_id = ? AND usuario_id = ?)
+                          WHERE notificacion_id = ? AND usuario_id = ?, {})
                 UPDATE usuarios_notificaciones
                 SET leida = 1, fecha_lectura = GETDATE()
                 WHERE notificacion_id = ? AND usuario_id = ?
@@ -367,7 +367,7 @@ warning,
             cursor = self.db_connection.cursor()
 
             cursor.execute("""
-                SELECT COUNT(*)
+                SELECT COUNT(*, {})
                 FROM notificaciones n
                 LEFT JOIN usuarios_notificaciones un ON n.id = un.notificacion_id
                 WHERE (un.usuario_id = ? OR un.usuario_id IS NULL)
@@ -515,7 +515,7 @@ warning,
             cursor.execute("""
                 UPDATE notificaciones
                 SET activa = 0
-                WHERE fecha_expiracion < GETDATE() AND activa = 1
+                WHERE fecha_expiracion < GETDATE(), {} AND activa = 1
             """)
 
             affected_rows = cursor.rowcount

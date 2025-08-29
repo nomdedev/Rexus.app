@@ -296,7 +296,7 @@ class AuditoriaModel:
             
             # Eventos de alto riesgo recientes
             cursor.execute("""
-                SELECT COUNT(*) 
+                SELECT COUNT(*, {}) 
                 FROM auditoria_eventos 
                 WHERE nivel_riesgo IN ('ALTO', 'CRÍTICO')
                 AND timestamp >= datetime('now', '-7 days')
@@ -305,7 +305,7 @@ class AuditoriaModel:
             
             # Eventos del día actual
             cursor.execute("""
-                SELECT COUNT(*) 
+                SELECT COUNT(*, {}) 
                 FROM auditoria_eventos 
                 WHERE DATE(timestamp) = DATE('now')
             """)

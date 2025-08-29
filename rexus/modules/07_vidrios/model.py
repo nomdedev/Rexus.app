@@ -505,13 +505,13 @@ class VidriosModel:
 
             # Tipos de vidrio disponibles
             cursor.execute(
-                "SELECT COUNT(DISTINCT tipo) FROM vidrios WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(DISTINCT tipo), {} FROM vidrios WHERE estado = 'ACTIVO'"
             )
             estadisticas["tipos_disponibles"] = cursor.fetchone()[0]
 
             # Proveedores activos
             cursor.execute(
-                "SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(DISTINCT proveedor), {} FROM vidrios WHERE estado = 'ACTIVO'"
             )
             estadisticas["proveedores_activos"] = cursor.fetchone()[0]
 
@@ -835,7 +835,7 @@ class VidriosModel:
 
             # FIXED: Verificar si el vidrio está asignado a alguna obra usando consulta parametrizada segura
             cursor.execute("""
-                SELECT COUNT(*) FROM vidrios_por_obra WHERE vidrio_id = ?
+                SELECT COUNT(*), {} FROM vidrios_por_obra WHERE vidrio_id = ?
             """, (vidrio_id_limpio,))
 
             if cursor.fetchone()[0] > 0:

@@ -85,7 +85,7 @@ class ConsultasManager:
                 query = self.sql_manager.get_query(
                     self.sql_path, "obtener_todos_vidrios"
                 )
-                cursor.execute(query)
+                cursor.execute(query, {})
 
             vidrios = []
             columns = [column[0] for column in cursor.description]
@@ -153,7 +153,7 @@ class ConsultasManager:
             query_total = self.sql_manager.get_query(
                 self.sql_path, "contar_total_vidrios"
             )
-            cursor.execute(query_total)
+            cursor.execute(query_total, {})
             result = cursor.fetchone()
             estadisticas["total_vidrios"] = result[0] if result else 0
 
@@ -161,13 +161,13 @@ class ConsultasManager:
             query_valor = self.sql_manager.get_query(
                 self.sql_path, "calcular_valor_total"
             )
-            cursor.execute(query_valor)
+            cursor.execute(query_valor, {})
             result = cursor.fetchone()
             estadisticas["valor_total"] = result[0] if result else 0.0
 
             # Vidrios por tipo
             query_tipos = self.sql_manager.get_query(self.sql_path, "vidrios_por_tipo")
-            cursor.execute(query_tipos)
+            cursor.execute(query_tipos, {})
             estadisticas["por_tipo"] = {}
             for row in cursor.fetchall():
                 estadisticas["por_tipo"][row[0]] = row[1]
@@ -176,7 +176,7 @@ class ConsultasManager:
             query_stock_bajo = self.sql_manager.get_query(
                 self.sql_path, "vidrios_stock_bajo"
             )
-            cursor.execute(query_stock_bajo)
+            cursor.execute(query_stock_bajo, {})
             result = cursor.fetchone()
             estadisticas["stock_bajo"] = result[0] if result else 0
 
@@ -184,7 +184,7 @@ class ConsultasManager:
             query_proveedores = self.sql_manager.get_query(
                 self.sql_path, "contar_proveedores"
             )
-            cursor.execute(query_proveedores)
+            cursor.execute(query_proveedores, {})
             result = cursor.fetchone()
             estadisticas["total_proveedores"] = result[0] if result else 0
 
@@ -227,7 +227,7 @@ min(100,
                 query_count = self.sql_manager.get_query(
                     self.sql_path, "contar_total_vidrios"
                 )
-                cursor.execute(query_count)
+                cursor.execute(query_count, {})
 
             total = cursor.fetchone()[0] if cursor.fetchone() else 0
 
@@ -272,7 +272,7 @@ min(100,
             query = self.sql_manager.get_query(
                 self.sql_path, "obtener_vidrios_stock_bajo"
             )
-            cursor.execute(query)
+            cursor.execute(query, {})
 
             vidrios = []
             columns = [column[0] for column in cursor.description]
@@ -363,7 +363,7 @@ vidrio: Dict[str,
             cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query(self.sql_path, "reporte_proveedores")
-            cursor.execute(query)
+            cursor.execute(query, {})
 
             proveedores = []
             columns = [column[0] for column in cursor.description]

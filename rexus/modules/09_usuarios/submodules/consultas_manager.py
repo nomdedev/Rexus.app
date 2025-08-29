@@ -97,7 +97,7 @@ class ConsultasManager:
                     self.sql_path, "obtener_todos_usuarios_activos"
                 )
 
-            cursor.execute(query)
+            cursor.execute(query, {})
 
             usuarios = []
             columns = [desc[0] for desc in cursor.description]
@@ -243,7 +243,7 @@ min(100,
             query_fallos = self.sql_manager.get_query(
                 self.sql_path, "cuentas_con_fallos_recientes"
             )
-            cursor.execute(query_fallos)
+            cursor.execute(query_fallos, {})
 
             cuentas_riesgo = []
             for row in cursor.fetchall():
@@ -261,7 +261,7 @@ min(100,
             query_bloqueadas = self.sql_manager.get_query(
                 self.sql_path, "cuentas_bloqueadas_actuales"
             )
-            cursor.execute(query_bloqueadas)
+            cursor.execute(query_bloqueadas, {})
 
             cuentas_bloqueadas = []
             for row in cursor.fetchall():
@@ -279,7 +279,7 @@ min(100,
             query_inactivos = self.sql_manager.get_query(
                 self.sql_path, "usuarios_inactivos_prolongado"
             )
-            cursor.execute(query_inactivos)
+            cursor.execute(query_inactivos, {})
 
             usuarios_inactivos = []
             for row in cursor.fetchall():

@@ -130,14 +130,14 @@ usuario.get("username",
 
             # Nuevos usuarios (últimos 30 días)
             cursor.execute("""
-                SELECT COUNT(*) FROM usuarios
+                SELECT COUNT(*), {} FROM usuarios
                 WHERE created_at > DATEADD(DAY, -30, GETDATE())
             """)
             stats['nuevos_usuarios_mes'] = cursor.fetchone()[0]
 
             # Usuarios con login reciente (últimos 7 días)
             cursor.execute("""
-                SELECT COUNT(*) FROM usuarios
+                SELECT COUNT(*), {} FROM usuarios
                 WHERE last_login > DATEADD(DAY, -7, GETDATE())
             """)
             stats['usuarios_activos_semana'] = cursor.fetchone()[0]

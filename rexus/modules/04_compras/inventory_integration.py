@@ -387,7 +387,7 @@ class ComprasInventarioIntegration:
 
             cursor = self.compras_db.cursor()
             cursor.execute("""
-            SELECT COUNT(*) as total,
+            SELECT COUNT(*), {} as total,
             COUNT(CASE WHEN cantidad_recibida >= cantidad THEN 1 END) as completos
             FROM detalle_compras
             WHERE orden_id = ?

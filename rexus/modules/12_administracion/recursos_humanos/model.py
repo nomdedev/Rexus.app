@@ -175,7 +175,7 @@ class RecursosHumanosModel:
 
             # Obtener ID del empleado creado
             query = self.sql_manager.get_query("recursos_humanos", "get_last_identity")
-            cursor.execute(query)
+            cursor.execute(query, {})
             empleado_id = cursor.fetchone()[0]
 
             # Registrar en historial
@@ -309,7 +309,7 @@ class RecursosHumanosModel:
                 empleados_query += " AND e.id = ?"
                 cursor.execute(empleados_query, (empleado_id,))
             else:
-                cursor.execute(empleados_query)
+                cursor.execute(empleados_query, {})
 
             empleados = cursor.fetchall()
             resultados_nomina = []
@@ -684,17 +684,17 @@ class RecursosHumanosModel:
 
             # Total empleados activos
             query = self.sql_manager.get_query("recursos_humanos", "contar_empleados_activos")
-            cursor.execute(query)
+            cursor.execute(query, {})
             estadisticas['total_empleados'] = cursor.fetchone()[0]
 
             # Empleados por estado
             query = self.sql_manager.get_query("recursos_humanos", "empleados_por_estado")
-            cursor.execute(query)
+            cursor.execute(query, {})
             estadisticas['por_estado'] = dict(cursor.fetchall())
 
             # Empleados por departamento
             query = self.sql_manager.get_query("recursos_humanos", "empleados_por_departamento")
-            cursor.execute(query)
+            cursor.execute(query, {})
             estadisticas['por_departamento'] = dict(cursor.fetchall())
 
             # Nómina total del mes actual

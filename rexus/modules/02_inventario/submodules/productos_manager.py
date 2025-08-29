@@ -88,7 +88,7 @@ class ProductosManager:
             cursor.execute(query, params)
             
             # Obtener ID del producto creado usando SCOPE_IDENTITY() seguro
-            cursor.execute("SELECT SCOPE_IDENTITY()")
+            cursor.execute("SELECT SCOPE_IDENTITY(), {}")
             producto_id = cursor.fetchone()[0]
             
             self.db_connection.commit()
@@ -231,7 +231,7 @@ class ProductosManager:
             
             # Usar SQL externo para consulta
             query = self.sql_manager.get_query(self.sql_path, "obtener_categorias")
-            cursor.execute(query)
+            cursor.execute(query, {})
             
             categorias = [row[0] for row in cursor.fetchall() if row[0]]
             return categorias if categorias else ["GENERAL"]

@@ -1112,17 +1112,17 @@ producto_id,
 
             # Productos con stock bajo
             sql_stock_bajo = self.sql_manager.get_query('inventario', 'contar_stock_bajo')
-            cursor.execute(sql_stock_bajo)
+            cursor.execute(sql_stock_bajo, {})
             stock_bajo = cursor.fetchone()[0]
 
             # Valor total del inventario
             sql_valor_total = self.sql_manager.get_query('inventario', 'calcular_valor_total')
-            cursor.execute(sql_valor_total)
+            cursor.execute(sql_valor_total, {})
             valor_total = cursor.fetchone()[0] or 0
 
             # Movimientos del mes actual desde historial
             sql_movimientos_mes = self.sql_manager.get_query('inventario', 'contar_movimientos_mes')
-            cursor.execute(sql_movimientos_mes)
+            cursor.execute(sql_movimientos_mes, {})
             movimientos_mes = cursor.fetchone()[0]
 
             return {
@@ -1268,7 +1268,7 @@ producto_id,
 
             # Validar existencia de la tabla
             sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_lotes')
-            cursor.execute(sql_verificar)
+            cursor.execute(sql_verificar, {})
             if not cursor.fetchone():
                 logger.error("[ADVERTENCIA] Tabla 'lotes_inventario' no existe")
                 return False
@@ -1332,7 +1332,7 @@ producto_id,
 
             # Validar existencia de la tabla
             sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_lotes')
-            cursor.execute(sql_verificar)
+            cursor.execute(sql_verificar, {})
             if not cursor.fetchone():
                 return []
 
@@ -1485,7 +1485,7 @@ fecha_fin,
 
             # Validar existencia de la tabla
             sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_lotes')
-            cursor.execute(sql_verificar)
+            cursor.execute(sql_verificar, {})
             if not cursor.fetchone():
                 return []
 
@@ -2467,23 +2467,23 @@ descripcion,
             # [LOCK] Total de reservas activas usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'count_reservas_activas')
             cursor = self.db_connection.cursor()
-            cursor.execute(sql)
+            cursor.execute(sql, {})
             estadisticas["total_reservas_activas"] = cursor.fetchone()[0]
 
             # [LOCK] Valor total reservado usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'valor_total_reservas_activas')
-            cursor.execute(sql)
+            cursor.execute(sql, {})
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_reservado"] = resultado if resultado else 0
 
             # [LOCK] Obras con reservas usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'count_obras_con_reservas')
-            cursor.execute(sql)
+            cursor.execute(sql, {})
             estadisticas["obras_con_reservas"] = cursor.fetchone()[0]
 
             # [LOCK] Productos con reservas usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'count_productos_con_reservas')
-            cursor.execute(sql)
+            cursor.execute(sql, {})
             estadisticas["productos_con_reservas"] = cursor.fetchone()[0]
 
             return estadisticas
@@ -2531,7 +2531,7 @@ descripcion,
                 FROM inventario_perfiles
                 WHERE categoria IS NOT NULL
                 ORDER BY categoria
-            """)
+            """, {})
 
             categorias = []
             for row in cursor.fetchall():
@@ -2550,12 +2550,12 @@ descripcion,
 
             # Total de productos
             sql_activos = self.sql_manager.get_query('inventario', 'contar_productos_activos')
-            cursor.execute(sql_activos)
+            cursor.execute(sql_activos, {})
             total_productos = cursor.fetchone()[0]
 
             # Valor total
             cursor.execute("""
-                SELECT SUM(stock_actual * precio_unitario)
+                SELECT SUM(stock_actual * precio_unitario, {})
                 FROM inventario_perfiles
                 WHERE activo = 1
             """)
@@ -2563,7 +2563,7 @@ descripcion,
 
             # Stock bajo
             cursor.execute("""
-                SELECT COUNT(*)
+                SELECT COUNT(*, {})
                 FROM inventario_perfiles
                 WHERE stock_actual <= stock_minimo AND activo = 1
             """)
@@ -2571,7 +2571,7 @@ descripcion,
 
             # Productos activos
             sql_activos = self.sql_manager.get_query('inventario', 'contar_productos_activos')
-            cursor.execute(sql_activos)
+            cursor.execute(sql_activos, {})
             productos_activos = cursor.fetchone()[0]
 
             return {
@@ -2637,7 +2637,7 @@ descripcion,
             # Total de reservas
             cursor.execute(
                 """
-                SELECT COUNT(*)
+                SELECT COUNT(*, {})
                 FROM reservas_inventario
                 WHERE obra_id = ? AND estado = 'ACTIVA'
             """,
@@ -2648,7 +2648,7 @@ descripcion,
             # Valor reservado
             cursor.execute(
                 """
-                SELECT SUM(r.cantidad_reservada * i.precio_unitario)
+                SELECT SUM(r.cantidad_reservada * i.precio_unitario, {})
                 FROM reservas_inventario r
                 JOIN inventario_perfiles i ON r.producto_id = i.id
                 WHERE r.obra_id = ? AND r.estado = 'ACTIVA'
@@ -2660,7 +2660,7 @@ descripcion,
             # Productos reservados
             cursor.execute(
                 """
-                SELECT COUNT(DISTINCT producto_id)
+                SELECT COUNT(DISTINCT producto_id, {})
                 FROM reservas_inventario
                 WHERE obra_id = ? AND estado = 'ACTIVA'
             """,

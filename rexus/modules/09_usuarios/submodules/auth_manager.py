@@ -136,7 +136,7 @@ usuario_id: int,
 
             # Crear tabla si no existe
             query_create = self.sql_manager.get_query('usuarios', 'crear_tabla_intentos')
-            cursor.execute(query_create)
+            cursor.execute(query_create, {})
 
             # Insertar registro
             query_insert = self.sql_manager.get_query('usuarios', 'insertar_intento_login')

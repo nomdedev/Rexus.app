@@ -54,7 +54,7 @@ class BaseInventarioUtilities:
                 return False
                 
             cursor = self.db_connection.cursor()
-            cursor.execute("SELECT 1")
+            cursor.execute("SELECT 1", {})
             cursor.close()
             return True
             

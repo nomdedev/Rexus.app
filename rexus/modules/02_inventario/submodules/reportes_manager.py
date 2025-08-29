@@ -136,9 +136,9 @@ WHERE i.activo = 1
             query += " ORDER BY i.codigo"
 
             cursor.execute(query, params)
-productos = []
+            productos = []
 
-for row in cursor.fetchall():
+            for row in cursor.fetchall():
                 producto = {
 'id': row[0],
 'codigo': row[1],
@@ -328,7 +328,7 @@ GROUP BY i.id, i.codigo, i.descripcion, i.stock, i.precio_unitario
 ORDER BY valor_total DESC, demanda_anual DESC
 """
 
-cursor.execute(query)
+cursor.execute(query, {})
 productos = []
 
 for row in cursor.fetchall():
@@ -409,7 +409,7 @@ GROUP BY i.categoria
 ORDER BY valor_categoria DESC
 """
 
-cursor.execute(query)
+cursor.execute(query, {})
 valor_por_categoria = []
 valor_total = 0
 
@@ -425,7 +425,7 @@ valor_total += categoria['valor_categoria']
 
 # Productos sin stock
 cursor.execute("""
-SELECT COUNT(*) 
+SELECT COUNT(*, {}) 
 FROM inventario 
 WHERE activo = 1 AND stock = 0
 """)
@@ -462,19 +462,19 @@ cursor = self.db_connection.cursor()
 kpis = {}
 
 # Total productos activos
-cursor.execute("SELECT COUNT(*) FROM inventario WHERE activo = 1")
+cursor.execute("SELECT COUNT(*), {} FROM inventario WHERE activo = 1")
 kpis['total_productos'] = cursor.fetchone()[0] or 0
 
 # Productos bajo stock mínimo
 cursor.execute("""
-SELECT COUNT(*) FROM inventario 
+SELECT COUNT(*), {} FROM inventario 
 WHERE activo = 1 AND stock < stock_minimo
 """)
 kpis['productos_bajo_minimo'] = cursor.fetchone()[0] or 0
 
 # Valor total inventario
 cursor.execute("""
-SELECT SUM(stock * precio_unitario) 
+SELECT SUM(stock * precio_unitario, {}) 
 FROM inventario 
 WHERE activo = 1
 """)
@@ -484,7 +484,7 @@ kpis['valor_total_inventario'] = float(valor_result) if valor_result else 0.0
 # Movimientos del mes actual
 primer_dia_mes = datetime.now().replace(day=1)
 cursor.execute("""
-SELECT COUNT(*) FROM movimientos_inventario 
+SELECT COUNT(*), {} FROM movimientos_inventario 
 WHERE fecha >= ?
 """, [primer_dia_mes])
 kpis['movimientos_mes_actual'] = cursor.fetchone()[0] or 0
@@ -796,7 +796,7 @@ ORDER BY rotacion DESC
 """
 campo_ordenamiento = 'rotacion'
 
-cursor.execute(query)
+cursor.execute(query, {})
 productos_raw = cursor.fetchall()
 
 # Procesar productos

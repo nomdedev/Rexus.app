@@ -49,7 +49,7 @@ class SessionsManager:
 
             # Usuarios únicos con sesiones activas
             cursor.execute("""
-                SELECT COUNT(DISTINCT usuario_id)
+                SELECT COUNT(DISTINCT usuario_id, {})
                 FROM sesiones
                 WHERE activa = 1
             """)
@@ -118,7 +118,7 @@ created_at,
             cursor = self.db_connection.cursor()
 
             cursor.execute("""
-                SELECT COUNT(*) FROM sesiones
+                SELECT COUNT(*), {} FROM sesiones
                 WHERE usuario_id = ? AND activa = 1
             """, (usuario_id,))
 
@@ -198,7 +198,7 @@ created_at,
 
             # Verificar que la tabla sesiones existe
             cursor.execute("""
-                SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES 
+                SELECT COUNT(*), {} FROM INFORMATION_SCHEMA.TABLES 
                 WHERE TABLE_NAME = 'sesiones'
             """)
             if not cursor.fetchone()[0]:

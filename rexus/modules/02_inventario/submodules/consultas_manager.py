@@ -65,68 +65,68 @@ if not self.db_connection:
 
             # Construir query base
             query_base = """
-SELECT
-id, codigo, descripcion, categoria, unidad_medida,
-precio_compra, precio_venta, stock_actual, stock_minimo,
-ubicacion, observaciones, fecha_creacion, fecha_modificacion
-FROM inventario
-WHERE activo = 1
+        SELECT
+        id, codigo, descripcion, categoria, unidad_medida,
+        precio_compra, precio_venta, stock_actual, stock_minimo,
+        ubicacion, observaciones, fecha_creacion, fecha_modificacion
+        FROM inventario
+        WHERE activo = 1
 """
 
-# Usar SQL externo para count query
-params = {
-    'categoria': filtros_sanitizados.get("categoria")
-}
+            # Usar SQL externo para count query
+            params = {
+                'categoria': filtros_sanitizados.get("categoria")
+            }
 
-query_count = self.sql_manager.ejecutar_consulta_archivo(
-    'sql/02_inventario/consultas/count_inventario_activo.sql', 
-    params
-)
+            query_count = self.sql_manager.ejecutar_consulta_archivo(
+                'sql/02_inventario/consultas/count_inventario_activo.sql', 
+                params
+            )
 
-query_params = []
+            query_params = []
 # Aplicar filtros para query base
-if filtros_sanitizados.get("categoria"):
+        if filtros_sanitizados.get("categoria"):
                 query_base += " AND categoria = ?"
-query_params.append(filtros_sanitizados["categoria"])
+        query_params.append(filtros_sanitizados["categoria"])
 
-if filtros_sanitizados.get("busqueda"):
+        if filtros_sanitizados.get("busqueda"):
                 busqueda = f"%{filtros_sanitizados['busqueda']}%"
-query_base += " AND (codigo LIKE ? OR descripcion LIKE ?)"
-query_count += " AND (codigo LIKE ? OR descripcion LIKE ?)"
-params.extend([busqueda, busqueda])
+        query_base += " AND (codigo LIKE ? OR descripcion LIKE ?)"
+        query_count += " AND (codigo LIKE ? OR descripcion LIKE ?)"
+        params.extend([busqueda, busqueda])
 
-if filtros_sanitizados.get("stock_bajo"):
+        if filtros_sanitizados.get("stock_bajo"):
                 query_base += " AND stock_actual <= stock_minimo"
-query_count += " AND stock_actual <= stock_minimo"
+        query_count += " AND stock_actual <= stock_minimo"
 
-if filtros_sanitizados.get("ubicacion"):
+        if filtros_sanitizados.get("ubicacion"):
                 query_base += " AND ubicacion LIKE ?"
-query_count += " AND ubicacion LIKE ?"
-params.append(f"%{filtros_sanitizados['ubicacion']}%")
+        query_count += " AND ubicacion LIKE ?"
+        params.append(f"%{filtros_sanitizados['ubicacion']}%")
 
 # Obtener total de registros
-cursor = self.db_connection.cursor()
-cursor.execute(query_count, params)
-total = cursor.fetchone()[0]
+        cursor = self.db_connection.cursor()
+        cursor.execute(query_count, params)
+        total = cursor.fetchone()[0]
 
 # Aplicar ordenamiento y paginación
-query_base += f" ORDER BY {orden}"
-query_base += f" OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY"
+        query_base += f" ORDER BY {orden}"
+        query_base += f" OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY"
 
 # Ejecutar consulta principal
-cursor.execute(query_base, params)
-columns = [column[0] for column in cursor.description]
+        cursor.execute(query_base, params)
+        columns = [column[0] for column in cursor.description]
 
-items = []
-for row in cursor.fetchall():
+        items = []
+        for row in cursor.fetchall():
                 producto = dict(zip(columns, row))
 
 # Calcular estado de stock
-if producto["stock_actual"] <= 0:
+        if producto["stock_actual"] <= 0:
                 producto["estado_stock"] = "SIN_STOCK"
-elif producto["stock_actual"] <= producto["stock_minimo"]:
+        elif producto["stock_actual"] <= producto["stock_minimo"]:
                 producto["estado_stock"] = "STOCK_BAJO"
-else:
+        else:
                 producto["estado_stock"] = "NORMAL"
 
             items.append(producto)
@@ -195,7 +195,7 @@ try:
 # Estadísticas generales
 cursor.execute("""
 SELECT
-COUNT(*) as total_productos,
+COUNT(*), {} as total_productos,
 COUNT(CASE WHEN stock_actual > 0 THEN 1 END) as productos_con_stock,
 COUNT(CASE WHEN stock_actual = 0 THEN 1 END) as productos_sin_stock,
 COUNT(CASE WHEN stock_actual <= stock_minimo THEN 1 END) as productos_stock_bajo,
