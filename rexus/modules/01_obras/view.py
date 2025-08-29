@@ -262,7 +262,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         self.tabla_obras.setSelectionBehavior(self.tabla_obras.SelectionBehavior.SelectRows)
         self.tabla_obras.setSortingEnabled(True)
 
-        logger.info("[OBRAS] Tabla configurada correctamente")
+        self.logger.info("[OBRAS] Tabla configurada correctamente")
 
     def cargar_obras_en_tabla(self, obras_data=None):
         """Carga las obras en la tabla principal usando componente optimizado."""
@@ -291,7 +291,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             # Cargar datos en la tabla optimizada
             self.tabla_obras.load_data(obras_data, update_progress)
 
-            logger.info(f"[OBRAS] Cargadas {len(obras_data)} obras en tabla optimizada")
+            self.logger.info(f"[OBRAS] Cargadas {len(obras_data)} obras en tabla optimizada")
 
             # Poblar la tabla
             for row, obra in enumerate(obras_data):
@@ -381,10 +381,10 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                     self.tabla_obras.setCellWidget(row, 10, btn_acciones)
 
                 except Exception as e:
-                    logger.info(f"Error cargando fila {row}: {str(e)}")
+                    self.logger.info(f"Error cargando fila {row}: {str(e)}")
                     continue
 
-            logger.info(f"Cargadas {len(obras_data)} obras en la tabla")
+            self.logger.info(f"Cargadas {len(obras_data)} obras en la tabla")
 
         except Exception as e:
             show_error(self, "Error", f"Error cargando obras en tabla: {str(e)}")
@@ -1214,7 +1214,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             try:
                 self.cronograma_widget.cargar_obras(obras_cronograma)
             except Exception as e:
-                logger.info(f"Error al cargar obras en cronograma: {e}")
+                self.logger.info(f"Error al cargar obras en cronograma: {e}")
 
     def exportar_cronograma(self):
         """Exporta el cronograma actual."""

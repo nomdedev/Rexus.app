@@ -32,7 +32,9 @@ from rexus.utils.loading_manager import LoadingManager
 from rexus.utils.message_system import ask_question, show_error, show_warning
 from rexus.utils.xss_protection import FormProtector
 from rexus.utils.export_manager import ModuleExportMixin
-from rexus.modules.herrajes.constants import HerrajesConstants
+import importlib
+herrajes_constants = importlib.import_module('rexus.modules.06_herrajes.constants')
+HerrajesConstants = herrajes_constants.HerrajesConstants
 
 logger = logging.getLogger(__name__)
 

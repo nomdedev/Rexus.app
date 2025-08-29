@@ -13,7 +13,7 @@ from pathlib import Path
 root_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
-from rexus.modules.07_vidrios.model import VidriosModel
+from rexus.modules.vidrios.model import VidriosModel
 
 
 class TestVidriosModel(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestVidriosModel(unittest.TestCase):
         model_with_db = VidriosModel(db_connection=mock_db)
         self.assertEqual(model_with_db.db_connection, mock_db)
 
-    @patch('rexus.modules.07_vidrios.model.data_sanitizer')
+    @patch('rexus.modules.vidrios.model.data_sanitizer')
     def test_crear_vidrio(self, mock_sanitizer):
         """Test de creación de vidrio."""
         # Mock sanitizer
@@ -244,7 +244,7 @@ class TestVidriosModel(unittest.TestCase):
         result = self.model.crear_vidrio(datos)
         self.assertFalse(result)
 
-    @patch('rexus.modules.07_vidrios.model.data_sanitizer')
+    @patch('rexus.modules.vidrios.model.data_sanitizer')
     def test_sanitizacion_datos(self, mock_sanitizer):
         """Test de sanitización de datos."""
         if mock_sanitizer:

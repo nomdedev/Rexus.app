@@ -34,3 +34,11 @@ if __name__ == "__main__":
         result = security.validate_password_strength(pwd)
         logger = get_logger("usuarios.security")
         logger.info(f"Contraseña '{pwd}': {result['strength']} - {result['issues']}")
+
+
+class SecurityFeatures:
+    """Clase base para SecurityFeatures."""
+    
+    def __init__(self):
+        """Inicializar SecurityFeatures."""
+        pass

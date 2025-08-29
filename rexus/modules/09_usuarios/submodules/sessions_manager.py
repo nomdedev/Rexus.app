@@ -44,7 +44,7 @@ class SessionsManager:
             stats = {}
 
             # Sesiones activas totales
-            self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_sesiones_1.sql', params))
+            cursor.execute(self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_sesiones_1.sql', params))
             stats['sesiones_activas'] = cursor.fetchone()[0]
 
             # Usuarios únicos con sesiones activas
@@ -86,6 +86,8 @@ created_at,
             return stats
 
         except Exception as e:
+            self.logger.error(f"Error obteniendo estadísticas de sesiones: {e}")
+            return {}
         finally:
             if 'cursor' in locals():
                 cursor.close()
@@ -124,6 +126,8 @@ created_at,
             return sesiones_activas < self.max_concurrent_sessions
 
         except Exception as e:
+            logger.error(f"Error validando límite de sesiones: {e}")
+            return False
         finally:
             if 'cursor' in locals():
                 cursor.close()

@@ -19,7 +19,7 @@ class PedidosModel:
     def eliminar_pedido(self, pedido_id: str) -> bool:
         """Elimina un pedido por ID."""
         try:
-            logger.info(f"[PEDIDOS] Eliminando pedido ID: {pedido_id}")
+            self.logger.info(f"[PEDIDOS] Eliminando pedido ID: {pedido_id}")
             if not self.db_connection:
                 return False
             
@@ -27,7 +27,7 @@ class PedidosModel:
             return True
             
         except Exception as e:
-            logger.info(f"[PEDIDOS] Error eliminando pedido: {e}")
+            self.logger.info(f"[PEDIDOS] Error eliminando pedido: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False

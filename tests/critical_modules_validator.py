@@ -221,28 +221,28 @@ class CriticalModulesValidator:
         print("\n2️⃣ VALIDANDO CONTROLADORES CRÍTICOS...")
         
         critical_controllers = [
-            ('rexus.modules.10_configuracion.controller', 'ConfiguracionController', [
+            ('rexus.modules.configuracion.controller', 'ConfiguracionController', [
                 'cargar_configuracion', 'guardar_configuracion', 'obtener_configuracion'
             ]),
-            ('rexus.modules.09_usuarios.controller', 'UsuariosController', [
+            ('rexus.modules.usuarios.controller', 'UsuariosController', [
                 'cargar_usuarios', 'autenticar_usuario', 'crear_usuario'
             ]),
-            ('rexus.modules.02_inventario.controller', 'InventarioController', [
+            ('rexus.modules.inventario.controller', 'InventarioController', [
                 'cargar_inventario', 'obtener_productos', 'actualizar_stock'
             ]),
-            ('rexus.modules.01_obras.controller', 'ObrasController', [
+            ('rexus.modules.obras.controller', 'ObrasController', [
                 'cargar_obras', 'crear_obra', 'obtener_obra_por_id'
             ]),
-            ('rexus.modules.04_compras.controller', 'ComprasController', [
+            ('rexus.modules.compras.controller', 'ComprasController', [
                 'cargar_compras', 'crear_compra', 'obtener_proveedores'
             ]),
-            ('rexus.modules.03_pedidos.controller', 'PedidosController', [
+            ('rexus.modules.pedidos.controller', 'PedidosController', [
                 'cargar_pedidos', 'crear_pedido', 'actualizar_estado'
             ]),
-            ('rexus.modules.07_vidrios.controller', 'VidriosController', [
+            ('rexus.modules.vidrios.controller', 'VidriosController', [
                 'cargar_vidrios', 'obtener_tipos', 'calcular_precio'
             ]),
-            ('rexus.modules.13_notificaciones.controller', 'NotificacionesController', [
+            ('rexus.modules.notificaciones.controller', 'NotificacionesController', [
                 'cargar_notificaciones', 'enviar_notificacion', 'marcar_leida'
             ])
         ]
@@ -267,14 +267,14 @@ class CriticalModulesValidator:
         print("\n3️⃣ VALIDANDO MODELOS Y COMPATIBILIDAD SQL...")
         
         critical_models = [
-            ('rexus.modules.10_configuracion.model', 'ConfiguracionModel'),
-            ('rexus.modules.09_usuarios.model', 'UsuariosModel'),
-            ('rexus.modules.02_inventario.model', 'InventarioModel'),
-            ('rexus.modules.01_obras.model', 'ObrasModel'),
-            ('rexus.modules.04_compras.model', 'ComprasModel'),
-            ('rexus.modules.03_pedidos.model', 'PedidosModel'),
-            ('rexus.modules.07_vidrios.model', 'VidriosModel'),
-            ('rexus.modules.13_notificaciones.model', 'NotificacionesModel')
+            ('rexus.modules.configuracion.model', 'ConfiguracionModel'),
+            ('rexus.modules.usuarios.model', 'UsuariosModel'),
+            ('rexus.modules.inventario.model', 'InventarioModel'),
+            ('rexus.modules.obras.model', 'ObrasModel'),
+            ('rexus.modules.compras.model', 'ComprasModel'),
+            ('rexus.modules.pedidos.model', 'PedidosModel'),
+            ('rexus.modules.vidrios.model', 'VidriosModel'),
+            ('rexus.modules.notificaciones.model', 'NotificacionesModel')
         ]
         
         models_results = {}

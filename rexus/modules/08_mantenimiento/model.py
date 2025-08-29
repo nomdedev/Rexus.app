@@ -15,7 +15,7 @@ Maneja la lógica de negocio para:
 
 
 # Importar utilidades de sanitización
-
+from rexus.utils.app_logger import get_logger
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
 from rexus.utils.sql_query_manager import SQLQueryManager
 
@@ -31,6 +31,7 @@ class MantenimientoModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
+        self.logger = get_logger(self.__class__.__name__)
         self.sql_manager = SQLQueryManager()
         self.tabla_equipos = "equipos"
         self.tabla_herramientas = "herramientas"
@@ -64,14 +65,12 @@ class MantenimientoModel:
                     (tabla,),
                 )
                 if cursor.fetchone():
-                    print(f"[MANTENIMIENTO] Tabla '{tabla}' verificada correctamente.")
+                    self.logger.info(f"Tabla '{tabla}' verificada correctamente")
                 else:
-                    print(
-                        f"[ADVERTENCIA] La tabla '{tabla}' no existe en la base de datos."
-                    )
+                    self.logger.warning(f"La tabla '{tabla}' no existe en la base de datos")
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error verificando tablas: {e}")
+            self.logger.error(f"Error verificando tablas: {e}")
 
     def _validate_table_name(self, table_name):
         """
@@ -170,7 +169,7 @@ class MantenimientoModel:
             return equipos
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error obteniendo equipos: {e}")
+            self.logger.error(f"Error obteniendo equipos: {e}")
             return []
 
     def crear_equipo(self, datos_equipo):
@@ -225,11 +224,11 @@ class MantenimientoModel:
             )
 
             self.db_connection.commit()
-            print(f"[MANTENIMIENTO] Equipo creado con ID: {equipo_id}")
+            self.logger.info(f"Equipo creado con ID: {equipo_id}")
             return equipo_id
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error creando equipo: {e}")
+            self.logger.error(f"Error creando equipo: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
@@ -281,11 +280,11 @@ class MantenimientoModel:
             )
 
             self.db_connection.commit()
-            print(f"[MANTENIMIENTO] Equipo {equipo_id} actualizado exitosamente")
+            self.logger.info(f"Equipo {equipo_id} actualizado exitosamente")
             return True
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error actualizando equipo: {e}")
+            self.logger.error(f"Error actualizando equipo: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -342,7 +341,7 @@ class MantenimientoModel:
             return mantenimientos
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error obteniendo mantenimientos: {e}")
+            self.logger.error(f"Error obteniendo mantenimientos: {e}")
             return []
 
     def crear_mantenimiento(self, datos_mantenimiento):
@@ -392,11 +391,11 @@ class MantenimientoModel:
             )
 
             self.db_connection.commit()
-            print(f"[MANTENIMIENTO] Mantenimiento creado con ID: {mantenimiento_id}")
+            self.logger.info(f"Mantenimiento creado con ID: {mantenimiento_id}")
             return mantenimiento_id
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error creando mantenimiento: {e}")
+            self.logger.error(f"Error creando mantenimiento: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
@@ -444,13 +443,11 @@ class MantenimientoModel:
             )
 
             self.db_connection.commit()
-            print(
-                f"[MANTENIMIENTO] Mantenimiento {mantenimiento_id} completado exitosamente"
-            )
+            self.logger.info(f"Mantenimiento {mantenimiento_id} completado exitosamente")
             return True
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error completando mantenimiento: {e}")
+            self.logger.error(f"Error completando mantenimiento: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -505,7 +502,7 @@ class MantenimientoModel:
             return estadisticas
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error obteniendo estadísticas: {e}")
+            self.logger.error(f"Error obteniendo estadísticas: {e}")
             return {}
 
     # MÉTODOS AUXILIARES PRIVADOS
@@ -526,7 +523,7 @@ class MantenimientoModel:
             cursor.execute(query, (equipo_id, tipo, descripcion))
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error registrando historial de equipo: {e}")
+            self.logger.error(f"Error registrando historial de equipo: {e}")
 
     def _registrar_historial_mantenimiento(self,
 mantenimiento_id,
@@ -547,9 +544,7 @@ mantenimiento_id,
             cursor.execute(query, (mantenimiento_id, tipo, descripcion))
 
         except Exception as e:
-            print(
-                f"[ERROR MANTENIMIENTO] Error registrando historial de mantenimiento: {e}"
-            )
+            self.logger.error(f"Error registrando historial de mantenimiento: {e}")
 
     def _actualizar_proxima_revision(self, mantenimiento_id):
         """Actualiza la fecha de próxima revisión del equipo."""
@@ -576,7 +571,7 @@ mantenimiento_id,
                 cursor.execute(query, (equipo_id,))
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error actualizando próxima revisión: {e}")
+            self.logger.error(f"Error actualizando próxima revisión: {e}")
 
     # === MÉTODOS DE PAGINACIÓN ===
 
@@ -661,7 +656,7 @@ mantenimiento_id,
             return datos, total_registros
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error obteniendo datos paginados: {e}")
+            self.logger.error(f"Error obteniendo datos paginados: {e}")
             # Fallback con datos demo en caso de error
             datos_demo = self._get_ordenes_demo()
             return datos_demo[offset:offset+limit], len(datos_demo)
@@ -704,7 +699,7 @@ mantenimiento_id,
             return cursor.fetchone()[0]
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error obteniendo total de registros: {e}")
+            self.logger.error(f"Error obteniendo total de registros: {e}")
             return len(self._get_ordenes_demo())
 
     def buscar_ordenes(self, filtros):
@@ -760,11 +755,11 @@ mantenimiento_id,
             orden_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
-            print(f"[MANTENIMIENTO] Orden de trabajo creada con ID: {orden_id}")
+            self.logger.info(f"Orden de trabajo creada con ID: {orden_id}")
             return orden_id
 
         except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error creando orden de trabajo: {e}")
+            self.logger.error(f"Error creando orden de trabajo: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None

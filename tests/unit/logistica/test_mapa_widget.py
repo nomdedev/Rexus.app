@@ -21,10 +21,10 @@ sys.path.insert(0, str(root_dir))
 
 # Imports a testear
 try:
-    from rexus.modules.05_logistica.components.mapa_widget import MapaWidget
+    from rexus.modules.logistica.components.mapa_widget import MapaWidget
     from rexus.ui.components.base_components import RexusButton, RexusLineEdit
 except ImportError as e:
-    pytest.skip(f, allow_module_level=True)
+    pytest.skip(f"Imports not available: {e}", allow_module_level=True)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -365,7 +365,7 @@ class TestMapaWidget:
         """Test exportación sin datos."""
         widget = MapaWidget(self.mock_parent)
         
-        with patch('rexus.modules.05_logistica.components.mapa_widget.QMessageBox') as mock_msgbox:
+        with patch('rexus.modules.logistica.components.mapa_widget.QMessageBox') as mock_msgbox:
             widget.exportar_mapa()
             
             mock_msgbox.warning.assert_called_once_with(
@@ -377,7 +377,7 @@ class TestMapaWidget:
         widget = MapaWidget(self.mock_parent)
         widget.cargar_ubicaciones(self.sample_locations)
         
-        with patch('rexus.modules.05_logistica.components.mapa_widget.QMessageBox') as mock_msgbox, \
+        with patch('rexus.modules.logistica.components.mapa_widget.QMessageBox') as mock_msgbox, \
              patch.object(widget, 'save_map_html', return_value=True) as mock_save:
             
             widget.exportar_mapa()

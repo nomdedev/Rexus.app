@@ -57,14 +57,14 @@ orden: str = "descripcion ASC",
 if not self.db_connection:
         return {"items": [], "total": 0, "offset": offset, "limit": limit}
 
-try:
-        # Sanitizar filtros
-filtros_sanitizados = {}
-if filtros:
+        try:
+            # Sanitizar filtros
+            filtros_sanitizados = {}
+            if filtros:
                 filtros_sanitizados = self.sanitizer.sanitize_dict(filtros)
 
-# Construir query base
-query_base = """
+            # Construir query base
+            query_base = """
 SELECT
 id, codigo, descripcion, categoria, unidad_medida,
 precio_compra, precio_venta, stock_actual, stock_minimo,
@@ -73,14 +73,21 @@ FROM inventario
 WHERE activo = 1
 """
 
-query_count = "SELECT COUNT(*) FROM inventario WHERE activo = 1"
-params = []
+# Usar SQL externo para count query
+params = {
+    'categoria': filtros_sanitizados.get("categoria")
+}
 
-# Aplicar filtros
+query_count = self.sql_manager.ejecutar_consulta_archivo(
+    'sql/02_inventario/consultas/count_inventario_activo.sql', 
+    params
+)
+
+query_params = []
+# Aplicar filtros para query base
 if filtros_sanitizados.get("categoria"):
                 query_base += " AND categoria = ?"
-query_count += " AND categoria = ?"
-params.append(filtros_sanitizados["categoria"])
+query_params.append(filtros_sanitizados["categoria"])
 
 if filtros_sanitizados.get("busqueda"):
                 busqueda = f"%{filtros_sanitizados['busqueda']}%"
@@ -122,16 +129,16 @@ elif producto["stock_actual"] <= producto["stock_minimo"]:
 else:
                 producto["estado_stock"] = "NORMAL"
 
-items.append(producto)
+            items.append(producto)
 
-return {
-"items": items,
-"total": total,
-"offset": offset,
-"limit": limit,
-"pages": (total + limit - 1) // limit,
-"current_page": (offset // limit) + 1,
-}
+            return {
+                "items": items,
+                "total": total,
+                "offset": offset,
+                "limit": limit,
+                "pages": (total + limit - 1) // limit,
+                "current_page": (offset // limit) + 1,
+            }
 
 except Exception as e:
         raise Exception(f"Error obteniendo productos paginados: {str(e)}")

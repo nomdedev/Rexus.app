@@ -457,7 +457,7 @@ class VidriosModel:
 
             # Obtener ID del pedido creado
             query = self.sql_manager.get_query("vidrios", "get_last_identity")
-            cursor.execute(query)
+            cursor.execute(query, {})
             pedido_id = cursor.fetchone()[0]
 
             # Actualizar cantidades pedidas en vidrios_por_obra
@@ -500,7 +500,7 @@ class VidriosModel:
 
             # Total de vidrios
             query = self.sql_manager.get_query("vidrios", "count_vidrios_activos")
-            cursor.execute(query)
+            cursor.execute(query, {})
             estadisticas["total_vidrios"] = cursor.fetchone()[0]
 
             # Tipos de vidrio disponibles
@@ -517,7 +517,7 @@ class VidriosModel:
 
             # Valor total del inventario (estimado por m2)
             query = self.sql_manager.get_query("vidrios", "sum_precios_vidrios")
-            cursor.execute(query)
+            cursor.execute(query, {})
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0
 
@@ -666,7 +666,7 @@ class VidriosModel:
 
             # Obtener ID del vidrio creado
             query = self.sql_manager.get_query("vidrios", "get_last_identity")
-            cursor.execute(query)
+            cursor.execute(query, {})
             vidrio_id = cursor.fetchone()[0]
 
             self.db_connection.connection.commit()

@@ -253,5 +253,5 @@ class HerrajesController(QObject):
             return HerrajesInventarioIntegration(db_connection=db_connection)
         except (ImportError, AttributeError, TypeError) as e:
             # Retornar None si no puede construirse (evita lanzar en pruebas)
-            logger.debug(f"Servicio de integración no disponible: {e}")
+            self.logger.debug(f"Servicio de integración no disponible: {e}")
             return None

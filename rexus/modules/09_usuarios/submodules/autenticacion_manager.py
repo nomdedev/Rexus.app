@@ -1,16 +1,37 @@
 """
-Submódulo de Autenticación de Usuarios - Rexus.app
+Submódulo de Autenticación - Sistema de Usuarios Rexus.app
 
-Gestiona autenticación, validación de contraseñas y seguridad de acceso.
-Responsabilidades:
-- Autenticación segura de usuarios
-- Validación de fortaleza de contraseñas
-- Control de intentos fallidos y bloqueos
-- Gestión de sesiones y tokens
+Gestiona procesos de autenticación, validación de credenciales,
+bloqueo de cuentas y control de acceso.
 """
 
 import datetime
 import hashlib
+import logging
+from typing import Dict, Any, Optional
+from rexus.utils.security import sanitize_string
+
+logger = logging.getLogger(__name__)
+
+
+class AutenticacionManager:
+    """Gestor de autenticación de usuarios."""
+    
+    def __init__(self, db_connection=None, sql_manager=None):
+        """Inicializar manager de autenticación."""
+        self.db_connection = db_connection
+        self.sql_manager = sql_manager
+        self.sql_path = "sql/09_usuarios"
+        self.max_intentos = 3
+        self.tiempo_bloqueo_minutos = 30
+    
+    def autenticar_usuario(self, username: str, password: str) -> Dict[str, Any]:
+        """Autenticar usuario con credenciales."""
+        if not self.db_connection:
+            return {"success": False, "error": "Sin conexión a base de datos"}
+        
+        try:
+            username_safe = sanitize_string(username)
             
             # Verificar si la cuenta está bloqueada
             if self.verificar_cuenta_bloqueada(username_safe):
@@ -18,235 +39,137 @@ import hashlib
                     "success": False,
                     "error": "Cuenta bloqueada por múltiples intentos fallidos",
                 }
-
+            
             cursor = self.db_connection.cursor()
-
+            
             # Obtener datos del usuario
             query = self.sql_manager.get_query(
                 self.sql_path, "obtener_usuario_autenticacion"
             )
             cursor.execute(query, (username_safe,))
-
+            
             usuario = cursor.fetchone()
             if not usuario:
-                self.registrar_intento_login(username_safe, exitoso=False)
-                return {"success": False, "error": "Usuario no encontrado"}
-
+                self._registrar_intento_fallido(username_safe)
+                return {"success": False, "error": "Credenciales inválidas"}
+            
             # Verificar contraseña
-            password_hash = self._hash_password(password, usuario[2])  # salt
-            if password_hash != usuario[1]:  # password_hash
-                self.registrar_intento_login(username_safe, exitoso=False)
-                return {"success": False, "error": "Contraseña incorrecta"}
-
-            # Autenticación exitosa
-            self.reset_intentos_login(username_safe)
-            self.registrar_intento_login(username_safe, exitoso=True)
-
-            # Construir datos del usuario autenticado
-            columns = [desc[0] for desc in cursor.description]
-            usuario_data = dict(zip(columns, usuario))
-
+            password_hash = self._hash_password(password)
+            if usuario['password_hash'] != password_hash:
+                self._registrar_intento_fallido(username_safe)
+                return {"success": False, "error": "Credenciales inválidas"}
+            
+            # Verificar estado del usuario
+            if usuario['estado'] != 'ACTIVO':
+                return {"success": False, "error": "Usuario inactivo"}
+            
+            # Limpiar intentos fallidos y actualizar último acceso
+            self._limpiar_intentos_fallidos(usuario['id'])
+            self._actualizar_ultimo_acceso(usuario['id'])
+            
             return {
                 "success": True,
-                "usuario": {
-                    "id": usuario_data.get("id"),
-                    "username": usuario_data.get("username"),
-                    "email": usuario_data.get("email"),
-                    "rol": usuario_data.get("rol", "usuario"),
-                    "activo": usuario_data.get("activo", True),
-                    "ultimo_acceso": datetime.datetime.now(),
-                },
+                "user_id": usuario['id'],
+                "username": usuario['username'],
+                "nombre": usuario['nombre'],
+                "rol": usuario['rol'],
+                "permisos": self._obtener_permisos_usuario(usuario['id'])
             }
-
+            
         except Exception as e:
-            self.
-    def registrar_intento_login(self, username: str, exitoso: bool = False) -> None:
-        """Registra un intento de login en el sistema."""
+            logger.error(f"Error en autenticación: {e}")
+            return {"success": False, "error": "Error interno del sistema"}
+    
+    def verificar_cuenta_bloqueada(self, username: str) -> bool:
+        """Verificar si una cuenta está bloqueada."""
+        if not self.db_connection:
+            return False
+        
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT COUNT(*) FROM intentos_login 
+                WHERE username = ? 
+                AND exitoso = 0 
+                AND fecha_intento > DATEADD(MINUTE, -?, GETDATE())
+            """, (username, self.tiempo_bloqueo_minutos))
+            
+            intentos_recientes = cursor.fetchone()[0]
+            return intentos_recientes >= self.max_intentos
+            
+        except Exception as e:
+            logger.error(f"Error verificando bloqueo de cuenta: {e}")
+            return False
+    
+    def _registrar_intento_fallido(self, username: str) -> None:
+        """Registrar intento de login fallido."""
         if not self.db_connection:
             return
-
+        
         try:
-            username_safe = sanitize_string(username)
             cursor = self.db_connection.cursor()
-
-            query = self.sql_manager.get_query(self.sql_path, "registrar_intento_login")
-            cursor.execute(
-                query,
-                (
-                    username_safe,
-                    exitoso,
-                    datetime.datetime.now(),
-                    self._obtener_ip_cliente(),
-                ),
-            )
-
+            cursor.execute("""
+                INSERT INTO intentos_login (username, exitoso, fecha_intento)
+                VALUES (?, 0, GETDATE())
+            """, (username,))
             self.db_connection.commit()
-
-            # Si falló, incrementar contador
-            if not exitoso:
-                self._incrementar_intentos_fallidos(username_safe)
-
+            
         except Exception as e:
-            self.
-    def validar_fortaleza_password(self, password: str) -> Dict[str, Any]:
-        """
-        Valida la fortaleza de una contraseña según criterios de seguridad.
-
-        Args:
-            password: Contraseña a validar
-
-        Returns:
-            Dict con resultado de validación y criterios evaluados
-        """
-        if not password:
-            return {
-                "valida": False,
-                "puntuacion": 0,
-                "criterios": {},
-                "mensaje": "Contraseña requerida",
-            }
-
-        criterios = {
-            "longitud_minima": len(password) >= 8,
-            "tiene_mayuscula": any(c.isupper() for c in password),
-            "tiene_minuscula": any(c.islower() for c in password),
-            "tiene_numero": any(c.isdigit() for c in password),
-            "tiene_simbolo": any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password),
-            "no_muy_corta": len(password) >= 6,
-            "no_muy_larga": len(password) <= 128,
-        }
-
-        criterios_cumplidos = sum(criterios.values())
-        total_criterios = len(criterios)
-
-        puntuacion = (criterios_cumplidos / total_criterios) * 100
-
-        # Determinar nivel de fortaleza
-        if puntuacion >= 85:
-            nivel = "Muy fuerte"
-        elif puntuacion >= 70:
-            nivel = "Fuerte"
-        elif puntuacion >= 50:
-            nivel = "Moderada"
-        else:
-            nivel = "Débil"
-
-        valida = criterios_cumplidos >= 5  # Al menos 5 criterios
-
-        return {
-            "valida": valida,
-            "puntuacion": round(puntuacion, 1),
-            "nivel": nivel,
-            "criterios": criterios,
-            "criterios_cumplidos": criterios_cumplidos,
-            "total_criterios": total_criterios,
-            "mensaje": self._generar_mensaje_password(criterios, valida),
-        }
-
-    def cambiar_password_usuario(
-        self, usuario_id: int, password_actual: str, password_nueva: str
-    ) -> Dict[str, Any]:
-        """Cambia la contraseña de un usuario con validaciones."""
+            logger.error(f"Error registrando intento fallido: {e}")
+    
+    def _limpiar_intentos_fallidos(self, user_id: int) -> None:
+        """Limpiar intentos fallidos después de login exitoso."""
         if not self.db_connection:
-            return {"success": False, "error": "Sin conexión a base de datos"}
-
+            return
+        
         try:
-            # Validar fortaleza de nueva contraseña
-            validacion = self.validar_fortaleza_password(password_nueva)
-            if not validacion["valida"]:
-                return {
-                    "success": False,
-                    "error": f"Contraseña no cumple criterios: {validacion['mensaje']}",
-                }
-
             cursor = self.db_connection.cursor()
-
-            # Verificar contraseña actual
-            query_verificar = self.sql_manager.get_query(
-                self.sql_path, "verificar_password_actual"
-            )
-            cursor.execute(query_verificar, (usuario_id,))
-
-            usuario = cursor.fetchone()
-            if not usuario:
-                return {"success": False, "error": "Usuario no encontrado"}
-
-            password_hash_actual = self._hash_password(
-                password_actual, usuario[1]
-            )  # salt
-            if password_hash_actual != usuario[0]:  # password_hash
-                return {"success": False, "error": "Contraseña actual incorrecta"}
-
-            # Generar nuevo hash y salt
-            nuevo_salt = self._generar_salt()
-            nuevo_hash = self._hash_password(password_nueva, nuevo_salt)
-
-            # Actualizar contraseña
-            query_actualizar = self.sql_manager.get_query(
-                self.sql_path, "actualizar_password"
-            )
-            cursor.execute(query_actualizar,
-(nuevo_hash,
-                nuevo_salt,
-                usuario_id))
-
+            cursor.execute("""
+                DELETE FROM intentos_login 
+                WHERE username = (SELECT username FROM usuarios WHERE id = ?)
+            """, (user_id,))
             self.db_connection.commit()
-
-            return {"success": True, "mensaje": "Contraseña actualizada exitosamente"}
-
+            
         except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            self.    def _bloquear_usuario(self, username: str) -> None:
-        """Bloquea temporalmente un usuario."""
+            logger.error(f"Error limpiando intentos fallidos: {e}")
+    
+    def _actualizar_ultimo_acceso(self, user_id: int) -> None:
+        """Actualizar timestamp de último acceso."""
+        if not self.db_connection:
+            return
+        
         try:
             cursor = self.db_connection.cursor()
-
-            query = self.sql_manager.get_query(self.sql_path, "bloquear_usuario")
-            cursor.execute(
-                query,
-                (
-                    username,
-                    datetime.datetime.now(),
-                    datetime.datetime.now()
-                    + datetime.timedelta(minutes=self.tiempo_bloqueo_minutos),
-                ),
-            )
-
+            cursor.execute("""
+                UPDATE usuarios 
+                SET ultimo_acceso = GETDATE() 
+                WHERE id = ?
+            """, (user_id,))
+            self.db_connection.commit()
+            
         except Exception as e:
-    def _hash_password(self, password: str, salt: str) -> str:
-        """Genera hash de contraseña con salt."""
-        return hashlib.pbkdf2_hmac(
-            "sha256", password.encode("utf-8"), salt.encode("utf-8"), 100000
-        ).hex()
-
-    def _generar_salt(self) -> str:
-        """Genera un salt aleatorio."""
-        import secrets
-
-        return secrets.token_hex(32)
-
-    def _obtener_ip_cliente(self) -> str:
-        """Obtiene la IP del cliente (simplificado)."""
-        return "127.0.0.1"  # Placeholder
-
-    def _generar_mensaje_password(
-        self, criterios: Dict[str, bool], valida: bool
-    ) -> str:
-        """Genera mensaje descriptivo sobre validación de contraseña."""
-        if valida:
-            return "Contraseña cumple los criterios de seguridad"
-
-        faltantes = []
-        if not criterios.get("longitud_minima"):
-            faltantes.append("mínimo 8 caracteres")
-        if not criterios.get("tiene_mayuscula"):
-            faltantes.append("al menos una mayúscula")
-        if not criterios.get("tiene_minuscula"):
-            faltantes.append("al menos una minúscula")
-        if not criterios.get("tiene_numero"):
-            faltantes.append("al menos un número")
-        if not criterios.get("tiene_simbolo"):
-            faltantes.append("al menos un símbolo")
-
-        return f"Faltan: {', '.join(faltantes)}"
+            logger.error(f"Error actualizando último acceso: {e}")
+    
+    def _hash_password(self, password: str) -> str:
+        """Generar hash de contraseña."""
+        return hashlib.sha256(password.encode()).hexdigest()
+    
+    def _obtener_permisos_usuario(self, user_id: int) -> list:
+        """Obtener permisos del usuario."""
+        if not self.db_connection:
+            return []
+        
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT p.nombre 
+                FROM permisos p
+                JOIN usuario_permisos up ON p.id = up.permiso_id
+                WHERE up.usuario_id = ?
+            """, (user_id,))
+            
+            return [row[0] for row in cursor.fetchall()]
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo permisos: {e}")
+            return []

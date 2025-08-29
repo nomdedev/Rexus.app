@@ -76,18 +76,18 @@ class ProfilesManager:
 
             self.db_connection.commit()
 
-            logger.info("Usuario eliminado: %s (ID: %s)",
+            self.logger.info("Usuario eliminado: %s (ID: %s)",
 usuario.get("username",
                 "N/A"),
                 usuario_id)
             return {'success': True, 'message': 'Usuario eliminado exitosamente'}
 
         except Exception as e:
-            logger.error("Error eliminando usuario: %s", e)
+            self.logger.error("Error eliminando usuario: %s", e)
             try:
                 self.db_connection.rollback()
-            except Exception:
-                logger.error("Error adicional durante rollback")
+            except (AttributeError, RuntimeError, ConnectionError) as rollback_error:
+                self.logger.error("Error adicional durante rollback: %s", rollback_error)
             return {'success': False, 'message': 'Error interno del sistema'}
 
     def obtener_estadisticas_usuarios(self):
@@ -109,11 +109,11 @@ usuario.get("username",
             stats = {}
 
             # Total de usuarios
-            self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_usuarios_1.sql', params))
+            cursor.execute(self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_usuarios_1.sql', params))
             stats['total_usuarios'] = cursor.fetchone()[0]
 
             # Usuarios activos
-            self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_usuarios_3.sql', params))
+            cursor.execute(self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_usuarios_3.sql', params))
             stats['usuarios_activos'] = cursor.fetchone()[0]
 
             # Usuarios por rol
@@ -145,11 +145,14 @@ usuario.get("username",
             return stats
 
         except Exception as e:
+            logger.error(f"Error obteniendo estadísticas de usuario: {e}")
+            return {}
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
         """
         Valida los datos de un usuario.
 
@@ -249,13 +252,13 @@ datos: Dict[str,
             cursor = self.db_connection.cursor()
 
             # Verificar username
-            self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_usuarios_5.sql', params), (username,))
+            cursor.execute(self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_usuarios_5.sql', params), (username,))
             if cursor.fetchone()[0] > 0:
                 return False
 
             # Verificar email si está presente
             if email:
-                self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_usuarios_7.sql', params), (email,))
+                cursor.execute(self.sql_manager.ejecutar_consulta_archivo('sql/09_usuarios/count_usuarios_7.sql', params), (email,))
                 if cursor.fetchone()[0] > 0:
                     return False
 
@@ -267,7 +270,7 @@ datos: Dict[str,
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error("Error cerrando cursor: %s", e)
+                    self.logger.error("Error cerrando cursor: %s", e)
 
     def sanitizar_datos_usuario(self, datos: Dict[str, Any]) -> Dict[str, Any]:
         """

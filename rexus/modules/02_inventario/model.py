@@ -382,7 +382,7 @@ datos_reserva: Dict[str,
             # Usar SQLQueryManager para consulta segura
             cursor = self.db_connection.cursor()
             sql_query = self.sql_manager.get_query('inventario', 'obtener_todos_perfiles_activos')
-            cursor.execute(sql_query)
+            cursor.execute(sql_query, {})
             productos = []
 
             for row in cursor.fetchall():
@@ -774,7 +774,7 @@ datos_reserva: Dict[str,
 
             # [LOCK] Obtener ID del producto creado de forma segura
             sql = self.sql_manager.get_query('inventario', 'get_last_identity')
-            cursor.execute(sql)
+            cursor.execute(sql, {})
             producto_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
@@ -1065,7 +1065,7 @@ producto_id,
             # MIGRADO: Usar consulta SQL externa para obtener tipos distintos
             sql_select = self.sql_manager.get_query('inventario', 'obtener_tipos_distintos')
 
-            cursor.execute(sql_select)
+            cursor.execute(sql_select, {})
             rows = cursor.fetchall()
 
             return [row[0] for row in rows]
@@ -1107,7 +1107,7 @@ producto_id,
 
             # Total de productos
             sql_count = self.sql_manager.get_query('inventario', 'contar_productos_totales')
-            cursor.execute(sql_count)
+            cursor.execute(sql_count, {})
             total_productos = cursor.fetchone()[0]
 
             # Productos con stock bajo

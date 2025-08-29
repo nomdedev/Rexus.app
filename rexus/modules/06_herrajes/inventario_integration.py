@@ -64,17 +64,17 @@ def corregir_discrepancias(self) -> Tuple[bool, str, int]:
     discrepancias = cursor.fetchall()
 
     for herraje_id, codigo, stock_herrajes, stock_inventario in discrepancias:
-    # Usar stock_herrajes como fuente de verdad
-    if stock_inventario is None:
-    # Crear entrada en herrajes_inventario usando archivo SQL externo
-    params = {'herraje_id': herraje_id, 'stock_actual': stock_herrajes}
-    cursor.execute(
-        self.sql_manager.get_query('sql/06_herrajes', 'insert_herraje_inventario.sql'),
-        params
+        # Usar stock_herrajes como fuente de verdad
+        if stock_inventario is None:
+            # Crear entrada en herrajes_inventario usando archivo SQL externo
+            params = {'herraje_id': herraje_id, 'stock_actual': stock_herrajes}
+            cursor.execute(
+                self.sql_manager.get_query('sql/06_herrajes', 'insert_herraje_inventario.sql'),
+                params
     )
-    else:
-    # Actualizar stock en herrajes_inventario usando archivo SQL externo
-    params = {'stock_actual': stock_herrajes, 'herraje_id': herraje_id}
+        else:
+            # Actualizar stock en herrajes_inventario usando archivo SQL externo
+            params = {'stock_actual': stock_herrajes, 'herraje_id': herraje_id}
     cursor.execute(
         self.sql_manager.get_query('sql/06_herrajes', 'update_stock_inventario.sql'),
         params

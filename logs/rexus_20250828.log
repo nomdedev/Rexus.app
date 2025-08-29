@@ -1,0 +1,78 @@
+2025-08-28 13:47:44 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:48:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:50:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:51:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:52:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:52:55 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:54:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:54:39 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:54:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 13:59:27 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:08:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:09:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:09:03 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:09:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:09:12 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:10:05 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:10:26 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:11:11 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:14:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:15:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:15:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:16:12 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:17:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:17:02 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 14:17:02 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 14:17:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:17:57 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 14:17:58 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 14:19:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:19:33 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 14:19:33 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 14:19:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:19:51 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 14:19:51 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 14:20:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:20:49 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 14:20:49 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 14:21:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:21:26 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 14:21:26 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 14:45:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 14:45:59 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 14:45:59 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 16:12:17 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:43:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:48:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:49:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:49:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:50:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:50:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:51:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:56:42 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:57:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 16:57:07 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-28 17:00:19 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 17:25:05 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 17:25:15 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 17:25:27 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 17:25:27 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 17:25:27 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 17:25:34 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 17:25:35 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 17:25:35 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 17:27:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 17:27:09 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 17:27:09 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 17:40:43 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 17:40:43 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 17:48:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 18:02:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 18:03:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 18:04:16 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 18:04:16 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-28 18:04:16 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-28 18:04:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 18:05:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-28 18:05:00 | INFO     | rexus.test      | Test logging
+2025-08-28 18:24:04 | INFO     | rexus           | Sistema de logging Rexus inicializado

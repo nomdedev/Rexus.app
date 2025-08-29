@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.join(project_root, 'rexus'))
 
 # Importar bypass de autenticación global
 try:
-    from tests.auth_test_patch import apply_auth_bypass
-    apply_auth_bypass()
+    from tests.auth_test_patch import apply_auth_patches
+    apply_auth_patches()
 except ImportError:
     pass
 
@@ -29,8 +29,8 @@ class TestUsuariosController:
     @pytest.fixture
     def mock_dependencies(self):
         """Configura dependencias mockeadas."""
-        with patch('rexus.modules.09_usuarios.model.UsuariosModel') as mock_model, \
-             patch('rexus.modules.09_usuarios.view.UsuariosView') as mock_view:
+        with patch('rexus.modules.usuarios.model.UsuariosModel') as mock_model, \
+             patch('rexus.modules.usuarios.view.UsuariosView') as mock_view:
             
             # Mock del modelo
             mock_model_instance = Mock()
@@ -50,7 +50,7 @@ class TestUsuariosController:
     def test_controller_import_succeeds(self):
         """Test crítico: El controlador se puede importar sin errores."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.controller import UsuariosController
             assert UsuariosController is not None
         except ImportError as e:
             pytest.fail(f)
@@ -58,10 +58,10 @@ class TestUsuariosController:
     def test_controller_instantiation_basic(self, mock_dependencies):
         """Test crítico: El controlador se puede instanciar."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.controller import UsuariosController
             
-            with patch('rexus.modules.09_usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.09_usuarios.controller.UsuariosView', mock_dependencies['view_class']):
+            with patch('rexus.modules.usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.usuarios.controller.UsuariosView', mock_dependencies['view_class']):
                 
                 controller = UsuariosController()
                 assert controller is not None
@@ -74,10 +74,10 @@ class TestUsuariosController:
     def test_controller_has_required_authentication_methods(self, mock_dependencies):
         """Test crítico: El controlador tiene métodos de autenticación requeridos."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.controller import UsuariosController
             
-            with patch('rexus.modules.09_usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.09_usuarios.controller.UsuariosView', mock_dependencies['view_class']):
+            with patch('rexus.modules.usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.usuarios.controller.UsuariosView', mock_dependencies['view_class']):
                 
                 controller = UsuariosController()
                 
@@ -105,10 +105,10 @@ class TestUsuariosController:
     def test_controller_has_required_user_management_methods(self, mock_dependencies):
         """Test crítico: El controlador tiene métodos de gestión de usuarios."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.controller import UsuariosController
             
-            with patch('rexus.modules.09_usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.09_usuarios.controller.UsuariosView', mock_dependencies['view_class']):
+            with patch('rexus.modules.usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.usuarios.controller.UsuariosView', mock_dependencies['view_class']):
                 
                 controller = UsuariosController()
                 
@@ -145,10 +145,10 @@ class TestUsuariosController:
     def test_cargar_usuarios_exists_and_callable(self, mock_dependencies):
         """Test crítico: cargar_usuarios existe y es llamable."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.controller import UsuariosController
             
-            with patch('rexus.modules.09_usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.09_usuarios.controller.UsuariosView', mock_dependencies['view_class']):
+            with patch('rexus.modules.usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.usuarios.controller.UsuariosView', mock_dependencies['view_class']):
                 
                 controller = UsuariosController()
                 
@@ -171,7 +171,7 @@ class TestUsuariosController:
     def test_authentication_security_basic(self, mock_dependencies):
         """Test crítico: Verificación básica de seguridad en autenticación."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.controller import UsuariosController
             
             # Mock de usuario válido
             mock_user = {
@@ -186,8 +186,8 @@ class TestUsuariosController:
             mock_dependencies['model'].obtener_usuario_por_nombre.return_value = mock_user
             mock_dependencies['model']._verificar_password.return_value = True
             
-            with patch('rexus.modules.09_usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.09_usuarios.controller.UsuariosView', mock_dependencies['view_class']):
+            with patch('rexus.modules.usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.usuarios.controller.UsuariosView', mock_dependencies['view_class']):
                 
                 controller = UsuariosController()
                 
@@ -223,11 +223,11 @@ class TestUsuariosController:
     def test_advanced_features_integration(self, mock_dependencies):
         """Test crítico: Integración con advanced_features.py."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
-            from rexus.modules.09_usuarios.advanced_features import AdvancedUserManager
+            from rexus.modules.usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.advanced_features import AdvancedUserManager
             
-            with patch('rexus.modules.09_usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.09_usuarios.controller.UsuariosView', mock_dependencies['view_class']):
+            with patch('rexus.modules.usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.usuarios.controller.UsuariosView', mock_dependencies['view_class']):
                 
                 controller = UsuariosController()
                 
@@ -251,10 +251,10 @@ class TestUsuariosController:
     def test_session_management_basic(self, mock_dependencies):
         """Test crítico: Gestión básica de sesiones."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.controller import UsuariosController
             
-            with patch('rexus.modules.09_usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.09_usuarios.controller.UsuariosView', mock_dependencies['view_class']):
+            with patch('rexus.modules.usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.usuarios.controller.UsuariosView', mock_dependencies['view_class']):
                 
                 controller = UsuariosController()
                 
@@ -290,10 +290,10 @@ class TestUsuariosController:
     def test_authentication_validation(self, mock_dependencies, username, password, should_fail):
         """Test crítico: Validación de entrada en autenticación."""
         try:
-            from rexus.modules.09_usuarios.controller import UsuariosController
+            from rexus.modules.usuarios.controller import UsuariosController
             
-            with patch('rexus.modules.09_usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
-                 patch('rexus.modules.09_usuarios.controller.UsuariosView', mock_dependencies['view_class']):
+            with patch('rexus.modules.usuarios.controller.UsuariosModel', mock_dependencies['model_class']), \
+                 patch('rexus.modules.usuarios.controller.UsuariosView', mock_dependencies['view_class']):
                 
                 controller = UsuariosController()
                 

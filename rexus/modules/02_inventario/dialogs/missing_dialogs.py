@@ -39,24 +39,25 @@ QTableWidget, QTableWidgetItem, QWidget, QMessageBox,
 QGroupBox, QHeaderView, QScrollArea
 )
 
-# Importar validadores si estÃ¡n disponibles
+# Importar validadores si están disponibles
 try:
-VALIDATORS_AVAILABLE = True
+    from rexus.utils.validators import ProductValidator
+    VALIDATORS_AVAILABLE = True
 except ImportError:
-logger.info()
-VALIDATORS_AVAILABLE = False
+    logger.info("Validadores no disponibles")
+    VALIDATORS_AVAILABLE = False
 
 class DialogoEditarProducto(QDialog):
-"""DiÃ¡logo para editar un producto existente"""
+    """Diálogo para editar un producto existente"""
 
-def __init__(self, parent=None, producto=None):
+    def __init__(self, parent=None, producto=None):
         super().__init__(parent)
-self.producto = producto or {}
-self.setWindowTitle("Editar Producto")
-self.setModal(True)
-self.setFixedSize(500, 650)
-self.init_ui()
-self.cargar_datos_producto()
+        self.producto = producto or {}
+        self.setWindowTitle("Editar Producto")
+        self.setModal(True)
+        self.setFixedSize(500, 650)
+        self.init_ui()
+        self.cargar_datos_producto()
 
 def init_ui(self):
         """Inicializa la interfaz"""
@@ -152,10 +153,10 @@ button_layout.addWidget(self.cancel_btn)
 button_layout.addWidget(self.save_btn)
 layout.addLayout(button_layout)
 
-def cargar_datos_producto(self):
+    def cargar_datos_producto(self):
         """Carga los datos del producto en el formulario"""
-if not self.producto:
-        return
+        if not self.producto:
+            return
 
 self.codigo_input.setText(str(self.producto.get("codigo", "")))
 self.descripcion_input.setText(str(self.producto.get("descripcion", "")))
@@ -221,11 +222,17 @@ return {
 
 
 class DialogoMovimientoInventario(QDialog):
-"""DiÃ¡logo para registrar movimientos de inventario"""
+    """Diálogo para registrar movimientos de inventario"""
 
-def __init__(self, parent=None, producto=None):
+    def __init__(self, parent=None, producto=None):
         super().__init__(parent)
-self.producto = producto or {}
+        self.producto = producto or {}
+        self.setup_ui()
+    
+    def setup_ui(self):
+        """Configurar interfaz del diálogo."""
+        # TODO: Implementar interfaz completa
+        pass
 self.setWindowTitle("Registrar Movimiento")
 self.setModal(True)
 self.setFixedSize(450, 500)
@@ -347,11 +354,17 @@ return {
 
 
 class DialogoHistorialProducto(QDialog):
-"""DiÃ¡logo para mostrar el historial de movimientos de un producto"""
+    """Diálogo para mostrar el historial de movimientos de un producto"""
 
-def __init__(self, parent=None, producto=None):
+    def __init__(self, parent=None, producto=None):
         super().__init__(parent)
-self.producto = producto or {}
+        self.producto = producto or {}
+        self.setup_ui()
+    
+    def setup_ui(self):
+        """Configurar interfaz del diálogo."""
+        # TODO: Implementar interfaz completa
+        pass
 self.setWindowTitle(f"Historial - {self.producto.get('codigo', 'Producto')}")
 self.setModal(True)
 self.resize(800, 600)
@@ -461,13 +474,13 @@ mov["usuario"]
 for col, item in enumerate(items):
                 table_item = QTableWidgetItem(str(item))
 
-# Colorear segÃºn tipo de movimiento
-if col == 1:  # Columna tipo
-if item == "ENTRADA":
+                # Colorear según tipo de movimiento
+                if col == 1:  # Columna tipo
+                    if item == "ENTRADA":
                         table_item.setBackground(Qt.GlobalColor.lightGreen)
-elif item == "SALIDA":
+                    elif item == "SALIDA":
                         table_item.setBackground(Qt.GlobalColor.lightCoral)
-elif "AJUSTE" in item:
+                    elif "AJUSTE" in item:
                         table_item.setBackground(Qt.GlobalColor.lightBlue)
 
 self.tabla_historial.setItem(row, col, table_item)

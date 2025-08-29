@@ -73,45 +73,45 @@ class ObrasModel:
                 sql_verificar = self.sql_manager.get_query('obras', 'verificar_tabla_sqlite')
                 cursor.execute(sql_verificar, (self.tabla_obras,))
                 if cursor.fetchone():
-                    logger.info(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
+                    self.logger.info(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
                 else:
-                    logger.info(f"[INFO] La tabla '{self.tabla_obras}' no existe - se creará cuando sea necesaria.")
+                    self.logger.info(f"[INFO] La tabla '{self.tabla_obras}' no existe - se creará cuando sea necesaria.")
             except (AttributeError, RuntimeError, ConnectionError):
                 # Si SQLite no funciona, intentar con SQL Server/otros
                 try:
                     sql_sql_server = self.sql_manager.get_query('obras', 'verificar_tabla_sql_server')
                     cursor.execute(sql_sql_server, (self.tabla_obras,))
                     if cursor.fetchone():
-                        logger.info(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
+                        self.logger.info(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
                     else:
-                        logger.info(f"[INFO] La tabla '{self.tabla_obras}' no existe - se creará cuando sea necesaria.")
+                        self.logger.info(f"[INFO] La tabla '{self.tabla_obras}' no existe - se creará cuando sea necesaria.")
                 except (AttributeError, RuntimeError, ConnectionError) as e:
-                    logger.info(f"[INFO] No se pudo verificar tabla '{self.tabla_obras}' - continuando sin verificación: {e}")
+                    self.logger.info(f"[INFO] No se pudo verificar tabla '{self.tabla_obras}' - continuando sin verificación: {e}")
 
             # Verificar tabla de detalles de obra (opcional)
             try:
                 sql_verificar = self.sql_manager.get_query('obras', 'verificar_tabla_sqlite')
                 cursor.execute(sql_verificar, (self.tabla_detalles_obra,))
                 if cursor.fetchone():
-                    logger.info(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
+                    self.logger.info(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
             except (AttributeError, RuntimeError, ConnectionError) as e:
                 try:
                     sql_sql_server = self.sql_manager.get_query('obras', 'verificar_tabla_sql_server')
                     cursor.execute(sql_sql_server, (self.tabla_detalles_obra,))
                     if cursor.fetchone():
-                        logger.info(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
+                        self.logger.info(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
                 except (AttributeError, RuntimeError, ConnectionError) as e2:
-                    logger.info(f"[ERROR OBRAS] Error en rollback: {e2}")
+                    self.logger.info(f"[ERROR OBRAS] Error en rollback: {e2}")
 
         except (AttributeError, RuntimeError, ConnectionError) as e:
             # Error en verificación no debe bloquear el módulo
-            logger.info(f"[INFO OBRAS] Verificación de tablas omitida: {e}")
+            self.logger.info(f"[INFO OBRAS] Verificación de tablas omitida: {e}")
         finally:
             if cursor:
                 try:
                     cursor.close()
                 except (AttributeError, RuntimeError, ConnectionError) as e2:
-                    logger.info(f"[ERROR OBRAS] Error en rollback: {e2}")
+                    self.logger.info(f"[ERROR OBRAS] Error en rollback: {e2}")
 
     def validar_obra_duplicada(
         self, codigo_obra: str, id_obra_actual: Optional[int] = None
@@ -140,7 +140,7 @@ class ObrasModel:
 
             # Verificar que sql_manager esté disponible
             if not self.sql_manager:
-                logger.warning("SQL Manager no disponible para validar duplicados")
+                self.logger.warning("SQL Manager no disponible para validar duplicados")
                 return False
 
             # Usar SQLQueryManager para consultas seguras
@@ -158,7 +158,7 @@ class ObrasModel:
             return count > 0
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.info(f"[ERROR OBRAS] Error validando obra duplicada: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error validando obra duplicada: {e}")
             return False
 
     def crear_obra(self, datos_obra):
@@ -250,18 +250,18 @@ class ObrasModel:
             self.db_connection.commit()
 
             # Log de auditoria
-            logger.info(f"Obra creada exitosamente: {datos_limpios.get('codigo')} por usuario {datos_limpios.get('usuario_creacion', 'SISTEMA')}")
-            logger.info(f"[OBRAS] Obra creada exitosamente: {datos_limpios.get('codigo')}")
+            self.logger.info(f"Obra creada exitosamente: {datos_limpios.get('codigo')} por usuario {datos_limpios.get('usuario_creacion', 'SISTEMA')}")
+            self.logger.info(f"[OBRAS] Obra creada exitosamente: {datos_limpios.get('codigo')}")
 
             return True, f"Obra {datos_limpios.get('codigo')} creada exitosamente"
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            logger.info(f"[ERROR OBRAS] Error creando obra: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error creando obra: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except (AttributeError, RuntimeError) as rollback_error:
-                    logger.info(f"[ERROR OBRAS] Error en rollback: {rollback_error}")
+                    self.logger.info(f"[ERROR OBRAS] Error en rollback: {rollback_error}")
             return False, f"Error creando obra: {str(e)}"
         finally:
             if cursor:
@@ -294,7 +294,7 @@ class ObrasModel:
             return None
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.info(f"[ERROR OBRAS] Error obteniendo obra: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error obteniendo obra: {e}")
             return None
         finally:
             if cursor:
@@ -339,7 +339,7 @@ class ObrasModel:
                 if base_query and hasattr(base_query, 'replace'):
                     query = base_query.replace("WHERE activo = 1", f"WHERE activo = 1 {where_clause}")
                 else:
-                    logger.info("[ERROR OBRAS] base_query es None o no es un string")
+                    self.logger.info("[ERROR OBRAS] base_query es None o no es un string")
                     return []
             else:
                 query = base_query
@@ -348,7 +348,7 @@ class ObrasModel:
             return cursor.fetchall()
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.info(f"[ERROR OBRAS] Error obteniendo obras filtradas: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error obteniendo obras filtradas: {e}")
             return []
         finally:
             if cursor:
@@ -443,7 +443,7 @@ page=1,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.info(f"[ERROR OBRAS] Error obteniendo datos paginados: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error obteniendo datos paginados: {e}")
             return {
                 'data': [],
                 'total_records': 0,
@@ -483,8 +483,11 @@ page=1,
 
             return obras
 
+        except (sqlite3.Error, ValueError, TypeError) as e:
+            self.logger.error(f"Error de base de datos obteniendo obras: {e}")
+            return []
         except Exception as e:
-            logger.info(f"[ERROR OBRAS] Error obteniendo todas las obras: {e}")
+            self.logger.error(f"Error inesperado obteniendo obras: {e}")
             return []
         finally:
             if cursor:
@@ -532,7 +535,7 @@ page=1,
             return None
 
         except Exception as e:
-            logger.info(f"[ERROR OBRAS] Error obteniendo obra por ID: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error obteniendo obra por ID: {e}")
             return None
         finally:
             if cursor:
@@ -591,12 +594,12 @@ obra_id: int,
             return True, "Obra actualizada exitosamente"
 
         except Exception as e:
-            logger.info(f"[ERROR OBRAS] Error actualizando obra: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error actualizando obra: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception as e2:
-                    logger.info(f"[ERROR OBRAS] Error en rollback: {e2}")
+                    self.logger.info(f"[ERROR OBRAS] Error en rollback: {e2}")
             return False, f"Error actualizando obra: {str(e)}"
         finally:
             if cursor:
@@ -644,12 +647,12 @@ obra_id: int,
             return True, f"Obra {codigo_obra} eliminada exitosamente"
 
         except Exception as e:
-            logger.info(f"[ERROR OBRAS] Error eliminando obra: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error eliminando obra: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception as e2:
-                    logger.info(f"[ERROR OBRAS] Error en rollback: {e2}")
+                    self.logger.info(f"[ERROR OBRAS] Error en rollback: {e2}")
             return False, f"Error eliminando obra: {str(e)}"
         finally:
             if cursor:
@@ -692,12 +695,12 @@ obra_id: int,
             return True, f"Estado cambiado a {estado_limpio}"
 
         except Exception as e:
-            logger.info(f"[ERROR OBRAS] Error cambiando estado: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error cambiando estado: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception as e2:
-                    logger.info(f"[ERROR OBRAS] Error al hacer rollback: {e2}")
+                    self.logger.info(f"[ERROR OBRAS] Error al hacer rollback: {e2}")
             return False, f"Error cambiando estado: {str(e)}"
         finally:
             if cursor:
@@ -738,7 +741,7 @@ obra_id: int,
             return estadisticas
 
         except Exception as e:
-            logger.info(f"[ERROR OBRAS] Error obteniendo estadísticas: {e}")
+            self.logger.info(f"[ERROR OBRAS] Error obteniendo estadísticas: {e}")
             return {}
         finally:
             if cursor:

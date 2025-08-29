@@ -44,37 +44,37 @@ def main():
     # Módulos principales a diagnosticar
     modules_to_test = [
         # Format: (module_path, description, class_to_test)
-        ("rexus.modules.09_usuarios.controller", "Usuarios Controller", "UsuariosController"),
-        ("rexus.modules.09_usuarios.model", "Usuarios Model", "UsuariosModel"),
-        ("rexus.modules.09_usuarios.view", "Usuarios View", "UsuariosView"),
+        ("rexus.modules.usuarios.controller", "Usuarios Controller", "UsuariosController"),
+        ("rexus.modules.usuarios.model", "Usuarios Model", "UsuariosModel"),
+        ("rexus.modules.usuarios.view", "Usuarios View", "UsuariosView"),
         
-        ("rexus.modules.02_inventario.controller", "Inventario Controller", "InventarioController"),
-        ("rexus.modules.02_inventario.model", "Inventario Model", "InventarioModel"),
-        ("rexus.modules.02_inventario.view", "Inventario View", "InventarioView"),
+        ("rexus.modules.inventario.controller", "Inventario Controller", "InventarioController"),
+        ("rexus.modules.inventario.model", "Inventario Model", "InventarioModel"),
+        ("rexus.modules.inventario.view", "Inventario View", "InventarioView"),
         
-        ("rexus.modules.01_obras.controller", "Obras Controller", "ObrasController"),
-        ("rexus.modules.01_obras.model", "Obras Model", "ObrasModel"),
-        ("rexus.modules.01_obras.view", "Obras View", "ObrasView"),
+        ("rexus.modules.obras.controller", "Obras Controller", "ObrasController"),
+        ("rexus.modules.obras.model", "Obras Model", "ObrasModel"),
+        ("rexus.modules.obras.view", "Obras View", "ObrasView"),
         
-        ("rexus.modules.04_compras.controller", "Compras Controller", "ComprasController"),
-        ("rexus.modules.04_compras.model", "Compras Model", "ComprasModel"),
-        ("rexus.modules.04_compras.view", "Compras View", "ComprasView"),
+        ("rexus.modules.compras.controller", "Compras Controller", "ComprasController"),
+        ("rexus.modules.compras.model", "Compras Model", "ComprasModel"),
+        ("rexus.modules.compras.view", "Compras View", "ComprasView"),
         
-        ("rexus.modules.03_pedidos.controller", "Pedidos Controller", "PedidosController"),
-        ("rexus.modules.03_pedidos.model", "Pedidos Model", "PedidosModel"),
-        ("rexus.modules.03_pedidos.view", "Pedidos View", "PedidosView"),
+        ("rexus.modules.pedidos.controller", "Pedidos Controller", "PedidosController"),
+        ("rexus.modules.pedidos.model", "Pedidos Model", "PedidosModel"),
+        ("rexus.modules.pedidos.view", "Pedidos View", "PedidosView"),
         
-        ("rexus.modules.07_vidrios.controller", "Vidrios Controller", "VidriosController"),
-        ("rexus.modules.07_vidrios.model", "Vidrios Model", "VidriosModel"),
-        ("rexus.modules.07_vidrios.view", "Vidrios View", "VidriosView"),
+        ("rexus.modules.vidrios.controller", "Vidrios Controller", "VidriosController"),
+        ("rexus.modules.vidrios.model", "Vidrios Model", "VidriosModel"),
+        ("rexus.modules.vidrios.view", "Vidrios View", "VidriosView"),
         
-        ("rexus.modules.13_notificaciones.controller", "Notificaciones Controller", "NotificacionesController"),
-        ("rexus.modules.13_notificaciones.model", "Notificaciones Model", "NotificacionesModel"),
-        ("rexus.modules.13_notificaciones.view", "Notificaciones View", None),
+        ("rexus.modules.notificaciones.controller", "Notificaciones Controller", "NotificacionesController"),
+        ("rexus.modules.notificaciones.model", "Notificaciones Model", "NotificacionesModel"),
+        ("rexus.modules.notificaciones.view", "Notificaciones View", None),
         
-        ("rexus.modules.10_configuracion.controller", "Configuración Controller", "ConfiguracionController"),
-        ("rexus.modules.10_configuracion.model", "Configuración Model", "ConfiguracionModel"),
-        ("rexus.modules.10_configuracion.view", "Configuración View", "ConfiguracionView"),
+        ("rexus.modules.configuracion.controller", "Configuración Controller", "ConfiguracionController"),
+        ("rexus.modules.configuracion.model", "Configuración Model", "ConfiguracionModel"),
+        ("rexus.modules.configuracion.view", "Configuración View", "ConfiguracionView"),
     ]
     
     results = {

@@ -41,8 +41,9 @@ except ImportError:
     import logging
     logger = logging.getLogger(__name__)
 
+# Importaciones de PyQt6
 try:
-    from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
+    from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                  QLineEdit, QPushButton, QFrame, QMessageBox,
                                  QCheckBox, QProgressBar, QSizePolicy)
     from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QThread, pyqtSlot
@@ -51,13 +52,105 @@ try:
 except ImportError:
     logger.warning("PyQt6 no disponible - usando fallback")
     PYQT_AVAILABLE = False
-    
-    # Fallback classes
+
+    # Fallback classes para evitar errores de linting
     class QDialog:
         def __init__(self, *args, **kwargs): pass
-    class pyqtSignal: 
+        def accept(self): pass
+        def reject(self): pass
+        def exec(self): return 0
+        def showEvent(self, event): pass
+        def keyPressEvent(self, event): pass
+        def setModal(self, modal): pass
+        def setFixedSize(self, width, height): pass
+        def setWindowTitle(self, title): pass
+        def setWindowFlags(self, flags): pass
+        def setStyleSheet(self, style): pass
+        def setLayout(self, layout): pass
+        class DialogCode:
+            Accepted = 1
+            Rejected = 0
+
+    class QLabel:
+        def __init__(self, text=""): pass
+        def setAlignment(self, alignment): pass
+        def setMinimumHeight(self, height): pass
+        def setMaximumHeight(self, height): pass
+        def setStyleSheet(self, style): pass
+        def setText(self, text): pass
+        def setPixmap(self, pixmap): pass
+        def setVisible(self, visible): pass
+
+    class pyqtSignal:
         def __init__(self, *args): pass
         def emit(self, *args): pass
+        def connect(self, func): pass
+
+    class QVBoxLayout:
+        def __init__(self, parent=None): pass
+        def setSpacing(self, spacing): pass
+        def setContentsMargins(self, *margins): pass
+        def addStretch(self, stretch=0): pass
+        def addWidget(self, widget): pass
+        def setText(self, text): pass
+        def setPixmap(self, pixmap): pass
+
+    class QLineEdit:
+        def __init__(self): pass
+        def setPlaceholderText(self, text): pass
+        def setMinimumHeight(self, height): pass
+        def setEchoMode(self, mode): pass
+        def text(self): return ""
+        def clear(self): pass
+        def setFocus(self): pass
+        def setText(self, text): pass
+        def connect(self, func): pass
+        returnPressed = pyqtSignal()
+        textChanged = pyqtSignal(str)
+        class EchoMode:
+            Password = 2
+
+    class QPushButton:
+        def __init__(self, text=""): pass
+        def setMinimumHeight(self, height): pass
+        def setDefault(self, default): pass
+        def setEnabled(self, enabled): pass
+        def setStyleSheet(self, style): pass
+        def connect(self, func): pass
+        clicked = pyqtSignal()
+
+    class QFrame:
+        def __init__(self): pass
+
+    class QProgressBar:
+        def __init__(self): pass
+        def setVisible(self, visible): pass
+        def setMinimumHeight(self, height): pass
+        def setRange(self, min_val, max_val): pass
+
+    class QTimer:
+        @staticmethod
+        def singleShot(msec, func): pass
+
+    class QPixmap:
+        def __init__(self, path): pass
+        def isNull(self): return True
+        def scaled(self, width, height, aspect_ratio, transformation): return QPixmap("")
+
+    class Qt:
+        class AlignmentFlag:
+            AlignCenter = 0
+        class WindowType:
+            Dialog = 0
+            CustomizeWindowHint = 0
+            WindowTitleHint = 0
+            WindowCloseButtonHint = 0
+        class Key:
+            Key_Escape = 0
+        class AspectRatioMode:
+            KeepAspectRatio = 0
+        class TransformationMode:
+            SmoothTransformation = 0
 
 
 class LoginDialog(QDialog):
@@ -84,7 +177,7 @@ class LoginDialog(QDialog):
         
         # Configuraciones de ventana
         self.setModal(True)
-        self.setFixedSize(500, 900)
+        self.setFixedSize(360, 640)  # Tamaño de pantalla de celular
         self.setWindowTitle("Rexus.app")
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.CustomizeWindowHint | 
                            Qt.WindowType.WindowTitleHint | Qt.WindowType.WindowCloseButtonHint)
@@ -96,71 +189,71 @@ class LoginDialog(QDialog):
             
         # Layout principal
         main_layout = QVBoxLayout(self)
-        main_layout.setSpacing(20)
-        main_layout.setContentsMargins(80, 60, 80, 60)
+        main_layout.setSpacing(24)
+        main_layout.setContentsMargins(32, 48, 32, 48)
         
-        # Espaciador superior para centrar contenido
-        main_layout.addStretch(2)
+        # Espaciador superior
+        main_layout.addStretch(1)
         
-        # Logo/Imagen
+        # Logo/Imagen minimalista
         self.logo_label = QLabel()
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.logo_label.setMinimumHeight(120)
-        self.logo_label.setMaximumHeight(120)
+        self.logo_label.setMinimumHeight(80)
+        self.logo_label.setMaximumHeight(80)
         self.logo_label.setStyleSheet("""
             QLabel {
-                background-color: #f8f9fa;
-                border: 2px dashed #dee2e6;
-                border-radius: 8px;
-                color: #6c757d;
-                font-size: 12px;
+                background-color: transparent;
+                border: none;
+                color: #1da1f2;
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 20px;
             }
         """)
-        self.logo_label.setText("LOGO\nRexus.app")
+        self.logo_label.setText("Rexus")
         main_layout.addWidget(self.logo_label)
         
-        # Formulario
+        # Formulario minimalista
         form_frame = QFrame()
         form_layout = QVBoxLayout(form_frame)
-        form_layout.setSpacing(20)
+        form_layout.setSpacing(16)
         
         # Campo usuario
         self.username_edit = QLineEdit()
         self.username_edit.setPlaceholderText("Usuario")
-        self.username_edit.setMinimumHeight(45)
+        self.username_edit.setMinimumHeight(48)
         form_layout.addWidget(self.username_edit)
         
         # Campo contraseña
         self.password_edit = QLineEdit()
         self.password_edit.setEchoMode(QLineEdit.EchoMode.Password)
         self.password_edit.setPlaceholderText("Contraseña")
-        self.password_edit.setMinimumHeight(45)
+        self.password_edit.setMinimumHeight(48)
         form_layout.addWidget(self.password_edit)
-        
         
         main_layout.addWidget(form_frame)
         
         # Barra de progreso (oculta inicialmente)
         self.progress_bar = QProgressBar()
         self.progress_bar.setVisible(False)
-        self.progress_bar.setMinimumHeight(2)
+        self.progress_bar.setMinimumHeight(4)
         main_layout.addWidget(self.progress_bar)
         
-        # Botón de login
-        self.login_button = QPushButton("Ingresar")
-        self.login_button.setMinimumHeight(45)
+        # Botón de login minimalista
+        self.login_button = QPushButton("Iniciar Sesión")
+        self.login_button.setMinimumHeight(48)
         self.login_button.setDefault(True)
         main_layout.addWidget(self.login_button)
         
-        # Mensaje de estado
+        # Mensaje de estado minimalista
         self.status_label = QLabel("")
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.status_label.setStyleSheet("color: #e74c3c; font-size: 10px;")
+        self.status_label.setStyleSheet("color: #e74c3c; font-size: 12px; margin-top: 8px;")
         self.status_label.setVisible(False)
         main_layout.addWidget(self.status_label)
         
-        # Espaciador inferior para centrar contenido
-        main_layout.addStretch(3)
+        # Espaciador inferior
+        main_layout.addStretch(1)
     
     def setup_connections(self):
         """Configura las conexiones de señales."""
@@ -186,53 +279,58 @@ class LoginDialog(QDialog):
         self.setStyleSheet("""
             QDialog {
                 background-color: #ffffff;
-                border: none;
+                border: 2px solid #e1e8ed;
+                border-radius: 20px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             }
             QLabel {
-                color: #333333;
+                color: #14171a;
                 font-size: 14px;
                 font-weight: 400;
                 margin-bottom: 15px;
             }
             QLineEdit {
-                border: 1px solid #e1e1e1;
-                border-radius: 4px;
-                padding: 12px 15px;
-                background-color: #ffffff;
-                font-size: 14px;
-                color: #333333;
+                border: 1px solid #e1e8ed;
+                border-radius: 12px;
+                padding: 14px 16px;
+                background-color: #f7f9fa;
+                font-size: 16px;
+                color: #14171a;
+                margin-bottom: 8px;
             }
             QLineEdit:focus {
-                border-color: #4a90e2;
+                border-color: #1da1f2;
+                background-color: #ffffff;
                 outline: none;
             }
             QPushButton {
-                background-color: #4a90e2;
+                background-color: #1da1f2;
                 color: white;
                 border: none;
-                border-radius: 4px;
-                font-size: 14px;
-                font-weight: 400;
-                padding: 12px;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                padding: 14px;
+                margin-top: 10px;
             }
             QPushButton:hover {
-                background-color: #357abd;
+                background-color: #1991db;
             }
             QPushButton:pressed {
-                background-color: #2a5d87;
+                background-color: #1578b8;
             }
             QPushButton:disabled {
                 background-color: #cccccc;
             }
             QProgressBar {
                 border: none;
-                background-color: #f0f0f0;
-                border-radius: 1px;
-                height: 2px;
+                background-color: #e1e8ed;
+                border-radius: 2px;
+                height: 4px;
             }
             QProgressBar::chunk {
-                background-color: #4a90e2;
-                border-radius: 1px;
+                background-color: #1da1f2;
+                border-radius: 2px;
             }
         """)
         
@@ -258,7 +356,7 @@ class LoginDialog(QDialog):
         
         # Verificar intentos fallidos
         if self.failed_attempts >= self.max_attempts:
-            self.show_error(f"Demasiados intentos fallidos. Reinicie la aplicación.")
+            self.show_error("Demasiados intentos fallidos. Reinicie la aplicación.")
             return
         
         # Deshabilitar botón y mostrar progreso
@@ -522,7 +620,7 @@ def test_login_dialog():
     try:
         if PYQT_AVAILABLE:
             from PyQt6.QtWidgets import QApplication
-            app = QApplication([])
+            app = QApplication([])  # Mantener referencia para evitar que la app termine
             
             user_data = show_login_dialog()
             if user_data:

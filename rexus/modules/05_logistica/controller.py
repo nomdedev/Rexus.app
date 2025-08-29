@@ -783,7 +783,8 @@ class LogisticaController(QObject):
         try:
             timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
             return f"SRV{timestamp}"
-        except Exception:
+        except (ValueError, OSError) as e:
+            self.logger.warning(f"Error generando código de servicio: {e}")
             return f"SRV{int(datetime.now().timestamp())}"
     
     def _generar_codigo_proveedor(self) -> str:
@@ -791,7 +792,8 @@ class LogisticaController(QObject):
         try:
             timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
             return f"PROV{timestamp}"
-        except Exception:
+        except (ValueError, OSError) as e:
+            self.logger.warning(f"Error generando código de proveedor: {e}")
             return f"PROV{int(datetime.now().timestamp())}"
     
     def _registrar_auditoria(self, accion: str, id_objeto: Optional[int], detalles: Optional[Dict[str, Any]] = None):

@@ -25,13 +25,13 @@ try:
     from ...ui.components.dialogs import show_info, show_error, show_warning, show_question
 except ImportError:
     def show_info(parent, title, message):
-        logger.info(f"{title}: {message}")
+        self.logger.info(f"{title}: {message}")
     def show_error(parent, title, message):
-        logger.error(f"{title}: {message}")
+        self.logger.error(f"{title}: {message}")
     def show_warning(parent, title, message):
-        logger.warning(f"{title}: {message}")
+        self.logger.warning(f"{title}: {message}")
     def show_question(parent, title, message):
-        logger.info(f"{title}: {message}")
+        self.logger.info(f"{title}: {message}")
         return True
 
 try:
@@ -59,7 +59,7 @@ class InventarioController(BaseController):
         self.db_connection = db_connection
         self.productos_cache = {}
         self.categorias_cache = []
-        logger.info("InventarioController inicializado")
+        self.logger.info("InventarioController inicializado")
         
         if self.view:
             self.conectar_signals()
@@ -81,10 +81,10 @@ class InventarioController(BaseController):
             if self.view and hasattr(self.view, 'material_reservado'):
                 self.view.material_reservado.connect(self.reservar_material_obra)
             
-            logger.debug("Señales conectadas exitosamente")
+            self.logger.debug("Señales conectadas exitosamente")
             
         except Exception as e:
-            logger.error(f"Error conectando señales: {e}")
+            self.logger.error(f"Error conectando señales: {e}")
     
     # ===== MÉTODOS PRINCIPALES DE INVENTARIO =====
     
@@ -96,10 +96,10 @@ class InventarioController(BaseController):
             Lista de productos con sus datos
         """
         try:
-            logger.info("Iniciando carga de inventario")
+            self.logger.info("Iniciando carga de inventario")
             
             if not self.model:
-                logger.warning("No hay modelo disponible, usando datos demo")
+                self.logger.warning("No hay modelo disponible, usando datos demo")
                 return self._get_productos_demo()
             
             if self.model and hasattr(self.model, 'obtener_productos'):
@@ -109,15 +109,21 @@ class InventarioController(BaseController):
                     productos = []
             else:
                 productos = None
-            logger.info(f"Inventario cargado: {len(productos)} productos")
+            self.logger.info(f"Inventario cargado: {len(productos)} productos")
             
             # Actualizar cache
             self.productos_cache = {p['id']: p for p in productos}
             
             return productos
             
+        except (ConnectionError, OSError, TimeoutError) as e:
+            self.logger.error(f"Error de conexión cargando inventario: {e}")
+            return []
+        except (ValueError, KeyError, AttributeError) as e:
+            self.logger.error(f"Error de datos cargando inventario: {e}")
+            return []
         except Exception as e:
-            logger.error(f"Error cargando inventario: {e}")
+            self.logger.error(f"Error inesperado cargando inventario: {e}")
             return []
     
     def agregar_producto(self, datos_producto: Dict[str, Any]) -> bool:
@@ -154,14 +160,14 @@ class InventarioController(BaseController):
             if producto_id:
                 show_info(self.view, "Éxito", "Producto agregado correctamente")
                 self.actualizar_vista_productos()
-                logger.info(f"Producto agregado con ID: {producto_id}")
+                self.logger.info(f"Producto agregado con ID: {producto_id}")
                 return True
             else:
                 show_error(self.view, "Error", "No se pudo agregar el producto")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error agregando producto: {e}")
+            self.logger.error(f"Error agregando producto: {e}")
             show_error(self.view, "Error", f"Error al agregar producto: {str(e)}")
             return False
     
@@ -200,14 +206,14 @@ class InventarioController(BaseController):
             if success:
                 show_info(self.view, "Éxito", "Producto actualizado correctamente")
                 self.actualizar_vista_productos()
-                logger.info(f"Producto {producto_id} actualizado")
+                self.logger.info(f"Producto {producto_id} actualizado")
                 return True
             else:
                 show_error(self.view, "Error", "No se pudo actualizar el producto")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error editando producto: {e}")
+            self.logger.error(f"Error editando producto: {e}")
             show_error(self.view, "Error", f"Error al editar producto: {str(e)}")
             return False
     
@@ -251,14 +257,14 @@ class InventarioController(BaseController):
             if success:
                 show_info(self.view, "Éxito", "Producto eliminado correctamente")
                 self.actualizar_vista_productos()
-                logger.info(f"Producto {producto_id} eliminado")
+                self.logger.info(f"Producto {producto_id} eliminado")
                 return True
             else:
                 show_error(self.view, "Error", "No se pudo eliminar el producto")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error eliminando producto: {e}")
+            self.logger.error(f"Error eliminando producto: {e}")
             show_error(self.view, "Error", f"Error al eliminar producto: {str(e)}")
             return False
     
@@ -304,14 +310,14 @@ class InventarioController(BaseController):
                 show_info(self.view, "Éxito", "Movimiento registrado correctamente")
                 self.actualizar_vista_movimientos()
                 self.actualizar_vista_productos()  # Actualizar stocks
-                logger.info(f"Movimiento registrado con ID: {movimiento_id}")
+                self.logger.info(f"Movimiento registrado con ID: {movimiento_id}")
                 return True
             else:
                 show_error(self.view, "Error", "No se pudo registrar el movimiento")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error registrando movimiento: {e}")
+            self.logger.error(f"Error registrando movimiento: {e}")
             show_error(self.view, "Error", f"Error al registrar movimiento: {str(e)}")
             return False
     
@@ -322,7 +328,7 @@ class InventarioController(BaseController):
             show_info(self.view, "Entrada", "Diálogo de entrada en desarrollo")
             return True
         except Exception as e:
-            logger.error(f"Error en entrada: {e}")
+            self.logger.error(f"Error en entrada: {e}")
             return False
     
     def registrar_salida(self) -> bool:
@@ -332,7 +338,7 @@ class InventarioController(BaseController):
             show_info(self.view, "Salida", "Diálogo de salida en desarrollo")
             return True
         except Exception as e:
-            logger.error(f"Error en salida: {e}")
+            self.logger.error(f"Error en salida: {e}")
             return False
     
     def ajuste_inventario(self) -> bool:
@@ -342,7 +348,7 @@ class InventarioController(BaseController):
             show_info(self.view, "Ajuste", "Diálogo de ajuste en desarrollo")
             return True
         except Exception as e:
-            logger.error(f"Error en ajuste: {e}")
+            self.logger.error(f"Error en ajuste: {e}")
             return False
     
     # ===== MÉTODOS DE RESERVAS =====
@@ -384,14 +390,14 @@ class InventarioController(BaseController):
             if reserva_id:
                 show_info(self.view, "Éxito", "Material reservado correctamente")
                 self.actualizar_vista_reservas()
-                logger.info(f"Reserva creada con ID: {reserva_id}")
+                self.logger.info(f"Reserva creada con ID: {reserva_id}")
                 return True
             else:
                 show_error(self.view, "Error", "No se pudo crear la reserva")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error reservando material: {e}")
+            self.logger.error(f"Error reservando material: {e}")
             show_error(self.view, "Error", f"Error al reservar material: {str(e)}")
             return False
     
@@ -418,14 +424,14 @@ class InventarioController(BaseController):
             if success:
                 show_info(self.view, "Éxito", "Reserva liberada correctamente")
                 self.actualizar_vista_reservas()
-                logger.info(f"Reserva {reserva_id} liberada")
+                self.logger.info(f"Reserva {reserva_id} liberada")
                 return True
             else:
                 show_error(self.view, "Error", "No se pudo liberar la reserva")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error liberando reserva: {e}")
+            self.logger.error(f"Error liberando reserva: {e}")
             show_error(self.view, "Error", f"Error al liberar reserva: {str(e)}")
             return False
     
@@ -454,14 +460,14 @@ class InventarioController(BaseController):
                 show_info(self.view, "Éxito", "Uso de material registrado")
                 self.actualizar_vista_reservas()
                 self.actualizar_vista_movimientos()
-                logger.info(f"Uso registrado para reserva {reserva_id}")
+                self.logger.info(f"Uso registrado para reserva {reserva_id}")
                 return True
             else:
                 show_error(self.view, "Error", "No se pudo registrar el uso")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error registrando uso: {e}")
+            self.logger.error(f"Error registrando uso: {e}")
             show_error(self.view, "Error", f"Error al registrar uso: {str(e)}")
             return False
     
@@ -492,7 +498,7 @@ class InventarioController(BaseController):
                 tabla.setRowHidden(fila, not mostrar_fila)
                 
         except Exception as e:
-            logger.error(f"Error filtrando materiales: {e}")
+            self.logger.error(f"Error filtrando materiales: {e}")
     
     def filtrar_por_categoria(self, categoria: str):
         """
@@ -519,7 +525,7 @@ class InventarioController(BaseController):
                 tabla.setRowHidden(fila, not mostrar)
                 
         except Exception as e:
-            logger.error(f"Error filtrando por categoría: {e}")
+            self.logger.error(f"Error filtrando por categoría: {e}")
     
     def filtrar_por_stock(self, filtro_stock: str):
         """
@@ -561,7 +567,7 @@ class InventarioController(BaseController):
                     continue
                     
         except Exception as e:
-            logger.error(f"Error filtrando por stock: {e}")
+            self.logger.error(f"Error filtrando por stock: {e}")
     
     # ===== MÉTODOS DE REPORTES =====
     
@@ -570,42 +576,42 @@ class InventarioController(BaseController):
         try:
             show_info(self.view, "Reporte Stock", "Generación de reporte en desarrollo")
         except Exception as e:
-            logger.error(f"Error generando reporte stock: {e}")
+            self.logger.error(f"Error generando reporte stock: {e}")
     
     def generar_reporte_stock_bajo(self):
         """Genera reporte de stock bajo."""
         try:
             show_info(self.view, "Stock Bajo", "Reporte de stock bajo en desarrollo")
         except Exception as e:
-            logger.error(f"Error generando reporte stock bajo: {e}")
+            self.logger.error(f"Error generando reporte stock bajo: {e}")
     
     def generar_reporte_valorizado(self):
         """Genera reporte valorizado del inventario."""
         try:
             show_info(self.view, "Valorizado", "Reporte valorizado en desarrollo")
         except Exception as e:
-            logger.error(f"Error generando reporte valorizado: {e}")
+            self.logger.error(f"Error generando reporte valorizado: {e}")
     
     def generar_reporte_movimientos(self):
         """Genera reporte de movimientos."""
         try:
             show_info(self.view, "Movimientos", "Reporte de movimientos en desarrollo")
         except Exception as e:
-            logger.error(f"Error generando reporte movimientos: {e}")
+            self.logger.error(f"Error generando reporte movimientos: {e}")
     
     def generar_reporte_kardex(self):
         """Genera kardex de productos."""
         try:
             show_info(self.view, "Kardex", "Kardex en desarrollo")
         except Exception as e:
-            logger.error(f"Error generando kardex: {e}")
+            self.logger.error(f"Error generando kardex: {e}")
     
     def generar_reporte_consumos(self):
         """Genera reporte de consumos por obra."""
         try:
             show_info(self.view, "Consumos", "Reporte de consumos en desarrollo")
         except Exception as e:
-            logger.error(f"Error generando reporte consumos: {e}")
+            self.logger.error(f"Error generando reporte consumos: {e}")
     
     # ===== MÉTODOS DE IMPORTACIÓN/EXPORTACIÓN =====
     
@@ -614,14 +620,14 @@ class InventarioController(BaseController):
         try:
             show_info(self.view, "Importar", "Funcionalidad de importación en desarrollo")
         except Exception as e:
-            logger.error(f"Error importando materiales: {e}")
+            self.logger.error(f"Error importando materiales: {e}")
     
     def exportar_inventario(self):
         """Exporta inventario a archivo."""
         try:
             show_info(self.view, "Exportar", "Funcionalidad de exportación en desarrollo")
         except Exception as e:
-            logger.error(f"Error exportando inventario: {e}")
+            self.logger.error(f"Error exportando inventario: {e}")
     
     # ===== MÉTODOS DE ACTUALIZACIÓN DE VISTA =====
     
@@ -633,10 +639,10 @@ class InventarioController(BaseController):
             
             productos = self.cargar_inventario()
             self.view.cargar_datos_materiales(productos)
-            logger.debug("Vista de productos actualizada")
+            self.logger.debug("Vista de productos actualizada")
             
         except Exception as e:
-            logger.error(f"Error actualizando vista productos: {e}")
+            self.logger.error(f"Error actualizando vista productos: {e}")
     
     def actualizar_vista_movimientos(self):
         """Actualiza la vista de movimientos."""
@@ -644,10 +650,10 @@ class InventarioController(BaseController):
             if self.view and hasattr(self.view, 'cargar_movimientos'):
                 movimientos = self._cargar_movimientos()
                 self.view.cargar_movimientos(movimientos)
-            logger.debug("Vista de movimientos actualizada")
+            self.logger.debug("Vista de movimientos actualizada")
             
         except Exception as e:
-            logger.error(f"Error actualizando vista movimientos: {e}")
+            self.logger.error(f"Error actualizando vista movimientos: {e}")
     
     def actualizar_vista_reservas(self):
         """Actualiza la vista de reservas."""
@@ -655,21 +661,21 @@ class InventarioController(BaseController):
             if self.view and hasattr(self.view, 'cargar_reservas'):
                 reservas = self._cargar_reservas()
                 self.view.cargar_reservas(reservas)
-            logger.debug("Vista de reservas actualizada")
+            self.logger.debug("Vista de reservas actualizada")
             
         except Exception as e:
-            logger.error(f"Error actualizando vista reservas: {e}")
+            self.logger.error(f"Error actualizando vista reservas: {e}")
     
     def cargar_inventario_inicial(self):
         """Carga los datos iniciales del inventario para la nueva vista."""
-        logger.info("Iniciando carga inicial de inventario")
+        self.logger.info("Iniciando carga inicial de inventario")
         try:
             productos = self.cargar_inventario()
             if self.view and hasattr(self.view, 'cargar_datos_materiales'):
                 self.view.cargar_datos_materiales(productos)
             return productos
         except Exception as e:
-            logger.error(f"Error en carga inicial: {e}")
+            self.logger.error(f"Error en carga inicial: {e}")
             return []
     
     def material_seleccionado(self):
@@ -682,10 +688,10 @@ class InventarioController(BaseController):
             fila_actual = tabla.currentRow()
             if fila_actual >= 0:
                 material_id = tabla.item(fila_actual, 0).text()  # ID oculto
-                logger.debug(f"Material seleccionado ID: {material_id}")
+                self.logger.debug(f"Material seleccionado ID: {material_id}")
                 
         except Exception as e:
-            logger.error(f"Error en selección de material: {e}")
+            self.logger.error(f"Error en selección de material: {e}")
     
     # ===== MÉTODOS DE VALIDACIÓN PRIVADOS =====
     
@@ -722,7 +728,7 @@ class InventarioController(BaseController):
             return True
             
         except Exception as e:
-            logger.error(f"Error validando datos producto: {e}")
+            self.logger.error(f"Error validando datos producto: {e}")
             return False
     
     def _validar_datos_movimiento(self, datos: Dict[str, Any]) -> bool:
@@ -760,7 +766,7 @@ class InventarioController(BaseController):
             return True
             
         except Exception as e:
-            logger.error(f"Error validando datos movimiento: {e}")
+            self.logger.error(f"Error validando datos movimiento: {e}")
             return False
     
     def _validar_datos_reserva(self, datos: Dict[str, Any]) -> bool:
@@ -797,7 +803,7 @@ class InventarioController(BaseController):
             return True
             
         except Exception as e:
-            logger.error(f"Error validando datos reserva: {e}")
+            self.logger.error(f"Error validando datos reserva: {e}")
             return False
     
     def _codigo_producto_existe(self, codigo: str) -> bool:
@@ -819,7 +825,7 @@ class InventarioController(BaseController):
             return None
             
         except Exception as e:
-            logger.error(f"Error verificando código: {e}")
+            self.logger.error(f"Error verificando código: {e}")
             return False
     
     def _producto_existe(self, producto_id: int) -> bool:
@@ -841,7 +847,7 @@ class InventarioController(BaseController):
             return None
             
         except Exception as e:
-            logger.error(f"Error verificando producto: {e}")
+            self.logger.error(f"Error verificando producto: {e}")
             return False
     
     def _producto_tiene_stock(self, producto_id: int) -> bool:
@@ -865,7 +871,7 @@ class InventarioController(BaseController):
             return stock > 0
             
         except Exception as e:
-            logger.error(f"Error verificando stock: {e}")
+            self.logger.error(f"Error verificando stock: {e}")
             return False
     
     def _verificar_stock_disponible(self, producto_id: int, cantidad: float) -> bool:
@@ -890,7 +896,7 @@ class InventarioController(BaseController):
             return stock_actual >= cantidad
             
         except Exception as e:
-            logger.error(f"Error verificando stock disponible: {e}")
+            self.logger.error(f"Error verificando stock disponible: {e}")
             return False
     
     def _cargar_movimientos(self) -> List[Dict[str, Any]]:
@@ -909,7 +915,7 @@ class InventarioController(BaseController):
             return []
             
         except Exception as e:
-            logger.error(f"Error cargando movimientos: {e}")
+            self.logger.error(f"Error cargando movimientos: {e}")
             return []
     
     def _cargar_reservas(self) -> List[Dict[str, Any]]:
@@ -928,7 +934,7 @@ class InventarioController(BaseController):
             return []
             
         except Exception as e:
-            logger.error(f"Error cargando reservas: {e}")
+            self.logger.error(f"Error cargando reservas: {e}")
             return []
     
     def _get_productos_demo(self) -> List[Dict[str, Any]]:

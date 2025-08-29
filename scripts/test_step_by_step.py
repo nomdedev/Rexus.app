@@ -29,7 +29,9 @@ def main():
         print("   Modulos importados OK")
 
         print("5. Test import inventario view...")
-        from rexus.modules.inventario.view import InventarioView
+        import importlib
+        inventario_view = importlib.import_module('rexus.modules.02_inventario.view')
+        InventarioView = inventario_view.InventarioView
         print("   InventarioView importado OK")
 
         print("6. Test instanciacion...")

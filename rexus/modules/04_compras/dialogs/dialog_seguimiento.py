@@ -297,9 +297,9 @@ class DialogSeguimiento(QDialog):
         self.tabla_historial.setRowCount(len(historial))
 
         for row, evento in enumerate(historial):
-        # Fecha/Hora
-        fecha_hora = f"{evento.get('fecha', '')} {evento.get('hora', '')}"
-        self.tabla_historial.setItem(row, 0, QTableWidgetItem(fecha_hora))
+            # Fecha/Hora
+            fecha_hora = f"{evento.get('fecha', '')} {evento.get('hora', '')}"
+            self.tabla_historial.setItem(row, 0, QTableWidgetItem(fecha_hora))
 
         # Estado
         self.tabla_historial.setItem(row,
@@ -322,12 +322,12 @@ class DialogSeguimiento(QDialog):
     def actualizar_datos_entrega(self, datos_entrega):
         """Actualiza los campos de entrega con datos existentes."""
         if datos_entrega:
-        self.input_transportista.setText(datos_entrega.get("transportista", ""))
-        self.input_numero_guia.setText(datos_entrega.get("numero_guia", ""))
+            self.input_transportista.setText(datos_entrega.get("transportista", ""))
+            self.input_numero_guia.setText(datos_entrega.get("numero_guia", ""))
 
-        if datos_entrega.get("fecha_entrega_real"):
-        # Aquí convertirías la fecha desde string/datetime según el formato
-        pass
+            if datos_entrega.get("fecha_entrega_real"):
+                # Aquí convertirías la fecha desde string/datetime según el formato
+                pass
 
         condicion = datos_entrega.get("condicion_entrega", "PERFECTA")
         index = self.combo_condicion_entrega.findText(condicion)

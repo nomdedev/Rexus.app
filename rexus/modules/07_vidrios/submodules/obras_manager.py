@@ -8,7 +8,7 @@ Responsabilidades:
 - Seguimiento de consumo por proyecto
 """
 
-            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger
@@ -102,9 +102,10 @@ class ObrasManager:
 
             return vidrios
 
-        except Exception as e:                raise ValueError(f"Estado no válido: {nuevo_estado}")
+        except Exception as e:
+            raise ValueError(f"Estado no válido: {nuevo_estado}")
 
-            cursor = self.db_connection.cursor()
+        cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query(
                 self.sql_path, "actualizar_estado_pedido"

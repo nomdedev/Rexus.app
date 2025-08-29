@@ -62,7 +62,7 @@ class ConfiguracionModel:
         try:
             cursor = self.db_connection.cursor()
             query = self.sql_manager.get_query('verificar_configuracion')
-            cursor.execute(query)
+            cursor.execute(query, {})
             return True
         except Exception as e:
             logger.error(f"Error verificando configuración: {e}")
@@ -86,7 +86,7 @@ class ConfiguracionModel:
         try:
             cursor = self.db_connection.cursor()
             query = self.sql_manager.get_query('insert_configuraciones_default')
-            cursor.execute(query)
+            cursor.execute(query, {})
             self.db_connection.commit()
             logger.debug("Configuraciones por defecto insertadas")
         except Exception as e:
@@ -106,7 +106,7 @@ class ConfiguracionModel:
 
             cursor = self.db_connection.cursor()
             query = self.sql_manager.get_query('select_configuraciones_all')
-            cursor.execute(query)
+            cursor.execute(query, {})
 
             configuraciones = []
             for row in cursor.fetchall():

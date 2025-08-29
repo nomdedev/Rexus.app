@@ -4,14 +4,44 @@ Modelo de Programación de Mantenimiento
 Maneja la programación automática y calendario de mantenimientos.
 """
 
-
 import logging
+from datetime import datetime, timedelta
+from typing import Dict, List, Any, Optional
+
 logger = logging.getLogger(__name__)
 
-                        },
-            'vencidos': 2,
-            'proximos_7_dias': 4,
-            'proximos_30_dias': 8
+
+class ProgramacionMantenimientoModel:
+    """Modelo para programación de mantenimientos."""
+    
+    def __init__(self, db_connection=None):
+        """Inicializar modelo de programación."""
+        self.db_connection = db_connection
+        
+        # Configuración de prioridades
+        self.prioridades = {
+            'critico': {
+                'color': '#FF0000',
+                'dias_alerta': 1
+            },
+            'alto': {
+                'color': '#FF8800',
+                'dias_alerta': 3
+            },
+            'normal': {
+                'color': '#00AA00',
+                'dias_alerta': 7
+            }
+        }
+        
+        # Contadores de estado
+        self.contadores = {
+            'total': 0,
+            'completados': 0,
+            'pendientes': 0,
+            'vencidos': 0,
+            'proximos_7_dias': 0,
+            'proximos_30_dias': 0
         }
 
     def obtener_mantenimientos_vencidos(self) -> List[Dict]:
@@ -22,86 +52,134 @@ logger = logging.getLogger(__name__)
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("""
-                SELECT p.id, p.equipo_id, e.nombre as equipo_nombre, p.tipo_mantenimiento,
-                       p.descripcion, p.fecha_proximo, p.responsable
-                FROM programacion_mantenimiento p
-                INNER JOIN equipos e ON p.equipo_id = e.id
-                WHERE p.activo = 1 AND p.fecha_proximo < GETDATE()
-                ORDER BY p.fecha_proximo ASC
+                SELECT 
+                    m.id,
+                    m.equipo_id,
+                    e.nombre as equipo_nombre,
+                    m.descripcion,
+                    m.fecha_programada,
+                    m.prioridad,
+                    DATEDIFF(DAY, m.fecha_programada, GETDATE()) as dias_vencido
+                FROM mantenimientos m
+                INNER JOIN equipos e ON m.equipo_id = e.id
+                WHERE m.estado = 'PENDIENTE'
+                AND m.fecha_programada < GETDATE()
+                ORDER BY m.fecha_programada ASC
             """)
-
+            
             columns = [desc[0] for desc in cursor.description]
             return [dict(zip(columns, row)) for row in cursor.fetchall()]
-
+            
         except Exception as e:
-            logger.info(f"[ERROR] Error obteniendo mantenimientos vencidos: {e}")
+            logger.error(f"Error obteniendo mantenimientos vencidos: {e}")
             return []
-
-    def obtener_mantenimientos_proximos(self, dias: int) -> List[Dict]:
-        """Obtiene mantenimientos próximos a vencer en N días."""
+    
+    def obtener_mantenimientos_proximos(self, dias: int = 7) -> List[Dict]:
+        """Obtiene mantenimientos próximos en N días."""
         if not self.db_connection:
             return []
 
         try:
             cursor = self.db_connection.cursor()
+            fecha_limite = datetime.now() + timedelta(days=dias)
+            
             cursor.execute("""
-                SELECT p.id, p.equipo_id, e.nombre as equipo_nombre, p.tipo_mantenimiento,
-                       p.descripcion, p.fecha_proximo, p.responsable,
-                       DATEDIFF(day, GETDATE(), p.fecha_proximo) as dias_hasta
-                FROM programacion_mantenimiento p
-                INNER JOIN equipos e ON p.equipo_id = e.id
-                WHERE p.activo = 1
-                AND p.fecha_proximo BETWEEN GETDATE() AND DATEADD(day, ?, GETDATE())
-                ORDER BY p.fecha_proximo ASC
-            """, (dias,))
-
+                SELECT 
+                    m.id,
+                    m.equipo_id,
+                    e.nombre as equipo_nombre,
+                    m.descripcion,
+                    m.fecha_programada,
+                    m.prioridad,
+                    DATEDIFF(DAY, GETDATE(), m.fecha_programada) as dias_restantes
+                FROM mantenimientos m
+                INNER JOIN equipos e ON m.equipo_id = e.id
+                WHERE m.estado = 'PENDIENTE'
+                AND m.fecha_programada BETWEEN GETDATE() AND ?
+                ORDER BY m.fecha_programada ASC
+            """, (fecha_limite,))
+            
             columns = [desc[0] for desc in cursor.description]
             return [dict(zip(columns, row)) for row in cursor.fetchall()]
-
+            
         except Exception as e:
-            logger.info(f"[ERROR] Error obteniendo mantenimientos próximos: {e}")
+            logger.error(f"Error obteniendo mantenimientos próximos: {e}")
             return []
-
-    def actualizar_estado_programacion(self, programacion_id: int, nuevo_estado: str) -> bool:
-        """Actualiza el estado de una programación."""
+    
+    def programar_mantenimiento(self, datos: Dict[str, Any]) -> bool:
+        """Programar nuevo mantenimiento."""
         if not self.db_connection:
             return False
-
+        
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("""
-                UPDATE programacion_mantenimiento
-                SET estado = ?, fecha_actualizacion = GETDATE()
-                WHERE id = ?
-            """, (nuevo_estado, programacion_id))
-
+                INSERT INTO mantenimientos (
+                    equipo_id, descripcion, fecha_programada,
+                    prioridad, tipo, usuario_asignado, estado,
+                    fecha_creacion
+                ) VALUES (?, ?, ?, ?, ?, ?, 'PENDIENTE', GETDATE())
+            """, (
+                datos.get('equipo_id'),
+                datos.get('descripcion'),
+                datos.get('fecha_programada'),
+                datos.get('prioridad', 'normal'),
+                datos.get('tipo', 'preventivo'),
+                datos.get('usuario_asignado')
+            ))
+            
             self.db_connection.commit()
-            return cursor.rowcount > 0
-
+            return True
+            
         except Exception as e:
-            logger.info(f"[ERROR] Error actualizando estado programación: {e}")
+            logger.error(f"Error programando mantenimiento: {e}")
             return False
-
-    def obtener_programacion(self, programacion_id: int) -> Optional[Dict]:
-        """Obtiene una programación por ID."""
+    
+    def actualizar_contadores(self) -> Dict[str, int]:
+        """Actualizar contadores de estado."""
         if not self.db_connection:
-            return None
-
+            return self.contadores
+        
         try:
             cursor = self.db_connection.cursor()
+            
+            # Total de mantenimientos
+            cursor.execute("SELECT COUNT(*) FROM mantenimientos")
+            self.contadores['total'] = cursor.fetchone()[0]
+            
+            # Completados
+            cursor.execute("SELECT COUNT(*) FROM mantenimientos WHERE estado = 'COMPLETADO'")
+            self.contadores['completados'] = cursor.fetchone()[0]
+            
+            # Pendientes
+            cursor.execute("SELECT COUNT(*) FROM mantenimientos WHERE estado = 'PENDIENTE'")
+            self.contadores['pendientes'] = cursor.fetchone()[0]
+            
+            # Vencidos
             cursor.execute("""
-                SELECT p.*, e.nombre as equipo_nombre
-                FROM programacion_mantenimiento p
-                INNER JOIN equipos e ON p.equipo_id = e.id
-                WHERE p.id = ?
-            """, (programacion_id,))
-
-            row = cursor.fetchone()
-            if row:
-                columns = [desc[0] for desc in cursor.description]
-                return dict(zip(columns, row))
-            return None
-
+                SELECT COUNT(*) FROM mantenimientos 
+                WHERE estado = 'PENDIENTE' AND fecha_programada < GETDATE()
+            """)
+            self.contadores['vencidos'] = cursor.fetchone()[0]
+            
+            # Próximos 7 días
+            cursor.execute("""
+                SELECT COUNT(*) FROM mantenimientos 
+                WHERE estado = 'PENDIENTE' 
+                AND fecha_programada BETWEEN GETDATE() AND DATEADD(DAY, 7, GETDATE())
+            """)
+            self.contadores['proximos_7_dias'] = cursor.fetchone()[0]
+            
+            # Próximos 30 días
+            cursor.execute("""
+                SELECT COUNT(*) FROM mantenimientos 
+                WHERE estado = 'PENDIENTE' 
+                AND fecha_programada BETWEEN GETDATE() AND DATEADD(DAY, 30, GETDATE())
+            """)
+            self.contadores['proximos_30_dias'] = cursor.fetchone()[0]
+            
+            return self.contadores
+            
         except Exception as e:
-            logger.info(f"[ERROR] Error obteniendo programación: {e}")
-            return None
+            logger.error(f"Error actualizando contadores: {e}")
+            return self.contadores

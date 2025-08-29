@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 from enum import Enum
+from rexus.utils.app_logger import get_logger
 
 # Decoradores básicos de autenticación
 def auth_required(func):
@@ -32,6 +33,9 @@ from rexus.utils.cache_manager import get_cache_manager
 from rexus.utils.unified_sanitizer import sanitize_string
 
 # Importar utilidades de seguridad
+# Configurar logging
+logger = get_logger(__name__)
+
 try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
@@ -40,7 +44,7 @@ try:
     data_sanitizer = unified_sanitizer  # Definir variable correctamente
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    print(f"[WARNING] Security utilities not available in notificaciones: {e}")
+    logger.warning(f"Security utilities not available in notificaciones: {e}")
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
@@ -48,7 +52,7 @@ try:
     from rexus.utils.sql_security import SQLSecurityError, validate_table_name
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
-    print("[WARNING] SQL security utilities not available in notificaciones")
+    logger.warning("SQL security utilities not available in notificaciones")
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
@@ -95,18 +99,18 @@ class NotificacionesModel:
         if self.security_available:
             self.data_sanitizer = data_sanitizer
             self.sql_validator = SQLSecurityValidator()
-            print("OK [NOTIFICACIONES] Utilidades de seguridad cargadas")
+            logger.info("Utilidades de seguridad cargadas")
         else:
             self.data_sanitizer = None
             self.sql_validator = None
-            print("WARNING [NOTIFICACIONES] Utilidades de seguridad no disponibles")
+            logger.warning("Utilidades de seguridad no disponibles")
 
         self._verificar_tablas()
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan."""
         if not self.db_connection:
-            print("[WARNING] No hay conexión a BD - modo demo")
+            logger.warning("No hay conexión a BD - modo demo")
             return
 
         try:
@@ -147,10 +151,10 @@ class NotificacionesModel:
             """)
 
             self.db_connection.commit()
-            print("OK [NOTIFICACIONES] Tablas verificadas/creadas")
+            logger.info("Tablas verificadas/creadas")
 
         except Exception as e:
-            print(f"[ERROR NOTIFICACIONES] Error verificando tablas: {str(e)}")
+            logger.error(f"Error verificando tablas: {str(e)}")
 
     @auth_required
     def crear_notificacion(self, titulo: str, mensaje: str, tipo: str = "info",
@@ -178,7 +182,7 @@ warning,
             bool: True si se creó exitosamente
         """
         if not self.db_connection:
-            print("[WARNING] Sin BD - simulando creación de notificación")
+            logger.warning("Sin BD - simulando creación de notificación")
             return True
 
         try:
@@ -213,11 +217,11 @@ warning,
             # Invalidar cache de notificaciones después de crear una nueva
             self._invalidar_cache_notificaciones()
 
-            print(f"OK [NOTIFICACIONES] Notificación creada: ID {notificacion_id}")
+            logger.info(f"Notificación creada: ID {notificacion_id}")
             return True
 
         except Exception as e:
-            print(f"[ERROR NOTIFICACIONES] Error creando notificación: {str(e)}")
+            logger.error(f"Error creando notificación: {str(e)}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -277,7 +281,7 @@ warning,
             return notificaciones
 
         except Exception as e:
-            print(f"[ERROR NOTIFICACIONES] Error obteniendo notificaciones: {str(e)}")
+            logger.error(f"Error obteniendo notificaciones: {str(e)}")
             return []
 
     def _obtener_notificaciones_demo(self, usuario_id: int) -> List[Dict]:
@@ -311,7 +315,7 @@ warning,
             bool: True si se marcó exitosamente
         """
         if not self.db_connection:
-            print("[WARNING] Sin BD - simulando marcar como leída")
+            logger.warning("Sin BD - simulando marcar como leída")
             return True
 
         try:
@@ -339,7 +343,7 @@ warning,
             return True
 
         except Exception as e:
-            print(f"[ERROR NOTIFICACIONES] Error marcando como leída: {str(e)}")
+            logger.error(f"Error marcando como leída: {str(e)}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -376,7 +380,7 @@ warning,
             return result[0] if result else 0
 
         except Exception as e:
-            print(f"[ERROR NOTIFICACIONES] Error contando no leídas: {str(e)}")
+            logger.error(f"Error contando no leídas: {str(e)}")
             return 0
 
     @admin_required
@@ -391,7 +395,7 @@ warning,
             bool: True si se eliminó exitosamente
         """
         if not self.db_connection:
-            print("[WARNING] Sin BD - simulando eliminación")
+            logger.warning("Sin BD - simulando eliminación")
             return True
 
         try:
@@ -412,7 +416,7 @@ warning,
             return True
 
         except Exception as e:
-            print(f"[ERROR NOTIFICACIONES] Error eliminando notificación: {str(e)}")
+            logger.error(f"Error eliminando notificación: {str(e)}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -460,7 +464,7 @@ warning,
         }
 
         if evento not in eventos_map:
-            print(f"[WARNING] Evento desconocido: {evento}")
+            logger.warning(f"Evento desconocido: {evento}")
             return False
 
         config = eventos_map[evento]
@@ -486,9 +490,9 @@ warning,
             # Invalidar cache usando cache_manager
             cache = get_cache_manager()
             cache.clear()  # Limpiar todo el cache relacionado con notificaciones
-            print("[NOTIFICACIONES] Cache invalidado después de cambios")
+            logger.info("Cache invalidado después de cambios")
         except Exception as e:
-            print(f"[WARNING NOTIFICACIONES] Error invalidando cache: {e}")
+            logger.warning(f"Error invalidando cache: {e}")
 
     @classmethod
     def limpiar_notificaciones_expiradas(cls, db_connection) -> int:
@@ -518,10 +522,10 @@ warning,
             db_connection.commit()
 
             if affected_rows > 0:
-                print(f"[NOTIFICACIONES] {affected_rows} notificaciones expiradas limpiadas")
+                logger.info(f"{affected_rows} notificaciones expiradas limpiadas")
 
             return affected_rows
 
         except Exception as e:
-            print(f"[ERROR NOTIFICACIONES] Error limpiando expiradas: {e}")
+            logger.error(f"Error limpiando notificaciones expiradas: {e}")
             return 0

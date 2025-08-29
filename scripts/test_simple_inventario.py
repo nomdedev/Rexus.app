@@ -13,7 +13,9 @@ from unittest.mock import Mock, patch
 root_dir = Path(__file__).parent
 sys.path.insert(0, str(root_dir))
 
-from rexus.modules.inventario.controller import InventarioController
+import importlib
+inventario_controller = importlib.import_module('rexus.modules.02_inventario.controller')
+InventarioController = inventario_controller.InventarioController
 
 class TestInventarioSimple(unittest.TestCase):
     """Test simple para inventario."""

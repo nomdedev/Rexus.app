@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QWidget
-from rexus.modules.administracion.view import AdministracionView
+import importlib
+administracion_view = importlib.import_module('rexus.modules.12_administracion.view')
+AdministracionView = administracion_view.AdministracionView
 
 # ...existing code...
 

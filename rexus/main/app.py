@@ -30,6 +30,9 @@ Aplicación principal que maneja la interfaz de usuario y la integración de mó
 Sigue principios de arquitectura MVC y patrones de diseño para mantenibilidad.
 """
 
+# ===== CONSTANTES =====
+AUDITORIA_MODULE = "Auditoría"
+
 # ===== IMPORTS CONSOLIDADOS =====
 # Imports estándar
 import datetime
@@ -69,12 +72,13 @@ try:
     LOGGING_AVAILABLE = True
 except ImportError:
     # Fallback si el logger no está disponible
-    def get_logger(name): return None
-    def log_info(msg, comp="general"): logger.info({msg})
-    def log_error(msg, comp="general"): logger.error({msg})
+    def get_logger(name): return logging.getLogger(name)
+    def log_info(msg, comp="general"): logger.info(msg)
+    def log_error(msg, comp="general"): logger.error(msg)
     def log_critical(msg, comp="general"): print(f"[CRITICAL] {msg}")
-    def log_warning(msg, comp="general"): logger.warning({msg})
+    def log_warning(msg, comp="general"): logger.warning(msg)
     def log_security(level, msg, user=None): print(f"[SECURITY-{level}] {msg}")
+    app_logger = None  # Agregar fallback para app_logger
     LOGGING_AVAILABLE = False
 
 # Importar validador de dependencias críticas
@@ -82,7 +86,8 @@ try:
     from rexus.utils.dependency_validator import validate_system_dependencies, DependencyValidator
     DEPENDENCY_VALIDATION_AVAILABLE = True
 except ImportError:
-    def validate_system_dependencies(): return True, {"status": "FALLBACK"}
+    def validate_system_dependencies() -> Tuple[bool, Dict[str, Any]]: return True, {"status": "FALLBACK"}
+    DependencyValidator = None  # Agregar fallback para DependencyValidator
     DEPENDENCY_VALIDATION_AVAILABLE = False
 
 # Agregar el directorio raíz al path de Python
@@ -99,22 +104,6 @@ except ImportError:
     log_warning("python-dotenv no instalado, usando variables del sistema", "startup")
 except Exception as e:
     print(f"[ENV] Error cargando .env: {e}")
-
-# Imports de PyQt6
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import (
-    QFrame,
-    QGridLayout,
-    QHBoxLayout,
-    QLabel,
-    QMainWindow,
-    QMessageBox,
-    QPushButton,
-    QScrollArea,
-    QStackedWidget,
-    QVBoxLayout,
-    QWidget,
-)
 
 # Imports del core de Rexus
 from rexus.core.login_dialog import LoginDialog
@@ -171,14 +160,15 @@ class SimpleSecurityManager:
             admin_password = os.environ.get("FALLBACK_ADMIN_PASSWORD")
 
             if admin_user and admin_password:
-                # Hash seguro de la contraseña
-                hashed_password = SecurityUtils.hash_password(admin_password)
+                # Hash seguro de la contraseña (devuelve hash y salt)
+                hashed_password, salt = SecurityUtils.hash_password(admin_password)
                 self.users = {
                     admin_user: {
                         "rol": "ADMIN",
                         "id": 1,
                         "username": admin_user,
                         "password_hash": hashed_password,
+                        "salt": salt,
                     }
                 }
                 logger.info("[SIMPLE_AUTH] Usuario de desarrollo cargado: %s", admin_user)
@@ -188,7 +178,6 @@ class SimpleSecurityManager:
         else:
             self.users = {}
             logger.info("[SIMPLE_AUTH] Modo producción - sin usuarios fallback")
-
     def login(self, username: str, password: str) -> bool:
         """Autenticación segura con hashing"""
         logger.info("[SIMPLE_AUTH] Intentando login: usuario='%s'", username)
@@ -207,10 +196,11 @@ class SimpleSecurityManager:
         try:
             from rexus.utils.security import SecurityUtils
 
-            if SecurityUtils.verify_password(password, user.get("password_hash", "")):
+            salt = user.get("salt", "")
+            if SecurityUtils.verify_password(password, user.get("password_hash", ""), salt):
                 print(f"[SIMPLE_AUTH] Login exitoso para {username}")
                 self.current_user_data = {
-                    k: v for k, v in user.items() if k != "password_hash"
+                    k: v for k, v in user.items() if k not in ["password_hash", "salt"]
                 }
                 # Sincronizar atributos para compatibilidad
                 self.current_user = self.current_user_data
@@ -221,6 +211,7 @@ class SimpleSecurityManager:
                 return False
         except ImportError:
             print("[SIMPLE_AUTH] SecurityUtils no disponible, login fallido")
+            return False
             return False
 
     def get_current_role(self) -> str:
@@ -238,27 +229,6 @@ class SimpleSecurityManager:
             if self.current_user_data
             else {"id": 0, "username": "guest", "rol": "USUARIO"}
         )
-
-    def get_user_modules(self, user_id: int) -> list:
-        """Lista de módulos permitidos"""
-        print(f"[SIMPLE_AUTH] Obteniendo módulos para usuario ID: {user_id}")
-        # Usar nombres consistentes con los esperados por el sistema
-        modules = [
-            "Inventario",
-            "Obras",
-            "Administración",
-            "Logística",
-            "Herrajes",
-            "Vidrios",
-            "Pedidos",
-            "Usuarios",
-            "Configuración",
-            "Compras",
-            "Mantenimiento",
-            "Auditoría",
-        ]
-        print(f"[SIMPLE_AUTH] Módulos permitidos: {modules}")
-        return modules
 
     def has_permission(self, permission: str, module: str | None = None) -> bool:
         """Verifica permisos - admin tiene todos"""
@@ -533,9 +503,6 @@ class MainWindow(QMainWindow):
 
         modules_widget = QWidget()
         modules_layout = QVBoxLayout(modules_widget)
-        modules_layout.setSpacing(5)
-        modules_layout.setContentsMargins(10, 10, 10, 10)
-
         # Módulos ordenados por flujo de proyecto real (incluye Logística)
         modulos = [
             ("🏗️", "Obras", "Gestión de proyectos y construcción"),
@@ -547,7 +514,7 @@ class MainWindow(QMainWindow):
             ("🛒", "Compras", "Gestión de compras y proveedores"),
             ("💼", "Administración", "Gestión administrativa y financiera"),
             ("🧰", "Mantenimiento", "Gestión de mantenimiento"),
-            ("🔎", "Auditoría", "Auditoría y trazabilidad"),
+            ("🔎", AUDITORIA_MODULE, "Auditoría y trazabilidad"),
             ("👤", "Usuarios", "Gestión de personal y roles"),
             ("⚙️", "Configuración", "Configuración del sistema"),
         ]
@@ -1214,7 +1181,7 @@ title_text,
 
         # Actividades simuladas
         activities = [
-            ("[OK]", "Nuevo pedido registrado", "Hace 2 horas", "#28a745"),
+            ("", "Nuevo pedido registrado", "Hace 2 horas", "#28a745"),
             ("📦", "Inventario actualizado", "Hace 4 horas", "#0366d6"),
             ("🏗️", "Obra finalizada", "Ayer", "#d73a49"),
             ("👤", "Usuario conectado", "Hace 1 hora", "#6f42c1"),
@@ -1574,9 +1541,6 @@ text,
         Args:
             module_name: Nombre del módulo
 
-        Returns:
-            Widget del módulo correspondiente
-        """
         # Mapeo de módulos a métodos de creación (incluyendo variaciones normalizadas)
         module_factory = {
             "Inventario": self._create_inventario_module,
@@ -1590,10 +1554,13 @@ text,
             "Logística": self._create_logistica_module,
             "Logistica": self._create_logistica_module,  # Sin tilde
             "Usuarios": self._create_usuarios_module,
-            "Auditoría": self._create_auditoria_module,
+            AUDITORIA_MODULE: self._create_auditoria_module,
             "Auditoria": self._create_auditoria_module,  # Sin tilde
             "Compras": self._create_compras_module,
             "Mantenimiento": self._create_mantenimiento_module,
+            "Administración": self._create_administracion_module,
+            "Administracion": self._create_administracion_module,  # Sin tilde
+        }
             "Administración": self._create_administracion_module,
             "Administracion": self._create_administracion_module,  # Sin tilde
         }
@@ -1642,7 +1609,9 @@ text,
     def _create_administracion_module(self) -> QWidget:
         """Crea el módulo de administración usando la vista real"""
         try:
-            from rexus.modules.administracion.view import AdministracionView
+            import importlib
+            administracion_view = importlib.import_module('rexus.modules.12_administracion.view')
+            AdministracionView = administracion_view.AdministracionView
 
             view = AdministracionView()
             return view
@@ -1653,10 +1622,17 @@ text,
     def _create_inventario_module(self) -> QWidget:
         """Crea el módulo de inventario usando el gestor robusto de módulos"""
         try:
+            import importlib
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.inventario.controller import InventarioController
-            from rexus.modules.inventario.model import InventarioModel
-            from rexus.modules.inventario.view import InventarioView
+
+            # Importar módulos usando importlib para manejar nombres con números
+            inventario_controller = importlib.import_module('rexus.modules.02_inventario.controller')
+            inventario_model = importlib.import_module('rexus.modules.02_inventario.model')
+            inventario_view = importlib.import_module('rexus.modules.02_inventario.view')
+
+            InventarioController = inventario_controller.InventarioController
+            InventarioModel = inventario_model.InventarioModel
+            InventarioView = inventario_view.InventarioView
 
             # Crear conexión a la base de datos
             try:
@@ -1666,7 +1642,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Inventario",
                 model_class=InventarioModel,
                 view_class=InventarioView,
@@ -1674,6 +1650,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None, usando fallback")
+                return self._create_fallback_module("Inventario", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando inventario: {e}")
@@ -1682,17 +1665,20 @@ text,
     def _create_contabilidad_module(self) -> QWidget:
         """Crea el módulo de contabilidad usando el gestor robusto"""
         try:
+            import importlib
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.administracion.contabilidad.controller import (
-                ContabilidadController,
-            )
-            from rexus.modules.administracion.contabilidad.model import (
-                ContabilidadModel,
-            )
+
+            # Importar módulos usando importlib para manejar nombres con números
+            contabilidad_controller = importlib.import_module('rexus.modules.12_administracion.contabilidad.controller')
+            contabilidad_model = importlib.import_module('rexus.modules.12_administracion.contabilidad.model')
+
+            ContabilidadController = contabilidad_controller.ContabilidadController
+            ContabilidadModel = contabilidad_model.ContabilidadModel
 
             # Import condicional para la vista
             try:
-                from rexus.modules.administracion.contabilidad.view import ContabilidadView
+                contabilidad_view = importlib.import_module('rexus.modules.12_administracion.contabilidad.view')
+                ContabilidadView = contabilidad_view.ContabilidadView
             except ImportError:
                 print("ContabilidadView no encontrada, usando fallback")
                 return self._create_fallback_module("Contabilidad", "Vista no disponible")
@@ -1705,7 +1691,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Contabilidad",
                 model_class=ContabilidadModel,
                 view_class=ContabilidadView,
@@ -1713,6 +1699,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Contabilidad, usando fallback")
+                return self._create_fallback_module("Contabilidad", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando contabilidad: {e}")
@@ -1722,9 +1715,13 @@ text,
         """Crea el módulo de obras usando el gestor robusto"""
         try:
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.obras.controller import ObrasController
-            from rexus.modules.obras.model import ObrasModel
-            from rexus.modules.obras.view import ObrasModernView as ObrasView
+            import importlib
+            obras_controller = importlib.import_module('rexus.modules.01_obras.controller')
+            obras_model = importlib.import_module('rexus.modules.01_obras.model')
+            obras_view = importlib.import_module('rexus.modules.01_obras.view')
+            ObrasController = obras_controller.ObrasController
+            ObrasModel = obras_model.ObrasModel
+            ObrasView = obras_view.ObrasModernView
 
             # Crear conexión a la base de datos
             try:
@@ -1734,7 +1731,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Obras",
                 model_class=ObrasModel,
                 view_class=ObrasView,
@@ -1742,6 +1739,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Obras, usando fallback")
+                return self._create_fallback_module("Obras", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando obras: {e}")
@@ -1750,9 +1754,13 @@ text,
     def _create_configuracion_module(self) -> QWidget:
         """Crea el módulo de configuración usando los archivos reales"""
         try:
-            from rexus.modules.configuracion.controller import ConfiguracionController
-            from rexus.modules.configuracion.model import ConfiguracionModel
-            from rexus.modules.configuracion.view import ConfiguracionView
+            import importlib
+            configuracion_controller = importlib.import_module('rexus.modules.10_configuracion.controller')
+            configuracion_model = importlib.import_module('rexus.modules.10_configuracion.model')
+            configuracion_view = importlib.import_module('rexus.modules.10_configuracion.view')
+            ConfiguracionController = configuracion_controller.ConfiguracionController
+            ConfiguracionModel = configuracion_model.ConfiguracionModel
+            ConfiguracionView = configuracion_view.ConfiguracionView
 
             # Crear modelo, vista y controlador
             model = ConfiguracionModel()
@@ -1780,9 +1788,13 @@ text,
         """Crea el módulo de vidrios usando el gestor robusto"""
         try:
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.vidrios.controller import VidriosController
-            from rexus.modules.vidrios.model import VidriosModel
-            from rexus.modules.vidrios.view import VidriosView
+            import importlib
+            vidrios_controller = importlib.import_module('rexus.modules.07_vidrios.controller')
+            vidrios_model = importlib.import_module('rexus.modules.07_vidrios.model')
+            vidrios_view = importlib.import_module('rexus.modules.07_vidrios.view')
+            VidriosController = vidrios_controller.VidriosController
+            VidriosModel = vidrios_model.VidriosModel
+            VidriosView = vidrios_view.VidriosView
 
             # Crear conexión a la base de datos
             try:
@@ -1792,7 +1804,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Vidrios",
                 model_class=VidriosModel,
                 view_class=VidriosView,
@@ -1800,6 +1812,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Vidrios, usando fallback")
+                return self._create_fallback_module("Vidrios", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando vidrios: {e}")
@@ -1809,9 +1828,13 @@ text,
         """Crea el módulo de herrajes usando el gestor robusto"""
         try:
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.herrajes.controller import HerrajesController
-            from rexus.modules.herrajes.model import HerrajesModel
-            from rexus.modules.herrajes.view import HerrajesView
+            import importlib
+            herrajes_controller = importlib.import_module('rexus.modules.06_herrajes.controller')
+            herrajes_model = importlib.import_module('rexus.modules.06_herrajes.model')
+            herrajes_view = importlib.import_module('rexus.modules.06_herrajes.view')
+            HerrajesController = herrajes_controller.HerrajesController
+            HerrajesModel = herrajes_model.HerrajesModel
+            HerrajesView = herrajes_view.HerrajesView
 
             # Crear conexión a la base de datos
             try:
@@ -1821,7 +1844,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Herrajes",
                 model_class=HerrajesModel,
                 view_class=HerrajesView,
@@ -1829,6 +1852,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Herrajes, usando fallback")
+                return self._create_fallback_module("Herrajes", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando herrajes: {e}")
@@ -1838,9 +1868,13 @@ text,
         """Crea el módulo de pedidos usando el gestor robusto"""
         try:
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.pedidos.controller import PedidosController
-            from rexus.modules.pedidos.model import PedidosModel
-            from rexus.modules.pedidos.view import PedidosView
+            import importlib
+            pedidos_controller = importlib.import_module('rexus.modules.03_pedidos.controller')
+            pedidos_model = importlib.import_module('rexus.modules.03_pedidos.model')
+            pedidos_view = importlib.import_module('rexus.modules.03_pedidos.view')
+            PedidosController = pedidos_controller.PedidosController
+            PedidosModel = pedidos_model.PedidosModel
+            PedidosView = pedidos_view.PedidosView
 
             # Crear conexión a la base de datos
             try:
@@ -1850,7 +1884,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Pedidos",
                 model_class=PedidosModel,
                 view_class=PedidosView,
@@ -1858,6 +1892,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Pedidos, usando fallback")
+                return self._create_fallback_module("Pedidos", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando pedidos: {e}")
@@ -1867,9 +1908,13 @@ text,
         """Crea el módulo de logística usando el gestor robusto"""
         try:
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.logistica.controller import LogisticaController
-            from rexus.modules.logistica.model import LogisticaModel
-            from rexus.modules.logistica.view import LogisticaView
+            import importlib
+            logistica_controller = importlib.import_module('rexus.modules.05_logistica.controller')
+            logistica_model = importlib.import_module('rexus.modules.05_logistica.model')
+            logistica_view = importlib.import_module('rexus.modules.05_logistica.view')
+            LogisticaController = logistica_controller.LogisticaController
+            LogisticaModel = logistica_model.LogisticaModel
+            LogisticaView = logistica_view.LogisticaView
 
             # Crear conexión a la base de datos
             try:
@@ -1879,7 +1924,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Logistica",
                 model_class=LogisticaModel,
                 view_class=LogisticaView,
@@ -1887,6 +1932,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Logistica, usando fallback")
+                return self._create_fallback_module("Logistica", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando logística: {e}")
@@ -1895,10 +1947,17 @@ text,
     def _create_usuarios_module(self) -> QWidget:
         """Crea el módulo de usuarios usando el gestor robusto"""
         try:
-            from rexus.core.database import get_users_connection  # Usar función correcta según CLAUDE.md
-            from rexus.modules.usuarios.controller import UsuariosController
-            from rexus.modules.usuarios.model import UsuariosModel
-            from rexus.modules.usuarios.view import UsuariosView
+            import importlib
+            from rexus.core.database import get_users_connection
+
+            # Importar módulos usando importlib para manejar nombres con números
+            usuarios_controller = importlib.import_module('rexus.modules.09_usuarios.controller')
+            usuarios_model = importlib.import_module('rexus.modules.09_usuarios.model')
+            usuarios_view = importlib.import_module('rexus.modules.09_usuarios.view')
+
+            UsuariosController = usuarios_controller.UsuariosController
+            UsuariosModel = usuarios_model.UsuariosModel
+            UsuariosView = usuarios_view.UsuariosView
 
             # Crear conexión a la base de datos usando función centralizada
             try:
@@ -1909,7 +1968,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Usuarios",
                 model_class=UsuariosModel,
                 view_class=UsuariosView,
@@ -1917,6 +1976,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Usuarios, usando fallback")
+                return self._create_fallback_module("Usuarios", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando usuarios: {e}")
@@ -1926,9 +1992,13 @@ text,
         """Crea el módulo de auditoría usando el gestor robusto"""
         try:
             from rexus.core.database import AuditoriaDatabaseConnection
-            from rexus.modules.auditoria.controller import AuditoriaController
-            from rexus.modules.auditoria.model import AuditoriaModel
-            from rexus.modules.auditoria.view import AuditoriaView
+            import importlib
+            auditoria_controller = importlib.import_module('rexus.modules.11_auditoria.controller')
+            auditoria_model = importlib.import_module('rexus.modules.11_auditoria.model')
+            auditoria_view = importlib.import_module('rexus.modules.11_auditoria.view')
+            AuditoriaController = auditoria_controller.AuditoriaController
+            AuditoriaModel = auditoria_model.AuditoriaModel
+            AuditoriaView = auditoria_view.AuditoriaView
 
             # Crear conexión a la base de datos
             try:
@@ -1938,7 +2008,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Auditoria",
                 model_class=AuditoriaModel,
                 view_class=AuditoriaView,
@@ -1946,6 +2016,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Auditoria, usando fallback")
+                return self._create_fallback_module("Auditoria", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando auditoría: {e}")
@@ -1955,9 +2032,13 @@ text,
         """Crea el módulo de compras usando el gestor robusto"""
         try:
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.compras.controller import ComprasController
-            from rexus.modules.compras.model import ComprasModel
-            from rexus.modules.compras.view import ComprasView
+            import importlib
+            compras_controller = importlib.import_module('rexus.modules.04_compras.controller')
+            compras_model = importlib.import_module('rexus.modules.04_compras.model')
+            compras_view = importlib.import_module('rexus.modules.04_compras.view')
+            ComprasController = compras_controller.ComprasController
+            ComprasModel = compras_model.ComprasModel
+            ComprasView = compras_view.ComprasView
 
             # Crear conexión a la base de datos
             try:
@@ -1967,7 +2048,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Compras",
                 model_class=ComprasModel,
                 view_class=ComprasView,
@@ -1975,6 +2056,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Compras, usando fallback")
+                return self._create_fallback_module("Compras", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando compras: {e}")
@@ -1984,9 +2072,13 @@ text,
         """Crea el módulo de mantenimiento usando el gestor robusto"""
         try:
             from rexus.core.database import InventarioDatabaseConnection
-            from rexus.modules.mantenimiento.controller import MantenimientoController
-            from rexus.modules.mantenimiento.model import MantenimientoModel
-            from rexus.modules.mantenimiento.view import MantenimientoView
+            import importlib
+            mantenimiento_controller = importlib.import_module('rexus.modules.08_mantenimiento.controller')
+            mantenimiento_model = importlib.import_module('rexus.modules.08_mantenimiento.model')
+            mantenimiento_view = importlib.import_module('rexus.modules.08_mantenimiento.view')
+            MantenimientoController = mantenimiento_controller.MantenimientoController
+            MantenimientoModel = mantenimiento_model.MantenimientoModel
+            MantenimientoView = mantenimiento_view.MantenimientoView
 
             # Crear conexión a la base de datos
             try:
@@ -1996,7 +2088,7 @@ text,
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
+            module = module_manager.create_module_safely(
                 module_name="Mantenimiento",
                 model_class=MantenimientoModel,
                 view_class=MantenimientoView,
@@ -2004,6 +2096,13 @@ text,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )
+            
+            # Verificar que el módulo se creó correctamente
+            if module is None:
+                logger.warning("create_module_safely devolvió None para Mantenimiento, usando fallback")
+                return self._create_fallback_module("Mantenimiento", "Módulo no pudo ser creado")
+                
+            return module
 
         except Exception as e:
             logger.error(f"Error crítico creando mantenimiento: {e}")
@@ -2040,25 +2139,12 @@ text,
         # Icono grande con estado de error
         icon_label = QLabel(module_icon)
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        icon_label.setStyleSheet("""
-            QLabel {
-                font-size: 72px;
-                margin-bottom: 20px;
-                color: #f39c12;
-            }
-        """)
+        icon_label.setStyleSheet('QLabel { font-size: 72px; margin-bottom: 20px; color: #f39c12; }')
 
         # Título
         title_label = QLabel(f"Error cargando {module_name}")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_label.setStyleSheet("""
-            QLabel {
-                font-size: 24px;
-                font-weight: bold;
-                color: #e74c3c;
-                margin-bottom: 15px;
-            }
-        """)
+        title_label.setStyleSheet('QLabel { font-size: 24px; font-weight: bold; color: #e74c3c; margin-bottom: 15px; }')
 
         # Descripción del error específico
         if error_details:
@@ -2069,36 +2155,14 @@ text,
         desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         desc_label.setWordWrap(True)
         desc_label.setMaximumWidth(600)
-        desc_label.setStyleSheet("""
-            QLabel {
-                font-size: 14px;
-                color: #95a5a6;
-                margin-bottom: 20px;
-                padding: 15px;
-                background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                line-height: 1.4;
-            }
-        """)
+        desc_label.setStyleSheet('QLabel { font-size: 14px; color: #95a5a6; margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; line-height: 1.4; }')
 
         # Información adicional
         help_label = QLabel("Posibles causas:\n• Faltan dependencias del módulo\n• Error en la configuración\n• Problemas de permisos de base de datos")
         help_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         help_label.setWordWrap(True)
         help_label.setMaximumWidth(500)
-        help_label.setStyleSheet("""
-            QLabel {
-                font-size: 12px;
-                color: #6c757d;
-                margin-top: 15px;
-                padding: 10px;
-                background-color: #fff3cd;
-                border: 1px solid #ffeaa7;
-                border-radius: 6px;
-                line-height: 1.3;
-            }
-        """)
+        help_label.setStyleSheet('QLabel { font-size: 12px; color: #6c757d; margin-top: 15px; padding: 10px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; line-height: 1.3; }')
 
         content_layout.addWidget(icon_label)
         content_layout.addWidget(title_label)
@@ -2140,7 +2204,7 @@ def main():
         print(f"[LOG 4.1] Razones: {webengine_status['fallback_reasons']}")
         from PyQt6.QtWidgets import QApplication
     # Inicializar sistema de logging como primera acción
-    if LOGGING_AVAILABLE:
+    if LOGGING_AVAILABLE and app_logger is not None:
         app_logger.log_startup_info()
         log_info("Iniciando Rexus.app", "startup")
     else:
@@ -2155,8 +2219,9 @@ def main():
             log_critical("Dependencias críticas faltantes - aplicación no puede iniciar", "startup")
             
             # Mostrar errores críticos en consola
-            validator = DependencyValidator()
-            validator.print_validation_summary(dependency_report)
+            if DependencyValidator is not None:
+                validator = DependencyValidator()
+                validator.print_validation_summary(dependency_report)
             
             # Mostrar mensaje de error al usuario
             from PyQt6.QtWidgets import QApplication, QMessageBox
@@ -2244,6 +2309,13 @@ def main():
 
     # Crear dialog de login moderno
     login_dialog = LoginDialog()
+    
+    # Verificar que el login dialog se creó correctamente
+    if login_dialog is None:
+        logger.critical("No se pudo crear el diálogo de login")
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.critical(None, "Error Crítico", "No se pudo crear la ventana de login")
+        sys.exit(1)
 
     # Asignar el security manager al login dialog
     if security_manager is not None:
@@ -2273,13 +2345,14 @@ def main():
             import traceback
 
             error_msg = f"Error al iniciar aplicación con seguridad: {e}"
-            log_critical(error_msg, "security", exc_info=True)
+            log_critical(error_msg, "security")
             
             # Guardar log de error adicional para casos críticos
             Path("logs").mkdir(exist_ok=True)
             with open("logs/error_inicio_seguridad.txt", "a", encoding="utf-8") as f:
                 f.write(f"{datetime.datetime.now()}: {error_msg}\n{traceback.format_exc()}\n")
             
+            from PyQt6.QtWidgets import QMessageBox
             QMessageBox.critical(
                 None,
                 "Error crítico",
@@ -2296,6 +2369,7 @@ def main():
         # Pero mantenemos la verificación defensiva
         if security_manager is None:
             print("[CRÍTICO] Estado de seguridad inconsistente detectado")
+            from PyQt6.QtWidgets import QMessageBox
             QMessageBox.critical(
                 None,
                 "Error Crítico de Seguridad",
@@ -2309,16 +2383,16 @@ def main():
         # [HOT] SOLUCIÓN CRÍTICA: Establecer contexto de seguridad ANTES de obtener módulos
         try:
             # Establecer usuario y rol actual en SecurityManager
-            security_manager.current_user = user_data
-            security_manager.current_role = user_data.get("role", "usuario")
+            setattr(security_manager, 'current_user', user_data)
+            setattr(security_manager, 'current_role', user_data.get("role", "usuario"))
 
             print(
-                f"[SECURITY] Contexto establecido - Usuario: {user_data.get('username')}, Rol: {security_manager.current_role}"
+                f"[SECURITY] Contexto establecido - Usuario: {user_data.get('username')}, Rol: {getattr(security_manager, 'current_role', 'usuario')}"
             )
 
             # [SEARCH] DIAGNÓSTICO: Verificar estado del sistema de permisos
             if hasattr(security_manager, "diagnose_permissions"):
-                diagnosis = security_manager.diagnose_permissions()
+                diagnosis = getattr(security_manager, "diagnose_permissions")()
                 if (
                     not diagnosis.get("has_admin_access")
                     and user_data.get("role", "").upper() == "ADMIN"
@@ -2326,12 +2400,19 @@ def main():
                     logger.warning("[SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema...")
 
             # Ahora obtener módulos permitidos
-            modulos_permitidos = security_manager.get_user_modules(
-                user_data.get("id", 1)
-            )
+            if hasattr(security_manager, 'get_user_modules'):
+                modulos_permitidos = getattr(security_manager, 'get_user_modules')(
+                    user_data.get("id", 1)
+                )
+            else:
+                # Fallback a lista básica de módulos
+                modulos_permitidos = [
+                    "Inventario", "Obras", "Administración", "Logística", 
+                    "Herrajes", "Vidrios", "Pedidos", "Usuarios", "Configuración"
+                ]
 
             print(
-                f"[SECURITY] Módulos obtenidos para {security_manager.current_role}: {len(modulos_permitidos)} módulos"
+                f"[SECURITY] Módulos obtenidos para {getattr(security_manager, 'current_role', 'usuario')}: {len(modulos_permitidos)} módulos"
             )
             print(f"[SECURITY] Lista de módulos: {modulos_permitidos}")
 
@@ -2342,7 +2423,7 @@ def main():
             ):
                 logger.warning(f"[SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12")
                 print(
-                    f"[WARN] [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'"
+                    f"[WARN] [SECURITY WARNING] Rol actual en SecurityManager: '{getattr(security_manager, 'current_role', 'usuario')}'"
                 )
 
         except AttributeError as e:
@@ -2405,16 +2486,22 @@ def main():
             return
         
         # Mantener referencia local para evitar garbage collection
-        app.main_window = main_window_instance
+        setattr(app, 'main_window', main_window_instance)
 
     def on_login_failed(error_message):
         logger.error(f"[LOGIN] Autenticación fallida: {error_message}")
 
-    login_dialog.login_successful.connect(on_login_success)
-    login_dialog.login_failed.connect(on_login_failed)
+    if login_dialog is not None:
+        login_dialog.login_successful.connect(on_login_success)
+        login_dialog.login_failed.connect(on_login_failed)
 
-    # Mostrar login directamente
-    login_dialog.show()
+        # Mostrar login directamente
+        login_dialog.show()
+    else:
+        logger.critical("No se pudo mostrar el diálogo de login")
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.critical(None, "Error Crítico", "No se pudo mostrar la ventana de login")
+        sys.exit(1)
     print("[LOG 4.10] QApplication loop iniciado.")
     sys.exit(app.exec())
 

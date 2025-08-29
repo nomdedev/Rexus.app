@@ -29,7 +29,7 @@ class ObrasController:
     def _ensure_view_available(self, operation: str = "operación") -> bool:
         """Verificar que la vista esté disponible."""
         if not self.view:
-            logger.error(f"Vista no disponible para {operation}")
+            self.logger.error(f"Vista no disponible para {operation}")
             return False
         return True
     
@@ -38,28 +38,28 @@ class ObrasController:
         if self.view:
             QMessageBox.critical(self.view, "Error", mensaje)
         else:
-            logger.error(mensaje)
+            self.logger.error(mensaje)
     
     def mostrar_error(self, titulo: str, mensaje: str) -> None:
         """Mostrar mensaje de error con título."""
         if self.view:
             QMessageBox.critical(self.view, titulo, mensaje)
         else:
-            logger.error(f"{titulo}: {mensaje}")
+            self.logger.error(f"{titulo}: {mensaje}")
     
     def mostrar_exito(self, mensaje: str) -> None:
         """Mostrar mensaje de éxito."""
         if self.view:
             QMessageBox.information(self.view, "Éxito", mensaje)
         else:
-            logger.info(mensaje)
+            self.logger.info(mensaje)
     
     def mostrar_advertencia(self, mensaje: str) -> None:
         """Mostrar mensaje de advertencia."""
         if self.view:
             QMessageBox.warning(self.view, "Advertencia", mensaje)
         else:
-            logger.warning(mensaje)
+            self.logger.warning(mensaje)
     
     def eliminar_obra_seleccionada(self) -> None:
         """Eliminar la obra seleccionada."""
@@ -101,8 +101,14 @@ class ObrasController:
                 else:
                     self.mostrar_error("Error", f"No se pudo eliminar la obra: {mensaje}")
                     
+        except (ConnectionError, OSError) as e:
+            self.logger.error(f"Error de BD eliminando obra: {e}")
+            self.mostrar_error("Error", "Error de conexión eliminando obra")
+        except (ValueError, KeyError) as e:
+            self.logger.error(f"Error de datos eliminando obra: {e}")
+            self.mostrar_error("Error", "Datos de obra inválidos")
         except Exception as e:
-            logger.error(f"Error eliminando obra: {e}")
+            self.logger.error(f"Error eliminando obra: {e}")
             self.mostrar_error("Error", f"Error inesperado eliminando obra: {str(e)}")
     
     def cambiar_estado_obra(self) -> None:
@@ -149,7 +155,7 @@ class ObrasController:
                     self.mostrar_error("Error", f"No se pudo cambiar el estado: {mensaje}")
                     
         except Exception as e:
-            logger.error(f"Error cambiando estado: {e}")
+            self.logger.error(f"Error cambiando estado: {e}")
             self.mostrar_error("Error", f"Error inesperado cambiando estado: {str(e)}")
     
     def cargar_obras(self, filtros: Optional[Dict[str, Any]] = None) -> None:
@@ -173,13 +179,13 @@ class ObrasController:
             if self.view is not None and hasattr(self.view, 'cargar_obras_en_tabla'):
                 self.view.cargar_obras_en_tabla(obras)
             else:
-                logger.warning("La vista no implementa cargar_obras_en_tabla o self.view es None")
+                self.logger.warning("La vista no implementa cargar_obras_en_tabla o self.view es None")
                 
             # Actualizar estadísticas si está disponible
             self.actualizar_estadisticas()
             
         except Exception as e:
-            logger.error(f"Error cargando obras: {e}")
+            self.logger.error(f"Error cargando obras: {e}")
             self.mostrar_error("Error", f"Error cargando obras: {str(e)}")
     
     def actualizar_estadisticas(self) -> None:
@@ -192,17 +198,17 @@ class ObrasController:
             if self.model is not None and hasattr(self.model, 'obtener_estadisticas_obras'):
                 estadisticas = self.model.obtener_estadisticas_obras()
             else:
-                logger.warning("El modelo no implementa obtener_estadisticas_obras o es None")
+                self.logger.warning("El modelo no implementa obtener_estadisticas_obras o es None")
                 return
                 
             # Verificar métodos de vista
             if self.view and hasattr(self.view, 'actualizar_estadisticas'):
                 self.view.actualizar_estadisticas(estadisticas)
             else:
-                logger.warning("La vista no implementa actualizar_estadisticas")
+                self.logger.warning("La vista no implementa actualizar_estadisticas")
                 
         except Exception as e:
-            logger.error(f"Error actualizando estadísticas: {e}")
+            self.logger.error(f"Error actualizando estadísticas: {e}")
     
     def buscar_obras(self, termino: str) -> None:
         """Buscar obras por término."""
@@ -214,7 +220,7 @@ class ObrasController:
             self.cargar_obras(filtros)
             
         except Exception as e:
-            logger.error(f"Error buscando obras: {e}")
+            self.logger.error(f"Error buscando obras: {e}")
             self.mostrar_error("Error", f"Error en búsqueda: {str(e)}")
     
     def crear_nueva_obra(self, datos_obra: Dict[str, Any]) -> Optional[int]:
@@ -239,7 +245,7 @@ class ObrasController:
                 return None
                 
         except Exception as e:
-            logger.error(f"Error creando obra: {e}")
+            self.logger.error(f"Error creando obra: {e}")
             self.mostrar_error("Error", f"Error creando obra: {str(e)}")
             return None
     
@@ -265,7 +271,7 @@ class ObrasController:
                 return False
                 
         except Exception as e:
-            logger.error(f"Error actualizando obra: {e}")
+            self.logger.error(f"Error actualizando obra: {e}")
             self.mostrar_error("Error", f"Error actualizando obra: {str(e)}")
             return False
     
@@ -283,7 +289,7 @@ class ObrasController:
                 return None
                 
         except Exception as e:
-            logger.error(f"Error obteniendo obra por código: {e}")
+            self.logger.error(f"Error obteniendo obra por código: {e}")
             self.mostrar_error("Error", f"Error obteniendo obra: {str(e)}")
             return None
     
@@ -312,7 +318,7 @@ class ObrasController:
                 self.view.actualizar_paginacion(pagina, total_paginas)
                 
         except Exception as e:
-            logger.error(f"Error cargando página: {e}")
+            self.logger.error(f"Error cargando página: {e}")
             self.mostrar_error("Error", f"Error cargando página: {str(e)}")
     
     def exportar_obras(self, formato: str = "xlsx") -> None:
@@ -352,11 +358,11 @@ class ObrasController:
                 self.mostrar_exito(f"Obras exportadas exitosamente a {archivo_nombre}")
                 
             except ImportError:
-                logger.warning("Módulo de exportación no disponible")
+                self.logger.warning("Módulo de exportación no disponible")
                 self.mostrar_advertencia("Funcionalidad de exportación no disponible")
                 
         except Exception as e:
-            logger.error(f"Error exportando obras: {e}")
+            self.logger.error(f"Error exportando obras: {e}")
             self.mostrar_error("Error", f"Error exportando obras: {str(e)}")
     
     def configurar_vista(self, configuracion: Dict[str, Any]) -> None:
@@ -369,8 +375,8 @@ class ObrasController:
             if self.view and hasattr(self.view, 'aplicar_configuracion'):
                 self.view.aplicar_configuracion(configuracion)
             else:
-                logger.warning("La vista no implementa aplicar_configuracion o self.view es None")
+                self.logger.warning("La vista no implementa aplicar_configuracion o self.view es None")
                 
         except Exception as e:
-            logger.error(f"Error configurando vista: {e}")
+            self.logger.error(f"Error configurando vista: {e}")
             self.mostrar_error("Error", f"Error en configuración: {str(e)}")

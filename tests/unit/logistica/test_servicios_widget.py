@@ -21,12 +21,12 @@ sys.path.insert(0, str(root_dir))
 
 # Imports a testear
 try:
-    from rexus.modules.05_logistica.components.servicios_widget import (
+    from rexus.modules.logistica.components.servicios_widget import (
         ServiciosWidget, DialogoNuevoServicio, DialogoProgramarServicio
     )
     from rexus.ui.components.base_components import RexusButton
 except ImportError as e:
-    pytest.skip(f, allow_module_level=True)
+    pytest.skip(f"No se pudo importar logística: {e}", allow_module_level=True)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -183,8 +183,8 @@ class TestServiciosWidget:
         
         # Los botones deberían habilitarse tras selección
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.DialogoNuevoServicio')
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.DialogoNuevoServicio')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_crear_nuevo_servicio_aceptado(self, mock_msgbox, mock_dialogo_class):
         """Test creación de servicio aceptado."""
         widget = ServiciosWidget(self.mock_parent)
@@ -211,7 +211,7 @@ class TestServiciosWidget:
                 # Verificar refresh
                 mock_refresh.assert_called_once()
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.DialogoNuevoServicio')
+    @patch('rexus.modules.logistica.components.servicios_widget.DialogoNuevoServicio')
     def test_crear_nuevo_servicio_cancelado(self, mock_dialogo_class):
         """Test creación de servicio cancelado."""
         widget = ServiciosWidget(self.mock_parent)
@@ -228,7 +228,7 @@ class TestServiciosWidget:
             # Verificar que NO se emitió señal
             mock_signal.assert_not_called()
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_completar_servicio_sin_seleccion(self, mock_msgbox):
         """Test completar servicio sin selección."""
         widget = ServiciosWidget(self.mock_parent)
@@ -242,7 +242,7 @@ class TestServiciosWidget:
         # No debería hacer nada (sin error, pero sin acción)
         # En implementación real podría mostrar mensaje
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_completar_servicio_con_seleccion(self, mock_msgbox):
         """Test completar servicio con selección."""
         widget = ServiciosWidget(self.mock_parent)
@@ -267,7 +267,7 @@ class TestServiciosWidget:
                 mock_msgbox.information.assert_called_once()
                 mock_refresh.assert_called_once()
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_generar_reporte_servicios_sin_datos(self, mock_msgbox):
         """Test generar reporte sin datos."""
         widget = ServiciosWidget(self.mock_parent)
@@ -281,7 +281,7 @@ class TestServiciosWidget:
             widget, "Reporte", "No hay servicios para exportar"
         )
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_generar_reporte_servicios_exitoso(self, mock_msgbox):
         """Test generar reporte exitoso."""
         widget = ServiciosWidget(self.mock_parent)
@@ -296,7 +296,7 @@ class TestServiciosWidget:
                 widget, "Éxito", "Reporte generado exitosamente"
             )
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_generar_reporte_servicios_error(self, mock_msgbox):
         """Test error en generación de reporte."""
         widget = ServiciosWidget(self.mock_parent)
@@ -309,7 +309,7 @@ class TestServiciosWidget:
             # Verificar mensaje de error
             mock_msgbox.critical.assert_called_once()
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_pausar_servicio(self, mock_msgbox):
         """Test pausar servicio."""
         widget = ServiciosWidget(self.mock_parent)
@@ -319,7 +319,7 @@ class TestServiciosWidget:
         # Verificar mensaje informativo
         mock_msgbox.information.assert_called_once_with(widget, "Pausa", "Servicio pausado")
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_cancelar_servicio_confirmado(self, mock_msgbox):
         """Test cancelar servicio confirmado."""
         widget = ServiciosWidget(self.mock_parent)
@@ -333,7 +333,7 @@ class TestServiciosWidget:
         mock_msgbox.question.assert_called_once()
         mock_msgbox.information.assert_called_once_with(widget, "Cancelado", "Servicio cancelado")
     
-    @patch('rexus.modules.05_logistica.components.servicios_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.servicios_widget.QMessageBox')
     def test_cancelar_servicio_rechazado(self, mock_msgbox):
         """Test cancelar servicio rechazado."""
         widget = ServiciosWidget(self.mock_parent)

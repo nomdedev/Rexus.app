@@ -21,10 +21,13 @@ sys.path.insert(0, str(root_dir))
 
 # Imports a testear
 try:
-    from rexus.modules.05_logistica.components.estadisticas_widget import EstadisticasWidget
+    # Import usando importlib para evitar problemas de sintaxis
+    import importlib
+    estadisticas_widget_module = importlib.import_module('rexus.modules.05_logistica.components.estadisticas_widget')
+    EstadisticasWidget = estadisticas_widget_module.EstadisticasWidget
     from rexus.ui.components.base_components import RexusButton
 except ImportError as e:
-    pytest.skip(f, allow_module_level=True)
+    pytest.skip(f"Imports not available: {e}", allow_module_level=True)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -283,7 +286,7 @@ class TestEstadisticasWidget:
         widget.toggle_auto_refresh(False)
         assert not widget.auto_refresh_timer.isActive()
     
-    @patch('rexus.modules.05_logistica.components.estadisticas_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.estadisticas_widget.QMessageBox')
     def test_exportar_estadisticas_sin_datos(self, mock_msgbox):
         """Test exportación sin datos."""
         widget = EstadisticasWidget(self.mock_parent)
@@ -296,7 +299,7 @@ class TestEstadisticasWidget:
             widget, "Exportar", "No hay datos estadísticos para exportar"
         )
     
-    @patch('rexus.modules.05_logistica.components.estadisticas_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.estadisticas_widget.QMessageBox')
     def test_exportar_estadisticas_exitoso(self, mock_msgbox):
         """Test exportación exitosa."""
         widget = EstadisticasWidget(self.mock_parent)
@@ -311,7 +314,7 @@ class TestEstadisticasWidget:
                 widget, "Exportar", "Estadísticas exportadas exitosamente"
             )
     
-    @patch('rexus.modules.05_logistica.components.estadisticas_widget.QMessageBox')
+    @patch('rexus.modules.logistica.components.estadisticas_widget.QMessageBox')
     def test_exportar_estadisticas_error(self, mock_msgbox):
         """Test error en exportación."""
         widget = EstadisticasWidget(self.mock_parent)

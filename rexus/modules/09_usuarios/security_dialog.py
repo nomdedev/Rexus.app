@@ -30,8 +30,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 import base64
-                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
+from PyQt6.QtWidgets import QDialog, QMessageBox
+
+
+class SecurityDialog(QDialog):
+    """Diálogo de configuración de seguridad."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setup_ui()
+    
+    def setup_ui(self):
+        """Configurar interfaz."""
+        # TODO: Implementar interfaz completa
+        pass
 
         if reply == QMessageBox.StandardButton.Yes:
             try:

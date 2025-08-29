@@ -15,7 +15,9 @@ except ImportError:
         logging.error(f"{title}: {message}")
 
 try:
-    from rexus.modules.mantenimiento.programacion_model import ProgramacionMantenimientoModel
+    import importlib
+    mantenimiento_programacion_model = importlib.import_module('rexus.modules.08_mantenimiento.programacion_model')
+    ProgramacionMantenimientoModel = mantenimiento_programacion_model.ProgramacionMantenimientoModel
 except ImportError:
     ProgramacionMantenimientoModel = None
 
@@ -53,8 +55,17 @@ model=None,
     def conectar_señales(self):
         """Conecta las señales entre vista y controlador."""
         if self.view:
-            # Conectar señales de la vista si existen
-            pass
+            try:
+                # Conectar señales básicas si están disponibles
+                if hasattr(self.view, 'actualizar_solicitado'):
+                    self.view.actualizar_solicitado.connect(self.cargar_datos_iniciales)
+                
+                if hasattr(self.view, 'mantenimiento_solicitado'):
+                    self.view.mantenimiento_solicitado.connect(self.ejecutar_mantenimiento)
+                
+                self.logger.debug("Señales de mantenimiento conectadas")
+            except Exception as e:
+                self.logger.error(f"Error conectando señales de mantenimiento: {e}")
 
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales del módulo."""

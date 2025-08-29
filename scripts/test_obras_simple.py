@@ -23,7 +23,9 @@ def test_obras():
         logging.getLogger().setLevel(logging.CRITICAL)
 
         print("2. Test import...")
-        from rexus.modules.obras.view import ObrasModernView
+        import importlib
+        obras_view = importlib.import_module('rexus.modules.01_obras.view')
+        ObrasModernView = obras_view.ObrasModernView
         print("   Import OK")
 
         print("3. Test instanciacion...")

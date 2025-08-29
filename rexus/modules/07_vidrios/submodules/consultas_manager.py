@@ -9,7 +9,7 @@ Responsabilidades:
 - Paginación de resultados
 """
 
-            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger

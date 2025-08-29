@@ -198,8 +198,24 @@ class UsuariosController(BaseController):
                     'mensaje': 'Usuario o contraseña incorrectos'
                 }
                 
+        except (AttributeError, ValueError, KeyError) as e:
+            logger.error(f"Error de datos en autenticación: {e}")
+            return {
+                'success': False,
+                'user': None,
+                'permisos': [],
+                'mensaje': 'Datos de usuario inválidos'
+            }
+        except (ConnectionError, TimeoutError, OSError) as e:
+            logger.error(f"Error de conexión en autenticación: {e}")
+            return {
+                'success': False,
+                'user': None,
+                'permisos': [],
+                'mensaje': 'Error de conexión al sistema'
+            }
         except Exception as e:
-            logger.error(f"Error en autenticación: {e}")
+            logger.error(f"Error inesperado en autenticación: {e}")
             return {
                 'success': False,
                 'user': None,
@@ -370,6 +386,16 @@ class UsuariosController(BaseController):
                     self.mostrar_error("Error", MSG_ERROR_CREANDO)
                 return False
                 
+        except ValueError as e:
+            logger.error(f"Error de validación creando usuario: {e}")
+            if self.view:
+                self.mostrar_error("Error", "Datos de usuario inválidos")
+            return False
+        except (ConnectionError, OSError) as e:
+            logger.error(f"Error de BD creando usuario: {e}")
+            if self.view:
+                self.mostrar_error("Error", "Error de conexión a la base de datos")
+            return False
         except Exception as e:
             logger.error(f"{MSG_ERROR_CREANDO}: {e}")
             if self.view:

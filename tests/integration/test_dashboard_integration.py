@@ -19,7 +19,7 @@ try:
     from rexus.ui.dashboard.widgets import KPIWidget, ChartWidget, ActivityWidget
     from rexus.ui.components.theme_manager import ThemeManager
 except ImportError as e:
-    pytest.skip(f, allow_module_level=True)
+    pytest.skip(f"Dashboard imports not available: {e}", allow_module_level=True)
 
 
 class TestDashboardIntegration:
@@ -139,8 +139,8 @@ class TestDashboardIntegration:
             
             assert original_theme != new_theme
     
-    @patch('rexus.modules.09_usuarios.controller.UsuariosController')
-    @patch('rexus.modules.02_inventario.controller.InventarioController')
+    @patch('rexus.modules.usuarios.controller.UsuariosController')
+    @patch('rexus.modules.inventario.controller.InventarioController')
     def test_dashboard_data_integration(self, mock_inventario, mock_usuarios):
         """Test de integración con datos reales de módulos."""
         # Configurar mocks con datos dinámicos seguros

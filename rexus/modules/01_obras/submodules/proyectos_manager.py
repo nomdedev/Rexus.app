@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import sqlite3
-            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:

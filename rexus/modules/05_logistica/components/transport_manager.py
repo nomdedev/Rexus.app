@@ -7,7 +7,9 @@ Extraído de view.py para mejorar la mantenibilidad.
 
 import logging
 from PyQt6.QtWidgets import QMessageBox
-from rexus.modules.logistica.dialogo_transporte import DialogoNuevoTransporte
+import importlib
+logistica_dialogo_transporte = importlib.import_module('rexus.modules.05_logistica.dialogo_transporte')
+DialogoNuevoTransporte = logistica_dialogo_transporte.DialogoNuevoTransporte
 
 logger = logging.getLogger(__name__)
 

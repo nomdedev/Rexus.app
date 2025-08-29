@@ -30,13 +30,16 @@ Implementa diálogos CRUD modernos usando las utilidades dialog_utils.py
 
 
 import logging
+
 logger = logging.getLogger(__name__)
 
-                                    }
-                    ]
-                }
-            ]
-        }
+
+class PedidosImprovedDialogs:
+    """Diálogos mejorados para el módulo de pedidos."""
+    
+    def __init__(self, parent=None):
+        """Inicializar diálogos."""
+        self.parent = parent
 
         dialog = BaseFormDialog(
             self.parent,
@@ -67,7 +70,7 @@ logger = logging.getLogger(__name__)
                     from rexus.utils.message_system import show_success
                     show_success(
                         self.parent,
-                        ,
+                        "Estado Actualizado",
                         f"El estado del pedido {pedido_data.get('numero_pedido')} ha sido cambiado a {estado_data.get('nuevo_estado')}."
                     )
                     return True
@@ -75,7 +78,7 @@ logger = logging.getLogger(__name__)
                     from rexus.utils.message_system import show_error
                     show_error(
                         self.parent,
-                        ,
+                        "Error Estado",
                         "No se pudo cambiar el estado del pedido."
                     )
 

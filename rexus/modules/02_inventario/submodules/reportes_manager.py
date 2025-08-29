@@ -23,52 +23,52 @@ from typing import Any, Dict, List, Optional, Union
 
 # Imports del sistema de cache
 try:
-from rexus.utils.report_cache_integration import (
-from rexus.utils.sql_query_manager import SQLQueryManager
-cache_inventory_report,
-get_report_cache_manager,
-get_performance_monitor
-)
-CACHE_AVAILABLE = True
+    from rexus.utils.report_cache_integration import (
+        cache_inventory_report,
+        get_report_cache_manager,
+        get_performance_monitor
+    )
+    from rexus.utils.sql_query_manager import SQLQueryManager
+    CACHE_AVAILABLE = True
 except ImportError:
-CACHE_AVAILABLE = False
-import logging
-logger = logging.getLogger(__name__)
-logger.warning("No se pudo importar la integración de cache de reportes.")
+    CACHE_AVAILABLE = False
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning("No se pudo importar la integración de cache de reportes.")
 
 # Dummy decorator to avoid NameError if cache_inventory_report is not available
 def cache_inventory_report(*args, **kwargs):
-        def decorator(func):
+    def decorator(func):
         return func
-return decorator
+    return decorator
 
 # Dummy get_performance_monitor to avoid NameError
 def get_performance_monitor():
-        # Returns an object with a log_report_execution method
-class DummyMonitor:
+    """Returns an object with a log_report_execution method."""
+    class DummyMonitor:
         @staticmethod
-def log_report_execution(*args, **kwargs):
-                # Método vacío porque en el entorno sin integración de cache
-# no es necesario registrar la ejecución de reportes.
-pass
-return DummyMonitor()
+        def log_report_execution(*args, **kwargs):
+            # Método vacío porque en el entorno sin integración de cache
+            # no es necesario registrar la ejecución de reportes.
+            pass
+    return DummyMonitor()
 
 # Dummy get_report_cache_manager to avoid NameError
 def get_report_cache_manager():
-        # Returns an object with the same interface as the real ReportCacheManager
-return type("ReportCacheManager", (), {
-"invalidate_report_type": staticmethod(lambda *args, **kwargs: 0),
-"invalidate_module_cache": staticmethod(lambda *args, **kwargs: 0)
-})()
+    """Returns an object with the same interface as the real ReportCacheManager."""
+    return type("ReportCacheManager", (), {
+        "invalidate_report_type": staticmethod(lambda *args, **kwargs: 0),
+        "invalidate_module_cache": staticmethod(lambda *args, **kwargs: 0)
+    })()
 
 # Configurar logging
 logger = logging.getLogger(__name__)
 
 
 class ReportesManager:
-"""Gestor de reportes y estadísticas para el módulo de inventario."""
+    """Gestor de reportes y estadísticas para el módulo de inventario."""
 
-def __init__(self, db_connection=None):
+    def __init__(self, db_connection=None):
         """Inicializa el gestor de reportes.
 
 Args:
@@ -96,12 +96,13 @@ try:
                 return {
 'success': False,
 'error': 'Sin conexión a base de datos'
-}
+        }
 
-cursor = self.db_connection.cursor()
+        try:
+            cursor = self.db_connection.cursor()
 
-# Query base
-query = """
+            # Query base
+            query = """
 SELECT 
 i.id,
 i.codigo,
@@ -117,24 +118,24 @@ FROM inventario i
 WHERE i.activo = 1
 """
 
-params = []
+            params = []
 
-# Aplicar filtros
-if filtros:
+            # Aplicar filtros
+            if filtros:
                 if filtros.get('categoria'):
-                query += " AND i.categoria = ?"
-params.append(filtros['categoria'])
+                    query += " AND i.categoria = ?"
+                    params.append(filtros['categoria'])
 
-if filtros.get('stock_minimo') is not None:
-                query += " AND i.stock >= ?"
-params.append(filtros['stock_minimo'])
+                if filtros.get('stock_minimo') is not None:
+                    query += " AND i.stock >= ?"
+                    params.append(filtros['stock_minimo'])
 
-if filtros.get('solo_bajo_minimo'):
-                query += " AND i.stock < i.stock_minimo"
+                if filtros.get('solo_bajo_minimo'):
+                    query += " AND i.stock < i.stock_minimo"
 
-query += " ORDER BY i.codigo"
+            query += " ORDER BY i.codigo"
 
-cursor.execute(query, params)
+            cursor.execute(query, params)
 productos = []
 
 for row in cursor.fetchall():
@@ -175,11 +176,18 @@ monitor.log_report_execution(
 len(str(productos))
 )
 
-return {
-'success': True,
-'productos': productos,
-'resumen': resumen
-}
+            return {
+                'success': True,
+                'productos': productos,
+                'resumen': resumen
+            }
+            
+        except Exception as e:
+            logger.error(f"Error generando reporte de stock: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
 
 except Exception as e:
         return {
@@ -454,7 +462,7 @@ cursor = self.db_connection.cursor()
 kpis = {}
 
 # Total productos activos
-self.sql_manager.ejecutar_consulta_archivo('sql/02_inventario/count_inventario_1.sql', params))
+cursor.execute("SELECT COUNT(*) FROM inventario WHERE activo = 1")
 kpis['total_productos'] = cursor.fetchone()[0] or 0
 
 # Productos bajo stock mínimo

@@ -132,11 +132,11 @@ class LogisticaModel:
             if activos_solo:
                 with open('sql/05_logistica/select_servicios_transporte_activos.sql', 'r', encoding='utf-8') as f:
                     select_query = f.read()
-                cursor.execute(select_query)
+                cursor.execute(select_query, {})
             else:
                 with open('sql/05_logistica/select_servicios_transporte_all.sql', 'r', encoding='utf-8') as f:
                     select_query = f.read()
-                cursor.execute(select_query)
+                cursor.execute(select_query, {})
             
             servicios = []
             for row in cursor.fetchall():

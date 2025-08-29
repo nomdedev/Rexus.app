@@ -28,11 +28,58 @@ Diálogos mejorados para Usuarios usando utilidades nuevas - Rexus.app v2.0.0
 Implementa diálogos CRUD modernos usando las utilidades dialog_utils.py
 """
 
-
 import logging
+from PyQt6.QtWidgets import QWidget, QDialog
+from PyQt6.QtCore import pyqtSignal
+
 logger = logging.getLogger(__name__)
 
-                                    },
+
+class UsuariosImprovedDialogs:
+    """Diálogos mejorados para el módulo de usuarios."""
+    
+    def __init__(self, parent=None):
+        """Inicializar diálogos mejorados."""
+        self.parent = parent
+    
+    def crear_usuario_dialog(self) -> dict:
+        """Crear diálogo para nuevo usuario."""
+        # TODO: Implementar usando BaseFormDialog cuando esté disponible
+        return {}
+    
+    def editar_usuario_dialog(self, user_data: dict) -> dict:
+        """Editar diálogo de usuario existente."""
+        # TODO: Implementar usando BaseFormDialog cuando esté disponible
+        return {}
+    
+    def cambiar_password_dialog(self) -> dict:
+        """Diálogo para cambiar contraseña."""
+        # Configuración del diálogo de contraseña
+        password_config = {
+            'title': 'Cambiar Contraseña',
+            'description': 'Configure nueva contraseña para el usuario',
+            'sections': [
+                {
+                    'title': 'Datos de Contraseña',
+                    'fields': [
+                        {
+                            'name': 'password_actual',
+                            'label': 'Contraseña Actual',
+                            'type': 'password',
+                            'required': True
+                        },
+                        {
+                            'name': 'password_nueva',
+                            'label': 'Nueva Contraseña',
+                            'type': 'password',
+                            'required': True
+                        },
+                        {
+                            'name': 'password_confirmar',
+                            'label': 'Confirmar Contraseña',
+                            'type': 'password',
+                            'required': True
+                        },
                         {
                             'name': 'forzar_cambio',
                             'label': 'Forzar cambio en próximo login',
@@ -43,67 +90,13 @@ logger = logging.getLogger(__name__)
                 }
             ]
         }
-
-        dialog = BaseFormDialog(
-            self.parent,
-            password_config['title'],
-            password_config['size']
-        )
-
-        # Agregar campos
-        for group in password_config['groups']:
-            dialog.add_form_group(group['title'], group['fields'])
-
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            password_data = dialog.get_form_data()
-
-            # Validar que las contraseñas coincidan
-            if password_data['nueva_password'] != password_data['confirmar_password']:
-                from rexus.utils.message_system import show_error
-                show_error(
-                    self.parent,
-                    ,
-                    "Las contraseñas no coinciden."
-                )
-                return False
-
-            # Validar fortaleza de contraseña
-            from rexus.utils.validation_utils import BusinessValidator
-            validation_result = BusinessValidator.validate_password_strength(
-                password_data['nueva_password']
-            )
-
-            if not validation_result.is_valid:
-                from rexus.utils.message_system import show_error
-                show_error(
-                    self.parent,
-                    ,
-                    validation_result.message
-                )
-                return False
-
-            # Actualizar contraseña a través del controlador
-            if self.controller:
-                success = self.controller.resetear_password_usuario(
-                    user_data.get('id'),
-                    password_data['nueva_password'],
-                    password_data['forzar_cambio']
-                )
-
-                if success:
-                    from rexus.utils.message_system import show_success
-                    show_success(
-                        self.parent,
-                        ,
-                        f"La contraseña de {user_data.get('usuario')} ha sido actualizada."
-                    )
-                    return True
-                else:
-                    from rexus.utils.message_system import show_error
-                    show_error(
-                        self.parent,
-                        ,
-                        "No se pudo actualizar la contraseña."
-                    )
-
-        return False
+        
+        # TODO: Usar BaseFormDialog cuando esté disponible
+        # dialog = BaseFormDialog(self.parent, password_config['title'], password_config)
+        
+        return {}
+    
+    def permisos_usuario_dialog(self, user_data: dict) -> dict:
+        """Diálogo para gestionar permisos de usuario."""
+        # TODO: Implementar gestión de permisos
+        return {}

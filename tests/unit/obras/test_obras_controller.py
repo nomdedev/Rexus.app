@@ -18,7 +18,7 @@ show_warning_patch = patch('rexus.utils.message_system.show_warning')
 root_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
-from rexus.modules.01_obras.controller import ObrasController
+from rexus.modules.obras.controller import ObrasController
 
 
 class TestObrasController(unittest.TestCase):
@@ -50,7 +50,7 @@ class TestObrasController(unittest.TestCase):
         controller = ObrasController()
         self.assertIsNotNone(controller)
 
-    @patch('rexus.modules.01_obras.controller.ObrasModel')
+    @patch('rexus.modules.obras.controller.ObrasModel')
     def test_cargar_obras(self, mock_model_class):
         """Test de carga de obras."""
         # Mock del modelo

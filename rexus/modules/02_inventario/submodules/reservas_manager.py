@@ -517,26 +517,20 @@ class ReservasManager:
         try:
             cursor = self.db_connection.cursor()
 
-            # Campos para inserción
-            campos = [
-                'producto_id', 'obra_id', 'cantidad_reservada', 'motivo',
-                'usuario_reserva', 'fecha_vencimiento', 'estado', 'fecha_creacion'
-            ]
+            # Preparar parámetros para el SQL externo
+            parametros = {
+                'producto_id': datos_limpios.get('producto_id'),
+                'obra_id': datos_limpios.get('obra_id'),
+                'cantidad_reservada': datos_limpios.get('cantidad_reservada'),
+                'motivo': datos_limpios.get('motivo'),
+                'usuario_reserva': datos_limpios.get('usuario_reserva'),
+                'fecha_vencimiento': datos_limpios.get('fecha_vencimiento'),
+                'fecha_creacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
 
-            valores = []
-            for campo in campos:
-                if campo == 'estado':
-                    valores.append('ACTIVA')
-                elif campo == 'fecha_creacion':
-                    valores.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-                else:
-                    valores.append(datos_limpios.get(campo))
-
-            placeholders = ', '.join(['?'] * len(valores))
-            campos_str = ', '.join(campos)
-
-            query = f"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})"
-            cursor.execute(query, valores)
+            # Usar archivo SQL externo
+            query = self.sql_manager.get_query(self.sql_path, "insert_reserva_fallback")
+            cursor.execute(query, parametros)
 
             self.db_connection.commit()
             reserva_id = self._obtener_ultima_reserva_id()

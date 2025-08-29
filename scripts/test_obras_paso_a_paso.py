@@ -21,7 +21,9 @@ try:
         app = QApplication([])
 
     print("4. Importando ObrasModernView...")
-    from rexus.modules.obras.view import ObrasModernView
+    import importlib
+    obras_view = importlib.import_module('rexus.modules.01_obras.view')
+    ObrasModernView = obras_view.ObrasModernView
 
     print("5. Creando instancia...")
     view = ObrasModernView()

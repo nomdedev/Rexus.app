@@ -7,8 +7,9 @@ Maneja la lógica de negocio y acceso a datos para herrajes.
 
 import logging
 from typing import Dict, List, Optional
+from rexus.utils.app_logger import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class HerrajesModel:
@@ -30,7 +31,7 @@ class HerrajesModel:
         self.sql_manager = SQLQueryManager()
 
         if not self.db_connection:
-            print("[ERROR HERRAJES] No hay conexión a la base de datos.")
+            logger.error("No hay conexión a la base de datos")
         else:
             self._verificar_tablas()
 
@@ -56,7 +57,7 @@ class HerrajesModel:
             herrajes_obra_exists = cursor.fetchone()[0] > 0
 
             if herrajes_exists:
-                print(f"[HERRAJES] Tabla '{self.tabla_herrajes}' verificada correctamente.")
+                logger.info(f"Tabla '{self.tabla_herrajes}' verificada correctamente")
 
                 # Obtener estructura de la tabla
                 cursor.execute("""
@@ -66,19 +67,19 @@ class HerrajesModel:
                     ORDER BY ORDINAL_POSITION
                 """)
                 columns = cursor.fetchall()
-                print(f"[HERRAJES] Estructura de tabla '{self.tabla_herrajes}':")
+                logger.info(f"Estructura de tabla '{self.tabla_herrajes}':")
                 for col_name, data_type in columns:
-                    print(f"  - {col_name}: {data_type}")
+                    logger.info(f"  - {col_name}: {data_type}")
             else:
-                print(f"[WARNING HERRAJES] Tabla '{self.tabla_herrajes}' no existe.")
+                logger.warning(f"Tabla '{self.tabla_herrajes}' no existe")
 
             if herrajes_obra_exists:
-                print(f"[HERRAJES] Tabla '{self.tabla_herrajes_obra}' verificada correctamente.")
+                logger.info(f"Tabla '{self.tabla_herrajes_obra}' verificada correctamente")
             else:
-                print(f"[WARNING HERRAJES] Tabla '{self.tabla_herrajes_obra}' no existe.")
+                logger.warning(f"Tabla '{self.tabla_herrajes_obra}' no existe")
 
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error verificando tablas: {e}")
+            logger.error(f"Error verificando tablas: {e}")
 
     def obtener_todos_herrajes(self, filtros=None) -> List[Dict]:
         """
@@ -119,13 +120,13 @@ class HerrajesModel:
             if params:
                 cursor.execute(query, params)
             else:
-                cursor.execute(query)
+                cursor.execute(query, {})
 
             resultados = cursor.fetchall()
             columns = [desc[0] for desc in cursor.description]
             herrajes_dict = [dict(zip(columns, row)) for row in resultados]
 
-            print(f"OK [HERRAJES] Obtenidos {len(herrajes_dict)} herrajes")
+            logger.info(f"Obtenidos {len(herrajes_dict)} herrajes")
             return herrajes_dict
 
         except Exception as e:
@@ -165,7 +166,7 @@ class HerrajesModel:
             columns = [desc[0] for desc in cursor.description]
             herrajes_obra = [dict(zip(columns, row)) for row in resultados]
 
-            print(f"OK [HERRAJES] Obtenidos {len(herrajes_obra)} herrajes para obra {obra_id}")
+            logger.info(f"Obtenidos {len(herrajes_obra)} herrajes para obra {obra_id}")
             return herrajes_obra
 
         except Exception as e:
@@ -211,7 +212,7 @@ class HerrajesModel:
             columns = [desc[0] for desc in cursor.description]
             herrajes_dict = [dict(zip(columns, row)) for row in resultados]
 
-            print(f"OK [HERRAJES] Busqueda '{termino}': {len(herrajes_dict)} resultados")
+            logger.info(f"Busqueda '{termino}': {len(herrajes_dict)} resultados")
             return herrajes_dict
 
         except Exception as e:
@@ -238,21 +239,22 @@ class HerrajesModel:
 
             # Total herrajes activos
             query = self.sql_manager.get_query("herrajes", "count_herrajes_activos")
-            cursor.execute(query)
+            cursor.execute(query, {})
             total_herrajes = cursor.fetchone()[0]
 
             # Stock total
             query = self.sql_manager.get_query("herrajes", "sum_stock_herrajes")
-            cursor.execute(query)
+            cursor.execute(query, {})
             total_stock = cursor.fetchone()[0]
 
             # Herrajes bajo stock
             query = self.sql_manager.get_query("herrajes", "count_stock_bajo_herrajes")
-            cursor.execute(query)
+            cursor.execute(query, {})
             herrajes_bajo_stock = cursor.fetchone()[0]
 
             # Proveedores activos
-            cursor.execute(self.sql_manager.get_query("herrajes", "count_proveedores_activos"))
+            query = self.sql_manager.get_query("herrajes", "count_proveedores_activos")
+            cursor.execute(query, {})
             proveedores_activos = cursor.fetchone()[0]
 
             stats = {
@@ -262,7 +264,7 @@ class HerrajesModel:
                 "proveedores_activos": proveedores_activos
             }
 
-            print("OK [HERRAJES] Estadisticas obtenidas exitosamente")
+            logger.info("Estadisticas obtenidas exitosamente")
             return stats
 
         except Exception as e:
@@ -322,7 +324,7 @@ class HerrajesModel:
         """Crea un nuevo herraje en la base de datos."""
         try:
             if not self.db_connection:
-                print("[ERROR HERRAJES] No hay conexión a la base de datos")
+                logger.error("No hay conexión a la base de datos")
                 return False
 
             cursor = self.db_connection.cursor()
@@ -347,11 +349,11 @@ class HerrajesModel:
             )
             self.db_connection.commit()
 
-            print(f"[HERRAJES] Herraje creado: {data.get('codigo')}")
+            logger.info(f"Herraje creado: {data.get('codigo')}")
             return True
 
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error creando herraje: {e}")
+            logger.error(f"Error creando herraje: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -360,7 +362,7 @@ class HerrajesModel:
         """Actualiza un herraje existente."""
         try:
             if not self.db_connection:
-                print("[ERROR HERRAJES] No hay conexión a la base de datos")
+                logger.error("No hay conexión a la base de datos")
                 return False
 
             cursor = self.db_connection.cursor()
@@ -387,14 +389,14 @@ class HerrajesModel:
             self.db_connection.commit()
 
             if rows_affected > 0:
-                print(f"[HERRAJES] Herraje actualizado: {codigo}")
+                logger.info(f"Herraje actualizado: {codigo}")
                 return True
             else:
-                print(f"[ERROR HERRAJES] No se encontró herraje con código: {codigo}")
+                logger.error(f"No se encontró herraje con código: {codigo}")
                 return False
 
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error actualizando herraje: {e}")
+            logger.error(f"Error actualizando herraje: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -403,7 +405,7 @@ class HerrajesModel:
         """Elimina un herraje de la base de datos."""
         try:
             if not self.db_connection:
-                print("[ERROR HERRAJES] No hay conexión a la base de datos")
+                logger.error("No hay conexión a la base de datos")
                 return False
 
             cursor = self.db_connection.cursor()
@@ -411,7 +413,7 @@ class HerrajesModel:
             # Verificar si el herraje existe
             cursor.execute(self.sql_manager.get_query("herrajes", "select_herraje_by_codigo"), (codigo,))
             if not cursor.fetchone():
-                print(f"[ERROR HERRAJES] No se encontró herraje con código: {codigo}")
+                logger.error(f"No se encontró herraje con código: {codigo}")
                 return False
 
             # Eliminar registros relacionados primero (si existen)
@@ -423,14 +425,14 @@ class HerrajesModel:
             self.db_connection.commit()
 
             if rows_affected > 0:
-                print(f"[HERRAJES] Herraje eliminado: {codigo}")
+                logger.info(f"Herraje eliminado: {codigo}")
                 return True
             else:
-                print(f"[ERROR HERRAJES] No se pudo eliminar herraje: {codigo}")
+                logger.error(f"No se pudo eliminar herraje: {codigo}")
                 return False
 
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error eliminando herraje: {e}")
+            logger.error(f"Error eliminando herraje: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -466,7 +468,7 @@ class HerrajesModel:
             return None
 
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error obteniendo herraje por código: {e}")
+            logger.error(f"Error obteniendo herraje por código: {e}")
             return None
 
     # === MÉTODOS DE PAGINACIÓN ===
@@ -551,7 +553,7 @@ class HerrajesModel:
             return datos, total_registros
 
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error obteniendo datos paginados: {e}")
+            logger.error(f"Error obteniendo datos paginados: {e}")
             # Fallback con datos demo en caso de error
             datos_demo = self._get_herrajes_demo()
             return datos_demo[offset:offset+limit], len(datos_demo)
@@ -593,7 +595,7 @@ class HerrajesModel:
             return cursor.fetchone()[0]
 
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error obteniendo total de registros: {e}")
+            logger.error(f"Error obteniendo total de registros: {e}")
             return len(self._get_herrajes_demo())
 
     def _get_herrajes_demo(self):

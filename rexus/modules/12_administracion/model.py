@@ -248,7 +248,7 @@ class AdministracionModel(ContabilidadModel):
             else:
                 query = self.sql_manager.get_query("administracion", "obtener_departamentos")
 
-            cursor.execute(query)
+            cursor.execute(query, {})
 
             departamentos = []
             for row in cursor.fetchall():
@@ -403,7 +403,7 @@ class AdministracionModel(ContabilidadModel):
             # Generar número de asiento usando SQL externa
             query_numero = self.sql_manager.get_query("administracion", "select_siguiente_numero_asiento")
             
-            cursor.execute(query_numero)
+            cursor.execute(query_numero, {})
             numero = cursor.fetchone()[0]
             numero_asiento = f"AS-{numero:06d}"
 
@@ -561,7 +561,7 @@ class AdministracionModel(ContabilidadModel):
 
             # Generar número de recibo
             query_numero = self.sql_manager.get_query("administracion", "generar_numero_recibo")
-            cursor.execute(query_numero)
+            cursor.execute(query_numero, {})
             numero = cursor.fetchone()[0]
             numero_recibo = f"REC-{numero:06d}"
 

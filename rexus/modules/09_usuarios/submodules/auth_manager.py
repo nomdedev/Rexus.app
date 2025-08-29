@@ -259,3 +259,5 @@ usuario_id: int,
                 # Fallback para hashes SHA256 legacy
                 return hashlib.sha256(password.encode()).hexdigest() == hash_almacenado
         except Exception as e:
+            self.logger.error(f"Error verificando password: {e}")
+            return False
