@@ -11,6 +11,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 
 from rexus.utils.app_logger import log_info
 
+
 class ThemeManager(QObject):
     """
     Gestor de temas para la aplicación.
@@ -128,6 +129,7 @@ class ThemeManager(QObject):
             self.set_theme(theme_name)
         else:
             self._apply_theme()
+
 
 # Instancia global del gestor de temas
 theme_manager = ThemeManager()

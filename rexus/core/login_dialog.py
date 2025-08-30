@@ -1,27 +1,39 @@
 """
-Rexus.app - Diálogo de Login
+Rexus.app - DiÃ¡logo de Login
 
-Implementación del diálogo de autenticación de usuarios.
-Maneja el login visual y la validación de credenciales.
+ImplementaciÃ³n del diÃ¡logo de autenticaciÃ³n de usuarios.
+Maneja el login visual y la validaciÃ³n de credenciales.
 """
 
-import sys
 from typing import Optional, Callable
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QPushButton, QFrame, QMessageBox, QCheckBox, QProgressBar
-)
-from PyQt6.QtGui import QFont, QIcon, QPixmap
+from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QDialog
+from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QLabel, QLineEdit
+from PyQt6.QtWidgets import QPushButton, QFrame
+from PyQt6.QtWidgets import QCheckBox, QProgressBar
+from PyQt6.QtGui import QFont
 
-from rexus.core.database import UsersDatabaseConnection
-from rexus.utils.app_logger import log_info, log_error, log_security
+from rexus.utils.app_logger import log_error, log_security
+
 
 class LoginDialog(QDialog):
     """
-    Diálogo de login para autenticación de usuarios.
-    Implementa la interfaz visual y lógica de autenticación.
+    DiÃ¡logo de login para autenticaciÃ³n de usuarios.
+    Implementa la interfaz visual y lÃ³gica de autenticaciÃ³n.
     """
+
+    class UIComponents:
+        """Clase interna para agrupar componentes de UI."""
+        def __init__(self):
+            self.user_input: Optional[QLineEdit] = None
+            self.pass_input: Optional[QLineEdit] = None
+            self.login_btn: Optional[QPushButton] = None
+            self.cancel_btn: Optional[QPushButton] = None
+            self.remember_check: Optional[QCheckBox] = None
+            self.status_label: Optional[QLabel] = None
+            self.progress_bar: Optional[QProgressBar] = None
 
     def __init__(self, security_manager=None, parent=None):
         super().__init__(parent)
@@ -29,14 +41,15 @@ class LoginDialog(QDialog):
         self.auth_callback = None
         self.db_connection = None
         self.security_manager = security_manager
+        self.ui = self.UIComponents()  # Agrupar componentes UI
 
         self._setup_ui()
         self._setup_connections()
         self._load_styles()
 
     def _setup_ui(self):
-        """Configura la interfaz de usuario del diálogo de login."""
-        self.setWindowTitle("Rexus.app - Iniciar Sesión")
+        """Configura la interfaz de usuario del diÃ¡logo de login."""
+        self.setWindowTitle("Rexus.app - Iniciar SesiÃ³n")
         self.setFixedSize(400, 500)
         self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint)
 
@@ -45,7 +58,7 @@ class LoginDialog(QDialog):
         layout.setContentsMargins(30, 30, 30, 30)
         layout.setSpacing(20)
 
-        # Logo/Título
+        # Logo/TÃ­tulo
         title_frame = QFrame()
         title_layout = QVBoxLayout(title_frame)
 
@@ -55,7 +68,7 @@ class LoginDialog(QDialog):
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setStyleSheet("color: #2c3e50; margin-bottom: 10px;")
 
-        subtitle_label = QLabel("Sistema de Gestión Empresarial")
+        subtitle_label = QLabel("Sistema de GestiÃ³n Empresarial")
         subtitle_font = QFont("Arial", 10)
         subtitle_label.setFont(subtitle_font)
         subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -77,9 +90,9 @@ class LoginDialog(QDialog):
 
         user_label = QLabel("Usuario:")
         user_label.setStyleSheet("font-weight: bold; color: #2c3e50;")
-        self.user_input = QLineEdit()
-        self.user_input.setPlaceholderText("Ingrese su nombre de usuario")
-        self.user_input.setStyleSheet("""
+        self.ui.user_input = QLineEdit()
+        self.ui.user_input.setPlaceholderText("Ingrese su nombre de usuario")
+        self.ui.user_input.setStyleSheet("""
             QLineEdit {
                 padding: 8px;
                 border: 2px solid #bdc3c7;
@@ -92,20 +105,20 @@ class LoginDialog(QDialog):
         """)
 
         user_layout.addWidget(user_label)
-        user_layout.addWidget(self.user_input)
+        user_layout.addWidget(self.ui.user_input)
         form_layout.addWidget(user_frame)
 
-        # Campo Contraseña
+        # Campo ContraseÃ±a
         pass_frame = QFrame()
         pass_layout = QVBoxLayout(pass_frame)
         pass_layout.setContentsMargins(0, 0, 0, 0)
 
-        pass_label = QLabel("Contraseña:")
+        pass_label = QLabel("ContraseÃ±a:")
         pass_label.setStyleSheet("font-weight: bold; color: #2c3e50;")
-        self.pass_input = QLineEdit()
-        self.pass_input.setPlaceholderText("Ingrese su contraseña")
-        self.pass_input.setEchoMode(QLineEdit.EchoMode.Password)
-        self.pass_input.setStyleSheet("""
+        self.ui.pass_input = QLineEdit()
+        self.ui.pass_input.setPlaceholderText("Ingrese su contraseÃ±a")
+        self.ui.pass_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.ui.pass_input.setStyleSheet("""
             QLineEdit {
                 padding: 8px;
                 border: 2px solid #bdc3c7;
@@ -118,20 +131,20 @@ class LoginDialog(QDialog):
         """)
 
         pass_layout.addWidget(pass_label)
-        pass_layout.addWidget(self.pass_input)
+        pass_layout.addWidget(self.ui.pass_input)
         form_layout.addWidget(pass_frame)
 
         # Checkbox recordar usuario
-        self.remember_check = QCheckBox("Recordar usuario")
-        self.remember_check.setStyleSheet("color: #7f8c8d;")
-        form_layout.addWidget(self.remember_check)
+        self.ui.remember_check = QCheckBox("Recordar usuario")
+        self.ui.remember_check.setStyleSheet("color: #7f8c8d;")
+        form_layout.addWidget(self.ui.remember_check)
 
         layout.addWidget(form_frame)
 
         # Barra de progreso (oculta inicialmente)
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setVisible(False)
-        self.progress_bar.setStyleSheet("""
+        self.ui.progress_bar = QProgressBar()
+        self.ui.progress_bar.setVisible(False)
+        self.ui.progress_bar.setStyleSheet("""
             QProgressBar {
                 border: 2px solid #bdc3c7;
                 border-radius: 5px;
@@ -141,14 +154,14 @@ class LoginDialog(QDialog):
                 background-color: #3498db;
             }
         """)
-        layout.addWidget(self.progress_bar)
+        layout.addWidget(self.ui.progress_bar)
 
         # Botones
         buttons_frame = QFrame()
         buttons_layout = QHBoxLayout(buttons_frame)
 
-        self.login_btn = QPushButton("Iniciar Sesión")
-        self.login_btn.setStyleSheet("""
+        self.ui.login_btn = QPushButton("Iniciar SesiÃ³n")
+        self.ui.login_btn.setStyleSheet("""
             QPushButton {
                 background-color: #3498db;
                 color: white;
@@ -169,8 +182,8 @@ class LoginDialog(QDialog):
             }
         """)
 
-        self.cancel_btn = QPushButton("Cancelar")
-        self.cancel_btn.setStyleSheet("""
+        self.ui.cancel_btn = QPushButton("Cancelar")
+        self.ui.cancel_btn.setStyleSheet("""
             QPushButton {
                 background-color: #e74c3c;
                 color: white;
@@ -188,28 +201,28 @@ class LoginDialog(QDialog):
             }
         """)
 
-        buttons_layout.addWidget(self.cancel_btn)
+        buttons_layout.addWidget(self.ui.cancel_btn)
         buttons_layout.addStretch()
-        buttons_layout.addWidget(self.login_btn)
+        buttons_layout.addWidget(self.ui.login_btn)
 
         layout.addWidget(buttons_frame)
 
         # Status label
-        self.status_label = QLabel("")
-        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.status_label.setStyleSheet("color: #e74c3c; font-size: 12px;")
-        self.status_label.setVisible(False)
-        layout.addWidget(self.status_label)
+        self.ui.status_label = QLabel("")
+        self.ui.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.ui.status_label.setStyleSheet("color: #e74c3c; font-size: 12px;")
+        self.ui.status_label.setVisible(False)
+        layout.addWidget(self.ui.status_label)
 
     def _validate_user_with_real_tables(self, username: str, password: str, sql_manager):
         """
         Valida usuario usando tablas reales de usuarios y permisos.
-        
+
         Args:
             username: Nombre de usuario
-            password: Contraseña en texto plano
+            password: ContraseÃ±a en texto plano
             sql_manager: Manejador de consultas SQL
-            
+
         Returns:
             dict con datos del usuario y permisos o None si falla
         """
@@ -219,34 +232,36 @@ class LoginDialog(QDialog):
                 'sql/09_usuarios/autenticar_usuario.sql',
                 (username,)
             )
-            
+
             if not user_result:
                 log_security("LOGIN_FAILED", f"Usuario {username} no encontrado", username)
                 return None
-            
+
             user_row = user_result[0] if isinstance(user_result, list) else user_result
             stored_password_hash = user_row.get('password_hash', '')
-            
-            # 2. Verificar contraseña con múltiples algoritmos soportados
+
+            # 2. Verificar contraseÃ±a con mÃºltiples algoritmos soportados
             password_valid = self._verify_password(password, stored_password_hash)
-            
+
             if not password_valid:
                 # Incrementar intentos fallidos
                 self._increment_failed_attempts(user_row['id'], sql_manager)
-                log_security("LOGIN_FAILED", f"Contraseña incorrecta para usuario {username}", username)
+                log_security("LOGIN_FAILED",
+                             f"ContraseÃ±a incorrecta para usuario {username}",
+                             username)
                 return None
-            
+
             # 3. Verificar estado del usuario
             if user_row.get('estado') not in ['ACTIVO', 'PRIMERA_VEZ']:
                 log_security("LOGIN_FAILED", f"Usuario {username} inactivo o bloqueado", username)
                 return None
-            
+
             # 4. Obtener permisos del usuario
             permisos = self._get_user_permissions(user_row['id'], user_row['rol'], sql_manager)
-            
-            # 5. Actualizar último acceso y resetear intentos fallidos
+
+            # 5. Actualizar Ãºltimo acceso y resetear intentos fallidos
             self._update_last_access(user_row['id'], sql_manager)
-            
+
             # 6. Preparar datos del usuario completos
             user_data = {
                 'id': user_row['id'],
@@ -260,99 +275,101 @@ class LoginDialog(QDialog):
                 'permisos': permisos,
                 'modulos_permitidos': permisos  # Compatibilidad
             }
-            
-            log_security("LOGIN_SUCCESS", f"Usuario {username} autenticado con {len(permisos)} permisos", username)
+
+            log_security("LOGIN_SUCCESS",
+                         f"Usuario {username} autenticado con {len(permisos)} permisos",
+                         username)
             return user_data
-            
+
         except Exception as e:
-            log_error(f"Error en validación de usuario {username}: {str(e)}")
+            log_error(f"Error en validaciÃ³n de usuario {username}: {str(e)}")
             return None
-    
+
     def _verify_password(self, plain_password: str, stored_hash: str) -> bool:
         """
-        Verifica contraseña usando múltiples algoritmos soportados.
-        
+        Verifica contraseÃ±a usando mÃºltiples algoritmos soportados.
+
         Args:
-            plain_password: Contraseña en texto plano
+            plain_password: ContraseÃ±a en texto plano
             stored_hash: Hash almacenado en BD
-            
+
         Returns:
-            bool: True si la contraseña es correcta
+            bool: True si la contraseÃ±a es correcta
         """
         import hashlib
         import bcrypt
-        
+
         if not stored_hash:
             return False
-        
+
         try:
             # 1. Verificar bcrypt (preferido)
             if stored_hash.startswith('$2b$') or stored_hash.startswith('$2a$'):
                 return bcrypt.checkpw(plain_password.encode('utf-8'), stored_hash.encode('utf-8'))
-            
+
             # 2. Verificar SHA-256 (legacy)
             sha256_hash = hashlib.sha256(plain_password.encode()).hexdigest()
             if stored_hash == sha256_hash:
                 return True
-            
+
             # 3. Verificar MD5 (legacy - deprecado)
-            md5_hash = hashlib.md5(plain_password.encode()).hexdigest()
+            md5_hash = hashlib.md5(plain_password.encode(), usedforsecurity=False).hexdigest()
             if stored_hash == md5_hash:
                 return True
-            
-            # 4. Verificar texto plano (solo para migración - INSEGURO)
+
+            # 4. Verificar texto plano (solo para migraciÃ³n - INSEGURO)
             if stored_hash == plain_password:
-                log_security("LOGIN_WARNING", f"Usuario usando contraseña en texto plano - MIGRAR URGENTE", "system")
+                log_security("LOGIN_WARNING", "Usuario usando contraseÃ±a en texto plano - MIGRAR URGENTE", "system")
                 return True
-                
+
             return False
-            
+
         except Exception as e:
-            log_error(f"Error verificando contraseña: {str(e)}")
+            log_error(f"Error verificando contraseÃ±a: {str(e)}")
             return False
-    
+
     def _get_user_permissions(self, user_id: int, user_role: str, sql_manager) -> list:
         """
         Obtiene permisos del usuario desde tabla permisos_usuario o por rol.
-        
+
         Args:
             user_id: ID del usuario
             user_role: Rol del usuario
             sql_manager: Manejador SQL
-            
+
         Returns:
-            list: Lista de módulos permitidos
+            list: Lista de mÃ³dulos permitidos
         """
         try:
-            # 1. Intentar obtener permisos específicos de la tabla
+            # 1. Intentar obtener permisos especÃ­ficos de la tabla
             permisos_result = sql_manager.ejecutar_consulta_archivo(
                 'sql/09_usuarios/obtener_permisos_usuario.sql',
                 (user_id,)
             )
-            
+
             if permisos_result:
                 # Convertir resultado a lista de strings
                 permisos_list = [row.get('modulo') for row in permisos_result if row.get('modulo')]
                 if permisos_list:
                     return permisos_list
-            
+
             # 2. Fallback: Asignar permisos por rol
             return self._get_permissions_by_role(user_role)
-            
+
         except Exception as e:
             log_error(f"Error obteniendo permisos para usuario {user_id}: {str(e)}")
-            # Fallback seguro: permisos mínimos
+            # Fallback seguro: permisos mÃ­nimos
             return self._get_permissions_by_role('USUARIO')
-    
+
     def _get_permissions_by_role(self, role: str) -> list:
         """
         Obtiene permisos predeterminados por rol.
-        
+
         Args:
             role: Rol del usuario
-            
+
         Returns:
-            list: Módulos permitidos por rol
+            list: MÃ³dulos permitidos por rol
         """
         role_permissions = {
             'ADMINISTRADOR': [
@@ -371,9 +388,9 @@ class LoginDialog(QDialog):
                 'inventario', 'pedidos', 'vidrios'
             ]
         }
-        
+
         return role_permissions.get(role.upper(), role_permissions['USUARIO'])
-    
+
     def _increment_failed_attempts(self, user_id: int, sql_manager):
         """Incrementa contador de intentos fallidos."""
         try:
@@ -383,41 +400,41 @@ class LoginDialog(QDialog):
             )
         except Exception as e:
             log_error(f"Error incrementando intentos fallidos: {str(e)}")
-    
+
     def _update_last_access(self, user_id: int, sql_manager):
-        """Actualiza último acceso y resetea intentos fallidos."""
+        """Actualiza Ãºltimo acceso y resetea intentos fallidos."""
         try:
-            # Actualizar último acceso
+            # Actualizar Ãºltimo acceso
             sql_manager.ejecutar_consulta_archivo(
                 'sql/09_usuarios/actualizar_ultimo_acceso.sql',
                 (user_id,)
             )
-            
+
             # Resetear intentos fallidos
             sql_manager.ejecutar_consulta_archivo(
                 'sql/09_usuarios/resetear_intentos_fallidos.sql',
                 (user_id,)
             )
         except Exception as e:
-            log_error(f"Error actualizando último acceso: {str(e)}")
+            log_error(f"Error actualizando Ãºltimo acceso: {str(e)}")
 
     def get_modulos_permitidos(self) -> list:
         """
-        Retorna lista de módulos permitidos para el usuario autenticado.
-        
+        Retorna lista de mÃ³dulos permitidos para el usuario autenticado.
+
         Returns:
-            list: Lista de módulos permitidos
+            list: Lista de mÃ³dulos permitidos
         """
         if self.user_data and 'permisos' in self.user_data:
             return self.user_data['permisos']
         return []
 
     def _setup_connections(self):
-        """Configura las conexiones de señales."""
-        self.login_btn.clicked.connect(self._handle_login)
-        self.cancel_btn.clicked.connect(self.reject)
-        self.user_input.returnPressed.connect(self._handle_login)
-        self.pass_input.returnPressed.connect(self._handle_login)
+        """Configura las conexiones de seÃ±ales."""
+        self.ui.login_btn.clicked.connect(self._handle_login)
+        self.ui.cancel_btn.clicked.connect(self.reject)
+        self.ui.user_input.returnPressed.connect(self._handle_login)
+        self.ui.pass_input.returnPressed.connect(self._handle_login)
 
     def _load_styles(self):
         """Carga los estilos adicionales."""
@@ -432,87 +449,87 @@ class LoginDialog(QDialog):
 
     def _handle_login(self):
         """Maneja el proceso de login."""
-        username = self.user_input.text().strip()
-        password = self.pass_input.text()
+        username = self.ui.user_input.text().strip()
+        password = self.ui.pass_input.text()
 
         if not username or not password:
-            self._show_error("Por favor ingrese usuario y contraseña")
+            self._show_error("Por favor ingrese usuario y contraseÃ±a")
             return
 
         # Mostrar progreso
         self._set_loading_state(True)
-        self.status_label.setVisible(False)
+        self.ui.status_label.setVisible(False)
 
         # Procesar login en el siguiente ciclo de eventos
         QTimer.singleShot(100, lambda: self._process_login(username, password))
 
     def _process_login(self, username: str, password: str):
-        """Procesa la autenticación del usuario."""
+        """Procesa la autenticaciÃ³n del usuario."""
         try:
-            # Importar aquí para evitar problemas de inicialización
-            from rexus.core.database import UsersDatabaseConnection
+            # Importar aquÃ­ para evitar problemas de inicializaciÃ³n
             from rexus.utils.sql_query_manager import SQLQueryManager
-            import hashlib
-            import bcrypt
 
             # Conectar a la base de datos
-            db = UsersDatabaseConnection()
             sql_manager = SQLQueryManager()
 
-            # NUEVA LÓGICA: Validar credenciales usando SQL externo y tablas reales
+            # NUEVA LÃ“GICA: Validar credenciales usando SQL externo y tablas reales
             user_data = self._validate_user_with_real_tables(username, password, sql_manager)
 
             if user_data:
-                log_security("LOGIN_SUCCESS", f"Usuario {username} autenticado correctamente", username)
+                log_security("LOGIN_SUCCESS",
+                             f"Usuario {username} autenticado correctamente",
+                             username)
                 self.user_data = user_data
                 self._set_loading_state(False)
                 self.accept()
             else:
-                log_security("LOGIN_FAILED", f"Intento de login fallido para usuario {username}", username)
-                self._show_error("Usuario o contraseña incorrectos")
+                log_security("LOGIN_FAILED",
+                             f"Intento de login fallido para usuario {username}",
+                             username)
+                self._show_error("Usuario o contraseÃ±a incorrectos")
                 self._set_loading_state(False)
 
         except Exception as e:
             log_error(f"Error durante login: {str(e)}")
-            self._show_error("Error de conexión. Intente nuevamente.")
+            self._show_error("Error de conexiÃ³n. Intente nuevamente.")
             self._set_loading_state(False)
 
     def _set_loading_state(self, loading: bool):
-        """Cambia el estado de carga del diálogo."""
-        self.login_btn.setEnabled(not loading)
-        self.cancel_btn.setEnabled(not loading)
-        self.user_input.setEnabled(not loading)
-        self.pass_input.setEnabled(not loading)
-        self.progress_bar.setVisible(loading)
+        """Cambia el estado de carga del diÃ¡logo."""
+        self.ui.login_btn.setEnabled(not loading)
+        self.ui.cancel_btn.setEnabled(not loading)
+        self.ui.user_input.setEnabled(not loading)
+        self.ui.pass_input.setEnabled(not loading)
+        self.ui.progress_bar.setVisible(loading)
 
         if loading:
-            self.progress_bar.setRange(0, 0)  # Indeterminado
-            self.login_btn.setText("Iniciando sesión...")
+            self.ui.progress_bar.setRange(0, 0)  # Indeterminado
+            self.ui.login_btn.setText("Iniciando sesiÃ³n...")
         else:
-            self.progress_bar.setRange(0, 100)
-            self.login_btn.setText("Iniciar Sesión")
+            self.ui.progress_bar.setRange(0, 100)
+            self.ui.login_btn.setText("Iniciar SesiÃ³n")
 
     def _show_error(self, message: str):
         """Muestra un mensaje de error."""
-        self.status_label.setText(message)
-        self.status_label.setVisible(True)
-        self.status_label.setStyleSheet("color: #e74c3c; font-size: 12px;")
+        self.ui.status_label.setText(message)
+        self.ui.status_label.setVisible(True)
+        self.ui.status_label.setStyleSheet("color: #e74c3c; font-size: 12px;")
 
     def get_user_data(self) -> Optional[dict]:
         """Obtiene los datos del usuario autenticado."""
         return self.user_data
 
     def set_auth_callback(self, callback: Callable):
-        """Establece una función de callback para la autenticación."""
+        """Establece una funciÃ³n de callback para la autenticaciÃ³n."""
         self.auth_callback = callback
 
     @staticmethod
     def show_login_dialog(parent=None) -> Optional[dict]:
         """
-        Método estático para mostrar el diálogo de login.
+        MÃ©todo estÃ¡tico para mostrar el diÃ¡logo de login.
 
         Returns:
-            Datos del usuario si la autenticación fue exitosa, None en caso contrario
+            Datos del usuario si la autenticaciÃ³n fue exitosa, None en caso contrario
         """
         dialog = LoginDialog(parent)
         result = dialog.exec()

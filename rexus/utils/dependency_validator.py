@@ -6,7 +6,11 @@ y configuradas correctamente antes de iniciar la aplicación.
 """
 
 import importlib
+import logging
 from typing import List, Tuple
+
+logger = logging.getLogger(__name__)
+
 
 class DependencyValidator:
     """
@@ -93,7 +97,7 @@ class DependencyValidator:
         Returns:
             String con el reporte formateado
         """
-        report_lines = ["🔍 REPORTE DE VALIDACIÓN DE DEPENDENCIAS", "="*50]
+        report_lines = ["🔍 REPORTE DE VALIDACIÓN DE DEPENDENCIAS", "=" * 50]
 
         # Dependencias requeridas
         report_lines.append("\n📦 DEPENDENCIAS REQUERIDAS:")
@@ -129,6 +133,7 @@ class DependencyValidator:
         """
         return self.missing_required.copy()
 
+
 def validate_system_dependencies() -> Tuple[bool, dict]:
     """
     Función de conveniencia para validar dependencias del sistema.
@@ -147,6 +152,7 @@ def validate_system_dependencies() -> Tuple[bool, dict]:
     }
 
     if not is_valid:
-        print(validator.get_validation_report())
+        logger.warning("Dependencias faltantes detectadas:")
+        logger.warning(validator.get_validation_report())
 
     return is_valid, deps_info

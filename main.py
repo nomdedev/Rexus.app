@@ -38,7 +38,7 @@ def main():
     # Intentar cargar la aplicación real, con fallback
     try:
         print("Intentando cargar aplicación completa...")
-        from temp_app import main as app_main
+        from scripts.temp_app import main as app_main
         app_main()
     except ImportError as e:
         print(f"Error de importación: {e}")

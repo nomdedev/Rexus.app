@@ -17,7 +17,7 @@ def test_login_dialog():
 
     # Configurar variables de entorno para desarrollo
     os.environ['REXUS_DEV_USER'] = 'admin'
-    os.environ['REXUS_DEV_PASSWORD'] = 'admin123'
+    # SEGURIDAD: Eliminada contraseña hardcodeada - usar BD real
     os.environ['REXUS_DEV_AUTO_LOGIN'] = 'false'
 
     try:

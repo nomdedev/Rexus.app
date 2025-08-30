@@ -240,19 +240,103 @@ class MiVista(QWidget):
 
 ---
 
-## 🔒 **SISTEMA DE SEGURIDAD**
+## 🔒 **SISTEMA DE SEGURIDAD (CRÍTICO)**
 
-### **CAPAS DE SEGURIDAD:**
-1. **Autenticación**: Usuario + hash bcrypt
-2. **Autorización**: Roles y permisos por módulo
-3. **Encriptación**: AES para datos sensibles
-4. **Auditoría**: Log completo de operaciones
+### **🚨 REGLAS ABSOLUTAS DE SEGURIDAD:**
+
+#### **1. AUTENTICACIÓN CON TABLAS REALES (OBLIGATORIO)**
+```python
+# ✅ USAR SOLO ESTAS TABLAS PARA AUTENTICACIÓN:
+# - Tabla: usuarios (BD users)
+# - Tabla: permisos_usuario (BD users)
+
+# ✅ SQL EXTERNO OBLIGATORIO:
+user_result = sql_manager.ejecutar_consulta_archivo(
+    'sql/09_usuarios/autenticar_usuario.sql',
+    (username,)
+)
+
+# ✅ VERIFICACIÓN MULTI-ALGORITMO:
+# - bcrypt (preferido)
+# - SHA-256 (legacy)
+# - MD5 (deprecado)
+# - Texto plano (SOLO para migración)
+```
+
+#### **2. CONTRASEÑAS - PROHIBICIONES ABSOLUTAS:**
+```python
+# 🚫 JAMÁS HACER:
+password = "contraseña_hardcodeada"  # PROHIBIDO
+REXUS_DEV_PASSWORD = "password"      # PROHIBIDO
+user_password = "123456"             # PROHIBIDO
+
+# ✅ OBLIGATORIO:
+# - Obtener contraseñas SOLO de base de datos
+# - Usar hash bcrypt para nuevas contraseñas
+# - Soportar múltiples algoritmos para migración
+# - Log de seguridad en todos los intentos
+```
+
+#### **3. SISTEMA DE PERMISOS POR MÓDULO (OBLIGATORIO)**
+```python
+# ✅ PERMISOS POR ROL (FALLBACK):
+ROLE_PERMISSIONS = {
+    'ADMINISTRADOR': ['usuarios', 'inventario', 'pedidos', 'compras', 
+                      'vidrios', 'herrajes', 'obras', 'logistica', 
+                      'mantenimiento', 'configuracion', 'auditoria'],
+    'SUPERVISOR': ['inventario', 'pedidos', 'compras', 'vidrios', 
+                   'herrajes', 'obras', 'logistica', 'mantenimiento'],
+    'VENDEDOR': ['pedidos', 'vidrios', 'herrajes', 'inventario'],
+    'USUARIO': ['inventario', 'pedidos', 'vidrios']
+}
+
+# ✅ VERIFICACIÓN DE PERMISOS:
+def verificar_permiso_modulo(usuario_id: int, modulo: str) -> bool:
+    # 1. Buscar en tabla permisos_usuario
+    # 2. Fallback a permisos por rol
+    # 3. Denegar por defecto
+```
+
+#### **4. AUDITORÍA DE SEGURIDAD (OBLIGATORIA)**
+```python
+# ✅ LOG OBLIGATORIO EN TODOS LOS EVENTOS:
+log_security("LOGIN_ATTEMPT", f"Usuario {username} intenta login", username)
+log_security("LOGIN_SUCCESS", f"Usuario {username} autenticado", username) 
+log_security("LOGIN_FAILED", f"Login fallido para {username}", username)
+log_security("ACCESS_DENIED", f"Acceso denegado a {modulo}", username)
+log_security("PASSWORD_PLAIN", f"Usuario {username} usa contraseña texto plano", "system")
+```
+
+#### **5. VALIDACIONES SQL INJECTION (CRÍTICO)**
+```python
+# ✅ OBLIGATORIO - SQL PARAMETRIZADO:
+cursor.execute("SELECT * FROM tabla WHERE id = ?", (user_id,))
+
+# 🚫 PROHIBIDO - SQL DINÁMICO:
+cursor.execute(f"SELECT * FROM tabla WHERE id = {user_id}")
+cursor.execute("SELECT * FROM tabla WHERE nombre = '" + nombre + "'")
+query = f"UPDATE {tabla} SET campo = '{valor}'"  # NUNCA
+```
+
+### **CAPAS DE SEGURIDAD IMPLEMENTADAS:**
+1. **Autenticación**: Tablas usuarios reales + hash multi-algoritmo
+2. **Autorización**: Permisos por tabla + fallback por rol
+3. **Validación**: SQL parametrizado + validación de entrada
+4. **Auditoría**: Log completo de eventos de seguridad
+5. **Encriptación**: AES para datos sensibles + bcrypt para contraseñas
 
 ### **CONFIGURACIÓN SEGURIDAD (.env):**
 ```env
+# Claves de encriptación
 SECRET_KEY=rexus_secret_key_production_2025_...
 JWT_SECRET_KEY=jwt_rexus_2025_...
 ENCRYPTION_KEY=encryption_rexus_2025_...
+
+# Base de datos (NO CONTRASEÑAS DE USUARIO)
+DB_SERVER=servidor
+DB_USERNAME=usuario_bd
+DB_PASSWORD=password_bd
+DB_USERS=users
 ```
 
 ---

@@ -11,6 +11,7 @@ from PyQt6.QtCore import Qt
 
 from rexus.utils.app_logger import log_info
 
+
 class ExecutiveDashboard:
     """
     Dashboard ejecutivo con métricas principales.
@@ -147,6 +148,7 @@ class ExecutiveDashboard:
     def refresh_data(self):
         """Actualiza los datos del dashboard."""
         log_info("Datos del dashboard ejecutivo actualizados", "executive_dashboard")
+
 
 def get_dashboard_manager():
     """Función de conveniencia para obtener el dashboard ejecutivo."""

@@ -2,7 +2,8 @@
 Rexus.app - Conexión a Base de Datos de Usuarios
 
 Implementación de la conexión a la base de datos de usuarios usando pyodbc.
-Maneja la conexión segura a SQL Server y proporciona métodos para consultas de usuarios y permisos.
+Maneja la conexión segura a SQL Server y proporciona métodos para consultas
+de usuarios y permisos.
 """
 
 import os
@@ -12,6 +13,7 @@ from contextlib import contextmanager
 import pyodbc
 
 logger = logging.getLogger(__name__)
+
 
 class UsersDatabaseConnection:
     """
@@ -63,7 +65,7 @@ class UsersDatabaseConnection:
             )
             logger.info("[DB] Conexión exitosa a la base de datos de usuarios")
         except pyodbc.Error as e:
-            logger.error(f"[DB] Error conectando a la base de datos: {e}")
+            logger.error("[DB] Error conectando a la base de datos: %s", e)
             raise
 
     @contextmanager
@@ -77,7 +79,7 @@ class UsersDatabaseConnection:
             cursor = self._connection.cursor()
             yield cursor
         except pyodbc.Error as e:
-            logger.error(f"[DB] Error en operación de base de datos: {e}")
+            logger.error("[DB] Error en operación de base de datos: %s", e)
             if cursor:
                 self._connection.rollback()
             raise
@@ -105,11 +107,11 @@ class UsersDatabaseConnection:
                 """, (user_id,))
 
                 modules = [row[0] for row in cursor.fetchall()]
-                logger.info(f"[DB] Permisos obtenidos para usuario {user_id}: {modules}")
+                logger.info("[DB] Permisos obtenidos para usuario %s: %s", user_id, modules)
                 return modules
 
         except pyodbc.Error as e:
-            logger.error(f"[DB] Error obteniendo permisos para usuario {user_id}: {e}")
+            logger.error("[DB] Error obteniendo permisos para usuario %s: %s", user_id, e)
             return []
 
     def get_user_by_username(self, username: str) -> Optional[Dict[str, Any]]:
@@ -125,9 +127,9 @@ class UsersDatabaseConnection:
         try:
             with self.get_cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, username, rol, activo
+                    SELECT id, usuario, rol, activo
                     FROM usuarios
-                    WHERE username = ? AND activo = 1
+                    WHERE usuario = ? AND activo = 1
                 """, (username,))
 
                 row = cursor.fetchone()
@@ -138,17 +140,18 @@ class UsersDatabaseConnection:
                         'rol': row[2],
                         'activo': row[3]
                     }
-                    logger.info(f"[DB] Usuario encontrado: {username}")
+                    logger.info("[DB] Usuario encontrado: %s", username)
                     return user_data
-                else:
-                    logger.warning(f"[DB] Usuario no encontrado: {username}")
-                    return None
+
+                logger.warning("[DB] Usuario no encontrado: %s", username)
+                return None
 
         except pyodbc.Error as e:
-            logger.error(f"[DB] Error obteniendo usuario {username}: {e}")
+            logger.error("[DB] Error obteniendo usuario %s: %s", username, e)
             return None
 
-    def validate_user_credentials(self, username: str, password_hash: str) -> Optional[Dict[str, Any]]:
+    def validate_user_credentials(self, username: str,
+                                   password_hash: str) -> Optional[Dict[str, Any]]:
         """
         Valida las credenciales de un usuario.
 
@@ -162,9 +165,9 @@ class UsersDatabaseConnection:
         try:
             with self.get_cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, username, rol, activo
+                    SELECT id, usuario, rol, activo
                     FROM usuarios
-                    WHERE username = ? AND password_hash = ? AND activo = 1
+                    WHERE usuario = ? AND password_hash = ? AND activo = 1
                 """, (username, password_hash))
 
                 row = cursor.fetchone()
@@ -175,14 +178,14 @@ class UsersDatabaseConnection:
                         'rol': row[2],
                         'activo': row[3]
                     }
-                    logger.info(f"[DB] Credenciales válidas para usuario: {username}")
+                    logger.info("[DB] Credenciales válidas para usuario: %s", username)
                     return user_data
-                else:
-                    logger.warning(f"[DB] Credenciales inválidas para usuario: {username}")
-                    return None
+
+                logger.warning("[DB] Credenciales inválidas para usuario: %s", username)
+                return None
 
         except pyodbc.Error as e:
-            logger.error(f"[DB] Error validando credenciales para {username}: {e}")
+            logger.error("[DB] Error validando credenciales para %s: %s", username, e)
             return None
 
     def close(self):
@@ -192,7 +195,7 @@ class UsersDatabaseConnection:
                 self._connection.close()
                 logger.info("[DB] Conexión cerrada exitosamente")
             except pyodbc.Error as e:
-                logger.error(f"[DB] Error cerrando conexión: {e}")
+                logger.error("[DB] Error cerrando conexión: %s", e)
             finally:
                 self._connection = None
                 UsersDatabaseConnection._instance = None

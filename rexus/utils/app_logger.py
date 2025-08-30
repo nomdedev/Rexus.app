@@ -10,6 +10,7 @@ import logging.handlers
 from pathlib import Path
 from typing import Optional
 
+
 class AppLogger:
     """
     Logger centralizado para la aplicación Rexus.
@@ -51,7 +52,7 @@ class AppLogger:
         # Handler para archivo (con rotación)
         file_handler = logging.handlers.RotatingFileHandler(
             log_dir / 'rexus.log',
-            maxBytes=10*1024*1024,  # 10MB
+            maxBytes=10 * 1024 * 1024,  # 10MB
             backupCount=5
         )
         file_handler.setLevel(logging.DEBUG)
@@ -60,7 +61,7 @@ class AppLogger:
         # Handler para errores
         error_handler = logging.handlers.RotatingFileHandler(
             log_dir / 'error.log',
-            maxBytes=5*1024*1024,  # 5MB
+            maxBytes=5 * 1024 * 1024,  # 5MB
             backupCount=3
         )
         error_handler.setLevel(logging.ERROR)
@@ -107,25 +108,32 @@ class AppLogger:
             message = f"[USER:{user}] {message}"
         security_logger.info(f"[{level}] {message}")
 
+
 # Instancia global del logger
 app_logger = AppLogger()
 
 # Funciones de conveniencia para uso directo
+
+
 def log_info(msg: str, comp: str = "general"):
     """Función de conveniencia para logging informativo."""
     app_logger.log_info(msg, comp)
+
 
 def log_error(msg: str, comp: str = "general"):
     """Función de conveniencia para logging de errores."""
     app_logger.log_error(msg, comp)
 
+
 def log_warning(msg: str, comp: str = "general"):
     """Función de conveniencia para logging de advertencias."""
     app_logger.log_warning(msg, comp)
 
+
 def log_critical(msg: str, comp: str = "general"):
     """Función de conveniencia para logging crítico."""
     app_logger.log_critical(msg, comp)
+
 
 def log_security(level: str, msg: str, user: Optional[str] = None):
     """Función de conveniencia para logging de seguridad."""

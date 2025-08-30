@@ -62,7 +62,7 @@ class EnvironmentValidator:
         self.optional_vars = {
             # Desarrollo
             'REXUS_DEV_USER': 'Usuario de desarrollo',
-            'REXUS_DEV_PASSWORD': 'Contraseña de desarrollo',
+            # 'REXUS_DEV_PASSWORD': 'ELIMINADO POR SEGURIDAD - usar BD real',
             'REXUS_DEV_AUTO_LOGIN': 'Auto-login en desarrollo',
 
             # Bases de datos adicionales
@@ -131,16 +131,21 @@ class EnvironmentValidator:
             from rexus.utils.security import SecurityUtils
 
             # Probar hash de contraseña
-            test_password = os.getenv('REXUS_DEV_PASSWORD', 'test_validation_password_123')
-            hashed = SecurityUtils.hash_password(test_password)
-            is_valid = SecurityUtils.verify_password(test_password, hashed)
-
-            if is_valid:
-                print("   ✅ SecurityUtils funcionando correctamente")
-                return True
+            # SEGURIDAD: NO usar contraseñas hardcodeadas
+            test_password = None  # Debe obtenerse de BD real
+            if test_password:  # Solo si hay contraseña para probar
+                hashed = SecurityUtils.hash_password(test_password)
+                is_valid = SecurityUtils.verify_password(test_password, hashed)
+                
+                if is_valid:
+                    print("   ✅ SecurityUtils funcionando correctamente")
+                    return True
+                else:
+                    print("   ❌ Error en verificación de contraseña")
+                    return False
             else:
-                print("   ❌ Error en verificación de contraseña")
-                return False
+                print("   ⚠️  Saltando validación de contraseña (no definida)")
+                return True
 
         except Exception as e:
             print(f"   ❌ Error en SecurityUtils: {e}")

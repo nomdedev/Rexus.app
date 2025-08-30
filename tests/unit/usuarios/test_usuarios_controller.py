@@ -152,7 +152,7 @@ class TestUsuariosController:
                 
                 controller = UsuariosController()
                 
-                assert hasattr(controller, 'cargar_usuarios'), 
+                assert hasattr(controller, 'cargar_usuarios'), "Controller no tiene método cargar_usuarios"
                 assert callable(getattr(controller, 'cargar_usuarios')), "cargar_usuarios no es callable"
                 
                 # Intentar ejecutar el método

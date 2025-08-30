@@ -11,6 +11,7 @@ from PyQt6.QtCore import Qt
 
 from rexus.utils.app_logger import log_info
 
+
 def create_dashboard_button(
     text_or_parent=None,
     callback: Optional[Callable] = None,
@@ -40,9 +41,12 @@ def create_dashboard_button(
         # Patrón antiguo: create_dashboard_button(parent)
         actual_parent = text_or_parent
         actual_text = "Dashboard Ejecutivo"
+
         def default_callback():
             pass  # Callback vacío por defecto
+
         actual_callback = default_callback
+
     else:
         # Patrón nuevo: create_dashboard_button(text, callback, ...)
         actual_text = text_or_parent if isinstance(text_or_parent, str) else "Dashboard"
@@ -93,6 +97,7 @@ def create_dashboard_button(
 
     log_info(f"Botón del dashboard creado: {actual_text}", "dashboard_integration")
     return button
+
 
 def create_module_card(
     title: str,
@@ -163,6 +168,7 @@ def create_module_card(
     log_info(f"Tarjeta de módulo creada: {title}", "dashboard_integration")
     return card
 
+
 def create_status_indicator(
     label: str,
     status: str,
@@ -203,6 +209,7 @@ def create_status_indicator(
     layout.addWidget(status_widget)
 
     return widget
+
 
 def create_separator() -> QWidget:
     """

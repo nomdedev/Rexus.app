@@ -9,5 +9,42 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.pythonProjects": []
+    "python-envs.pythonProjects": [],
+
+    // Configuración de Pylance para excluir carpetas del análisis
+    "python.analysis.exclude": [
+        "**/tests/**",
+        "**/scripts/**",
+        "**/examples/**",
+        "**/backups/**",
+        "**/reports/**",
+        "**/.pytest_cache/**",
+        "**/__pycache__/**",
+        "**/rexus_app.egg-info/**",
+        "**/.git/**",
+        "**/.vscode/**",
+        "**/logs/**",
+        "**/cache/**",
+        "**/.claude/**",
+        "**/sql/**",
+        "**/resources/**",
+        "**/config/**",
+        "**/docs/**",
+        "**/*.pyc"
+    ],
+
+    // Configuración adicional de Python
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticMode": "workspace",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.banditEnabled": true,
+
+    // Exclusiones para linters
+    "python.linting.pylintArgs": [
+        "--ignore=tests,scripts,examples,backups,reports,.pytest_cache,__pycache__,rexus_app.egg-info"
+    ],
+    "python.linting.banditArgs": [
+        "--exclude-dir=tests,scripts,examples,backups,reports,.pytest_cache,__pycache__,rexus_app.egg-info"
+    ]
 }

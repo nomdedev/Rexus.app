@@ -1,0 +1,16 @@
+[tool.bandit]
+exclude_dirs = [
+    "tests",
+    "scripts",
+    "examples",
+    "backups",
+    "reports",
+    ".pytest_cache",
+    "__pycache__",
+    "rexus_app.egg-info",
+    ".git",
+    ".vscode",
+    "logs",
+    "cache"
+]
+skips = ["B101", "B601"]  # Skip assert checks and shell usage for tests

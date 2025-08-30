@@ -1,0 +1,21 @@
+{
+  "exclude": [
+    "**/tests/**",
+    "**/scripts/**",
+    "**/examples/**",
+    "**/backups/**",
+    "**/reports/**",
+    "**/.pytest_cache/**",
+    "**/__pycache__/**",
+    "**/rexus_app.egg-info/**",
+    "**/.git/**",
+    "**/.vscode/**",
+    "**/logs/**",
+    "**/cache/**",
+    "**/*.pyc"
+  ],
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "pythonVersion": "3.8",
+  "typeCheckingMode": "basic"
+}

@@ -112,7 +112,8 @@ class DevAuthManager:
 
     def __init__(self):
         self.dev_user = os.environ.get('REXUS_DEV_USER', 'dev_user')
-        self.dev_password = os.environ.get('REXUS_DEV_PASSWORD', 'RexusDev_2025#')
+        # SEGURIDAD: NO usar contraseñas por defecto - obtener solo de BD
+        self.dev_password = None  # Forzar uso de BD real
         self.auto_login = os.environ.get('REXUS_DEV_AUTO_LOGIN', 'false').lower() == 'true'
 
     def is_auto_login_enabled(self):
@@ -155,13 +156,16 @@ try:
     from rexus.ui.dashboard import DashboardController
     from rexus.ui.components.theme_manager import ThemeManager
 except ImportError:
-    class LoginDialog:
+    from PyQt6.QtWidgets import QDialog
+    
+    class LoginDialog(QDialog):
         """Login Dialog que cumple con la especificación irremovible de CLAUDE.md"""
 
         Accepted = 1
         Rejected = 0
 
-        def __init__(self, security_manager=None):
+        def __init__(self, security_manager=None, parent=None):
+            super().__init__(parent)
             self.security_manager = security_manager
             self.user_data = None
             self.modulos_permitidos = []
@@ -176,7 +180,8 @@ except ImportError:
 
             # Variables de entorno de desarrollo
             self.dev_user = os.environ.get('REXUS_DEV_USER', 'dev_user')
-            self.dev_password = os.environ.get('REXUS_DEV_PASSWORD', 'RexusDev_2025#')
+            # SEGURIDAD: NO usar contraseñas por defecto - obtener solo de BD
+            self.dev_password = None  # Forzar uso de BD real
             self.auto_login = os.environ.get('REXUS_DEV_AUTO_LOGIN', 'false').lower() == 'true'
 
         def exec(self):
@@ -1988,7 +1993,8 @@ QPushButton:disabled {
         try:
             if self.dashboard_controller:
                 dashboard = self.dashboard_controller.get_view()
-                dashboard.modulo_solicitado.connect(self.show_module)
+                if dashboard and hasattr(dashboard, 'modulo_solicitado'):
+                    dashboard.modulo_solicitado.connect(self.show_module)
                 self.content_stack.addWidget(dashboard)
                 print("[DASHBOARD] Dashboard moderno cargado correctamente")
             else:
@@ -2363,6 +2369,19 @@ QPushButton:disabled {
 def main():
     """Función principal de la aplicación."""
     try:
+        # Cargar variables de entorno antes de todo
+        from dotenv import load_dotenv
+        import os
+        from pathlib import Path
+        
+        # Buscar archivo .env en el directorio del proyecto
+        env_path = Path(__file__).parent.parent / '.env'
+        if env_path.exists():
+            load_dotenv(env_path)
+            print(f"[ENV] Variables de entorno cargadas desde {env_path}")
+        else:
+            print(f"[WARNING] Archivo .env no encontrado en {env_path}")
+        
         # Validar dependencias críticas
         if DEPENDENCY_VALIDATION_AVAILABLE:
             success, deps_info = validate_system_dependencies()
@@ -2389,7 +2408,7 @@ def main():
 
         # Mostrar diálogo de login
         login_dialog = LoginDialog(security_manager=security_manager)
-        if login_dialog.exec() == QDialog.DialogCode.Accepted:
+        if login_dialog.exec() == LoginDialog.Accepted:
             user_data = login_dialog.get_user_data()
             modulos_permitidos = login_dialog.get_modulos_permitidos()
 

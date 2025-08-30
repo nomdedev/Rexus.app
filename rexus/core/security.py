@@ -9,6 +9,7 @@ from typing import Optional, Dict, Any
 
 logger = logging.getLogger(__name__)
 
+
 class SecurityManager:
     """
     Gestor principal de seguridad que maneja autenticación y autorización.
@@ -52,7 +53,7 @@ class SecurityManager:
                     self.current_user = user_data
                     self.current_role = user_data.get('rol', 'usuario')
                     self._session_active = True
-                    logger.info(f"[SECURITY] Usuario autenticado: {username}")
+                    logger.info("[SECURITY] Usuario autenticado: %s", username)
                     return True
             else:
                 # Fallback: autenticación básica
@@ -68,11 +69,17 @@ class SecurityManager:
                     logger.info("[SECURITY] Usuario autenticado (fallback): admin")
                     return True
 
-            logger.warning(f"[SECURITY] Fallo de autenticación para: {username}")
+            logger.warning("[SECURITY] Fallo de autenticación para: %s", username)
             return False
 
+        except (ValueError, TypeError) as e:
+            logger.error("[SECURITY] Error en validación de credenciales: %s", e)
+            return False
+        except ConnectionError as e:
+            logger.error("[SECURITY] Error de conexión a base de datos: %s", e)
+            return False
         except Exception as e:
-            logger.error(f"[SECURITY] Error en autenticación: {e}")
+            logger.error("[SECURITY] Error inesperado en autenticación: %s", e)
             return False
 
     def authorize_module(self, module_name: str) -> bool:
@@ -93,26 +100,39 @@ class SecurityManager:
                 # Verificar permisos en base de datos
                 user_permissions = self.db_connection.get_user_permissions(self.current_user['id'])
                 return module_name in user_permissions
-            else:
-                # Fallback: permisos por rol
-                return self._check_role_permissions(module_name)
 
+            # Fallback: permisos por rol
+            return self._check_role_permissions(module_name)
+
+        except (ValueError, TypeError) as e:
+            logger.error("[SECURITY] Error en validación de permisos: %s", e)
+            return False
+        except ConnectionError as e:
+            logger.error("[SECURITY] Error de conexión verificando permisos: %s", e)
+            return False
         except Exception as e:
-            logger.error(f"[SECURITY] Error verificando permisos: {e}")
+            logger.error("[SECURITY] Error inesperado verificando permisos: %s", e)
             return False
 
     def _check_role_permissions(self, module_name: str) -> bool:
         """
         Verifica permisos basados en el rol del usuario (fallback).
         """
+        # Constantes para módulos
+        logistica_module = "Logística"
+        admin_modules = ["Obras", "Inventario", "Herrajes", "Vidrios", logistica_module,
+                         "Pedidos", "Compras", "Administración", "Mantenimiento",
+                         "Auditoría", "Usuarios", "Configuración"]
+        supervisor_modules = ["Obras", "Inventario", "Herrajes", "Vidrios", logistica_module,
+                              "Pedidos", "Compras", "Administración", "Mantenimiento"]
+        operador_modules = ["Obras", "Inventario", "Herrajes", "Vidrios", logistica_module, "Pedidos"]
+        auditor_modules = ["Auditoría", "Mantenimiento"]
+
         role_permissions = {
-            'ADMIN': ["Obras", "Inventario", "Herrajes", "Vidrios", "Logística",
-                     "Pedidos", "Compras", "Administración", "Mantenimiento",
-                     "Auditoría", "Usuarios", "Configuración"],
-            'SUPERVISOR': ["Obras", "Inventario", "Herrajes", "Vidrios", "Logística",
-                          "Pedidos", "Compras", "Administración", "Mantenimiento"],
-            'OPERADOR': ["Obras", "Inventario", "Herrajes", "Vidrios", "Logística", "Pedidos"],
-            'AUDITOR': ["Auditoría", "Mantenimiento"],
+            'ADMIN': admin_modules,
+            'SUPERVISOR': supervisor_modules,
+            'OPERADOR': operador_modules,
+            'AUDITOR': auditor_modules,
             'USUARIO': ["Obras", "Inventario", "Herrajes", "Vidrios"]
         }
 

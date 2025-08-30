@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QApplication
 
 from rexus.utils.app_logger import log_info
 
+
 class StyleManager:
     """
     Gestor de estilos para la aplicación.
@@ -31,7 +32,7 @@ class StyleManager:
             self.apply_stylesheet("global")
             log_info(f"Tema global aplicado: {self._current_theme}", "style_manager")
             return True
-        except Exception as e:
+        except OSError as e:
             log_info(f"Error aplicando tema global: {e}", "style_manager")
             return False
 
@@ -227,6 +228,7 @@ class StyleManager:
         """
         theme = self._themes[self._current_theme]
         return theme['fonts'].get(font_name, "Arial")
+
 
 # Instancia global del gestor de estilos
 style_manager = StyleManager()

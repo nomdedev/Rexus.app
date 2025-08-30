@@ -186,7 +186,8 @@ DESCRIPCIÓN:
             print("\n⚠️  Ejecución interrumpida por el usuario")
             sys.exit(1)
         except Exception as e:
-            
+            print(f"❌ Error durante la ejecución: {str(e)}")
+            sys.exit(1)
 
 def validate_test_environment():
     """Valida que el entorno esté configurado para ejecutar tests"""

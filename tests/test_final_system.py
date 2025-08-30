@@ -87,7 +87,7 @@ def test_security_utils():
         from rexus.utils.security import SecurityUtils
 
         # Probar hash y verificación de contraseña
-        test_password = os.getenv('REXUS_DEV_PASSWORD', 'test_password_123')
+        # SEGURIDAD: Eliminada contraseña hardcodeada)
         hashed = SecurityUtils.hash_password(test_password)
         is_valid = SecurityUtils.verify_password(test_password, hashed)
 
@@ -114,7 +114,7 @@ def test_user_authentication():
 
         # Intentar autenticar con un usuario de prueba
         test_username = os.getenv('REXUS_DEV_USER', 'admin')
-        test_password = os.getenv('REXUS_DEV_PASSWORD', 'admin123')
+        # SEGURIDAD: Eliminada contraseña hardcodeada)
 
         # Obtener datos del usuario
         user_data = sql_manager.get_user_by_username(test_username)

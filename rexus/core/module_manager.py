@@ -10,6 +10,7 @@ import importlib
 
 from rexus.utils.app_logger import log_info, log_error
 
+
 class ModuleManager:
     """
     Gestor centralizado de módulos del sistema.
@@ -77,7 +78,8 @@ class ModuleManager:
 
         log_info("Configuración de módulos cargada", "module_manager")
 
-    def get_available_modules(self, user_permissions: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+    def get_available_modules(self, user_permissions: Optional[List[str]] = None
+                              ) -> List[Dict[str, Any]]:
         """
         Obtiene la lista de módulos disponibles para un usuario.
 
@@ -152,12 +154,13 @@ class ModuleManager:
                 self.modules[module_key] = instance
                 log_info(f"Módulo {module_key} cargado exitosamente", "module_manager")
                 return instance
-            else:
-                log_error(f"No se encontró la clase principal en el módulo {module_key}", "module_manager")
+
+            log_error(f"No se encontró la clase principal en el módulo "
+                      f"{module_key}", "module_manager")
 
         except ImportError as e:
             log_error(f"Error importando módulo {module_key}: {e}", "module_manager")
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError) as e:
             log_error(f"Error cargando módulo {module_key}: {e}", "module_manager")
 
         return None
@@ -212,6 +215,7 @@ class ModuleManager:
             log_info(f"Módulo {module_key} deshabilitado", "module_manager")
             return True
         return False
+
 
 # Instancia global del gestor de módulos
 module_manager = ModuleManager()

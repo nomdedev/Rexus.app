@@ -11,6 +11,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 
 from rexus.utils.app_logger import log_info
 
+
 class DashboardWidget(QWidget):
     """
     Widget personalizado para el dashboard con señal de navegación.

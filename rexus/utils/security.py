@@ -7,7 +7,8 @@ Utilidades para manejo seguro de contraseñas y validaciones de seguridad.
 import hashlib
 import hmac
 import secrets
-from typing import Optional
+from typing import Optional, Tuple
+
 
 class SecurityUtils:
     """
@@ -73,7 +74,7 @@ class SecurityUtils:
         return secrets.token_hex(length)
 
     @staticmethod
-    def validate_password_strength(password: str) -> tuple[bool, str]:
+    def validate_password_strength(password: str) -> Tuple[bool, str]:
         """
         Valida la fortaleza de una contraseña.
 

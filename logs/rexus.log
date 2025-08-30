@@ -712,3 +712,42 @@ TypeError: object of type 'Mock' has no len()
 2025-08-30 09:57:11,609 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
 2025-08-30 09:57:16,123 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
 2025-08-30 09:57:17,807 - rexus.main - CRITICAL - Error crítico en main(): type object 'LoginDialog' has no attribute 'Accepted'
+2025-08-30 11:50:04,495 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 11:50:04,510 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 11:50:07,225 - rexus.core.database - INFO - [DB] Conexión exitosa a la base de datos de usuarios
+2025-08-30 11:50:07,227 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 11:50:07,228 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 11:50:52,427 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 11:50:52,432 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 11:50:52,443 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 11:50:52,443 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 11:51:45,063 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 11:51:45,069 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 11:51:45,082 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 11:51:45,082 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 11:51:45,096 - rexus.core.database - INFO - [DB] Permisos obtenidos para usuario 1: []
+2025-08-30 11:55:00,447 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 11:55:00,452 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 11:55:00,462 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 11:55:00,463 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 11:55:00,466 - rexus.core.database - INFO - [DB] Permisos obtenidos para usuario 1: []
+2025-08-30 11:56:10,012 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 11:56:10,016 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 11:56:10,027 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 11:56:10,027 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 11:56:10,034 - rexus.core.database - INFO - [DB] Permisos obtenidos para usuario 1: []
+2025-08-30 11:56:20,072 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 11:56:20,076 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 11:56:20,083 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 11:56:20,083 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 11:56:20,086 - rexus.core.database - INFO - [DB] Permisos obtenidos para usuario 1: []
+2025-08-30 11:57:00,449 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 11:57:00,454 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 11:57:00,535 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 11:57:00,537 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 14:16:32,402 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 14:16:32,441 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 14:16:39,658 - rexus.core.database - INFO - [DB] Conexión exitosa a la base de datos de usuarios
+2025-08-30 14:16:39,661 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 14:16:39,662 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 14:16:39,669 - rexus.main - CRITICAL - Error crítico en main(): 'UIComponents' object has no attribute 'ui'

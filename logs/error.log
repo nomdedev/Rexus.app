@@ -6,3 +6,4 @@
 2025-08-30 09:57:11,609 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
 2025-08-30 09:57:16,123 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
 2025-08-30 09:57:17,807 - rexus.main - CRITICAL - Error crítico en main(): type object 'LoginDialog' has no attribute 'Accepted'
+2025-08-30 14:16:39,669 - rexus.main - CRITICAL - Error crítico en main(): 'UIComponents' object has no attribute 'ui'

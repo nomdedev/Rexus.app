@@ -7,11 +7,13 @@ consultas parametrizadas contra la base de datos de usuarios.
 
 import os
 import logging
+from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 from contextlib import contextmanager
 import pyodbc
 
 logger = logging.getLogger(__name__)
+
 
 class SQLQueryManager:
     """
@@ -94,6 +96,9 @@ class SQLQueryManager:
                 if params:
                     cursor.execute(query, params)
                 else:
+                    # Validar que la query sin parámetros sea segura
+                    if self._contains_dynamic_data(query):
+                        raise ValueError("Query sin parámetros contiene datos dinámicos potencialmente inseguros")
                     cursor.execute(query)
 
                 results = cursor.fetchall()
@@ -120,6 +125,9 @@ class SQLQueryManager:
                 if params:
                     cursor.execute(query, params)
                 else:
+                    # Validar que la query sin parámetros sea segura
+                    if self._contains_dynamic_data(query):
+                        raise ValueError("Query sin parámetros contiene datos dinámicos potencialmente inseguros")
                     cursor.execute(query)
 
                 rows_affected = cursor.rowcount
@@ -155,9 +163,9 @@ class SQLQueryManager:
             Diccionario con información del usuario o None
         """
         query = """
-            SELECT id, username, rol, activo
+            SELECT id, usuario, rol, activo
             FROM usuarios
-            WHERE username = ? AND activo = 1
+            WHERE usuario = ? AND activo = 1
         """
         results = self.execute_query(query, (username,))
 
@@ -183,9 +191,9 @@ class SQLQueryManager:
             Diccionario con información del usuario si válido
         """
         query = """
-            SELECT id, username, rol, activo
+            SELECT id, usuario, rol, activo
             FROM usuarios
-            WHERE username = ? AND password_hash = ? AND activo = 1
+            WHERE usuario = ? AND password_hash = ? AND activo = 1
         """
         results = self.execute_query(query, (username, password_hash))
 
@@ -198,3 +206,74 @@ class SQLQueryManager:
                 'activo': row[3]
             }
         return None
+
+    def _contains_dynamic_data(self, query: str) -> bool:
+        """
+        Valida si una query contiene datos dinámicos potencialmente inseguros.
+
+        Args:
+            query: Consulta SQL a validar
+
+        Returns:
+            True si contiene datos dinámicos, False si es segura
+        """
+        import re
+
+        # Patrones que indican datos dinámicos inseguros
+        dangerous_patterns = [
+            r'\+\s*["\'][^"\']*["\']',  # Concatenación de strings
+            r'%s',  # Formato Python antiguo
+            r'%d',  # Formato Python antiguo
+            r'\{.*\}',  # Formato con llaves
+            r'f["\'].*\{.*\}.*["\']',  # f-strings
+        ]
+
+        for pattern in dangerous_patterns:
+            if re.search(pattern, query, re.IGNORECASE):
+                logger.warning(f"[SQL] Query potencialmente insegura detectada: {query[:100]}...")
+                return True
+
+        return False
+
+    def ejecutar_consulta_archivo(self, archivo_sql: str, parametros: Optional[tuple] = None) -> List[Dict[str, Any]]:
+        """
+        Ejecuta una consulta SQL desde un archivo externo.
+
+        Args:
+            archivo_sql: Ruta al archivo SQL
+            parametros: Parámetros para la consulta
+
+        Returns:
+            Lista de diccionarios con los resultados
+        """
+        try:
+            # Leer archivo SQL
+            sql_path = Path(archivo_sql)
+            if not sql_path.is_absolute():
+                # Si es ruta relativa, buscar desde la raíz del proyecto
+                project_root = Path(__file__).parent.parent.parent
+                sql_path = project_root / archivo_sql
+
+            if not sql_path.exists():
+                raise FileNotFoundError(f"Archivo SQL no encontrado: {sql_path}")
+
+            with open(sql_path, 'r', encoding='utf-8') as f:
+                query = f.read().strip()
+
+            # Ejecutar query
+            results = self.execute_query(query, parametros)
+
+            # Convertir tuplas a diccionarios
+            if results and hasattr(results[0], '_fields'):
+                # Si son named tuples
+                return [row._asdict() for row in results]
+            elif results and isinstance(results[0], (tuple, list)):
+                # Si son tuplas simples, necesitamos los nombres de columna
+                # Por simplicidad, retornamos el resultado crudo y dejamos que el caller maneje
+                return [{'result': row} for row in results] if results else []
+            else:
+                return results
+
+        except Exception as e:
+            logger.error(f"[SQL] Error ejecutando archivo SQL {archivo_sql}: {e}")
+            raise
