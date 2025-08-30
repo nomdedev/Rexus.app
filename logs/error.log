@@ -1,0 +1,8 @@
+2025-08-30 09:48:59,005 - rexus.main - ERROR - Error creando dashboard moderno: 'DashboardController' object has no attribute 'get_view'
+2025-08-30 09:51:34,927 - rexus.main - ERROR - Error creando dashboard moderno: 'QWidget' object has no attribute 'modulo_solicitado'
+2025-08-30 09:52:06,691 - rexus.main - ERROR - Error creando dashboard moderno: 'QWidget' object has no attribute 'modulo_solicitado'
+2025-08-30 09:55:59,790 - rexus.main - CRITICAL - Error crítico en main(): cannot unpack non-iterable bool object
+2025-08-30 09:56:34,544 - rexus.main - CRITICAL - Error crítico en main(): QDialog(parent: Optional[QWidget] = None, flags: Qt.WindowType = Qt.WindowFlags()): argument 1 has unexpected type 'SecurityManager'
+2025-08-30 09:57:11,609 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
+2025-08-30 09:57:16,123 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
+2025-08-30 09:57:17,807 - rexus.main - CRITICAL - Error crítico en main(): type object 'LoginDialog' has no attribute 'Accepted'

@@ -22,9 +22,11 @@ def setup_environment():
 
     if is_dev_mode:
         print("[DEV] Modo desarrollo activado")
+        # SEGURIDAD: Solo configurar usuario de desarrollo, NO contraseñas
+        # Las contraseñas deben obtenerse SOLO de la base de datos
         os.environ.setdefault('REXUS_DEV_USER', 'dev_user')
-        os.environ.setdefault('REXUS_DEV_PASSWORD', 'RexusDev_2025#')
-        os.environ.setdefault('REXUS_DEV_AUTO_LOGIN', 'true')
+        os.environ.setdefault('REXUS_DEV_AUTO_LOGIN', 'false')  # Deshabilitado por seguridad
+        print("[SECURITY] Auto-login deshabilitado - usar credenciales reales de BD")
 
     return True
 
@@ -36,7 +38,7 @@ def main():
     # Intentar cargar la aplicación real, con fallback
     try:
         print("Intentando cargar aplicación completa...")
-        from rexus.main.app import main as app_main
+        from temp_app import main as app_main
         app_main()
     except ImportError as e:
         print(f"Error de importación: {e}")

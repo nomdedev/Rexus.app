@@ -657,3 +657,58 @@ TypeError: object of type 'Mock' has no len()
 2025-08-22 19:15:40 - rexus.core.database_manager - [32mINFO[0m[0m - Sistema de logging inicializado
 2025-08-22 19:15:40 - rexus.core.database_manager - [32mINFO[0m - Sistema de logging inicializado
 2025-08-22 19:15:40 - rexus.core.database_manager - [32mINFO[0m[0m - Sistema de logging inicializado
+2025-08-30 01:20:42,965 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 01:20:43,011 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 01:20:48,557 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 01:20:48,576 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 01:20:58,641 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 01:20:58,652 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 01:21:05,640 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 01:21:05,660 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 01:25:14,067 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 01:25:14,090 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 01:25:14,198 - rexus.main - WARNING - Error inicializando ThemeManager: ThemeManager.__init__() takes 1 positional argument but 2 were given
+2025-08-30 01:25:14,199 - rexus.main - WARNING - Error inicializando DashboardController: DashboardController.__init__() takes from 1 to 2 positional arguments but 3 were given
+2025-08-30 09:46:44,092 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 09:46:44,132 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 09:46:44,259 - rexus.main - WARNING - Error inicializando ThemeManager: 'ThemeManager' object has no attribute 'apply_theme'
+2025-08-30 09:46:44,328 - rexus.dashboard - INFO - Dashboard creado exitosamente
+2025-08-30 09:48:57,700 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 09:48:57,728 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 09:48:57,825 - rexus.main - WARNING - Error inicializando ThemeManager: 'ThemeManager' object has no attribute 'apply_theme'
+2025-08-30 09:48:57,862 - rexus.dashboard - INFO - Dashboard creado exitosamente
+2025-08-30 09:48:57,888 - rexus.dashboard_integration - INFO - Botón del dashboard creado: Dashboard Ejecutivo
+2025-08-30 09:48:57,893 - rexus.main - DEBUG - Módulos permitidos: ['dashboard', 'inventory', 'sales', 'purchases', 'accounting', 'reports', 'administration', 'maintenance']
+2025-08-30 09:48:59,005 - rexus.main - ERROR - Error creando dashboard moderno: 'DashboardController' object has no attribute 'get_view'
+2025-08-30 09:51:33,616 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 09:51:33,643 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 09:51:33,762 - rexus.theme_manager - INFO - Estilos del tema Claro preparados
+2025-08-30 09:51:33,818 - rexus.dashboard - INFO - Dashboard creado exitosamente
+2025-08-30 09:51:33,842 - rexus.dashboard_integration - INFO - Botón del dashboard creado: Dashboard Ejecutivo
+2025-08-30 09:51:33,851 - rexus.main - DEBUG - Módulos permitidos: ['dashboard', 'inventory', 'sales', 'purchases', 'accounting', 'reports', 'administration', 'maintenance']
+2025-08-30 09:51:34,927 - rexus.main - ERROR - Error creando dashboard moderno: 'QWidget' object has no attribute 'modulo_solicitado'
+2025-08-30 09:52:05,474 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 09:52:05,528 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 09:52:05,700 - rexus.theme_manager - INFO - Estilos del tema Claro preparados
+2025-08-30 09:52:05,819 - rexus.dashboard - INFO - Dashboard creado exitosamente
+2025-08-30 09:52:05,837 - rexus.style_manager - INFO - Estilos aplicados para componente: global
+2025-08-30 09:52:05,839 - rexus.style_manager - INFO - Tema global aplicado: default
+2025-08-30 09:52:05,841 - rexus.style_manager - INFO - Estilos de emergencia aplicados
+2025-08-30 09:52:05,856 - rexus.dashboard_integration - INFO - Botón del dashboard creado: Dashboard Ejecutivo
+2025-08-30 09:52:05,864 - rexus.main - DEBUG - Módulos permitidos: ['dashboard', 'inventory', 'sales', 'purchases', 'accounting', 'reports', 'administration', 'maintenance']
+2025-08-30 09:52:06,691 - rexus.main - ERROR - Error creando dashboard moderno: 'QWidget' object has no attribute 'modulo_solicitado'
+2025-08-30 09:55:57,595 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 09:55:57,615 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 09:55:59,790 - rexus.main - CRITICAL - Error crítico en main(): cannot unpack non-iterable bool object
+2025-08-30 09:56:32,085 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 09:56:32,117 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 09:56:34,544 - rexus.main - WARNING - [SECURITY] Error BD: Faltan variables de entorno para la conexión a BD, usando modo sin BD
+2025-08-30 09:56:34,544 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 09:56:34,544 - rexus.main - CRITICAL - Error crítico en main(): QDialog(parent: Optional[QWidget] = None, flags: Qt.WindowType = Qt.WindowFlags()): argument 1 has unexpected type 'SecurityManager'
+2025-08-30 09:56:56,285 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 09:56:56,321 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 09:56:58,408 - rexus.main - WARNING - [SECURITY] Error BD: Faltan variables de entorno para la conexión a BD, usando modo sin BD
+2025-08-30 09:56:58,408 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 09:57:11,609 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
+2025-08-30 09:57:16,123 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
+2025-08-30 09:57:17,807 - rexus.main - CRITICAL - Error crítico en main(): type object 'LoginDialog' has no attribute 'Accepted'
