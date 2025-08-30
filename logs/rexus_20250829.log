@@ -1917,3 +1917,471 @@
 2025-08-29 22:56:39 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
 2025-08-29 22:56:39 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
 2025-08-29 22:56:40 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 22:59:40 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 22:59:44 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 22:59:44 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 22:59:44 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 22:59:44 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 22:59:44 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 22:59:44 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 22:59:44 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 22:59:44 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 22:59:44 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 22:59:44 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 22:59:45 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:00:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:00:52 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:00:53 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:00:53 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:00:53 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:00:53 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:00:53 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:00:53 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:00:53 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:00:53 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:00:53 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:00:54 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:03:11 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:03:13 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:03:13 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:03:13 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:03:13 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:03:13 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:03:13 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:03:13 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:03:13 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:03:13 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:03:13 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:03:15 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:05:22 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:05:23 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:05:23 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:05:23 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:05:23 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:05:23 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:05:23 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:05:23 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:05:23 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:05:23 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:05:23 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:05:25 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:06:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:06:04 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:06:04 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:06:04 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:04 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:04 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:06:04 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:04 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:04 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:06:04 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:06:04 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:06:05 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:06:15 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:06:17 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:06:17 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:06:17 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:17 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:17 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:06:17 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:17 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:17 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:06:17 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:06:17 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:06:18 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:06:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:06:31 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:06:31 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:06:31 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:31 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:31 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:06:31 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:31 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:31 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:06:31 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:06:31 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:06:32 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:06:40 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:06:41 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:06:41 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:06:41 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:41 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:41 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:06:41 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:41 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:41 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:06:41 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:06:42 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:06:43 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:06:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:06:53 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:06:53 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:06:53 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:53 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:53 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:06:53 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:06:53 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:06:53 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:06:53 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:06:54 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:06:55 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:09:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:09:19 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:09:19 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:09:19 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:09:19 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:09:19 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:09:19 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:09:19 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:09:19 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:09:19 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:09:19 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:09:21 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:13:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:13:53 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:13:53 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:13:53 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:13:53 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:13:53 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:13:53 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:13:53 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:13:53 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:13:53 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:13:53 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:13:55 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:14:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:14:09 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:14:09 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:14:09 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:14:09 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:14:09 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:14:09 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:14:09 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:14:09 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:14:09 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:14:09 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:14:10 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:14:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:14:58 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:14:58 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:14:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:14:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:14:58 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:14:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:14:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:14:58 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:14:58 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:14:58 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:15:00 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:17:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:18:01 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:18:01 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:18:01 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:18:01 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:18:01 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:18:01 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:18:01 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:18:01 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:18:01 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:18:01 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:18:03 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:18:17 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:18:19 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:18:19 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:18:19 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:18:19 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:18:19 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:18:19 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:18:19 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:18:19 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:18:19 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:18:19 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:18:20 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:18:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:18:53 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:18:53 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:18:53 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:18:53 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:18:53 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:18:53 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:18:53 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:18:53 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:18:53 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:18:54 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:18:55 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:19:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:19:58 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:19:58 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:19:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:19:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:19:58 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:19:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:19:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:19:58 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:19:58 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:19:58 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:20:00 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:20:13 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:20:14 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:20:14 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:20:14 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:20:14 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:20:14 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:20:14 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:20:14 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:20:14 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:20:14 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:20:14 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:20:15 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:20:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:20:37 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:20:37 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:20:37 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:20:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:20:37 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:20:37 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:20:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:20:37 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:20:37 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:20:37 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:20:39 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:20:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:20:48 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:20:48 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:20:48 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:20:48 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:20:48 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:20:48 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:20:48 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:20:48 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:20:48 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:20:48 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:20:49 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:21:06 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:21:07 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:21:08 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:21:08 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:21:08 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:21:08 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:21:08 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:21:08 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:21:08 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:21:08 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:21:08 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:21:09 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:21:42 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:21:43 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:21:43 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:21:43 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:21:43 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:21:43 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:21:43 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:21:43 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:21:43 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:21:43 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:21:43 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:21:44 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:21:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:21:58 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:21:58 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:21:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:21:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:21:58 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:21:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:21:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:21:58 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:21:58 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:21:58 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:21:59 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:22:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:22:26 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:22:26 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:22:26 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:22:26 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:22:26 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:22:26 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:22:26 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:22:26 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:22:26 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:22:26 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:22:28 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:22:54 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:22:56 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:22:56 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:22:56 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:22:56 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:22:56 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:22:56 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:22:56 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:22:56 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:22:56 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:22:56 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:22:57 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:27:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:27:01 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:27:01 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:27:01 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:27:01 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:27:01 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:27:01 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:27:01 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:27:01 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:27:01 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:27:01 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:27:02 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:32:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:32:59 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:32:59 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:32:59 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:32:59 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:32:59 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:32:59 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:32:59 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:32:59 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:32:59 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:32:59 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:33:01 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:33:16 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:33:17 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:33:17 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:33:17 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:33:17 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:33:17 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:33:17 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:33:17 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:33:17 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:33:17 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:33:17 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:33:18 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:33:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:33:37 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:33:37 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:33:37 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:33:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:33:37 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:33:37 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:33:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:33:37 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:33:37 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:33:37 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:33:38 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:33:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:33:50 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:33:50 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:33:50 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:33:50 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:33:50 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:33:50 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:33:50 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:33:50 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:33:50 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:33:50 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:33:51 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:34:03 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:34:04 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:34:04 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:34:04 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:34:04 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:34:04 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:34:04 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:34:04 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:34:04 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:34:04 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:34:04 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:34:06 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:38:34 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:38:36 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:38:36 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:38:36 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:38:36 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:38:36 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:38:36 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:38:36 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:38:36 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:38:36 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:38:36 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:38:39 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:38:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:38:50 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:38:51 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:38:51 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:38:51 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:38:51 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:38:51 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:38:51 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:38:51 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:38:51 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:38:51 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:38:52 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:39:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:39:38 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:39:39 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:39:39 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:39:39 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:39:39 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:39:39 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:39:39 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:39:39 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:39:39 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:39:39 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:39:41 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:42:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:42:32 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:42:32 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:42:32 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:42:32 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:42:32 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:42:32 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:42:32 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:42:32 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:42:32 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:42:32 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:42:33 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:44:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:44:37 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:44:37 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:44:37 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:44:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:44:37 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:44:37 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:44:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:44:37 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:44:37 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:44:37 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:44:38 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:44:47 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:44:48 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:44:48 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:44:48 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:44:48 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:44:48 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:44:48 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:44:48 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:44:48 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:44:48 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:44:48 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:44:49 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:44:55 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:44:57 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:44:57 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:44:57 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:44:57 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:44:57 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:44:57 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:44:57 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:44:57 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:44:57 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:44:57 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:44:58 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)
+2025-08-29 23:45:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-29 23:45:37 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-29 23:45:37 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-29 23:45:37 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:45:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:45:37 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-29 23:45:37 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-29 23:45:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-29 23:45:37 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-29 23:45:37 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-29 23:45:37 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-29 23:45:38 | INFO     | rexus.modules.02_inventario.submodules | [SUBMODULOS INVENTARIO] __init__.py cargado (managers temporalmente deshabilitados)

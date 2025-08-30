@@ -1,21 +1,21 @@
 {
   "database": {
-    "server": "",
-    "port": "",
-    "name": "",
-    "user": "",
-    "password": "",
-    "timeout": "",
-    "pool_size": ""
+    "server": "localhost",
+    "port": "1433",
+    "name": "rexus_db",
+    "user": "rexus_user",
+    "password": "CHANGE_THIS_PASSWORD",
+    "timeout": "30",
+    "pool_size": "10"
   },
   "empresa": {
-    "nombre": "",
-    "nit": "",
-    "direccion": "",
-    "telefono": "",
-    "email": "",
-    "web": "",
-    "logo": "",
+    "nombre": "Mi Empresa S.A.S.",
+    "nit": "901234567-8",
+    "direccion": "Calle 123 #45-67",
+    "telefono": "+57 1 2345678",
+    "email": "contacto@miempresa.com",
+    "web": "https://www.miempresa.com",
+    "logo": "./resources/logo.png",
     "moneda": "COP",
     "pais": "Colombia",
     "ciudad": "Bogotá"
@@ -65,11 +65,11 @@
     "comprimir": "true"
   },
   "integraciones": {
-    "email_smtp_server": "",
+    "email_smtp_server": "smtp.gmail.com",
     "email_smtp_port": "587",
-    "email_usuario": "",
+    "email_usuario": "noreply@miempresa.com",
     "email_ssl": "true",
     "api_timeout": "30",
-    "webhook_url": ""
+    "webhook_url": "https://webhook.site/example"
   }
 }
