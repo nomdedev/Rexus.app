@@ -35,7 +35,8 @@ def apply_critical_form_fixes(widget: QWidget = None):
         return success
 
     except (ImportError, AttributeError, RuntimeError) as e:
-        
+        logger.error(f"Error aplicando correcciones críticas: {e}")
+        return False
 
 def fix_dark_theme_forms():
     """

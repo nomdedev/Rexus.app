@@ -2,13 +2,20 @@
 Sistema mejorado de manejo de errores para Rexus.app
 """
 
-
 import logging
-logger = logging.getLogger(__name__)
-
 import sys
 from typing import Callable, Any
+
+logger = logging.getLogger(__name__)
+
+try:
+    from PyQt6.QtWidgets import QMessageBox
+    PYQT_AVAILABLE = True
+except ImportError:
+    PYQT_AVAILABLE = False
+
 from rexus.utils.logging_config import get_logger
+
 
 class RexusErrorHandler:
     """Manejador centralizado de errores"""
@@ -23,10 +30,7 @@ class RexusErrorHandler:
             return
 
         error_msg = f"Uncaught exception: {exc_type.__name__}: {exc_value}"
-        self.logger.error(error_msg,
-exc_info=(exc_type,
-            exc_value,
-            exc_traceback))
+        self.logger.error(error_msg, exc_info=(exc_type, exc_value, exc_traceback))
 
         # Mostrar error amigable al usuario
         self.show_user_friendly_error(str(exc_value))
@@ -34,31 +38,36 @@ exc_info=(exc_type,
     def show_user_friendly_error(self, error_message):
         """Muestra error amigable al usuario"""
         try:
-            from PyQt6.QtWidgets import QMessageBox
-
-            msg_box = QMessageBox()
-            msg_box.setIcon(QMessageBox.Icon.Critical)
-            msg_box.setWindowTitle()
-            msg_box.setText("Ha ocurrido un error inesperado")
-            msg_box.setDetailedText(f"Detalles técnicos:\n{error_message}")
-            msg_box.setInformativeText(
-                "El error ha sido registrado. "
-                "Si el problema persiste, contacte con soporte técnico."
-            )
-            msg_box.exec()
-        except (ImportError, AttributeError, RuntimeError):
+            if PYQT_AVAILABLE:
+                msg_box = QMessageBox()
+                msg_box.setIcon(QMessageBox.Icon.Critical)
+                msg_box.setWindowTitle("Error")
+                msg_box.setText("Ha ocurrido un error inesperado")
+                msg_box.setDetailedText(f"Detalles técnicos:\n{error_message}")
+                msg_box.setInformativeText(
+                    "El error ha sido registrado. "
+                    "Si el problema persiste, contacte con soporte técnico."
+                )
+                msg_box.exec()
+            else:
+                # Fallback si PyQt no está disponible
+                logger.info(f"ERROR: {error_message}")
+        except (ImportError, AttributeError, RuntimeError) as e:
             # Fallback si PyQt no está disponible
             logger.info(f"ERROR: {error_message}")
 
-def error_boundary(func: Callable) -> Callable:
+
+def error_boundary(func: Callable, default_return=None) -> Callable:
     """Decorador para capturar errores en funciones"""
     def wrapper(*args, **kwargs) -> Any:
         try:
             return func(*args, **kwargs)
         except Exception as e:
             logger = get_logger('errors')
-                        logger.error(f"Safe execution failed: {str(e)}", exc_info=True)
-        return default_return
+            logger.error(f"Safe execution failed: {str(e)}", exc_info=True)
+            return default_return
+    return wrapper
+
 
 def validate_database_connection(func: Callable) -> Callable:
     """Decorador para validar conexión de base de datos"""
@@ -72,14 +81,18 @@ def validate_database_connection(func: Callable) -> Callable:
             raise DatabaseConnectionError(f"Error de base de datos: {str(e)}")
     return wrapper
 
+
 class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión de base de datos"""
+
 
 class ValidationError(Exception):
     """Excepción para errores de validación"""
 
+
 class SecurityError(Exception):
     """Excepción para errores de seguridad"""
+
 
 # Instalar el manejador global de errores
 error_handler = RexusErrorHandler()

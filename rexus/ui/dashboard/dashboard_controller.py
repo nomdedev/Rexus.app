@@ -8,13 +8,29 @@ from PyQt6.QtCore import QObject, QTimer, pyqtSignal
 from PyQt6.QtWidgets import QApplication
 
 from ...core.base_controller import BaseController
-from ...modules.usuarios.controller import UsuariosController
-from ...modules.inventario.controller import InventarioController
-from ...modules.obras.controller import ObrasController
-from ...modules.pedidos.controller import PedidosController
-from ...modules.compras.controller import ComprasController
-from ...modules.vidrios.controller import VidriosController
-from ...modules.notificaciones.controller import NotificacionesController
+import importlib
+
+# Importar controladores usando importlib para manejar nombres con números
+usuarios_module = importlib.import_module('rexus.modules.09_usuarios.controller')
+UsuariosController = usuarios_module.UsuariosController
+
+inventario_module = importlib.import_module('rexus.modules.02_inventario.controller')
+InventarioController = inventario_module.InventarioController
+
+obras_module = importlib.import_module('rexus.modules.01_obras.controller')
+ObrasController = obras_module.ObrasController
+
+pedidos_module = importlib.import_module('rexus.modules.03_pedidos.controller')
+PedidosController = pedidos_module.PedidosController
+
+compras_module = importlib.import_module('rexus.modules.04_compras.controller')
+ComprasController = compras_module.ComprasController
+
+vidrios_module = importlib.import_module('rexus.modules.07_vidrios.controller')
+VidriosController = vidrios_module.VidriosController
+
+notificaciones_module = importlib.import_module('rexus.modules.13_notificaciones.controller')
+NotificacionesController = notificaciones_module.NotificacionesController
 from .main_dashboard import MainDashboard
 
 

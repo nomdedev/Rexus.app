@@ -5,66 +5,203 @@ Muestra información detallada sobre errores de carga de módulos
 y proporciona soluciones específicas para cada tipo de problema.
 """
 
-
 import logging
-logger = logging.getLogger(__name__)
-
 import sys
 import traceback
-                        or "name" in error_msg
-            and "not defined" in error_msg
-        ):
-            solutions.append(
-                {
-                    "title": "Corregir imports de autenticación",
-                    "description": "Los decoradores de autenticación no están importados correctamente.",
-                    "command": "python corregir_decoradores.py",
-                }
-            )
+import os
+import subprocess
+from pathlib import Path
+from typing import Dict, List, Any
+
+logger = logging.getLogger(__name__)
+
+try:
+    from PyQt6.QtWidgets import (
+        QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
+        QTextEdit, QFrame, QScrollArea, QGroupBox
+    )
+    from PyQt6.QtCore import pyqtSignal
+    PYQT_AVAILABLE = True
+except ImportError:
+    PYQT_AVAILABLE = False
+
+
+class DiagnosticWidget(QWidget):
+    """Widget para mostrar diagnósticos de errores de módulos."""
+
+    retry_requested = pyqtSignal(str)  # Emite el nombre del módulo para reintentar
+
+    def __init__(self, module_name: str, error_info: Dict[str, Any]):
+        super().__init__()
+        self.module_name = module_name
+        self.error_info = error_info
+        self.init_ui()
+
+    def init_ui(self):
+        """Inicializa la interfaz de usuario."""
+        self.setWindowTitle(f"Diagnóstico - Módulo {self.module_name}")
+        self.setMinimumSize(600, 400)
+
+        layout = QVBoxLayout(self)
+
+        # Título
+        title_label = QLabel(f"🔍 Error en Módulo: {self.module_name}")
+        title_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #d32f2f;")
+        layout.addWidget(title_label)
+
+        # Información del error
+        error_group = QGroupBox("Información del Error")
+        error_layout = QVBoxLayout()
+
+        error_text = QTextEdit()
+        error_text.setPlainText(self.error_info.get("error", "Error desconocido"))
+        error_text.setMaximumHeight(100)
+        error_layout.addWidget(error_text)
+
+        error_group.setLayout(error_layout)
+        layout.addWidget(error_group)
+
+        # Diagnósticos
+        diagnostics_group = QGroupBox("Diagnósticos Automáticos")
+        diagnostics_layout = QVBoxLayout()
+
+        diagnostics = self.run_diagnostics()
+        for diag in diagnostics:
+            diag_label = QLabel(f"• {diag['description']}: {diag['status']}")
+            diagnostics_layout.addWidget(diag_label)
+
+        diagnostics_group.setLayout(diagnostics_layout)
+        layout.addWidget(diagnostics_group)
+
+        # Soluciones sugeridas
+        solutions_group = QGroupBox("Soluciones Sugeridas")
+        solutions_layout = QVBoxLayout()
+
+        solutions = self.generate_solutions()
+        for solution in solutions:
+            solution_frame = QFrame()
+            solution_frame.setFrameStyle(QFrame.Shape.Box)
+            solution_layout = QVBoxLayout(solution_frame)
+
+            title_label = QLabel(f"💡 {solution['title']}")
+            title_label.setStyleSheet("font-weight: bold;")
+            solution_layout.addWidget(title_label)
+
+            desc_label = QLabel(solution['description'])
+            desc_label.setWordWrap(True)
+            solution_layout.addWidget(desc_label)
+
+            if 'command' in solution:
+                cmd_label = QLabel(f"Comando: {solution['command']}")
+                cmd_label.setStyleSheet("font-family: monospace; background-color: #f5f5f5; padding: 5px;")
+                solution_layout.addWidget(cmd_label)
+
+            solutions_layout.addWidget(solution_frame)
+
+        solutions_group.setLayout(solutions_layout)
+
+        # Scroll area para soluciones
+        scroll_area = QScrollArea()
+        scroll_widget = QWidget()
+        scroll_widget.setLayout(solutions_layout)
+        scroll_area.setWidget(scroll_widget)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setMaximumHeight(200)
+
+        layout.addWidget(scroll_area)
+
+        # Botones de acción
+        self.create_action_buttons(layout)
+
+    def run_diagnostics(self) -> List[Dict[str, str]]:
+        """Ejecuta diagnósticos automáticos."""
+        diagnostics = []
+
+        # Verificar archivos requeridos
+        module_path = Path(f"rexus/modules/{self.module_name}")
+        if module_path.exists():
+            diagnostics.append({
+                "description": "Estructura del módulo",
+                "status": "✅ OK"
+            })
+        else:
+            diagnostics.append({
+                "description": "Estructura del módulo",
+                "status": "❌ Faltante"
+            })
+
+        # Verificar archivos específicos
+        required_files = ["__init__.py", "controller.py", "model.py", "view.py"]
+        for file_name in required_files:
+            file_path = module_path / file_name
+            if file_path.exists():
+                diagnostics.append({
+                    "description": f"Archivo {file_name}",
+                    "status": "✅ OK"
+                })
+            else:
+                diagnostics.append({
+                    "description": f"Archivo {file_name}",
+                    "status": "❌ Faltante"
+                })
+
+        return diagnostics
+
+    def generate_solutions(self) -> List[Dict[str, str]]:
+        """Genera soluciones basadas en el error."""
+        solutions = []
+        error_msg = self.error_info.get("error", "").lower()
+
+        # Soluciones específicas por tipo de error
+        if ("importerror" in error_msg
+            or "name" in error_msg
+            and "not defined" in error_msg):
+            solutions.append({
+                "title": "Corregir imports de autenticación",
+                "description": "Los decoradores de autenticación no están importados correctamente.",
+                "command": "python corregir_decoradores.py",
+            })
 
         if "syntaxerror" in error_msg or "invalid syntax" in error_msg:
-            solutions.append(
-                {
-                    "title": "Corregir errores de sintaxis",
-                    "description": "Hay errores de sintaxis en el código Python.",
-                    "command": "python corregir_sintaxis.py",
-                }
-            )
+            solutions.append({
+                "title": "Corregir errores de sintaxis",
+                "description": "Hay errores de sintaxis en el código Python.",
+                "command": "python corregir_sintaxis.py",
+            })
 
         if "unterminated" in error_msg:
-            solutions.append(
-                {
-                    "title": "Corregir strings mal terminados",
-                    "description": "Hay cadenas de texto o f-strings mal cerrados.",
-                    "command": "Buscar y corregir comillas no cerradas en el archivo",
-                }
-            )
+            solutions.append({
+                "title": "Corregir strings mal terminados",
+                "description": "Hay cadenas de texto o f-strings mal cerrados.",
+                "command": "Buscar y corregir comillas no cerradas en el archivo",
+            })
 
         # Soluciones generales
-        solutions.extend(
-            [
-                {
-                    "title": "Verificar estructura del módulo",
-                    "description": "Asegurar que todos los archivos requeridos existen.",
-                    "command": f"ls -la rexus/modules/{self.module_name}/",
-                },
-                {
-                    "title": "Ejecutar tests del módulo",
-                    "description": "Verificar que el módulo pasa todas las pruebas.",
-                    "command": f"python -m pytest tests/{self.module_name}/ -v",
-                },
-                {
-                    "title": "Reiniciar la aplicación",
-                    "description": "A veces un reinicio puede resolver problemas temporales.",
-                    "command": "Reiniciar Rexus.app",
-                },
-            ]
-        )
+        solutions.extend([
+            {
+                "title": "Verificar estructura del módulo",
+                "description": "Asegurar que todos los archivos requeridos existen.",
+                "command": f"ls -la rexus/modules/{self.module_name}/",
+            },
+            {
+                "title": "Ejecutar tests del módulo",
+                "description": "Verificar que el módulo pasa todas las pruebas.",
+                "command": f"python -m pytest tests/{self.module_name}/ -v",
+            },
+            {
+                "title": "Reiniciar la aplicación",
+                "description": "A veces un reinicio puede resolver problemas temporales.",
+                "command": "Reiniciar Rexus.app",
+            },
+        ])
 
         return solutions
 
     def create_action_buttons(self, parent_layout):
         """Crea los botones de acción."""
+        if not PYQT_AVAILABLE:
+            return
+
         buttons_layout = QHBoxLayout()
 
         # Botón de reintentar
@@ -138,18 +275,9 @@ import traceback
         """Ejecuta correcciones automáticas."""
         try:
             # Aquí iría la lógica de corrección automática
-            from rexus.utils.dialogs import show_info
-
-            show_info(
-                ,
-                f"Ejecutando correcciones automáticas para el módulo {self.module_name}...\n\n"
-                "Esto puede tardar unos momentos.",
-            )
+            logger.info(f"Ejecutando correcciones automáticas para el módulo {self.module_name}")
 
             # Ejecutar scripts de corrección
-            import os
-            import subprocess
-
             # Cambiar al directorio raíz
             os.chdir(Path(__file__).parent.parent.parent)
 
@@ -158,31 +286,27 @@ import traceback
                 [sys.executable, "corregir_decoradores.py"],
                 capture_output=True,
                 text=True,
+                shell=False,
+                check=False
             )
 
             # Ejecutar corrección de sintaxis
             result2 = subprocess.run(
-                [sys.executable, "corregir_sintaxis.py"], capture_output=True, text=True
+                [sys.executable, "corregir_sintaxis.py"],
+                capture_output=True,
+                text=True,
+                shell=False,
+                check=False
             )
 
             if result1.returncode == 0 and result2.returncode == 0:
-                show_info(
-                    "Éxito",
-                    "Correcciones automáticas completadas. Reintentando carga del módulo...",
-                )
+                logger.info("Correcciones automáticas completadas")
                 self.retry_requested.emit(self.module_name)
             else:
-                from rexus.utils.dialogs import show_error
-
-                show_error(
-                    ,
-                    f"Algunas correcciones fallaron:\n{result1.stderr}\n{result2.stderr}",
-                )
+                logger.error(f"Algunas correcciones fallaron: {result1.stderr} {result2.stderr}")
 
         except Exception as e:
-            from rexus.utils.dialogs import show_error
-
-            show_error(, f"Error ejecutando correcciones automáticas: {e}")
+            logger.error(f"Error ejecutando correcciones automáticas: {e}")
 
     def report_error(self):
         """Genera un reporte detallado del error."""
@@ -215,22 +339,15 @@ ARCHIVOS INVOLUCRADOS:
             with open(report_file, "w", encoding="utf-8") as f:
                 f.write(report_content)
 
-            from rexus.utils.dialogs import show_info
-
-            show_info(
-                ,
-                f"Reporte de error guardado en:\n{report_file.absolute()}",
-            )
+            logger.info(f"Reporte de error guardado en: {report_file.absolute()}")
 
         except Exception as e:
-            from rexus.utils.dialogs import show_error
-
-            show_error(, f"Error generando reporte: {e}")
+            logger.error(f"Error generando reporte: {e}")
 
 
 def create_diagnostic_widget(
-    module_name: str, error: Exception, traceback_str: str = None
-) -> DiagnosticWidget:
+    module_name: str, error: Exception, traceback_str: str | None = None
+):
     """
     Función helper para crear un widget de diagnóstico.
 

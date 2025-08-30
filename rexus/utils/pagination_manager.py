@@ -11,6 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import math
+import re
 from typing import Dict, List, Any, Optional, Callable, Tuple
 from dataclasses import dataclass
 
@@ -52,6 +53,10 @@ class PaginationManager:
             table_name: Nombre de la tabla principal
             db_connection: Conexión a la base de datos
         """
+        # Validar nombre de tabla
+        if not re.match(r'^[a-zA-Z_]\w*$', table_name):
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
+        
         self.table_name = table_name
         self.db_connection = db_connection
         self.default_page_size = 50
@@ -148,7 +153,7 @@ search_term: str = "",
             cursor = self.db_connection.cursor()
 
             # Construir query de conteo
-            base_query = f"SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1"
+            base_query = f"SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1"  # nosec B608
             params = []
 
             # Agregar búsqueda
@@ -301,7 +306,7 @@ page_size,
             base_query = f"""
                 SELECT * FROM {self.table_name}
                 WHERE activo = 1
-            """
+            """  # nosec B608
             params = []
 
             # Agregar búsqueda

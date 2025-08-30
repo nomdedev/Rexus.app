@@ -34,8 +34,14 @@ class DatabaseManager:
             self.is_connected = True
             logger.info(f"Conexión establecida con BD: {self.db_path}")
             return True
+        except sqlite3.Error as e:
+            logger.error(f"Error de SQLite conectando a BD {self.db_path}: {e}", exc_info=True)
+            return False
+        except OSError as e:
+            logger.error(f"Error de sistema de archivos conectando a BD {self.db_path}: {e}", exc_info=True)
+            return False
         except Exception as e:
-            logger.error(f"Error conectando a BD: {e}")
+            logger.error(f"Error inesperado conectando a BD {self.db_path}: {e}", exc_info=True)
             return False
     
     def disconnect(self) -> None:
@@ -44,28 +50,45 @@ class DatabaseManager:
             if self.connection:
                 self.connection.close()
                 self.is_connected = False
-                logger.info("Conexión con BD cerrada")
+                logger.info("Conexión con BD cerrada exitosamente")
+        except sqlite3.Error as e:
+            logger.error(f"Error de SQLite cerrando conexión: {e}", exc_info=True)
         except Exception as e:
-            logger.error(f"Error cerrando conexión: {e}")
+            logger.error(f"Error inesperado cerrando conexión: {e}", exc_info=True)
     
     def execute_query(self, query: str, params: tuple = (), database: str = None) -> List[Dict]:
         """Ejecuta una consulta y retorna resultados."""
         try:
             if not self.is_connected:
                 self.connect()
-            
+
             cursor = self.connection.cursor()
             cursor.execute(query, params)
-            
+
             if query.strip().upper().startswith('SELECT'):
                 rows = cursor.fetchall()
                 return [dict(row) for row in rows]
             else:
                 self.connection.commit()
                 return [{"affected_rows": cursor.rowcount}]
-                
+
+        except sqlite3.OperationalError as e:
+            logger.error(f"Error operacional de SQLite ejecutando query '{query[:50]}...': {e}", exc_info=True)
+            if self.connection:
+                self.connection.rollback()
+            return []
+        except sqlite3.IntegrityError as e:
+            logger.error(f"Error de integridad de SQLite ejecutando query '{query[:50]}...': {e}", exc_info=True)
+            if self.connection:
+                self.connection.rollback()
+            return []
+        except sqlite3.Error as e:
+            logger.error(f"Error de SQLite ejecutando query '{query[:50]}...': {e}", exc_info=True)
+            if self.connection:
+                self.connection.rollback()
+            return []
         except Exception as e:
-            logger.error(f"Error ejecutando query: {e}")
+            logger.error(f"Error inesperado ejecutando query '{query[:50]}...': {e}", exc_info=True)
             if self.connection:
                 self.connection.rollback()
             return []
@@ -138,7 +161,13 @@ class DatabaseManager:
             
             for table in tables:
                 table_name = table['name']
-                count_result = self.execute_query(f"SELECT COUNT(*) as count FROM {table_name}")
+                # Validar nombre de tabla (de sqlite_master, pero por seguridad)
+                import re
+                if not re.match(r'^[a-zA-Z_]\w*$', table_name):
+                    logger.warning(f"Nombre de tabla inválido omitido: {table_name}")
+                    continue
+                    
+                count_result = self.execute_query(f"SELECT COUNT(*) as count FROM {table_name}")  # nosec B608
                 row_count = count_result[0]['count'] if count_result else 0
                 
                 stats['tables'].append({
@@ -171,3 +200,113 @@ def init_database_manager(db_path: str = None) -> DatabaseManager:
     global _database_manager
     _database_manager = DatabaseManager(db_path)
     return _database_manager
+
+
+# ===== DEPENDENCY INJECTION FACTORY =====
+
+class DatabaseManagerFactory:
+    """
+    Factory para crear instancias de DatabaseManager con Dependency Injection.
+
+    Esta clase reemplaza el patrón Singleton y permite:
+    - Mejor testabilidad
+    - Inyección de dependencias
+    - Configuración flexible
+    - Manejo de múltiples conexiones
+    """
+
+    _instances: Dict[str, DatabaseManager] = {}
+
+    @classmethod
+    def create_manager(cls, db_path: str, name: str = "default") -> DatabaseManager:
+        """
+        Crea o retorna una instancia de DatabaseManager.
+
+        Args:
+            db_path: Ruta a la base de datos
+            name: Nombre identificador de la instancia
+
+        Returns:
+            Instancia de DatabaseManager
+        """
+        if name not in cls._instances:
+            cls._instances[name] = DatabaseManager(db_path)
+
+        return cls._instances[name]
+
+    @classmethod
+    def get_manager(cls, name: str = "default") -> DatabaseManager:
+        """
+        Obtiene una instancia existente de DatabaseManager.
+
+        Args:
+            name: Nombre identificador de la instancia
+
+        Returns:
+            Instancia de DatabaseManager
+
+        Raises:
+            KeyError: Si la instancia no existe
+        """
+        if name not in cls._instances:
+            raise KeyError(f"DatabaseManager '{name}' no encontrado. Use create_manager() primero.")
+
+        return cls._instances[name]
+
+    @classmethod
+    def close_manager(cls, name: str = "default") -> None:
+        """
+        Cierra y elimina una instancia de DatabaseManager.
+
+        Args:
+            name: Nombre identificador de la instancia
+        """
+        if name in cls._instances:
+            cls._instances[name].disconnect()
+            del cls._instances[name]
+
+    @classmethod
+    def close_all(cls) -> None:
+        """Cierra todas las instancias de DatabaseManager."""
+        for name, manager in cls._instances.items():
+            try:
+                manager.disconnect()
+            except Exception as e:
+                logger.warning(f"Error cerrando DatabaseManager '{name}': {e}")
+
+        cls._instances.clear()
+
+    @classmethod
+    def list_managers(cls) -> List[str]:
+        """Lista los nombres de todas las instancias activas."""
+        return list(cls._instances.keys())
+
+
+# ===== CONTEXT MANAGER PARA DATABASEMANAGER =====
+
+class DatabaseManagerContext:
+    """
+    Context manager para DatabaseManager que asegura limpieza automática.
+
+    Uso:
+        with DatabaseManagerContext(db_path) as db:
+            db.execute_query("SELECT * FROM users")
+    """
+
+    def __init__(self, db_path: str, name: str = None):
+        self.db_path = db_path
+        self.name = name or f"context_{id(self)}"
+        self.manager = None
+
+    def __enter__(self) -> DatabaseManager:
+        self.manager = DatabaseManagerFactory.create_manager(self.db_path, self.name)
+        return self.manager
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.manager:
+            try:
+                self.manager.disconnect()
+            except Exception as e:
+                logger.warning(f"Error cerrando DatabaseManager en context: {e}")
+            finally:
+                DatabaseManagerFactory.close_manager(self.name)

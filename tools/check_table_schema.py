@@ -6,12 +6,18 @@ Compara con lo que el código espera encontrar
 
 import sys
 import os
+import re
 sys.path.append(os.path.abspath('.'))
 
 from rexus.core.database import get_inventario_connection
 
 def check_table_schema(table_name: str):
     """Verifica el esquema de una tabla específica"""
+    # Validar nombre de tabla
+    if not re.match(r'^[a-zA-Z_]\w*$', table_name):
+        print(f"ERROR: Nombre de tabla inválido: {table_name}")
+        return
+    
     try:
         conn = get_inventario_connection()
         cursor = conn.cursor()
@@ -57,14 +63,15 @@ def check_table_schema(table_name: str):
             print(f"  - {name}: {dtype}{length_str} {nullable_str}{default_str}")
         
         # Obtener algunos registros de ejemplo para ver datos reales
-        cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+        # Usar consulta segura con validación de nombre de tabla
+        cursor.execute(f"SELECT COUNT(*) FROM [{table_name}]")  # nosec B608
         total_records = cursor.fetchone()[0]
         print(f"\nTotal de registros: {total_records}")
         
         if total_records > 0:
-            cursor.execute(f"SELECT TOP 3 * FROM {table_name}")
+            cursor.execute(f"SELECT TOP 3 * FROM [{table_name}]")  # nosec B608
             sample_records = cursor.fetchall()
-            print(f"\nMuestra de datos (primeros 3 registros):")
+            print("\nMuestra de datos (primeros 3 registros):")
             
             # Get column names for display
             column_names = [desc[0] for desc in cursor.description]

@@ -8,11 +8,70 @@ import hashlib
 import logging
 import re
 import secrets
-                    except (ValueError, TypeError, AttributeError, UnicodeDecodeError) as e:
-            # ValueError: hash mal formateado
-            # TypeError: tipo de dato incorrecto
-            # AttributeError: objeto None o sin atributos
-            # UnicodeDecodeError: error de codificación
+from typing import Optional, Dict, Any
+
+
+class SecurityUtils:
+    """
+    Utilidades de seguridad para Rexus.app
+    """
+
+    @staticmethod
+    def hash_password(password: str, salt: Optional[str] = None) -> str:
+        """
+        Hashea una contraseña usando PBKDF2
+
+        Args:
+            password: Contraseña a hashear
+            salt: Salt opcional, se genera uno si no se proporciona
+
+        Returns:
+            str: Hash de la contraseña en formato salt:hash
+        """
+        if not password:
+            raise ValueError("La contraseña no puede estar vacía")
+
+        if salt is None:
+            salt = secrets.token_hex(16)
+
+        # Usar PBKDF2 con SHA-256
+        hash_obj = hashlib.pbkdf2_hmac(
+            'sha256',
+            password.encode('utf-8'),
+            salt.encode('utf-8'),
+            100000  # Número de iteraciones
+        )
+
+        return f"{salt}:{hash_obj.hex()}"
+
+    @staticmethod
+    def verify_password(password: str, hashed_password: str) -> bool:
+        """
+        Verifica una contraseña contra su hash
+
+        Args:
+            password: Contraseña a verificar
+            hashed_password: Hash almacenado en formato salt:hash
+
+        Returns:
+            bool: True si la contraseña es correcta
+        """
+        try:
+            salt, stored_hash = hashed_password.split(':', 1)
+
+            # Calcular hash de la contraseña proporcionada
+            computed_hash = hashlib.pbkdf2_hmac(
+                'sha256',
+                password.encode('utf-8'),
+                salt.encode('utf-8'),
+                100000
+            ).hex()
+
+            # Comparación segura contra timing attacks
+            return secrets.compare_digest(computed_hash, stored_hash)
+
+        except (ValueError, TypeError, AttributeError, UnicodeDecodeError):
+            # Error en verificación de contraseña
             return False
 
     @staticmethod
@@ -47,10 +106,7 @@ import secrets
         ]
 
         for pattern in script_patterns:
-            sanitized = re.sub(pattern,
-"",
-                sanitized,
-                flags=re.IGNORECASE | re.DOTALL)
+            sanitized = re.sub(pattern, "", sanitized, flags=re.IGNORECASE | re.DOTALL)
 
         return sanitized.strip()
 
@@ -77,7 +133,7 @@ import secrets
         return secrets.token_urlsafe(length)
 
     @staticmethod
-    def validate_password_strength(password: str) -> dict:
+    def validate_password_strength(password: str) -> Dict[str, Any]:
         """Valida la fortaleza de una contraseña"""
         result = {"valid": False, "score": 0, "issues": []}
 
@@ -114,6 +170,56 @@ import secrets
         result["valid"] = result["score"] >= 4
         return result
 
+    @staticmethod
+    def generate_secure_filename(original_filename: str) -> str:
+        """
+        Genera un nombre de archivo seguro
+
+        Args:
+            original_filename: Nombre original del archivo
+
+        Returns:
+            str: Nombre seguro para el archivo
+        """
+        if not original_filename:
+            return SecurityUtils.generate_token(16)
+
+        # Extraer extensión
+        parts = original_filename.rsplit('.', 1)
+        if len(parts) == 2:
+            name, ext = parts
+            # Sanitizar nombre y extensión
+            safe_name = re.sub(r'[^\w\-_\.]', '_', name)
+            safe_ext = re.sub(r'[^\w]', '', ext)
+            return f"{safe_name}.{safe_ext}"
+        else:
+            # Sin extensión
+            safe_name = re.sub(r'[^\w\-_]', '_', original_filename)
+            return safe_name
+
+    @staticmethod
+    def validate_file_type(filename: str, allowed_extensions: list) -> bool:
+        """
+        Valida que el tipo de archivo sea permitido
+
+        Args:
+            filename: Nombre del archivo
+            allowed_extensions: Lista de extensiones permitidas
+
+        Returns:
+            bool: True si el tipo es permitido
+        """
+        if not filename or not allowed_extensions:
+            return False
+
+        # Extraer extensión
+        parts = filename.rsplit('.', 1)
+        if len(parts) != 2:
+            return False
+
+        ext = parts[1].lower()
+        return ext in [e.lower().lstrip('.') for e in allowed_extensions]
+
 
 def get_security_logger():
     """Obtiene logger configurado para eventos de seguridad"""
@@ -136,3 +242,7 @@ def log_security_event(event_type: str, details: str, user: Optional[str] = None
     if user:
         message += f" | Usuario: {user}"
     logger.info(message)
+
+
+# Instancia global para uso fácil
+security_utils = SecurityUtils()

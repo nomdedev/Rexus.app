@@ -40,7 +40,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 # PyQt6 imports
 from PyQt6.QtCore import Qt
@@ -113,7 +113,7 @@ from rexus.ui.components.theme_manager import ThemeManager
 
 
 def initialize_security_manager():
-    """Inicializa el sistema de seguridad"""
+    # Inicializa el sistema de seguridad
     try:
         from rexus.core.database import UsersDatabaseConnection
         from rexus.core.security import init_security_manager
@@ -140,7 +140,7 @@ def initialize_security_manager():
 
 
 class SimpleSecurityManager:
-    """Sistema de seguridad simple para fallback"""
+    # Sistema de seguridad simple para fallback
 
     def __init__(self):
         self.current_user_data = None
@@ -151,7 +151,7 @@ class SimpleSecurityManager:
         self._load_secure_credentials()
 
     def _load_secure_credentials(self):
-        """Carga credenciales desde variables de entorno de forma segura"""
+        # Carga credenciales desde variables de entorno de forma segura
         from rexus.utils.security import SecurityUtils
 
         # Solo cargar si está en modo desarrollo y se especifica explícitamente
@@ -179,7 +179,7 @@ class SimpleSecurityManager:
             self.users = {}
             logger.info("[SIMPLE_AUTH] Modo producción - sin usuarios fallback")
     def login(self, username: str, password: str) -> bool:
-        """Autenticación segura con hashing"""
+        # Autenticación segura con hashing
         logger.info("[SIMPLE_AUTH] Intentando login: usuario='%s'", username)
 
         # Verificar si hay usuarios disponibles
@@ -215,7 +215,7 @@ class SimpleSecurityManager:
             return False
 
     def get_current_role(self) -> str:
-        """Obtiene el rol actual"""
+        # Obtiene el rol actual
         return (
             self.current_user_data.get("rol", "USUARIO")
             if self.current_user_data
@@ -223,7 +223,7 @@ class SimpleSecurityManager:
         )
 
     def get_current_user(self) -> dict:
-        """Obtiene datos del usuario actual"""
+        # Obtiene datos del usuario actual
         return (
             self.current_user_data
             if self.current_user_data
@@ -231,21 +231,21 @@ class SimpleSecurityManager:
         )
 
     def has_permission(self, permission: str, module: str | None = None) -> bool:
-        """Verifica permisos - admin tiene todos"""
+        # Verifica permisos - admin tiene todos
         return bool(self.current_user_data and \
             self.current_user_data.get("rol") == "ADMIN")
 
     def log_security_event(
         self, user_id: int, accion: str, modulo: str | None = None, detalles: str | None = None
     ):
-        """Log simple de eventos"""
+        # Log simple de eventos
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(
             f"[SECURITY_LOG] {timestamp} - Usuario:{user_id} - Acción:{accion} - Módulo:{modulo} - Detalles:{detalles}"
         )
 
     def diagnose_permissions(self) -> dict:
-        """Diagnóstica el estado de permisos del usuario actual"""
+        # Diagnóstica el estado de permisos del usuario actual
         return {
             "has_admin_access": self.current_role == "ADMIN",
             "current_user": self.current_user_data.get("username")
@@ -295,7 +295,7 @@ class MainWindow(QMainWindow):
         self._init_ui()
     
     def _init_theme_manager(self):
-        """Inicializa el gestor de temas."""
+        # Inicializa el gestor de temas.
         try:
             self.theme_manager = ThemeManager(self)
             self.theme_manager.apply_theme()  # Aplicar tema por defecto
@@ -305,7 +305,7 @@ class MainWindow(QMainWindow):
             self.theme_manager = None
     
     def _init_dashboard_controller(self):
-        """Inicializa el controlador del dashboard."""
+        # Inicializa el controlador del dashboard.
         try:
             # Crear controlador del dashboard sin db_manager por ahora
             self.dashboard_controller = DashboardController(None, self)
@@ -315,7 +315,7 @@ class MainWindow(QMainWindow):
             self.dashboard_controller = None
     
     def _init_executive_dashboard(self):
-        """Inicializa el dashboard ejecutivo."""
+        # Inicializa el dashboard ejecutivo.
         try:
             from rexus.ui.executive_dashboard import get_dashboard_manager
             self.executive_dashboard_manager = get_dashboard_manager()
@@ -325,7 +325,7 @@ class MainWindow(QMainWindow):
             self.executive_dashboard_manager = None
 
     def _init_styles(self):
-        """Inicializa y aplica el sistema de estilos."""
+        # Inicializa y aplica el sistema de estilos.
         try:
             from rexus.ui.style_manager import StyleManager
 
@@ -402,7 +402,7 @@ class MainWindow(QMainWindow):
             """)
 
     def _create_sidebar(self, main_layout):
-        """Crea la barra lateral con módulos"""
+        # Crea la barra lateral con módulos
         sidebar = QFrame()
         sidebar.setFixedWidth(250)
         sidebar.setStyleSheet("""
@@ -563,7 +563,7 @@ class MainWindow(QMainWindow):
     def _create_module_button(
         self, emoji: str, nombre: str, descripcion: str
     ) -> QPushButton:
-        """Crea un botón de módulo estilizado"""
+        # Crea un botón de módulo estilizado
         btn = QPushButton()
         btn.setText(f"{emoji}  {nombre}")
         btn.setToolTip(descripcion)
@@ -602,7 +602,7 @@ QPushButton:pressed {
     def _create_disabled_module_button(
         self, emoji: str, nombre: str, descripcion: str
     ) -> QPushButton:
-        """Crea un botón de módulo deshabilitado para módulos sin permisos"""
+        # Crea un botón de módulo deshabilitado para módulos sin permisos
         btn = QPushButton()
         btn.setText(f"{emoji}  {nombre}")
         btn.setToolTip(descripcion)
@@ -631,7 +631,7 @@ QPushButton:disabled {
         return btn
 
     def _create_main_content(self, main_layout):
-        """Crea el área de contenido principal"""
+        # Crea el área de contenido principal
         content_area = QFrame()
         content_area.setStyleSheet("""
             QFrame {
@@ -660,7 +660,7 @@ QPushButton:disabled {
         main_layout.addWidget(content_area)
 
     def _create_dashboard(self):
-        """Crea el dashboard principal - RENOVADO COMPLETAMENTE"""
+        # Crea el dashboard principal - RENOVADO COMPLETAMENTE
         dashboard = QWidget()
         dashboard.setStyleSheet("""
             QWidget {
@@ -691,7 +691,7 @@ QPushButton:disabled {
         self.content_stack.addWidget(dashboard)
 
     def _create_premium_dashboard(self):
-        """Crea el dashboard moderno con widgets especializados."""
+        # Crea el dashboard moderno con widgets especializados.
         try:
             if self.dashboard_controller:
                 dashboard = self.dashboard_controller.get_view()
@@ -707,7 +707,7 @@ QPushButton:disabled {
             self._create_dashboard()  # Fallback seguro
 
     def _create_simple_header(self):
-        """Header limpio y compacto"""
+        # Header limpio y compacto
         from datetime import datetime
 
         header = QWidget()
@@ -748,7 +748,7 @@ QPushButton:disabled {
         return header
 
     def _create_stats_grid(self):
-        """Grid de estadísticas principales"""
+        # Grid de estadísticas principales
         stats_widget = QWidget()
         stats_widget.setStyleSheet("""
             QWidget {
@@ -791,7 +791,7 @@ QPushButton:disabled {
         return stats_widget
 
     def _create_simple_stat_card(self, label, value, color):
-        """Tarjeta de estadística simple"""
+        # Tarjeta de estadística simple
         card = QFrame()
         card.setStyleSheet(f"""
             QFrame {{
@@ -838,7 +838,7 @@ QPushButton:disabled {
         return card
 
     def _create_simple_quick_access(self):
-        """Acceso rápido minimalista"""
+        # Acceso rápido minimalista
         quick_widget = QWidget()
         quick_widget.setStyleSheet("""
             QWidget {
@@ -899,7 +899,7 @@ QPushButton:disabled {
         return quick_widget
 
     def _create_simple_footer(self):
-        """Footer minimalista"""
+        # Footer minimalista
         footer = QWidget()
         footer.setFixedHeight(40)
         footer.setStyleSheet("""
@@ -937,7 +937,7 @@ QPushButton:disabled {
         return footer
 
     def _create_dashboard_header(self):
-        """Crea el header del dashboard moderno y limpio"""
+        # Crea el header del dashboard moderno y limpio
         from datetime import datetime
 
         header_widget = QWidget()
@@ -1012,7 +1012,7 @@ QPushButton:disabled {
         return header_widget
 
     def _create_left_dashboard_column(self):
-        """Crea la columna izquierda con estadísticas y KPIs"""
+        # Crea la columna izquierda con estadísticas y KPIs
         left_widget = QWidget()
         left_layout = QVBoxLayout(left_widget)
 
@@ -1027,7 +1027,7 @@ QPushButton:disabled {
         return left_widget
 
     def _create_right_dashboard_column(self):
-        """Crea la columna derecha con acceso rápido"""
+        # Crea la columna derecha con acceso rápido
         right_widget = QWidget()
         right_layout = QVBoxLayout(right_widget)
 
@@ -1042,7 +1042,7 @@ QPushButton:disabled {
         return right_widget
 
     def _create_kpi_section(self):
-        """Crea la sección de KPIs principales"""
+        # Crea la sección de KPIs principales
         kpi_widget = QWidget()
         kpi_layout = QVBoxLayout(kpi_widget)
 
@@ -1091,7 +1091,7 @@ title_text,
         return kpi_widget
 
     def _create_modern_kpi_card(self, icon, title, value, color, subtitle):
-        """Crea una tarjeta KPI moderna y limpia"""
+        # Crea una tarjeta KPI moderna y limpia
         card = QFrame()
         card.setStyleSheet(f"""
             QFrame {{
@@ -1151,7 +1151,7 @@ title_text,
         return card
 
     def _create_activity_section(self):
-        """Crea la sección de actividad reciente"""
+        # Crea la sección de actividad reciente
         activity_widget = QWidget()
         activity_layout = QVBoxLayout(activity_widget)
 
@@ -1199,7 +1199,7 @@ text,
         return activity_widget
 
     def _create_activity_item(self, icon, text, time, color):
-        """Crea un elemento de actividad individual"""
+        # Crea un elemento de actividad individual
         item_widget = QWidget()
         item_widget.setFixedHeight(48)
         item_layout = QHBoxLayout(item_widget)
@@ -1261,7 +1261,7 @@ text,
         return item_widget
 
     def _create_quick_access_section(self):
-        """Crea la sección de acceso rápido"""
+        # Crea la sección de acceso rápido
         quick_widget = QWidget()
         quick_layout = QVBoxLayout(quick_widget)
 
@@ -1307,7 +1307,7 @@ text,
         return quick_widget
 
     def _create_quick_access_button(self, icon, name, module_key):
-        """Crea un botón de acceso rápido"""
+        # Crea un botón de acceso rápido
         button = QPushButton(f"{icon} {name}")
         button.setFixedHeight(40)
         button.setStyleSheet("""
@@ -1336,7 +1336,7 @@ text,
         return button
 
     def _navigate_to_module(self, module_name):
-        """Navega a un módulo específico"""
+        # Navega a un módulo específico
         try:
             # Buscar el módulo en la lista y navegar directamente
             for modulo in self.modulos_permitidos:
@@ -1347,11 +1347,11 @@ text,
             logger.error(f"Error navegando a módulo {module_name}: {e}")
 
     def cargar_modulo(self, module_name):
-        """Carga un módulo específico - método requerido por PremiumDashboard."""
+        # Carga un módulo específico - método requerido por PremiumDashboard.
         self._navigate_to_module(module_name)
     
     def toggle_theme(self):
-        """Alterna entre tema claro y oscuro."""
+        # Alterna entre tema claro y oscuro.
         if self.theme_manager:
             self.theme_manager.toggle_theme()
             current_theme = self.theme_manager.get_current_theme()
@@ -1362,11 +1362,11 @@ text,
                 self.dashboard_controller.actualizar_dashboard_manual()
     
     def abrir_modulo(self, modulo_nombre):
-        """Abre un módulo desde el dashboard controller."""
+        # Abre un módulo desde el dashboard controller.
         self.show_module(modulo_nombre)
 
     def _create_notifications_section(self):
-        """Crea la sección de notificaciones"""
+        # Crea la sección de notificaciones
         notif_widget = QWidget()
         notif_layout = QVBoxLayout(notif_widget)
 
@@ -1410,7 +1410,7 @@ text,
         return notif_widget
 
     def _create_notification_item(self, icon, text, notif_type):
-        """Crea un elemento de notificación"""
+        # Crea un elemento de notificación
         item = QWidget()
         item.setFixedHeight(44)
         item_layout = QHBoxLayout(item)
@@ -1467,7 +1467,7 @@ text,
         return item
 
     def _create_dashboard_footer(self):
-        """Crea el footer del dashboard"""
+        # Crea el footer del dashboard
         footer = QWidget()
         footer_layout = QHBoxLayout(footer)
 
@@ -1567,7 +1567,7 @@ text,
 
         # Función de normalización mejorada
         def normalize_module_name(name):
-            """Normaliza nombre de módulo para evitar problemas de tildes/capitalización"""
+            # Normaliza nombre de módulo para evitar problemas de tildes/capitalización
             replacements = {
                 "á": "a",
                 "é": "e",
@@ -1607,7 +1607,7 @@ text,
             return self._create_fallback_module(module_name, f"Módulo {module_name} no implementado o no encontrado")
 
     def _create_administracion_module(self) -> QWidget:
-        """Crea el módulo de administración usando la vista real"""
+        # Crea el módulo de administración usando la vista real
         try:
             import importlib
             administracion_view = importlib.import_module('rexus.modules.12_administracion.view')
@@ -1620,7 +1620,7 @@ text,
             return self._create_fallback_module("Administración", str(e))
 
     def _create_inventario_module(self) -> QWidget:
-        """Crea el módulo de inventario usando el gestor robusto de módulos"""
+        # Crea el módulo de inventario usando el gestor robusto de módulos
         try:
             import importlib
             from rexus.core.database import InventarioDatabaseConnection
@@ -1663,7 +1663,7 @@ text,
             return self._create_fallback_module("Inventario", str(e))
 
     def _create_contabilidad_module(self) -> QWidget:
-        """Crea el módulo de contabilidad usando el gestor robusto"""
+        # Crea el módulo de contabilidad usando el gestor robusto
         try:
             import importlib
             from rexus.core.database import InventarioDatabaseConnection
@@ -1712,7 +1712,7 @@ text,
             return self._create_fallback_module("Contabilidad", str(e))
 
     def _create_obras_module(self) -> QWidget:
-        """Crea el módulo de obras usando el gestor robusto"""
+        # Crea el módulo de obras usando el gestor robusto
         try:
             from rexus.core.database import InventarioDatabaseConnection
             import importlib
@@ -1752,7 +1752,7 @@ text,
             return self._create_fallback_module("Obras", str(e))
 
     def _create_configuracion_module(self) -> QWidget:
-        """Crea el módulo de configuración usando los archivos reales"""
+        # Crea el módulo de configuración usando los archivos reales
         try:
             import importlib
             configuracion_controller = importlib.import_module('rexus.modules.10_configuracion.controller')
@@ -1781,11 +1781,11 @@ text,
             return self._create_fallback_module("Configuración", str(e))
 
     def actualizar_usuario_label(self, user_data):
-        """Actualiza la información del usuario"""
+        # Actualiza la información del usuario
         self.user_data = user_data
 
     def _create_vidrios_module(self) -> QWidget:
-        """Crea el módulo de vidrios usando el gestor robusto"""
+        # Crea el módulo de vidrios usando el gestor robusto
         try:
             from rexus.core.database import InventarioDatabaseConnection
             import importlib
@@ -1825,7 +1825,7 @@ text,
             return self._create_fallback_module("Vidrios", str(e))
 
     def _create_herrajes_module(self) -> QWidget:
-        """Crea el módulo de herrajes usando el gestor robusto"""
+        # Crea el módulo de herrajes usando el gestor robusto
         try:
             from rexus.core.database import InventarioDatabaseConnection
             import importlib
@@ -1865,7 +1865,7 @@ text,
             return self._create_fallback_module("Herrajes", str(e))
 
     def _create_pedidos_module(self) -> QWidget:
-        """Crea el módulo de pedidos usando el gestor robusto"""
+        # Crea el módulo de pedidos usando el gestor robusto
         try:
             from rexus.core.database import InventarioDatabaseConnection
             import importlib
@@ -1905,7 +1905,7 @@ text,
             return self._create_fallback_module("Pedidos", str(e))
 
     def _create_logistica_module(self) -> QWidget:
-        """Crea el módulo de logística usando el gestor robusto"""
+        # Crea el módulo de logística usando el gestor robusto
         try:
             from rexus.core.database import InventarioDatabaseConnection
             import importlib
@@ -1945,7 +1945,7 @@ text,
             return self._create_fallback_module("Logística", str(e))
 
     def _create_usuarios_module(self) -> QWidget:
-        """Crea el módulo de usuarios usando el gestor robusto"""
+        # Crea el módulo de usuarios usando el gestor robusto
         try:
             import importlib
             from rexus.core.database import get_users_connection
@@ -1989,7 +1989,7 @@ text,
             return self._create_fallback_module("Usuarios", str(e))
 
     def _create_auditoria_module(self) -> QWidget:
-        """Crea el módulo de auditoría usando el gestor robusto"""
+        # Crea el módulo de auditoría usando el gestor robusto
         try:
             from rexus.core.database import AuditoriaDatabaseConnection
             import importlib
@@ -2029,7 +2029,7 @@ text,
             return self._create_fallback_module("Auditoría", str(e))
 
     def _create_compras_module(self) -> QWidget:
-        """Crea el módulo de compras usando el gestor robusto"""
+        # Crea el módulo de compras usando el gestor robusto
         try:
             from rexus.core.database import InventarioDatabaseConnection
             import importlib
@@ -2069,7 +2069,7 @@ text,
             return self._create_fallback_module("Compras", str(e))
 
     def _create_mantenimiento_module(self) -> QWidget:
-        """Crea el módulo de mantenimiento usando el gestor robusto"""
+        # Crea el módulo de mantenimiento usando el gestor robusto
         try:
             from rexus.core.database import InventarioDatabaseConnection
             import importlib
@@ -2109,7 +2109,7 @@ text,
             return self._create_fallback_module("Mantenimiento", str(e))
 
     def _create_fallback_module(self, module_name: str, error_details: str | None = None) -> QWidget:
-        """Crea un módulo de fallback cuando el real no está disponible"""
+        # Crea un módulo de fallback cuando el real no está disponible
         widget = QWidget()
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(40, 40, 40, 40)
@@ -2175,7 +2175,7 @@ text,
         return widget
 
     def mostrar_mensaje(self, mensaje, tipo="info", duracion=2000):
-        """Muestra un mensaje al usuario"""
+        # Muestra un mensaje al usuario
         if tipo == "error":
             QMessageBox.critical(self, "Error", mensaje)
         else:
@@ -2322,16 +2322,10 @@ def main():
         login_dialog.security_manager = security_manager
 
     def cargar_main_window_con_seguridad(user_data, modulos_permitidos):
-        """
-        Crea y muestra la ventana principal de forma segura.
-        
-        Args:
-            user_data: Datos del usuario autenticado
-            modulos_permitidos: Lista de módulos a los que tiene acceso
-            
-        Returns:
-            MainWindow: Instancia de la ventana principal o None si hay error
-        """
+        # Crea y muestra la ventana principal de forma segura.
+        # Args: user_data: Datos del usuario autenticado
+        # Args: modulos_permitidos: Lista de módulos a los que tiene acceso  
+        # Returns: MainWindow: Instancia de la ventana principal o None si hay error
         try:
             log_info(f"Creando MainWindow para usuario: {user_data['username']}", "security")
             
@@ -2508,3 +2502,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""

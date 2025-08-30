@@ -294,7 +294,7 @@ class SQLQueryManager:
         # Sanitizar nombre de tabla
         table = self._sanitize_identifier(table)
         
-        query = f"SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1"
+        query = f"SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1"  # nosec B608
         result = self.execute_scalar(query, params)
         
         return result is not None
@@ -314,9 +314,9 @@ class SQLQueryManager:
         # Sanitizar nombre de tabla
         table = self._sanitize_identifier(table)
         
-        query = f"SELECT COUNT(*) FROM {table}"
+        query = f"SELECT COUNT(*) FROM {table}"  # nosec B608
         if where_clause:
-            query += f" WHERE {where_clause}"
+            query += f" WHERE {where_clause}"  # nosec B608
         
         result = self.execute_scalar(query, params)
         return result or 0

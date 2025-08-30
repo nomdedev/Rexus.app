@@ -9,6 +9,7 @@ Sistema de optimizaciones automáticas para mejorar el rendimiento de la aplicac
 
 import logging
 import time
+import gc
 from typing import Dict, List, Any
 from datetime import datetime
 from dataclasses import dataclass
@@ -51,21 +52,26 @@ class PerformanceOptimizer:
     def optimize_cache_usage(self) -> OptimizationResult:
         """Optimiza el uso del caché."""
         try:
-            from .cache_manager import get_cache_manager
+            # Intentar importar el cache manager
+            try:
+                from .cache_manager import get_cache_manager
+                cache_manager = get_cache_manager()
+                stats = cache_manager.get_cache_info()
+                hit_rate = stats.get('statistics', {}).get('hit_rate', 0)
 
-            cache_manager = get_cache_manager()
-            stats = cache_manager.get_cache_info()
+                if hit_rate < 60:
+                    # Aumentar tamaño del caché
+                    cache_manager.max_size = min(cache_manager.max_size * 1.5, 5000)
+                    improvement = 15.0
+                    description = f"Caché optimizado. Tamaño aumentado. Hit rate: {hit_rate:.1f}%"
+                else:
+                    improvement = 0.0
+                    description = f"Caché funcionando correctamente. Hit rate: {hit_rate:.1f}%"
 
-            hit_rate = stats.get('statistics', {}).get('hit_rate', 0)
-
-            if hit_rate < 60:
-                # Aumentar tamaño del caché
-                cache_manager.max_size = min(cache_manager.max_size * 1.5, 5000)
-                improvement = 15.0
-                description = f
-            else:
+            except ImportError:
+                # Fallback si no hay cache manager
                 improvement = 0.0
-                description = f"Caché funcionando correctamente. Hit rate: {hit_rate:.1f}%"
+                description = "Cache manager no disponible"
 
             result = OptimizationResult(
                 optimization_type="cache_optimization",
@@ -126,8 +132,6 @@ class PerformanceOptimizer:
     def optimize_memory_usage(self) -> OptimizationResult:
         """Optimiza el uso de memoria."""
         try:
-            import gc
-
             # Ejecutar garbage collection
             objects_before = len(gc.get_objects())
             collected = gc.collect()
@@ -176,8 +180,9 @@ class PerformanceOptimizer:
                 results.append(result)
                 logger.info(f"[OPTIMIZER] {result.optimization_type}: {result.description}")
             except Exception as e:
-            logger.exception(f"[OPTIMIZER] Error en optimización: {e}", exc_info=True)
-            # FIXME: Specify concrete exception types instead of generic Exceptionreturn results
+                logger.exception(f"[OPTIMIZER] Error en optimización: {e}", exc_info=True)
+
+        return results
 
     def get_optimization_report(self) -> Dict[str, Any]:
         """Genera reporte de optimizaciones."""
@@ -191,7 +196,7 @@ class PerformanceOptimizer:
             'total_optimizations': len(self.optimizations_applied),
             'successful_optimizations': len(successful_opts),
             'total_improvement_percent': total_improvement,
-            'average_improvement': total_improvement / len(self.optimizations_applied),
+            'average_improvement': total_improvement / len(self.optimizations_applied) if self.optimizations_applied else 0,
             'optimizations': [
                 {
                     'type': opt.optimization_type,
@@ -254,7 +259,7 @@ if __name__ == "__main__":
 
     # Mostrar reporte
     report = optimizer.get_optimization_report()
-    logger.info(f"\nReporte final:")
+    logger.info("\nReporte final:")
     logger.info(f"Total optimizaciones: {report['total_optimizations']}")
     logger.info(f"Exitosas: {report['successful_optimizations']}")
     logger.info(f"Mejora total: {report['total_improvement_percent']:.1f}%")

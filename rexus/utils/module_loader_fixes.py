@@ -14,34 +14,35 @@ try:
 except ImportError:
     logger = logging.getLogger("module.loader.fixes")
 
+
 class ModuleLoaderFixes:
     """Fixes para métodos de carga faltantes en controladores."""
-    
+
     @staticmethod
     def patch_controller_missing_methods(controller, module_name: str):
         """Agrega métodos de carga faltantes a un controlador."""
-        
+
         method_name = f"cargar_{module_name.lower()}"
-        
+
         if not hasattr(controller, method_name):
             logger.info(f"Agregando método faltante {method_name} a {controller.__class__.__name__}")
-            
+
             # Crear método de carga específico
             def dynamic_load_method():
                 return ModuleLoaderFixes._generic_load_data(controller, module_name)
-            
+
             # Asignar método al controlador
             setattr(controller, method_name, dynamic_load_method)
-    
+
     @staticmethod
     def _generic_load_data(controller, module_name: str) -> bool:
         """Método genérico de carga de datos."""
         try:
             logger.info(f"Cargando datos iniciales para {module_name}")
-            
+
             # Verificar si el modelo tiene método de obtener datos
             if hasattr(controller, 'model') and controller.model:
-                
+
                 # Intentar métodos comunes de obtención de datos
                 data_methods = [
                     f'obtener_{module_name.lower()}',
@@ -50,23 +51,23 @@ class ModuleLoaderFixes:
                     'obtener_todos',
                     'get_all'
                 ]
-                
+
                 for method_name in data_methods:
                     if hasattr(controller.model, method_name):
                         try:
                             data_method = getattr(controller.model, method_name)
                             datos = data_method()
                             logger.info(f"Datos cargados usando {method_name}: {len(datos) if isinstance(datos, list) else 'N/A'} registros")
-                            
+
                             # Actualizar vista si está disponible
                             if hasattr(controller, 'view') and controller.view:
                                 ModuleLoaderFixes._update_view_with_data(controller.view, datos, module_name)
-                            
+
                             return True
                         except Exception as e:
                             logger.warning(f"Error usando método {method_name}: {str(e)}")
                             continue
-                
+
                 # Si no se encuentra método específico, intentar carga de estadísticas
                 if hasattr(controller.model, 'obtener_estadisticas'):
                     try:
@@ -75,13 +76,14 @@ class ModuleLoaderFixes:
                         return True
                     except Exception as e:
                         logger.warning(f"Error cargando estadísticas: {str(e)}")
-            
+
             logger.info(f"Carga de datos completada para {module_name}")
             return True
-            
+
         except Exception as e:
+            logger.error(f"Error en carga genérica de datos: {str(e)}")
             return False
-    
+
     @staticmethod
     def _update_view_with_data(view, datos, module_name: str):
         """Actualiza la vista con los datos cargados."""
@@ -95,7 +97,7 @@ class ModuleLoaderFixes:
                 'refresh_data',
                 'load_data'
             ]
-            
+
             for method_name in update_methods:
                 if hasattr(view, method_name):
                     try:
@@ -107,10 +109,12 @@ class ModuleLoaderFixes:
                     except Exception as e:
                         logger.warning(f"Error actualizando vista con {method_name}: {str(e)}")
                         continue
-            
+
             logger.debug(f"No se encontró método de actualización específico para {module_name}")
-            
+
         except Exception as e:
+            logger.error(f"Error actualizando vista: {str(e)}")
+
 
 # Mapeo de módulos que necesitan patches
 MODULES_NEEDING_PATCHES = {
@@ -124,22 +128,24 @@ MODULES_NEEDING_PATCHES = {
     'inventario': ['cargar_inventario']
 }
 
+
 def apply_module_patches(controller, module_name: str):
     """Aplica patches necesarios a un controlador de módulo."""
-    
+
     module_name_lower = module_name.lower()
-    
+
     if module_name_lower in MODULES_NEEDING_PATCHES:
         methods_needed = MODULES_NEEDING_PATCHES[module_name_lower]
-        
+
         for method_name in methods_needed:
             if not hasattr(controller, method_name):
                 logger.info(f"Aplicando patch: {method_name} para {module_name}")
                 ModuleLoaderFixes.patch_controller_missing_methods(controller, module_name)
 
+
 def patch_all_controllers(controllers_dict: Dict[str, Any]):
     """Aplica patches a todos los controladores en un diccionario."""
-    
+
     for module_name, controller in controllers_dict.items():
         if controller:
             apply_module_patches(controller, module_name)

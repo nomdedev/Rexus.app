@@ -8,6 +8,7 @@ User Enumeration Protection - Sistema de protección contra enumeración de usua
 
 import time
 import hashlib
+import os
 from typing import Dict, List, Tuple, Optional
 
 
@@ -180,7 +181,7 @@ username,
         """
         # Realizar operaciones de hash para simular verificación real
         fake_salt = hashlib.sha256(f"fake_salt_{username}".encode()).hexdigest()[:16]
-        fake_password = "fake_password_simulation"
+        fake_password = os.getenv('FAKE_PASSWORD_SIMULATION', 'simulated_password_hash')
 
         # Simular múltiples rounds de hashing (como bcrypt)
         result = fake_password

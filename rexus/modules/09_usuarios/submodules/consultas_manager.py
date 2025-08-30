@@ -10,7 +10,7 @@ Responsabilidades:
 """
 
 import datetime
-            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger, log_error, log_info, log_warning
@@ -114,7 +114,10 @@ class ConsultasManager:
             return usuarios
 
         except Exception as e:
-            self.    def obtener_usuarios_paginados(
+            logger.error(f"Error obteniendo usuarios: {e}")
+            return []
+
+    def obtener_usuarios_paginados(
         self,
         page: int = 1,
         per_page: int = 20,
@@ -201,7 +204,10 @@ min(100,
             }
 
         except Exception as e:
-            self.    def obtener_usuarios_por_rol(self, rol: str) -> List[Dict[str, Any]]:
+            logger.error(f"Error en paginación: {e}")
+            return {"usuarios": [], "total": 0, "pages": 0}
+
+    def obtener_usuarios_por_rol(self, rol: str) -> List[Dict[str, Any]]:
         """Obtiene usuarios filtrados por rol específico."""
         if not self.db_connection or not rol:
             return []
@@ -230,7 +236,10 @@ min(100,
             return usuarios
 
         except Exception as e:
-            self.    def generar_reporte_seguridad(self) -> Dict[str, Any]:
+            logger.error(f"Error obteniendo usuarios por rol: {e}")
+            return []
+
+    def generar_reporte_seguridad(self) -> Dict[str, Any]:
         """Genera un reporte de seguridad del sistema de usuarios."""
         if not self.db_connection:
             return {}
@@ -305,6 +314,8 @@ min(100,
             return reporte
 
         except Exception as e:
+            logger.error(f"Error generando reporte de seguridad: {e}")
+            return {}
 
     def _calcular_nivel_alerta(self, reporte: Dict[str, Any]) -> str:
         """Calcula el nivel de alerta de seguridad."""

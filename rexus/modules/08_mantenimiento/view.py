@@ -26,7 +26,40 @@ Vista de Mantenimiento - Interfaz de mantenimiento
 
 import logging
 
-                        "EMERGENCIA",
+class MantenimientoDialog(QDialog):
+    def __init__(self, parent=None):
+        """Inicializa el diálogo de mantenimiento."""
+        super().__init__(parent)
+        self.setWindowTitle("Nuevo Mantenimiento")
+        self.setModal(True)
+        self.resize(600, 700)
+
+        # Layout principal
+        layout = QVBoxLayout(self)
+        layout.setSpacing(15)
+        layout.setContentsMargins(20, 20, 20, 20)
+
+        # Título
+        titulo = RexusLabel("Nuevo Mantenimiento", "h2")
+        layout.addWidget(titulo)
+
+        # Formulario
+        form_layout = QFormLayout()
+        form_layout.setSpacing(10)
+
+        # ID de Equipo (obligatorio)
+        self.equipo_id_input = QSpinBox()
+        self.equipo_id_input.setRange(1, 999999)
+        self.equipo_id_input.setValue(0)
+        form_layout.addRow("ID Equipo*:", self.equipo_id_input)
+
+        # Tipo de mantenimiento
+        self.tipo_input = RexusComboBox()
+        self.tipo_input.addItems([
+            "PREVENTIVO",
+            "CORRECTIVO",
+            "PREDICTIVO",
+            "EMERGENCIA",
             "INSPECCION"
         ])
         form_layout.addRow("Tipo*:", self.tipo_input)

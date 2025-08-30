@@ -11,9 +11,8 @@ import time
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-import threading
-import json
+from datetime import datetime
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -118,20 +117,27 @@ class DatabaseOptimizer:
                 
                 for table in tables:
                     try:
-                        # Contar filas
-                        cursor = conn.execute(f"SELECT COUNT(*) FROM {table}")
+                        # Validar nombre de tabla (solo caracteres alfanuméricos y guiones bajos)
+                        if not re.match(r'^[a-zA-Z_]\w*$', table):
+                            logger.warning(f"Nombre de tabla inválido omitido: {table}")
+                            continue
+
+                        # Contar filas usando consulta segura con validación
+                        # Bandit warning B608 suppressed: table name is validated with regex
+                        cursor = conn.execute(f"SELECT COUNT(*) FROM `{table}`")  # nosec B608
                         row_count = cursor.fetchone()[0]
-                        
-                        # Información de la tabla
-                        cursor = conn.execute(f"PRAGMA table_info({table})")
+
+                        # Información de la tabla usando consulta segura con validación
+                        # Bandit warning B608 suppressed: table name is validated with regex
+                        cursor = conn.execute(f"PRAGMA table_info(`{table}`)")  # nosec B608
                         columns = cursor.fetchall()
-                        
+
                         analysis['table_statistics'][table] = {
                             'row_count': row_count,
                             'column_count': len(columns),
                             'columns': [col[1] for col in columns]
                         }
-                        
+
                     except Exception as e:
                         logger.warning(f"Error analizando tabla {table}: {e}")
                         

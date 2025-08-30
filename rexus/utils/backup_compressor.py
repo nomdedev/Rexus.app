@@ -99,6 +99,7 @@ class BackupCompressor:
                     log_file.unlink()
                     compressed_files.append(result)
                 except Exception as e:
+                    pass
 
     def cleanup_old_backups(self, max_backups: int = 10) -> List[str]:
         """Limpia backups antiguos manteniendo solo los más recientes"""
@@ -117,6 +118,7 @@ class BackupCompressor:
                 removed_files.append(str(backup_file))
                 logger.info(f"Backup antiguo eliminado exitosamente: {backup_file.name}")
             except Exception as e:
+                pass
 
     def get_compression_stats(self) -> Dict:
         """Obtiene estadísticas de compresión"""

@@ -332,10 +332,9 @@ class DialogSeguimiento(QDialog):
         condicion = datos_entrega.get("condicion_entrega", "PERFECTA")
         index = self.combo_condicion_entrega.findText(condicion)
         if index >= 0:
-        self.combo_condicion_entrega.setCurrentIndex(index)
+            self.combo_condicion_entrega.setCurrentIndex(index)
 
         self.input_recibido_por.setText(datos_entrega.get("recibido_por", ""))
         self.check_confirmacion.setChecked(datos_entrega.get("confirmacion_recepcion", False))
         self.input_observaciones_entrega.setPlainText(
-        datos_entrega.get("observaciones_entrega", "")
-        )
+            datos_entrega.get("observaciones_entrega", ""))

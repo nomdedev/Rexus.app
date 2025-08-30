@@ -11,12 +11,26 @@ from pathlib import Path
 def test_module_import(module_path, module_name):
     """Prueba importar un módulo específico."""
     print(f"\n🔍 Probando módulo: {module_name}")
-    
-    cmd = f'python -c "import sys; sys.path.append(\'d:/martin/Proyectos\'); from {module_path} import *; print(\'✅ {module_name} importado correctamente\')"'
-    
+
+    # Validar nombres para prevenir command injection
+    import re
+    if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_.]*$', module_path):
+        print(f"❌ {module_name}: NOMBRE DE MÓDULO INVÁLIDO")
+        return False
+
+    if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_.]*$', module_name):
+        print(f"❌ {module_name}: NOMBRE DE MÓDULO INVÁLIDO")
+        return False
+
+    # Usar lista de argumentos en lugar de shell=True para seguridad
+    cmd = [
+        'python', '-c',
+        f"import sys; sys.path.append('d:/martin/Proyectos'); from {module_path} import *; print('✅ {module_name} importado correctamente')"
+    ]
+
     try:
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)
-        
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+
         if result.returncode == 0:
             print(f"✅ {module_name}: IMPORT EXITOSO")
             return True
@@ -24,7 +38,7 @@ def test_module_import(module_path, module_name):
             print(f"❌ {module_name}: ERROR DE IMPORT")
             print(f"   Error: {result.stderr.strip()}")
             return False
-            
+
     except subprocess.TimeoutExpired:
         print(f"⏱️ {module_name}: TIMEOUT")
         return False
@@ -66,7 +80,7 @@ def test_basic_imports():
         resultados.append((module_name, exito))
     
     # Resumen
-    print(f"\n📊 RESUMEN DE IMPORTS")
+    print("\n📊 RESUMEN DE IMPORTS")
     print("=" * 40)
     
     exitosos = sum(1 for _, exito in resultados if exito)
@@ -88,7 +102,7 @@ def test_basic_imports():
 def check_create_table_presence():
     """Verifica que no haya CREATE TABLE en el código."""
     
-    print(f"\n🔍 VERIFICANDO AUSENCIA DE CREATE TABLE")
+    print("\n🔍 VERIFICANDO AUSENCIA DE CREATE TABLE")
     print("-" * 50)
     
     base_path = Path("d:/martin/Proyectos/rexus/modules")
@@ -120,7 +134,7 @@ def check_create_table_presence():
 def check_backup_references():
     """Verifica que no haya referencias a backups en el código."""
     
-    print(f"\n🔍 VERIFICANDO AUSENCIA DE REFERENCIAS A BACKUPS")
+    print("\n🔍 VERIFICANDO AUSENCIA DE REFERENCIAS A BACKUPS")
     print("-" * 50)
     
     base_path = Path("d:/martin/Proyectos/rexus")
@@ -165,7 +179,7 @@ def main():
     backup_refs_ok = check_backup_references()
     
     # Resultado final
-    print(f"\n🏆 RESULTADO FINAL")
+    print("\n🏆 RESULTADO FINAL")
     print("=" * 50)
     
     if imports_ok and create_table_ok and backup_refs_ok:

@@ -490,7 +490,12 @@ class DatabaseManager:
             
             for table in tables:
                 table_name = table['name']
-                count_result = self.execute_query(f"SELECT COUNT(*) as count FROM {table_name}")
+                # Validar nombre de tabla (de sqlite_master, pero por seguridad)
+                if not table_name or not table_name.replace('_', '').replace('-', '').isalnum():
+                    logger.warning(f"Nombre de tabla inválido omitido: {table_name}")
+                    continue
+                    
+                count_result = self.execute_query(f"SELECT COUNT(*) as count FROM `{table_name}`")  # nosec B608
                 row_count = count_result[0]['count'] if count_result else 0
                 
                 stats['tables'].append({
@@ -729,7 +734,7 @@ def main():
     
     results = fixer.fix_critical_files()
     
-    print(f"\n📊 RESULTADOS:")
+    print("\n📊 RESULTADOS:")
     print(f"Total archivos procesados: {results['total_files']}")
     print(f"✅ Archivos corregidos: {len(results['fixed'])}")
     print(f"❌ Archivos con fallas: {len(results['failed'])}")

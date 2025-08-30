@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import re
-            def validacion_direccion(campo, direccion: str) -> Tuple[bool, str]:
+def validacion_direccion(campo, direccion: str) -> Tuple[bool, str]:
     """Validación específica para direcciones."""
     # Manejar None y convertir a string si es necesario
     if direccion is None:

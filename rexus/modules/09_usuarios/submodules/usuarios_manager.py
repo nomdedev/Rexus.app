@@ -10,7 +10,7 @@ Responsabilidades:
 """
 
 import datetime
-            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger, log_error, log_info, log_warning
@@ -193,7 +193,9 @@ class UsuariosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            self.    def obtener_usuario_por_nombre(self, username: str) -> Optional[Dict[str, Any]]:
+            return {"success": False, "mensaje": f"Error creando usuario: {str(e)}"}
+
+    def obtener_usuario_por_nombre(self, username: str) -> Optional[Dict[str, Any]]:
         """Obtiene un usuario por nombre de usuario."""
         if not self.db_connection or not username:
             return None
@@ -223,7 +225,8 @@ class UsuariosManager:
             return usuario
 
         except Exception as e:
-            self.            self.            self.
+            return None
+
     def verificar_unicidad_email(
         self, email: str, excluir_usuario_id: Optional[int] = None
     ) -> bool:
@@ -253,7 +256,9 @@ class UsuariosManager:
             return (result[0] if result else 0) == 0
 
         except Exception as e:
-            self.    def asignar_permiso_usuario(self, usuario_id: int, permiso: str) -> bool:
+            return False
+
+    def asignar_permiso_usuario(self, usuario_id: int, permiso: str) -> bool:
         """Asigna un permiso específico a un usuario."""
         if not self.db_connection or not usuario_id or not permiso:
             return False

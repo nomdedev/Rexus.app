@@ -48,19 +48,21 @@ def fix_imports_in_file(file_path):
 
 def main():
     """Función principal."""
-    print("CORRIGIENDO IMPORTS NUMERADOS EN TESTS")
+    print("CORRIGIENDO IMPORTS NUMERADOS EN REXUS/ Y TESTS")
     print("=" * 50)
     
-    # Encontrar todos los archivos Python en tests/
+    # Encontrar todos los archivos Python en rexus/ y tests/
+    rexus_files = glob.glob("rexus/**/*.py", recursive=True)
     test_files = glob.glob("tests/**/*.py", recursive=True)
+    all_files = rexus_files + test_files
     
     fixed_count = 0
-    for file_path in test_files:
+    for file_path in all_files:
         if fix_imports_in_file(file_path):
             fixed_count += 1
     
-    print(f"\nRESUMEN:")
-    print(f"Archivos procesados: {len(test_files)}")
+    print("\nRESUMEN:")
+    print(f"Archivos procesados: {len(all_files)}")
     print(f"Archivos corregidos: {fixed_count}")
     print("Correccion de imports completada!")
 

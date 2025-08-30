@@ -1,12 +1,3 @@
-"""
-Tool: fix_code_quality (moved from project root)
-"""
-
-def notice():
-    print('Versión operativa: scripts/tools/fix_code_quality.py')
-
-if __name__ == '__main__':
-    notice()
 #!/usr/bin/env python3
 """
 Script automático para corregir problemas de calidad de código detectados por flake8
@@ -19,6 +10,7 @@ import ast
 import subprocess
 from pathlib import Path
 from typing import Set, Dict, List, Tuple
+
 
 class CodeQualityFixer:
     """Corrector automático de problemas de calidad de código"""
@@ -44,167 +36,106 @@ class CodeQualityFixer:
         # 4. Corregir variables no usadas
         self.fix_unused_variables()
 
-        print(f"\n=== RESUMEN ===")
+        print("\n=== RESUMEN ===")
         print(f"Archivos procesados: {self.fixed_files}")
         print(f"Problemas corregidos: {self.issues_fixed}")
 
     def fix_whitespace_issues(self):
-        """Corrige problemas de espacios en blanco (W291, W292, W293)"""
-        print("1. Corrigiendo espacios en blanco...")
+        """Corrige problemas de espacios en blanco"""
+        print("🔧 Corrigiendo espacios en blanco...")
 
-        python_files = list(self.project_root.rglob("*.py"))
-
-        for file_path in python_files:
-            if self._should_skip_file(file_path):
-                continue
-
-            try:
-                with open(file_path,
-'r',
-                    encoding='utf-8',
-                    errors='ignore') as f:
-                    content = f.read()
-
-                original_content = content
-
-                # W291: trailing whitespace
-                content = re.sub(r'[ \t]+$', '', content, flags=re.MULTILINE)
-
-                # W293: blank line contains whitespace
-                content = re.sub(r'^[ \t]+$', '', content, flags=re.MULTILINE)
-
-                # W292: no newline at end of file
-                if content and not content.endswith('\n'):
-                    content += '\n'
-
-                # W391: blank line at end of file
-                content = content.rstrip('\n') + '\n'
-
-                if content != original_content:
-                    with open(file_path, 'w', encoding='utf-8') as f:
-                        f.write(content)
-                    self.issues_fixed += content.count('\n') - original_content.count('\n') + 10  # Aproximado
-
-            except Exception as e:
-                print(f"  Error procesando {file_path}: {e}")
-
-        self.fixed_files += len(python_files)
-        print(f"  OK Espacios en blanco corregidos en {len(python_files)} archivos")
-
-    def fix_unused_imports(self):
-        """Corrige imports no usados (F401)"""
-        print("2. Corrigiendo imports no usados...")
-
-        # Usar autoflake para esto si está disponible
-        try:
-            result = subprocess.run([
-                'python', '-m', 'pip', 'install', 'autoflake', '--user', '--quiet'
-            ], capture_output=True, text=True)
-
-            if result.returncode == 0:
-                # Ejecutar autoflake
-                subprocess.run([
-                    'python', '-m', 'autoflake', '--remove-all-unused-imports',
-                    '--remove-unused-variables', '--in-place', '--recursive', 'rexus/'
-                ], capture_output=True, text=True)
-                self.issues_fixed += 981  # Número reportado de F401
-                print(f"  OK Imports no usados removidos con autoflake")
-            else:
-                print(f"  ⚠ No se pudo instalar autoflake, saltando...")
-
-        except Exception as e:
-            print(f"  ⚠ Error con autoflake: {e}")
-            # Fallback manual para casos críticos
-            self._manual_import_cleanup()
-
-    def _manual_import_cleanup(self):
-        """Limpieza manual de imports obviamente no usados"""
-        print("  → Aplicando limpieza manual de imports...")
-
-        # Patrones de imports claramente no usados
-        unused_patterns = [
-            (r'^import json\s*$', 'json no usado'),
-            (r'^import asyncio\s*$', 'asyncio no usado'),
-            (r'^from typing import Dict,', 'Dict de typing no usado'),
-            (r'^from dataclasses import dataclass,', 'dataclass no usado'),
-        ]
-
-        python_files = list(self.project_root.rglob("*.py"))
-        manual_fixes = 0
+        python_files = self._find_python_files()
 
         for file_path in python_files:
-            if self._should_skip_file(file_path):
-                continue
-
             try:
-                with open(file_path,
-'r',
-                    encoding='utf-8',
-                    errors='ignore') as f:
+                with open(file_path, 'r', encoding='utf-8') as f:
                     lines = f.readlines()
 
+                original_lines = len(lines)
                 new_lines = []
                 file_fixes = 0
 
                 for line in lines:
-                    should_remove = False
-                    for pattern, reason in unused_patterns:
-                        if re.match(pattern, line.strip()):
-                            # Solo remover si realmente no se usa en el archivo
-                            file_content = ''.join(lines)
-                            if 'json.' not in file_content and \
-                                pattern.startswith(r'^import json'):
-                                should_remove = True
-                                file_fixes += 1
-                                break
+                    # Eliminar espacios al final de línea
+                    stripped = line.rstrip()
+                    if stripped != line.rstrip('\n'):
+                        file_fixes += 1
 
-                    if not should_remove:
-                        new_lines.append(line)
+                    # Agregar nueva línea si no existe
+                    if not stripped.endswith('\n') and stripped:
+                        stripped += '\n'
+
+                    new_lines.append(stripped)
+
+                # Eliminar líneas vacías al final
+                while new_lines and new_lines[-1].strip() == '':
+                    new_lines.pop()
+                    file_fixes += 1
 
                 if file_fixes > 0:
                     with open(file_path, 'w', encoding='utf-8') as f:
                         f.writelines(new_lines)
-                    manual_fixes += file_fixes
+                    self.fixed_files += 1
+                    self.issues_fixed += file_fixes
+                    print(f"  ✓ {file_path.name}: {file_fixes} correcciones")
 
             except Exception as e:
-                print(f"    Error en {file_path}: {e}")
+                print(f"  ✗ Error en {file_path.name}: {str(e)}")
 
-        if manual_fixes > 0:
-            self.issues_fixed += manual_fixes
-            print(f"  OK {manual_fixes} imports removidos manualmente")
+    def fix_unused_imports(self):
+        """Corrige imports no usados"""
+        print("🔧 Corrigiendo imports no usados...")
 
-    def fix_long_lines(self):
-        """Corrige líneas muy largas (E501) - casos simples"""
-        print("3. Corrigiendo líneas largas (casos simples)...")
-
-        python_files = list(self.project_root.rglob("*.py"))
-        lines_fixed = 0
+        python_files = self._find_python_files()
 
         for file_path in python_files:
-            if self._should_skip_file(file_path):
-                continue
-
             try:
-                with open(file_path,
-'r',
-                    encoding='utf-8',
-                    errors='ignore') as f:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                tree = ast.parse(content)
+                analyzer = ImportAnalyzer()
+                analyzer.visit(tree)
+
+                unused_imports = analyzer.get_unused_imports()
+
+                if unused_imports:
+                    new_content = self._remove_unused_imports(content, unused_imports)
+
+                    if new_content != content:
+                        with open(file_path, 'w', encoding='utf-8') as f:
+                            f.write(new_content)
+
+                        self.fixed_files += 1
+                        self.issues_fixed += len(unused_imports)
+                        print(f"  ✓ {file_path.name}: {len(unused_imports)} imports removidos")
+
+            except Exception as e:
+                print(f"  ✗ Error en {file_path.name}: {str(e)}")
+
+    def fix_long_lines(self):
+        """Corrige líneas muy largas (implementación básica)"""
+        print("🔧 Corrigiendo líneas largas...")
+
+        python_files = self._find_python_files()
+
+        for file_path in python_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
                     lines = f.readlines()
 
                 new_lines = []
                 file_fixes = 0
 
                 for line in lines:
-                    if len(line) > 79 and \
-                        len(line) < 120:  # Solo líneas moderadamente largas
+                    if len(line) > 79 and len(line) < 120:  # Solo líneas moderadamente largas
                         # Casos simples de división
                         if ' and ' in line and line.count(' and ') == 1:
                             # Partir en 'and'
                             parts = line.split(' and ')
                             if len(parts) == 2:
                                 indent = len(line) - len(line.lstrip())
-                                new_line = f"{parts[0].rstrip()} and \\
-                                    {' ' * (indent + 4)}{parts[1].lstrip()}"
+                                new_line = f"{parts[0].rstrip()} and \\\n                                    {' ' * (indent + 4)}{parts[1].lstrip()}"
                                 new_lines.append(new_line)
                                 file_fixes += 1
                                 continue
@@ -215,7 +146,7 @@ class CodeQualityFixer:
                                 # Función con muchos parámetros
                                 parts = line.split(', ')
                                 if len(parts) >= 4:
-                                    new_line = parts[0] + ',\n' + f"{' ' * (indent + 4)}".join([p.strip() + ',\n' for p in parts[1:-1]]) + f"{' ' * (indent + 4)}{parts[-1]}"
+                                    new_line = parts[0] + ',\\\n' + '\\\n'.join([f"{' ' * (indent + 4)}{p.strip()}" for p in parts[1:-1]]) + f",\\\n{' ' * (indent + 4)}{parts[-1]}"
                                     new_lines.append(new_line)
                                     file_fixes += 1
                                     continue
@@ -225,98 +156,161 @@ class CodeQualityFixer:
                 if file_fixes > 0:
                     with open(file_path, 'w', encoding='utf-8') as f:
                         f.writelines(new_lines)
-                    lines_fixed += file_fixes
+                    self.fixed_files += 1
+                    self.issues_fixed += file_fixes
+                    print(f"  ✓ {file_path.name}: {file_fixes} líneas corregidas")
 
             except Exception as e:
-                print(f"  Error procesando {file_path}: {e}")
-
-        self.issues_fixed += lines_fixed
-        print(f"  OK {lines_fixed} lineas largas corregidas")
+                print(f"  ✗ Error en {file_path.name}: {str(e)}")
 
     def fix_unused_variables(self):
-        """Corrige variables no usadas obvias (F841)"""
-        print("4. Corrigiendo variables no usadas...")
+        """Corrige variables no usadas (implementación básica)"""
+        print("🔧 Corrigiendo variables no usadas...")
 
-        python_files = list(self.project_root.rglob("*.py"))
-        vars_fixed = 0
+        python_files = self._find_python_files()
 
         for file_path in python_files:
-            if self._should_skip_file(file_path):
-                continue
-
             try:
-                with open(file_path,
-'r',
-                    encoding='utf-8',
-                    errors='ignore') as f:
+                with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
 
-                original_content = content
+                tree = ast.parse(content)
+                analyzer = VariableAnalyzer()
+                analyzer.visit(tree)
 
-                # Patrón para variables claramente no usadas con prefijo safe_
-                patterns = [
-                    (r'\n\s*safe_descripcion\s*=\s*[^\n]+', 'safe_descripcion no usado'),
-                    (r'\n\s*safe_codigo\s*=\s*[^\n]+(?=\n\s*#|\n\s*\n|\n\s*[a-z])', 'safe_codigo no usado al final'),
-                ]
+                unused_vars = analyzer.get_unused_variables()
 
-                file_fixes = 0
-                for pattern, description in patterns:
-                    matches = re.findall(pattern, content)
-                    if matches:
-                        # Solo remover si la variable realmente no se usa después
-                        content = re.sub(pattern, '', content)
-                        file_fixes += len(matches)
+                if unused_vars:
+                    new_content = self._remove_unused_variables(content, unused_vars)
 
-                if file_fixes > 0 and content != original_content:
-                    with open(file_path, 'w', encoding='utf-8') as f:
-                        f.write(content)
-                    vars_fixed += file_fixes
+                    if new_content != content:
+                        with open(file_path, 'w', encoding='utf-8') as f:
+                            f.write(new_content)
+
+                        self.fixed_files += 1
+                        self.issues_fixed += len(unused_vars)
+                        print(f"  ✓ {file_path.name}: {len(unused_vars)} variables removidas")
 
             except Exception as e:
-                print(f"  Error procesando {file_path}: {e}")
+                print(f"  ✗ Error en {file_path.name}: {str(e)}")
 
-        self.issues_fixed += vars_fixed
-        print(f"  OK {vars_fixed} variables no usadas corregidas")
+    def _find_python_files(self) -> List[Path]:
+        """Encuentra todos los archivos Python en el proyecto"""
+        python_files = []
 
-    def _should_skip_file(self, file_path: Path) -> bool:
-        """Determina si un archivo debe saltarse"""
-        skip_patterns = [
-            '__pycache__',
-            '.git',
-            'venv',
-            'env',
-            '.venv',
-            'node_modules',
-            'build',
-            'dist',
-            '.pytest_cache',
-        ]
+        for root, dirs, files in os.walk(self.project_root):
+            # Excluir directorios
+            dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['__pycache__', 'node_modules']]
 
-        path_str = str(file_path)
-        return any(pattern in path_str for pattern in skip_patterns)
+            for file in files:
+                if file.endswith('.py'):
+                    python_files.append(Path(root) / file)
 
-if __name__ == "__main__":
-    fixer = CodeQualityFixer(".")
+        return python_files
+
+    def _remove_unused_imports(self, content: str, unused_imports: Set[str]) -> str:
+        """Remueve imports no usados del contenido"""
+        lines = content.split('\n')
+        new_lines = []
+
+        for line in lines:
+            line_stripped = line.strip()
+
+            # Verificar si es un import no usado
+            is_unused = False
+            for unused in unused_imports:
+                if f"import {unused}" in line_stripped or f"from {unused}" in line_stripped:
+                    is_unused = True
+                    break
+
+            if not is_unused:
+                new_lines.append(line)
+
+        return '\n'.join(new_lines)
+
+    def _remove_unused_variables(self, content: str, unused_vars: Set[str]) -> str:
+        """Remueve variables no usadas del contenido (implementación básica)"""
+        # Esta es una implementación simplificada
+        # En un caso real, se necesitaría un análisis más sofisticado
+        return content
+
+
+class ImportAnalyzer(ast.NodeVisitor):
+    """Analiza imports en código Python"""
+
+    def __init__(self):
+        self.imports = set()
+        self.used_names = set()
+
+    def visit_Import(self, node):
+        for alias in node.names:
+            self.imports.add(alias.name.split('.')[0])
+        self.generic_visit(node)
+
+    def visit_ImportFrom(self, node):
+        if node.module:
+            self.imports.add(node.module.split('.')[0])
+        for alias in node.names:
+            self.imports.add(alias.name)
+        self.generic_visit(node)
+
+    def visit_Name(self, node):
+        if isinstance(node.ctx, (ast.Load, ast.Del)):
+            self.used_names.add(node.id)
+        self.generic_visit(node)
+
+    def get_unused_imports(self) -> Set[str]:
+        return self.imports - self.used_names
+
+
+class VariableAnalyzer(ast.NodeVisitor):
+    """Analiza variables en código Python"""
+
+    def __init__(self):
+        self.variables = set()
+        self.used_vars = set()
+
+    def visit_Assign(self, node):
+        for target in node.targets:
+            if isinstance(target, ast.Name):
+                self.variables.add(target.id)
+        self.generic_visit(node)
+
+    def visit_Name(self, node):
+        if isinstance(node.ctx, ast.Load):
+            self.used_vars.add(node.id)
+        self.generic_visit(node)
+
+    def get_unused_variables(self) -> Set[str]:
+        return self.variables - self.used_vars
+
+
+def main():
+    """Función principal"""
+    print("=== CORRECTOR AUTOMÁTICO DE CALIDAD DE CÓDIGO ===")
+    print("Versión: scripts/tools/fix_code_quality.py")
+    print()
+
+    fixer = CodeQualityFixer()
     fixer.fix_all_issues()
 
-    print("\n=== VALIDACIÓN POST-CORRECCIÓN ===")
-    print("Ejecutando flake8 nuevamente para ver mejoras...")
-
+    print("\n=== VALIDACIÓN FINAL ===")
     try:
+        # Ejecutar flake8 para verificar
         result = subprocess.run([
-            'python', '-m', 'flake8', 'rexus/', '--count', '--statistics'
-        ], capture_output=True, text=True, timeout=60)
+            'python', '-m', 'flake8', '--count', '--select=E9,F63,F7,F82',
+            '--show-source', '--statistics', '.'
+        ], capture_output=True, text=True, cwd='.')
 
-        if result.stdout:
-            lines = result.stdout.strip().split('\n')
-            if lines[-1].isdigit():
-                new_total = int(lines[-1])
-                improvement = 17146 - new_total
-                print(f"Problemas antes: 17,146")
-                print(f"Problemas después: {new_total:,}")
-                print(f"Mejora: {improvement:,} problemas corregidos ({(improvement/17146)*100:.1f}%)")
-            else:
-                print("Resultado de flake8:", result.stdout[-500:])
+        if result.returncode == 0:
+            print("✅ No se encontraron errores críticos de sintaxis")
+        else:
+            print("⚠️  Aún quedan algunos problemas:")
+            print(result.stdout[-500:])
 
     except Exception as e:
-        print(f"Error ejecutando validación: {e}")}}]}]}]}]
+        print(f"Error ejecutando validación: {e}")
+
+
+if __name__ == '__main__':
+    main()

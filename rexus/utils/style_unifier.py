@@ -6,6 +6,9 @@ Autor: Sistema Rexus
 Fecha: 13/08/2025
 """
 
+import logging
+
+
 class StyleUnifier:
     """Centralizador de estilos comunes para todos los módulos"""
 
@@ -25,7 +28,8 @@ class StyleUnifier:
         'margin_small': 8,
     }
 
-                COLORS = {
+    # Paleta de colores unificada
+    COLORS = {
         'primary': '#3b82f6',
         'primary_hover': '#2563eb',
         'surface': '#f8fafc',
@@ -205,9 +209,9 @@ class StyleUnifier:
         """Retorna márgenes compactos estándar"""
         return {
             'small': (cls.SIZES['margin_small'], cls.SIZES['margin_small'],
-                     cls.SIZES['margin_small'], cls.SIZES['margin_small']),
+                    cls.SIZES['margin_small'], cls.SIZES['margin_small']),
             'normal': (cls.SIZES['margin_normal'], cls.SIZES['margin_normal'],
-                      cls.SIZES['margin_normal'], cls.SIZES['margin_normal']),
+                        cls.SIZES['margin_normal'], cls.SIZES['margin_normal']),
             'spacing_small': cls.SIZES['margin_small'],
             'spacing_normal': cls.SIZES['margin_normal'],
         }
@@ -219,15 +223,10 @@ class StyleUnifier:
 
         Args:
             widget: El widget al que aplicar el estilo
-            style_type (str): Tipo de estilo ('tab',
-'button',
-                'input',
-                'table')
+            style_type (str): Tipo de estilo ('tab', 'button', 'input', 'table')
             custom_colors (dict): Colores personalizados
         """
-
-import logging
-logger = logging.getLogger(__name__)
+        logger = logging.getLogger(__name__)
 
         style_map = {
             'tab': cls.get_standard_tab_style,
@@ -240,7 +239,9 @@ logger = logging.getLogger(__name__)
             style = style_map[style_type](custom_colors)
             widget.setStyleSheet(style)
         else:
+            logger.warning(f"Tipo de estilo no soportado: {style_type}")
             raise ValueError(f"Tipo de estilo no soportado: {style_type}")
+
 
 # Constantes de acceso rápido
 STANDARD_TAB_STYLE = StyleUnifier.get_standard_tab_style()

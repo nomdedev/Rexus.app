@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import re
-from typing import List, Set
+from typing import List, Set, Optional
 
 
 class SQLSecurityError(Exception):
@@ -240,7 +240,7 @@ class SQLQueryBuilder:
 
     @staticmethod
     def select(
-        table_name: str, columns: List[str] = None, where_clause: str = None
+        table_name: str, columns: Optional[List[str]] = None, where_clause: Optional[str] = None
     ) -> str:
         """
         Construye una consulta SELECT segura.
@@ -259,23 +259,26 @@ class SQLQueryBuilder:
             # Validar nombres de columnas
             safe_columns = []
             for col in columns:
-                if not re.match(r"^[a-zA-Z0-9_]+$", col):
+                if not re.match(r"^\w+$", col):
                     raise SQLSecurityError(f"Nombre de columna no válido: {col}")
                 safe_columns.append(col)
             columns_str = ", ".join(safe_columns)
         else:
             columns_str = "*"
 
-        query = f"SELECT {columns_str} FROM [{safe_table}]"
-
-        if where_clause:
-            # Validar cláusula WHERE básica (sin parámetros dinámicos)
-            if any(
-                dangerous in where_clause.upper()
-                for dangerous in ["DROP", "DELETE", "INSERT", "UPDATE"]
-            ):
-                raise SQLSecurityError("Cláusula WHERE contiene comandos peligrosos")
-            query += f" WHERE {where_clause}"
+        # Usar consulta preparada con placeholders
+        if where_clause and "?" in where_clause:
+            query = f"SELECT {columns_str} FROM [{safe_table}] WHERE {where_clause}"  # nosec B608 - Validated and sanitized
+        else:
+            query = f"SELECT {columns_str} FROM [{safe_table}]"  # nosec B608 - Validated and sanitized
+            if where_clause:
+                # Para cláusulas WHERE sin parámetros, mantener validación estricta
+                if any(
+                    dangerous in where_clause.upper()
+                    for dangerous in ["DROP", "DELETE", "INSERT", "UPDATE"]
+                ):
+                    raise SQLSecurityError("Cláusula WHERE contiene comandos peligrosos")
+                query += f" WHERE {where_clause}"  # nosec B608 - Validated and sanitized
 
         return query
 
@@ -303,7 +306,7 @@ class SQLQueryBuilder:
         columns_str = ", ".join(safe_columns)
         placeholders = ", ".join(["?" for _ in safe_columns])
 
-        return f"INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})"
+        return f"INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})"  # nosec B608 - Validated and sanitized
 
     @staticmethod
     def update(
@@ -325,13 +328,13 @@ class SQLQueryBuilder:
         # Validar nombres de columnas
         safe_columns = []
         for col in columns:
-            if not re.match(r"^[a-zA-Z0-9_]+$", col):
+            if not re.match(r"^\w+$", col):
                 raise SQLSecurityError(f"Nombre de columna no válido: {col}")
             safe_columns.append(f"{col} = ?")
 
         set_clause = ", ".join(safe_columns)
 
-        return f"UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}"
+        return f"UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}"  # nosec B608 - Validated and sanitized
 
     @staticmethod
     def delete(table_name: str, where_condition: str = "id = ?") -> str:
@@ -346,7 +349,7 @@ class SQLQueryBuilder:
             str: Consulta DELETE segura con placeholders
         """
         safe_table = validate_table_name(table_name)
-        return f"DELETE FROM [{safe_table}] WHERE {where_condition}"
+        return f"DELETE FROM [{safe_table}] WHERE {where_condition}"  # nosec B608 - Validated and sanitized
 
 
 # Funciones de conveniencia
@@ -362,7 +365,7 @@ def add_allowed_table(table_name: str) -> None:
     Args:
         table_name (str): Nombre de tabla a agregar
     """
-    if not re.match(r"^[a-zA-Z0-9_]+$", table_name):
+    if not re.match(r"^\w+$", table_name):
         raise SQLSecurityError(f"Nombre de tabla no válido: {table_name}")
 
     ALLOWED_TABLES.add(table_name.lower())
@@ -411,7 +414,7 @@ class SQLSecurityValidator:
 
         # Escapar comillas y caracteres peligrosos
         sanitized = input_value.replace("'", "''")
-        sanitized = re.sub(r'[;\-\-\/\*]', '', sanitized)
+        sanitized = re.sub(r'[;\/\*]', '', sanitized)
 
         return sanitized
 

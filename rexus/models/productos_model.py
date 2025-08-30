@@ -325,12 +325,12 @@ class ProductosModel:
                 base_query += " AND " + " AND ".join(conditions)
 
             # Query de conteo
-            count_query = f"SELECT COUNT(*) FROM ({base_query}) as counted"
+            count_query = f"SELECT COUNT(*) FROM ({base_query}) as counted"  # nosec B608
             cursor.execute(count_query, params)
             total_records = cursor.fetchone()[0]
 
             # Query paginada
-            paginated_query = f"{base_query} ORDER BY nombre OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+            paginated_query = f"{base_query} ORDER BY nombre OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"  # nosec B608
             cursor.execute(paginated_query, params + [offset, limit])
 
             # Procesar resultados

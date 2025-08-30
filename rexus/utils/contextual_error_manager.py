@@ -3,11 +3,56 @@ Sistema de Mensajes de Error Contextualizados - Rexus.app
 Proporciona mensajes de error específicos con sugerencias de solución
 """
 
-
 import logging
+from datetime import datetime
+from typing import Dict, Optional
+from enum import Enum
+
 logger = logging.getLogger(__name__)
 
-                        "message": "Usuario o contraseña incorrectos.",
+
+class ErrorSeverity(Enum):
+    """Niveles de severidad para errores."""
+    INFO = "info"
+    WARNING = "warning"
+    ERROR = "error"
+    CRITICAL = "critical"
+
+
+class ErrorCategory(Enum):
+    """Categorías de errores."""
+    AUTHENTICATION = "authentication"
+    PERMISSION = "permission"
+    USER_INPUT = "user_input"
+    BUSINESS_LOGIC = "business_logic"
+    SYSTEM = "system"
+    DATABASE = "database"
+
+
+class ErrorCode(Enum):
+    """Códigos de error predefinidos."""
+    # Authentication Errors
+    AUTH_INVALID_CREDENTIALS = "auth_invalid_credentials"
+    AUTH_USER_BLOCKED = "auth_user_blocked"
+    AUTH_TOO_MANY_ATTEMPTS = "auth_too_many_attempts"
+    AUTH_WEAK_PASSWORD = "auth_weak_password"
+
+    # Permission Errors
+    PERM_ACCESS_DENIED = "perm_access_denied"
+
+    # User Input Errors
+    UI_INVALID_SELECTION = "ui_invalid_selection"
+    UI_FORM_INCOMPLETE = "ui_form_incomplete"
+
+
+class ContextualErrorManager:
+    """Gestor de errores contextualizados para la aplicación Rexus."""
+
+    # Diccionario de mensajes de error predefinidos
+    ERROR_MESSAGES = {
+        ErrorCode.AUTH_INVALID_CREDENTIALS: {
+            "title": "Credenciales Inválidas",
+            "message": "Usuario o contraseña incorrectos.",
             "suggestion": "Verifique que el usuario y contraseña sean correctos. Use 'Olvidé mi contraseña' si es necesario.",
             "technical_details": "Autenticación falló en validación de hash",
             "severity": ErrorSeverity.ERROR,
@@ -110,10 +155,7 @@ logger = logging.getLogger(__name__)
         return error_info
 
     @classmethod
-    def _personalize_message(cls,
-message: str,
-        suggestion: str,
-        context: Dict) -> str:
+    def _personalize_message(cls, message: str, suggestion: str, context: Dict) -> str:
         """Personaliza el mensaje con información del contexto."""
 
         # Agregar información específica del campo si está disponible
@@ -186,7 +228,6 @@ message: str,
 
 # Instancia global para usar en toda la aplicación
 error_manager = ContextualErrorManager()
-
 
 # Funciones de conveniencia para uso rápido
 def show_user_error(error_code: ErrorCode, context: Optional[Dict] = None) -> str:

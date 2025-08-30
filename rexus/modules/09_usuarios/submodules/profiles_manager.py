@@ -265,6 +265,8 @@ datos: Dict[str,
             return True
 
         except Exception as e:
+            self.logger.error("Error verificando unicidad de usuario: %s", e)
+            return False
         finally:
             if cursor is not None:
                 try:

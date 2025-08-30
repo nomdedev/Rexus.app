@@ -9,6 +9,7 @@ Responsabilidades:
 """
 
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from typing import List, Dict, Any
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger
@@ -103,9 +104,13 @@ class ObrasManager:
             return vidrios
 
         except Exception as e:
-            raise ValueError(f"Estado no válido: {nuevo_estado}")
+            logger.error(f"Error obteniendo vidrios por obra: {e}")
+            return []
 
-        cursor = self.db_connection.cursor()
+    def actualizar_estado_pedido(self, pedido_id: int, nuevo_estado: str):
+        """Actualiza el estado de un pedido de vidrios."""
+        try:
+            cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query(
                 self.sql_path, "actualizar_estado_pedido"
@@ -124,7 +129,7 @@ class ObrasManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-                        return {}
+            return {}
     def obtener_vidrios_obra(self, obra_id: int) -> List[Dict[str, Any]]:
         """Obtiene todos los vidrios asignados a una obra específica."""
         if not self.db_connection or not obra_id:

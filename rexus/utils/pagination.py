@@ -98,7 +98,7 @@ class PaginationManager:
         raise NotImplementedError("Las clases hijas deben implementar get_paginated_data()")
 
 
-def create_pagination_query(base_query: str, count_query: str = None) -> Tuple[str, str]:
+def create_pagination_query(base_query: str, count_query: Optional[str] = None) -> Tuple[str, str]:
     """
     Crea consultas SQL con paginación.
 
@@ -109,6 +109,17 @@ def create_pagination_query(base_query: str, count_query: str = None) -> Tuple[s
     Returns:
         Tupla (consulta_paginada, consulta_conteo)
     """
+    # Validar que base_query sea una consulta SELECT segura
+    if not base_query.strip().upper().startswith('SELECT'):
+        raise ValueError("base_query debe ser una consulta SELECT")
+    
+    # Verificar que no contenga comandos peligrosos
+    dangerous_keywords = ['DROP', 'DELETE', 'INSERT', 'UPDATE', 'ALTER', 'CREATE', 'EXEC']
+    query_upper = base_query.upper()
+    for keyword in dangerous_keywords:
+        if keyword in query_upper:
+            raise ValueError(f"Consulta base contiene comando peligroso: {keyword}")
+    
     # Consulta paginada con OFFSET y FETCH
     paginated_query = f"""
         {base_query}
@@ -123,9 +134,9 @@ def create_pagination_query(base_query: str, count_query: str = None) -> Tuple[s
         if "SELECT" in base_query.upper() and "FROM" in base_query.upper():
             from_index = base_query.upper().find("FROM")
             from_part = base_query[from_index:]
-            count_query = f"SELECT COUNT(*) {from_part}"
+            count_query = f"SELECT COUNT(*) {from_part}"  # nosec B608
         else:
-            count_query = f"SELECT COUNT(*) FROM ({base_query}) AS count_subquery"
+            count_query = f"SELECT COUNT(*) FROM ({base_query}) AS count_subquery"  # nosec B608
 
     return paginated_query.strip(), count_query.strip()
 
