@@ -1,8 +1,6 @@
 """
-Rexus.app - Sistema de Gestión Integral
-
-Paquete principal de la aplicación Rexus.
+Stock.app - Aplicación de Gestión de Inventario
+Módulo principal de inicialización de la aplicación
 """
 
-__version__ = "2.0.0"
-__author__ = "Rexus.app Team"
+# Evitar import circular en inicialización

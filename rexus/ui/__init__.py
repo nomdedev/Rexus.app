@@ -1,1 +1,1 @@
-# Rexus.app - UI Modules
+# UI Package

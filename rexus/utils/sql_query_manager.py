@@ -1,283 +1,286 @@
 """
-Rexus.app - SQL Query Manager
+Gestor de Consultas SQL
 
-Gestor de consultas SQL que proporciona una interfaz segura para ejecutar
-consultas parametrizadas contra la base de datos de usuarios.
+Este módulo gestiona todas las consultas SQL desde archivos externos
+para mejorar la seguridad y mantenibilidad del código.
 """
 
-import os
-import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
-from contextlib import contextmanager
-import pyodbc
-from dotenv import load_dotenv
-
-# Cargar variables de entorno desde .env
-load_dotenv()
-
-logger = logging.getLogger(__name__)
+from typing import Any, Dict
 
 
 class SQLQueryManager:
-    """
-    Gestor de consultas SQL que maneja la ejecución segura de queries
-    contra la base de datos de usuarios.
-    """
+    """Gestor centralizado de consultas SQL desde archivos externos."""
 
-    def __init__(self, db_connection=None):
+    def __init__(self, sql_base_path: str = None):
         """
-        Inicializa el SQLQueryManager.
+        Inicializa el gestor de consultas SQL.
 
         Args:
-            db_connection: Conexión opcional a la base de datos
+            sql_base_path: Ruta base donde se encuentran los archivos SQL
         """
-        self.db_connection = db_connection
-        self._connection_string = self._build_connection_string()
+        if sql_base_path is None:
+            # Usar la estructura existente en scripts/sql
+            current_dir = Path(__file__).parent.parent.parent
+            self.sql_base_path = current_dir / "scripts" / "sql"
+        else:
+            self.sql_base_path = Path(sql_base_path)
 
-    def _build_connection_string(self) -> str:
-        """Construye la cadena de conexión usando variables de entorno."""
-        driver = os.getenv('DB_DRIVER', 'ODBC Driver 17 for SQL Server')
-        server = os.getenv('DB_SERVER', 'localhost')
-        database = os.getenv('DB_USERS', 'users')  # Usar DB_USERS del .env
-        username = os.getenv('DB_USERNAME')
-        password = os.getenv('DB_PASSWORD')
+        # Cache para consultas cargadas
+        self._query_cache = {}
 
-        if not all([server, database, username, password]):
-            raise ValueError("Faltan variables de entorno para la conexión a BD. Requeridas: DB_SERVER, DB_USERS, DB_USERNAME, DB_PASSWORD")
+        # Verificar que existe la ruta base
+        if not self.sql_base_path.exists():
+            raise FileNotFoundError(
+                f"Directorio SQL no encontrado: {self.sql_base_path}"
+            )
 
-        return (
-            f"DRIVER={{{driver}}};"
-            f"SERVER={server};"
-            f"DATABASE={database};"
-            f"UID={username};"
-            f"PWD={password};"
-            "Encrypt=yes;"
-            "TrustServerCertificate=yes;"
-        )
-
-    @contextmanager
-    def _get_connection(self):
-        """Context manager para obtener una conexión a la base de datos."""
-        connection = None
-        try:
-            if self.db_connection and hasattr(self.db_connection, '_connection') and self.db_connection._connection:
-                # Usar conexión existente si está disponible
-                connection = self.db_connection._connection
-                cursor = connection.cursor()
-                yield cursor
-            else:
-                # Crear nueva conexión
-                connection = pyodbc.connect(self._connection_string, timeout=10, autocommit=False)
-                cursor = connection.cursor()
-                try:
-                    yield cursor
-                finally:
-                    if connection:
-                        connection.commit()
-        except pyodbc.Error as e:
-            logger.error(f"[SQL] Error en operación de base de datos: {e}")
-            if connection and connection != (self.db_connection._connection if self.db_connection else None):
-                connection.rollback()
-            raise
-        finally:
-            if connection and connection != (self.db_connection._connection if self.db_connection else None):
-                connection.close()
-
-    def execute_query(self, query: str, params: Optional[Tuple] = None) -> List[Any]:
+    def get_query(self, module: str, query_name: str, **kwargs) -> str:
         """
-        Ejecuta una consulta SELECT y retorna los resultados.
+        Obtiene una consulta SQL desde archivo.
 
         Args:
-            query: Consulta SQL a ejecutar
-            params: Parámetros para la consulta
+            module: Módulo (inventario, obras, mantenimiento, etc.)
+            query_name: Nombre de la consulta (insert_producto, select_all, etc.)
+            **kwargs: Parámetros para reemplazar en la consulta
 
         Returns:
-            Lista de tuplas con los resultados
+            str: Consulta SQL formateada
+
+        Raises:
+            FileNotFoundError: Si no se encuentra el archivo SQL
         """
-        try:
-            with self._get_connection() as cursor:
-                if params:
-                    cursor.execute(query, params)
-                else:
-                    # Validar que la query sin parámetros sea segura
-                    if self._contains_dynamic_data(query):
-                        raise ValueError("Query sin parámetros contiene datos dinámicos potencialmente inseguros")
-                    cursor.execute(query)
+        # Crear clave de cache
+        cache_key = f"{module}.{query_name}"
 
-                results = cursor.fetchall()
-                logger.debug(f"[SQL] Query ejecutada exitosamente: {query[:50]}...")
-                return results
+        # Verificar cache
+        if cache_key not in self._query_cache:
+            self._load_query(module, query_name)
 
-        except pyodbc.Error as e:
-            logger.error(f"[SQL] Error ejecutando query: {e}")
-            raise
+        # Obtener consulta del cache
+        query_template = self._query_cache[cache_key]
 
-    def execute_non_query(self, query: str, params: Optional[Tuple] = None) -> int:
+        # Reemplazar parámetros si se proporcionan
+        if kwargs:
+            try:
+                return query_template.format(**kwargs)
+            except KeyError as e:
+                raise ValueError(f"Parámetro faltante en consulta {cache_key}: {e}")
+
+        return query_template
+
+    def _load_query(self, module: str, query_name: str):
         """
-        Ejecuta una consulta que no retorna resultados (INSERT, UPDATE, DELETE).
+        Carga una consulta SQL desde archivo.
 
         Args:
-            query: Consulta SQL a ejecutar
-            params: Parámetros para la consulta
-
-        Returns:
-            Número de filas afectadas
+            module: Módulo
+            query_name: Nombre de la consulta
         """
-        try:
-            with self._get_connection() as cursor:
-                if params:
-                    cursor.execute(query, params)
-                else:
-                    # Validar que la query sin parámetros sea segura
-                    if self._contains_dynamic_data(query):
-                        raise ValueError("Query sin parámetros contiene datos dinámicos potencialmente inseguros")
-                    cursor.execute(query)
-
-                rows_affected = cursor.rowcount
-                logger.debug(f"[SQL] Non-query ejecutada exitosamente: {query[:50]}... ({rows_affected} filas)")
-                return rows_affected
-
-        except pyodbc.Error as e:
-            logger.error(f"[SQL] Error ejecutando non-query: {e}")
-            raise
-
-    def get_user_permissions(self, user_id: int) -> List[str]:
-        """
-        Obtiene los módulos permitidos para un usuario.
-
-        Args:
-            user_id: ID del usuario
-
-        Returns:
-            Lista de módulos permitidos
-        """
-        query = "SELECT modulo FROM permisos_usuario WHERE usuario_id = ?"
-        results = self.execute_query(query, (user_id,))
-        return [row[0] for row in results]
-
-    def get_user_by_username(self, username: str) -> Optional[Dict[str, Any]]:
-        """
-        Obtiene información de un usuario por nombre de usuario.
-
-        Args:
-            username: Nombre de usuario
-
-        Returns:
-            Diccionario con información del usuario o None
-        """
-        query = """
-            SELECT id, usuario, rol, activo
-            FROM usuarios
-            WHERE usuario = ? AND activo = 1
-        """
-        results = self.execute_query(query, (username,))
-
-        if results:
-            row = results[0]
-            return {
-                'id': row[0],
-                'username': row[1],
-                'rol': row[2],
-                'activo': row[3]
-            }
-        return None
-
-    def validate_credentials(self, username: str, password_hash: str) -> Optional[Dict[str, Any]]:
-        """
-        Valida las credenciales de un usuario.
-
-        Args:
-            username: Nombre de usuario
-            password_hash: Hash de la contraseña
-
-        Returns:
-            Diccionario con información del usuario si válido
-        """
-        query = """
-            SELECT id, usuario, rol, activo
-            FROM usuarios
-            WHERE usuario = ? AND password_hash = ? AND activo = 1
-        """
-        results = self.execute_query(query, (username, password_hash))
-
-        if results:
-            row = results[0]
-            return {
-                'id': row[0],
-                'username': row[1],
-                'rol': row[2],
-                'activo': row[3]
-            }
-        return None
-
-    def _contains_dynamic_data(self, query: str) -> bool:
-        """
-        Valida si una query contiene datos dinámicos potencialmente inseguros.
-
-        Args:
-            query: Consulta SQL a validar
-
-        Returns:
-            True si contiene datos dinámicos, False si es segura
-        """
-        import re
-
-        # Patrones que indican datos dinámicos inseguros
-        dangerous_patterns = [
-            r'\+\s*["\'][^"\']*["\']',  # Concatenación de strings
-            r'%s',  # Formato Python antiguo
-            r'%d',  # Formato Python antiguo
-            r'\{.*\}',  # Formato con llaves
-            r'f["\'].*\{.*\}.*["\']',  # f-strings
+        # Buscar archivo SQL en diferentes ubicaciones posibles
+        possible_paths = [
+            self.sql_base_path / module / f"{query_name}.sql",
+            self.sql_base_path / f"{query_name}.sql",
+            self.sql_base_path / "common" / f"{query_name}.sql",
         ]
 
-        for pattern in dangerous_patterns:
-            if re.search(pattern, query, re.IGNORECASE):
-                logger.warning(f"[SQL] Query potencialmente insegura detectada: {query[:100]}...")
-                return True
+        query_content = None
+        used_path = None
 
-        return False
+        for path in possible_paths:
+            if path.exists():
+                used_path = path
+                break
 
-    def ejecutar_consulta_archivo(self, archivo_sql: str, parametros: Optional[tuple] = None) -> List[Dict[str, Any]]:
+        if used_path is None:
+            raise FileNotFoundError(
+                f"Archivo SQL no encontrado: {query_name}.sql en módulo {module}. "
+                f"Rutas buscadas: {[str(p) for p in possible_paths]}"
+            )
+
+        # Leer contenido del archivo
+        try:
+            with open(used_path, "r", encoding="utf-8") as f:
+                query_content = f.read().strip()
+        except Exception as e:
+            raise RuntimeError(f"Error leyendo archivo SQL {used_path}: {e}")
+
+        # Guardar en cache
+        cache_key = f"{module}.{query_name}"
+        self._query_cache[cache_key] = query_content
+
+        print(f"[SQL_MANAGER] Consulta cargada: {cache_key} desde {used_path}")
+
+    def execute_query(
+        self, cursor, module: str, query_name: str, params: tuple = None, **kwargs
+    ):
         """
-        Ejecuta una consulta SQL desde un archivo externo.
+        Ejecuta una consulta SQL usando el cursor proporcionado.
 
         Args:
-            archivo_sql: Ruta al archivo SQL
-            parametros: Parámetros para la consulta
+            cursor: Cursor de base de datos
+            module: Módulo de la consulta
+            query_name: Nombre de la consulta
+            params: Parámetros para la consulta
+            **kwargs: Parámetros de formateo para la consulta
 
         Returns:
-            Lista de diccionarios con los resultados
+            Resultado de la ejecución de la consulta
+        """
+        query = self.get_query(module, query_name, **kwargs)
+
+        if params:
+            return cursor.execute(query, params)
+        else:
+            return cursor.execute(query)
+
+    def list_available_queries(self, module: str = None) -> Dict[str, list]:
+        """
+        Lista todas las consultas disponibles.
+
+        Args:
+            module: Módulo específico (opcional)
+
+        Returns:
+            Dict: Diccionario con módulos y sus consultas disponibles
+        """
+        available = {}
+
+        if module:
+            # Listar consultas de un módulo específico
+            module_path = self.sql_base_path / module
+            if module_path.exists():
+                available[module] = [f.stem for f in module_path.glob("*.sql")]
+        else:
+            # Listar todas las consultas disponibles
+            for item in self.sql_base_path.iterdir():
+                if item.is_dir():
+                    module_name = item.name
+                    sql_files = [f.stem for f in item.glob("*.sql")]
+                    if sql_files:
+                        available[module_name] = sql_files
+                elif item.suffix == ".sql":
+                    # Archivos SQL en la raíz
+                    if "root" not in available:
+                        available["root"] = []
+                    available["root"].append(item.stem)
+
+        return available
+
+    def validate_query_syntax(self, module: str, query_name: str) -> bool:
+        """
+        Valida la sintaxis básica de una consulta SQL.
+
+        Args:
+            module: Módulo
+            query_name: Nombre de la consulta
+
+        Returns:
+            bool: True si la sintaxis parece válida
         """
         try:
-            # Leer archivo SQL
-            sql_path = Path(archivo_sql)
-            if not sql_path.is_absolute():
-                # Si es ruta relativa, buscar desde la raíz del proyecto
-                project_root = Path(__file__).parent.parent.parent
-                sql_path = project_root / archivo_sql
+            query = self.get_query(module, query_name)
 
-            if not sql_path.exists():
-                raise FileNotFoundError(f"Archivo SQL no encontrado: {sql_path}")
+            # Validaciones básicas
+            query_upper = query.upper().strip()
 
-            with open(sql_path, 'r', encoding='utf-8') as f:
-                query = f.read().strip()
+            # Verificar que no esté vacía
+            if not query_upper:
+                return False
 
-            # Ejecutar query
-            results = self.execute_query(query, parametros)
+            # Verificar que sea una consulta SQL válida
+            sql_keywords = [
+                "SELECT",
+                "INSERT",
+                "UPDATE",
+                "DELETE",
+                "CREATE",
+                "ALTER",
+                "DROP",
+            ]
+            has_sql_keyword = any(
+                query_upper.startswith(keyword) for keyword in sql_keywords
+            )
 
-            # Convertir tuplas a diccionarios
-            if results and hasattr(results[0], '_fields'):
-                # Si son named tuples
-                return [row._asdict() for row in results]
-            elif results and isinstance(results[0], (tuple, list)):
-                # Si son tuplas simples, necesitamos los nombres de columna
-                # Por simplicidad, retornamos el resultado crudo y dejamos que el caller maneje
-                return [{'result': row} for row in results] if results else []
-            else:
-                return results
+            if not has_sql_keyword:
+                return False
 
-        except Exception as e:
-            logger.error(f"[SQL] Error ejecutando archivo SQL {archivo_sql}: {e}")
-            raise
+            # Verificar balanceado de paréntesis
+            if query.count("(") != query.count(")"):
+                return False
+
+            return True
+
+        except (AttributeError, TypeError, ValueError):
+            return False
+
+    def clear_cache(self):
+        """Limpia el cache de consultas."""
+        self._query_cache.clear()
+        print("[SQL_MANAGER] Cache de consultas limpiado")
+
+    def get_cache_info(self) -> Dict[str, Any]:
+        """
+        Obtiene información del cache.
+
+        Returns:
+            Dict: Información del cache
+        """
+        return {
+            "cached_queries": list(self._query_cache.keys()),
+            "cache_size": len(self._query_cache),
+            "sql_base_path": str(self.sql_base_path),
+        }
+
+
+# Instancia global del gestor
+_sql_manager = None
+
+
+def get_sql_manager() -> SQLQueryManager:
+    """
+    Obtiene la instancia global del gestor de consultas SQL.
+
+    Returns:
+        SQLQueryManager: Instancia del gestor
+    """
+    global _sql_manager
+    if _sql_manager is None:
+        _sql_manager = SQLQueryManager()
+    return _sql_manager
+
+
+def execute_sql_query(
+    cursor, module: str, query_name: str, params: tuple = None, **kwargs
+):
+    """
+    Función de conveniencia para ejecutar consultas SQL.
+
+    Args:
+        cursor: Cursor de base de datos
+        module: Módulo de la consulta
+        query_name: Nombre de la consulta
+        params: Parámetros para la consulta
+        **kwargs: Parámetros de formateo
+
+    Returns:
+        Resultado de la ejecución
+    """
+    manager = get_sql_manager()
+    return manager.execute_query(cursor, module, query_name, params, **kwargs)
+
+
+def get_sql_query(module: str, query_name: str, **kwargs) -> str:
+    """
+    Función de conveniencia para obtener consultas SQL.
+
+    Args:
+        module: Módulo de la consulta
+        query_name: Nombre de la consulta
+        **kwargs: Parámetros de formateo
+
+    Returns:
+        str: Consulta SQL formateada
+    """
+    manager = get_sql_manager()
+    return manager.get_query(module, query_name, **kwargs)
