@@ -92,6 +92,7 @@ class UsersDatabaseConnection:
     def get_user_permissions(self, user_id: int) -> List[str]:
         """
         Obtiene los módulos permitidos para un usuario específico.
+        Compatible con sistema híbrido - usa rol y permisos específicos.
 
         Args:
             user_id: ID del usuario
@@ -101,18 +102,42 @@ class UsersDatabaseConnection:
         """
         try:
             with self.get_cursor() as cursor:
+                # Sistema híbrido: obtener permisos por rol + permisos específicos
                 cursor.execute("""
-                    SELECT modulo FROM permisos_usuario
-                    WHERE usuario_id = ?
-                """, (user_id,))
+                    SELECT DISTINCT modulo 
+                    FROM permisos_usuario pu
+                    WHERE pu.usuario_id = ? 
+                        AND (pu.activo_permiso IS NULL OR pu.activo_permiso = 1)
+                    
+                    UNION
+                    
+                    SELECT DISTINCT p.modulo
+                    FROM usuarios u
+                    INNER JOIN roles r ON u.rol = r.nombre
+                    INNER JOIN rol_permisos rp ON r.id = rp.rol_id 
+                    INNER JOIN permisos p ON rp.permiso_id = p.id
+                    WHERE u.id = ? AND u.activo = 1
+                """, (user_id, user_id))
 
                 modules = [row[0] for row in cursor.fetchall()]
-                logger.info("[DB] Permisos obtenidos para usuario %s: %s", user_id, modules)
+                logger.info("[DB] Permisos híbridos obtenidos para usuario %s: %s", user_id, modules)
                 return modules
 
         except pyodbc.Error as e:
             logger.error("[DB] Error obteniendo permisos para usuario %s: %s", user_id, e)
-            return []
+            # Fallback al sistema simple solo con permisos_usuario
+            try:
+                with self.get_cursor() as cursor:
+                    cursor.execute("""
+                        SELECT modulo FROM permisos_usuario
+                        WHERE usuario_id = ?
+                    """, (user_id,))
+                    modules = [row[0] for row in cursor.fetchall()]
+                    logger.info("[DB] Fallback - permisos simples para usuario %s: %s", user_id, modules)
+                    return modules
+            except pyodbc.Error:
+                logger.error("[DB] Fallback falló para usuario %s", user_id)
+                return []
 
     def get_user_by_username(self, username: str) -> Optional[Dict[str, Any]]:
         """
@@ -127,7 +152,7 @@ class UsersDatabaseConnection:
         try:
             with self.get_cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, usuario, rol, activo
+                    SELECT id, usuario, rol, activo, rol_id
                     FROM usuarios
                     WHERE usuario = ? AND activo = 1
                 """, (username,))
@@ -138,7 +163,8 @@ class UsersDatabaseConnection:
                         'id': row[0],
                         'username': row[1],
                         'rol': row[2],
-                        'activo': row[3]
+                        'activo': row[3],
+                        'rol_id': row[4]  # Nuevo campo híbrido
                     }
                     logger.info("[DB] Usuario encontrado: %s", username)
                     return user_data
@@ -165,7 +191,7 @@ class UsersDatabaseConnection:
         try:
             with self.get_cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, usuario, rol, activo
+                    SELECT id, usuario, rol, activo, rol_id
                     FROM usuarios
                     WHERE usuario = ? AND password_hash = ? AND activo = 1
                 """, (username, password_hash))
@@ -176,7 +202,8 @@ class UsersDatabaseConnection:
                         'id': row[0],
                         'username': row[1],
                         'rol': row[2],
-                        'activo': row[3]
+                        'activo': row[3],
+                        'rol_id': row[4]  # Nuevo campo híbrido
                     }
                     logger.info("[DB] Credenciales válidas para usuario: %s", username)
                     return user_data

@@ -11,6 +11,10 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 from contextlib import contextmanager
 import pyodbc
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 

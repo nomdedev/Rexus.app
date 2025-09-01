@@ -7,3 +7,17 @@
 2025-08-30 09:57:16,123 - rexus.general - ERROR - Error durante login: Faltan variables de entorno para la conexión a BD
 2025-08-30 09:57:17,807 - rexus.main - CRITICAL - Error crítico en main(): type object 'LoginDialog' has no attribute 'Accepted'
 2025-08-30 14:16:39,669 - rexus.main - CRITICAL - Error crítico en main(): 'UIComponents' object has no attribute 'ui'
+2025-08-30 14:17:32,878 - rexus.main - CRITICAL - Error crítico en main(): type object 'LoginDialog' has no attribute 'Accepted'
+2025-08-31 21:52:08,048 - rexus.utils.sql_query_manager - ERROR - [SQL] Error en operación de base de datos: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-31 21:52:08,051 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando query: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-31 21:52:08,052 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando archivo SQL sql/09_usuarios/validar_usuario.sql: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-31 21:52:08,053 - rexus.general - ERROR - Error validando usuario admin: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-31 22:22:26,852 - rexus.general - ERROR - Error obteniendo permisos para usuario 1013: 'pyodbc.Row' object has no attribute 'get'
+2025-08-31 22:22:26,894 - rexus.utils.sql_query_manager - ERROR - [SQL] Error en operación de base de datos: No results.  Previous SQL was not a query.
+2025-08-31 22:22:26,896 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando query: No results.  Previous SQL was not a query.
+2025-08-31 22:22:26,897 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando archivo SQL sql/09_usuarios/actualizar_ultimo_acceso.sql: No results.  Previous SQL was not a query.
+2025-08-31 22:22:26,897 - rexus.general - ERROR - Error actualizando Ãºltimo acceso: No results.  Previous SQL was not a query.
+2025-08-31 22:24:09,792 - rexus.utils.sql_query_manager - ERROR - [SQL] Error en operación de base de datos: No results.  Previous SQL was not a query.
+2025-08-31 22:24:09,794 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando query: No results.  Previous SQL was not a query.
+2025-08-31 22:24:09,796 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando archivo SQL sql/09_usuarios/actualizar_ultimo_acceso.sql: No results.  Previous SQL was not a query.
+2025-08-31 22:24:09,797 - rexus.general - ERROR - Error actualizando Ãºltimo acceso: No results.  Previous SQL was not a query.

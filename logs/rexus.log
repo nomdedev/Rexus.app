@@ -751,3 +751,73 @@ TypeError: object of type 'Mock' has no len()
 2025-08-30 14:16:39,661 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
 2025-08-30 14:16:39,662 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
 2025-08-30 14:16:39,669 - rexus.main - CRITICAL - Error crítico en main(): 'UIComponents' object has no attribute 'ui'
+2025-08-30 14:17:16,666 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 14:17:16,681 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 14:17:19,837 - rexus.core.database - INFO - [DB] Conexión exitosa a la base de datos de usuarios
+2025-08-30 14:17:19,837 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 14:17:19,838 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 14:17:32,878 - rexus.main - CRITICAL - Error crítico en main(): type object 'LoginDialog' has no attribute 'Accepted'
+2025-08-30 14:18:10,449 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 14:18:10,455 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-30 14:18:12,548 - rexus.core.database - INFO - [DB] Conexión exitosa a la base de datos de usuarios
+2025-08-30 14:18:12,548 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-30 14:18:12,548 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-30 14:18:22,262 - rexus.main - INFO - Login cancelado por el usuario
+2025-08-30 17:50:03,132 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-30 17:50:03,136 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-31 10:14:22,908 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-31 10:14:22,912 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-31 21:51:57,556 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-31 21:51:57,561 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-31 21:52:01,326 - rexus.core.database - INFO - [DB] Conexión exitosa a la base de datos de usuarios
+2025-08-31 21:52:01,326 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-31 21:52:01,333 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-31 21:52:08,048 - rexus.utils.sql_query_manager - ERROR - [SQL] Error en operación de base de datos: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-31 21:52:08,051 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando query: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-31 21:52:08,052 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando archivo SQL sql/09_usuarios/validar_usuario.sql: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-31 21:52:08,053 - rexus.general - ERROR - Error validando usuario admin: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-31 21:52:08,054 - rexus.security - INFO - [LOGIN_FAILED] [USER:admin] Intento de login fallido para usuario admin
+2025-08-31 21:52:13,849 - rexus.main - INFO - Login cancelado por el usuario
+2025-08-31 22:22:18,337 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-31 22:22:18,351 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-31 22:22:20,273 - rexus.core.database - INFO - [DB] Conexión exitosa a la base de datos de usuarios
+2025-08-31 22:22:20,273 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-31 22:22:20,273 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-31 22:22:26,811 - rexus.utils.sql_query_manager - DEBUG - [SQL] Query ejecutada exitosamente: -- Consulta para validar credenciales de usuario
+-...
+2025-08-31 22:22:26,851 - rexus.utils.sql_query_manager - DEBUG - [SQL] Query ejecutada exitosamente: SELECT modulo FROM permisos_usuario
+WHERE usuario_...
+2025-08-31 22:22:26,852 - rexus.general - ERROR - Error obteniendo permisos para usuario 1013: 'pyodbc.Row' object has no attribute 'get'
+2025-08-31 22:22:26,894 - rexus.utils.sql_query_manager - ERROR - [SQL] Error en operación de base de datos: No results.  Previous SQL was not a query.
+2025-08-31 22:22:26,896 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando query: No results.  Previous SQL was not a query.
+2025-08-31 22:22:26,897 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando archivo SQL sql/09_usuarios/actualizar_ultimo_acceso.sql: No results.  Previous SQL was not a query.
+2025-08-31 22:22:26,897 - rexus.general - ERROR - Error actualizando Ãºltimo acceso: No results.  Previous SQL was not a query.
+2025-08-31 22:22:26,898 - rexus.security - INFO - [LOGIN_SUCCESS] [USER:admin] Usuario admin autenticado correctamente
+2025-08-31 22:22:26,922 - rexus.theme_manager - INFO - Estilos del tema Claro preparados
+2025-08-31 22:22:26,927 - rexus.dashboard - INFO - Dashboard creado exitosamente
+2025-08-31 22:22:26,973 - rexus.style_manager - INFO - Estilos aplicados para componente: global
+2025-08-31 22:22:26,974 - rexus.style_manager - INFO - Tema global aplicado: default
+2025-08-31 22:22:26,975 - rexus.style_manager - INFO - Estilos de emergencia aplicados
+2025-08-31 22:22:26,987 - rexus.dashboard_integration - INFO - Botón del dashboard creado: Dashboard Ejecutivo
+2025-08-31 22:22:26,998 - rexus.main - DEBUG - Módulos permitidos: ['inventario', 'pedidos', 'vidrios']
+2025-08-31 22:24:04,809 - rexus.main - INFO - Variables de entorno cargadas desde .env
+2025-08-31 22:24:04,824 - rexus.module_manager - INFO - Configuración de módulos cargada
+2025-08-31 22:24:05,629 - rexus.core.database - INFO - [DB] Conexión exitosa a la base de datos de usuarios
+2025-08-31 22:24:05,629 - rexus.main - INFO - [SECURITY] Conexión BD exitosa para sistema de seguridad
+2025-08-31 22:24:05,629 - rexus.core.security - INFO - [SECURITY] SecurityManager inicializado
+2025-08-31 22:24:09,653 - rexus.utils.sql_query_manager - DEBUG - [SQL] Query ejecutada exitosamente: -- Consulta para validar credenciales de usuario
+-...
+2025-08-31 22:24:09,660 - rexus.utils.sql_query_manager - DEBUG - [SQL] Query ejecutada exitosamente: SELECT modulo FROM permisos_usuario
+WHERE usuario_...
+2025-08-31 22:24:09,792 - rexus.utils.sql_query_manager - ERROR - [SQL] Error en operación de base de datos: No results.  Previous SQL was not a query.
+2025-08-31 22:24:09,794 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando query: No results.  Previous SQL was not a query.
+2025-08-31 22:24:09,796 - rexus.utils.sql_query_manager - ERROR - [SQL] Error ejecutando archivo SQL sql/09_usuarios/actualizar_ultimo_acceso.sql: No results.  Previous SQL was not a query.
+2025-08-31 22:24:09,797 - rexus.general - ERROR - Error actualizando Ãºltimo acceso: No results.  Previous SQL was not a query.
+2025-08-31 22:24:09,799 - rexus.security - INFO - [LOGIN_SUCCESS] [USER:admin] Usuario admin autenticado correctamente
+2025-08-31 22:24:09,819 - rexus.theme_manager - INFO - Estilos del tema Claro preparados
+2025-08-31 22:24:09,822 - rexus.dashboard - INFO - Dashboard creado exitosamente
+2025-08-31 22:24:09,840 - rexus.style_manager - INFO - Estilos aplicados para componente: global
+2025-08-31 22:24:09,841 - rexus.style_manager - INFO - Tema global aplicado: default
+2025-08-31 22:24:09,842 - rexus.style_manager - INFO - Estilos de emergencia aplicados
+2025-08-31 22:24:09,845 - rexus.dashboard_integration - INFO - Botón del dashboard creado: Dashboard Ejecutivo
+2025-08-31 22:24:09,851 - rexus.main - DEBUG - Módulos permitidos: ['CONFIGURACION']

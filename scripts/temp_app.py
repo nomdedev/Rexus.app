@@ -176,7 +176,7 @@ except ImportError:
             self.captcha_required = False
             self.rate_limited = False
             self.dark_mode = False
-            self.biometric_available = True  # Simulado para desarrollo
+            self.biometric_available = False
 
             # Variables de entorno de desarrollo
             self.dev_user = os.environ.get('REXUS_DEV_USER', 'dev_user')
@@ -197,7 +197,7 @@ except ImportError:
             dialog = QDialog()
             dialog.setWindowTitle("Rexus.app - Sistema de Gestión Empresarial")
             dialog.setModal(True)
-            dialog.setFixedSize(500, 700)  # Tamaño optimizado
+            dialog.setFixedSize(500, 900)  # Tamaño solicitado por usuario
             dialog.setWindowFlags(dialog.windowFlags() & ~Qt.WindowType.WindowContextHelpButtonHint)
 
             # Estilo limpio y profesional para el diálogo
@@ -210,8 +210,8 @@ except ImportError:
 
             # Layout principal
             main_layout = QVBoxLayout(dialog)
-            main_layout.setContentsMargins(30, 30, 30, 30)
-            main_layout.setSpacing(20)
+            main_layout.setContentsMargins(30, 15, 30, 15)
+            main_layout.setSpacing(10)
 
             # ===== HEADER =====
             # Logo
@@ -271,27 +271,35 @@ except ImportError:
             user_frame.setFrameStyle(QFrame.Shape.Box)
             user_frame.setStyleSheet("""
                 QFrame {
-                    border: 2px solid #e2e8f0;
-                    border-radius: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 4px;
                     background-color: #ffffff;
+                    min-height: 32px;
+                    max-height: 32px;
                 }
             """)
             user_layout = QHBoxLayout(user_frame)
-            user_layout.setContentsMargins(12, 12, 12, 12)
-            user_layout.setSpacing(10)
+            user_layout.setContentsMargins(8, 6, 8, 6)
+            user_layout.setSpacing(6)
 
             user_icon = QLabel("👤")
-            user_icon.setStyleSheet("font-size: 18px;")
+            user_icon.setStyleSheet("font-size: 12px;")
             user_icon.setFixedWidth(24)
 
             self.user_input = QLineEdit()
             self.user_input.setPlaceholderText("Usuario o email")
+            self.user_input.setMinimumHeight(20)
+            self.user_input.setMaximumHeight(20)
             self.user_input.setStyleSheet("""
                 QLineEdit {
                     border: none;
-                    font-size: 14px;
+                    font-size: 12px;
                     background-color: transparent;
-                    padding: 5px;
+                    padding: 4px 6px;
+                    color: #374151;
+                }
+                QLineEdit::placeholder {
+                    color: #9ca3af;
                 }
             """)
             self.user_input.setText(self.dev_user if self.auto_login else "")
@@ -305,28 +313,36 @@ except ImportError:
             pass_frame.setFrameStyle(QFrame.Shape.Box)
             pass_frame.setStyleSheet("""
                 QFrame {
-                    border: 2px solid #e2e8f0;
-                    border-radius: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 4px;
                     background-color: #ffffff;
+                    min-height: 32px;
+                    max-height: 32px;
                 }
             """)
             pass_layout = QHBoxLayout(pass_frame)
-            pass_layout.setContentsMargins(12, 12, 12, 12)
-            pass_layout.setSpacing(10)
+            pass_layout.setContentsMargins(8, 6, 8, 6)
+            pass_layout.setSpacing(6)
 
             pass_icon = QLabel("🔒")
-            pass_icon.setStyleSheet("font-size: 18px;")
+            pass_icon.setStyleSheet("font-size: 12px;")
             pass_icon.setFixedWidth(24)
 
             self.pass_input = QLineEdit()
             self.pass_input.setPlaceholderText("Contraseña")
             self.pass_input.setEchoMode(QLineEdit.EchoMode.Password)
+            self.pass_input.setMinimumHeight(20)
+            self.pass_input.setMaximumHeight(20)
             self.pass_input.setStyleSheet("""
                 QLineEdit {
                     border: none;
-                    font-size: 14px;
+                    font-size: 12px;
                     background-color: transparent;
-                    padding: 5px;
+                    padding: 4px 6px;
+                    color: #374151;
+                }
+                QLineEdit::placeholder {
+                    color: #9ca3af;
                 }
             """)
             self.pass_input.setText(self.dev_password if self.auto_login else "")
@@ -394,27 +410,6 @@ except ImportError:
                 }
             """)
 
-            # Biometric login (si está disponible)
-            if self.biometric_available:
-                self.biometric_btn = QPushButton("🔐 Login Biométrico")
-                self.biometric_btn.setStyleSheet("""
-                    QPushButton {
-                        background: #f8fafc;
-                        color: #2563eb;
-                        border: 2px solid #e2e8f0;
-                        border-radius: 10px;
-                        padding: 10px 20px;
-                        font-size: 15px;
-                        font-weight: 500;
-                        min-height: 45px;
-                    }
-                    QPushButton:hover {
-                        background: #e2e8f0;
-                        border-color: #2563eb;
-                    }
-                """)
-                self.biometric_btn.clicked.connect(self._attempt_biometric_login)
-                options_layout.addWidget(self.biometric_btn)
 
             options_layout.addWidget(self.remember_me)
             main_layout.addLayout(options_layout)
@@ -434,11 +429,12 @@ except ImportError:
                         stop:0 #2563eb, stop:1 #1d4ed8);
                     color: white;
                     border: none;
-                    border-radius: 10px;
-                    padding: 15px 30px;
-                    font-size: 18px;
-                    font-weight: bold;
-                    min-height: 55px;
+                    border-radius: 4px;
+                    padding: 6px 14px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    min-height: 26px;
+                    max-width: 120px;
                 }
                 QPushButton:hover {
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
@@ -622,35 +618,44 @@ except ImportError:
 
             # ===== FORMULARIO =====
             form_layout = QVBoxLayout()
-            form_layout.setSpacing(15)
+            form_layout.setSpacing(20)
 
             # Campo Usuario
             user_frame = QFrame()
             user_frame.setStyleSheet("""
                 QFrame {
-                    border: 2px solid #e2e8f0;
-                    border-radius: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 4px;
                     background: white;
+                    min-height: 32px;
+                    max-height: 32px;
                 }
                 QFrame:focus-within {
                     border-color: #2563eb;
                 }
             """)
             user_layout = QHBoxLayout(user_frame)
-            user_layout.setContentsMargins(12, 12, 12, 12)
-            user_layout.setSpacing(10)
+            user_layout.setContentsMargins(8, 6, 8, 6)
+            user_layout.setSpacing(6)
 
             user_icon = QLabel("👤")
-            user_icon.setStyleSheet("font-size: 18px;")
+            user_icon.setStyleSheet("font-size: 12px;")
             user_icon.setFixedWidth(24)
 
             self.user_input = QLineEdit()
             self.user_input.setPlaceholderText("Usuario o email")
+            self.user_input.setMinimumHeight(20)
+            self.user_input.setMaximumHeight(20)
             self.user_input.setStyleSheet("""
                 QLineEdit {
                     border: none;
-                    font-size: 14px;
+                    font-size: 12px;
                     background: transparent;
+                    padding: 4px 6px;
+                    color: #374151;
+                }
+                QLineEdit::placeholder {
+                    color: #9ca3af;
                 }
                 QLineEdit:focus {
                     outline: none;
@@ -666,30 +671,39 @@ except ImportError:
             pass_frame = QFrame()
             pass_frame.setStyleSheet("""
                 QFrame {
-                    border: 2px solid #e2e8f0;
-                    border-radius: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 4px;
                     background: white;
+                    min-height: 32px;
+                    max-height: 32px;
                 }
                 QFrame:focus-within {
                     border-color: #2563eb;
                 }
             """)
             pass_layout = QHBoxLayout(pass_frame)
-            pass_layout.setContentsMargins(12, 12, 12, 12)
-            pass_layout.setSpacing(10)
+            pass_layout.setContentsMargins(8, 6, 8, 6)
+            pass_layout.setSpacing(6)
 
             pass_icon = QLabel("🔒")
-            pass_icon.setStyleSheet("font-size: 18px;")
+            pass_icon.setStyleSheet("font-size: 12px;")
             pass_icon.setFixedWidth(24)
 
             self.pass_input = QLineEdit()
             self.pass_input.setPlaceholderText("Contraseña")
             self.pass_input.setEchoMode(QLineEdit.EchoMode.Password)
+            self.pass_input.setMinimumHeight(20)
+            self.pass_input.setMaximumHeight(20)
             self.pass_input.setStyleSheet("""
                 QLineEdit {
                     border: none;
-                    font-size: 14px;
+                    font-size: 12px;
                     background: transparent;
+                    padding: 4px 6px;
+                    color: #374151;
+                }
+                QLineEdit::placeholder {
+                    color: #9ca3af;
                 }
                 QLineEdit:focus {
                     outline: none;
@@ -758,31 +772,8 @@ except ImportError:
                 }
             """)
 
-            # Biometric login (si está disponible)
-            biometric_layout = QHBoxLayout()
-            if self.biometric_available:
-                self.biometric_btn = QPushButton("🔐 Login Biométrico")
-                self.biometric_btn.setStyleSheet("""
-                    QPushButton {
-                        background: #f8fafc;
-                        color: #2563eb;
-                        border: 2px solid #e2e8f0;
-                        border-radius: 8px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        font-weight: 500;
-                    }
-                    QPushButton:hover {
-                        background: #e2e8f0;
-                        border-color: #2563eb;
-                    }
-                """)
-                self.biometric_btn.clicked.connect(self._attempt_biometric_login)
-                biometric_layout.addWidget(self.biometric_btn)
 
             options_layout.addWidget(self.remember_me)
-            if self.biometric_available:
-                options_layout.addLayout(biometric_layout)
 
             form_layout.addLayout(options_layout)
 
@@ -800,11 +791,12 @@ except ImportError:
                         stop:0 #2563eb, stop:1 #1d4ed8);
                     color: white;
                     border: none;
-                    border-radius: 8px;
-                    padding: 12px 24px;
-                    font-size: 16px;
-                    font-weight: bold;
-                    min-height: 48px;
+                    border-radius: 4px;
+                    padding: 6px 14px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    min-height: 26px;
+                    max-width: 120px;
                 }
                 QPushButton:hover {
                     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
@@ -1093,14 +1085,6 @@ except ImportError:
                             }
                         """)
 
-        def _attempt_biometric_login(self):
-            """Intenta login biométrico."""
-            from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.information(
-                None,
-                "Login Biométrico",
-                "Funcionalidad de login biométrico próximamente disponible."
-            )
 
         def _show_forgot_password(self):
             """Muestra diálogo de recuperación de contraseña."""
@@ -1166,25 +1150,40 @@ except ImportError:
                                   "Por favor complete el captcha de seguridad.")
                 return
 
-            # Intentar login
+            # Intentar login usando la base de datos real
             success = False
-            if self.security_manager and hasattr(self.security_manager, 'login'):
-                success = self.security_manager.login(username, password)
-            else:
-                # Fallback: verificar credenciales de desarrollo
-                if username == self.dev_user and password == self.dev_password:
+            user_data = None
+            
+            try:
+                # Usar la base de datos real con hash SHA-256
+                from rexus.core.database import UsersDatabaseConnection
+                import hashlib
+                
+                db = UsersDatabaseConnection()
+                password_hash = hashlib.sha256(password.encode()).hexdigest()
+                user_data = db.validate_user_credentials(username, password_hash)
+                
+                if user_data:
                     success = True
+                    logger.info("[LOGIN] Login exitoso desde BD: %s", username)
                 else:
-                    # Verificar si es usuario admin fallback
-                    success = username == "admin" and password == os.environ.get("FALLBACK_ADMIN_PASSWORD", "admin123")
+                    logger.warning("[LOGIN] Credenciales invalidas para: %s", username)
+                    
+            except Exception as e:
+                logger.error("[LOGIN] Error conectando a BD: %s", e)
+                # Solo fallback si no se puede conectar a BD
+                if self.security_manager and hasattr(self.security_manager, 'login'):
+                    success = self.security_manager.login(username, password)
 
             if success:
                 self.login_successful = True
                 self.failed_attempts = 0
                 self.captcha_required = False
 
-                # Obtener datos del usuario
-                if self.security_manager and hasattr(self.security_manager, 'get_current_user'):
+                # Obtener datos del usuario desde BD o fallback
+                if user_data:  # Datos desde BD
+                    self.user_data = user_data
+                elif self.security_manager and hasattr(self.security_manager, 'get_current_user'):
                     self.user_data = self.security_manager.get_current_user()
                 else:
                     self.user_data = {
@@ -2408,7 +2407,7 @@ def main():
 
         # Mostrar diálogo de login
         login_dialog = LoginDialog(security_manager=security_manager)
-        if login_dialog.exec() == LoginDialog.Accepted:
+        if login_dialog.exec() == QDialog.DialogCode.Accepted:
             user_data = login_dialog.get_user_data()
             modulos_permitidos = login_dialog.get_modulos_permitidos()
 
