@@ -47,10 +47,10 @@ try:
 except ImportError:
     # Fallback si el logger no está disponible
     def get_logger(name): return None
-    def log_info(msg, comp="general"): logger.info({msg})
-    def log_error(msg, comp="general"): logger.error({msg})
+    def log_info(msg, comp="general"): logger.info(f"{msg}")
+    def log_error(msg, comp="general"): logger.error(f"{msg}")
     def log_critical(msg, comp="general"): print(f"[CRITICAL] {msg}")
-    def log_warning(msg, comp="general"): logger.warning({msg})
+    def log_warning(msg, comp="general"): logger.warning(f"{msg}")
     def log_security(level, msg, user=None): print(f"[SECURITY-{level}] {msg}")
     LOGGING_AVAILABLE = False
 
@@ -96,7 +96,7 @@ from PyQt6.QtWidgets import (
 # Imports del core de Rexus
 from rexus.core.login_dialog import LoginDialog
 from rexus.core.module_manager import module_manager
-from rexus.main.dashboard_premium import PremiumDashboard
+# from rexus.main.dashboard_premium import PremiumDashboard  # TODO: Implementar dashboard premium
 
 
 def initialize_security_manager():
@@ -335,7 +335,7 @@ class MainWindow(QMainWindow):
                 print("[STYLE] Fallback a estilos por defecto")
 
         except Exception as e:
-            logger.warning(Error inicializando StyleManager: {e})
+            logger.warning(f"Error inicializando StyleManager: {e}")
             self.style_manager = None
 
     def _init_ui(self):
@@ -438,7 +438,7 @@ class MainWindow(QMainWindow):
             ("⚙️", "Configuración", "Configuración del sistema"),
         ]
 
-        logger.debug(Módulos permitidos: {self.modulos_permitidos})
+        logger.debug(f"Módulos permitidos:{self.modulos_permitidos}")
 
         for emoji, nombre, descripcion in modulos:
             # Verificar si el usuario tiene permisos para este módulo
@@ -979,18 +979,18 @@ title_text,
         """Crea una tarjeta KPI moderna y limpia"""
         card = QFrame()
         card.setStyleSheet(f"""
-            QFrame {{
+            QFrame {{{{
                 background-color: white;
                 border: 1px solid #e1e4e8;
                 border-left: 4px solid {color};
                 border-radius: 6px;
                 padding: 16px;
                 margin: 4px;
-            }}
-            QFrame:hover {{
+            }}}}
+            QFrame:hover {{{{
                 background-color: #f6f8fa;
                 border: 1px solid #d0d7de;
-            }}
+            }}}}
         """)
 
         layout = QVBoxLayout(card)
@@ -1229,7 +1229,7 @@ text,
                     self.show_module(modulo)
                     break
         except Exception as e:
-            logger.error(f"Error navegando a módulo {module_name}: {e}"))
+            logger.error(f"Error navegando a módulo {module_name}: {e}")
 
     def cargar_modulo(self, module_name):
         """Carga un módulo específico - método requerido por PremiumDashboard."""
@@ -1398,7 +1398,7 @@ text,
             self.content_stack.setCurrentWidget(module_widget)
 
         except Exception as e:
-            logger.error(f"Error cargando módulo {module_name}: {e}"))
+            logger.error(f"Error cargando módulo {module_name}: {e}")
             # Crear fallback con error específico
             fallback_widget = self._create_fallback_module(module_name, str(e))
             self.content_stack.addWidget(fallback_widget)
@@ -1484,7 +1484,7 @@ text,
             view = AdministracionView()
             return view
         except Exception as e:
-            logger.error(f"Error creando administración real: {e}"))
+            logger.error(f"Error creando administración real: {e}")
             return self._create_fallback_module("Administración", str(e))
 
     def _create_inventario_module(self) -> QWidget:
@@ -1499,7 +1499,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1513,7 +1513,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando inventario: {e}"))
+            logger.error(f"Error crítico creando inventario: {e}")
             return self._create_fallback_module("Inventario", str(e))
 
     def _create_contabilidad_module(self) -> QWidget:
@@ -1538,7 +1538,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1552,7 +1552,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando contabilidad: {e}"))
+            logger.error(f"Error crítico creando contabilidad: {e}")
             return self._create_fallback_module("Contabilidad", str(e))
 
     def _create_obras_module(self) -> QWidget:
@@ -1567,7 +1567,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1581,7 +1581,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando obras: {e}"))
+            logger.error(f"Error crítico creando obras: {e}")
             return self._create_fallback_module("Obras", str(e))
 
     def _create_configuracion_module(self) -> QWidget:
@@ -1605,7 +1605,7 @@ text,
             return view
 
         except Exception as e:
-            logger.error(f"Error creando configuración real: {e}"))
+            logger.error(f"Error creando configuración real: {e}")
             # Fallback a widget simple
             return self._create_fallback_module("Configuración", str(e))
 
@@ -1625,7 +1625,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1639,7 +1639,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando vidrios: {e}"))
+            logger.error(f"Error crítico creando vidrios: {e}")
             return self._create_fallback_module("Vidrios", str(e))
 
     def _create_herrajes_module(self) -> QWidget:
@@ -1654,7 +1654,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1668,7 +1668,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando herrajes: {e}"))
+            logger.error(f"Error crítico creando herrajes: {e}")
             return self._create_fallback_module("Herrajes", str(e))
 
     def _create_pedidos_module(self) -> QWidget:
@@ -1683,7 +1683,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1697,7 +1697,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando pedidos: {e}"))
+            logger.error(f"Error crítico creando pedidos: {e}")
             return self._create_fallback_module("Pedidos", str(e))
 
     def _create_logistica_module(self) -> QWidget:
@@ -1712,7 +1712,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1726,7 +1726,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando logística: {e}"))
+            logger.error(f"Error crítico creando logística: {e}")
             return self._create_fallback_module("Logística", str(e))
 
     def _create_usuarios_module(self) -> QWidget:
@@ -1741,7 +1741,7 @@ text,
             try:
                 db_connection = UsersDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1755,7 +1755,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando usuarios: {e}"))
+            logger.error(f"Error crítico creando usuarios: {e}")
             return self._create_fallback_module("Usuarios", str(e))
 
     def _create_auditoria_module(self) -> QWidget:
@@ -1770,7 +1770,7 @@ text,
             try:
                 db_connection = AuditoriaDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1784,7 +1784,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando auditoría: {e}"))
+            logger.error(f"Error crítico creando auditoría: {e}")
             return self._create_fallback_module("Auditoría", str(e))
 
     def _create_compras_module(self) -> QWidget:
@@ -1799,7 +1799,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1813,7 +1813,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando compras: {e}"))
+            logger.error(f"Error crítico creando compras: {e}")
             return self._create_fallback_module("Compras", str(e))
 
     def _create_mantenimiento_module(self) -> QWidget:
@@ -1828,7 +1828,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                logger.error(f"Error BD: {e}, usando datos demo"))
+                logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1842,7 +1842,7 @@ text,
             )
 
         except Exception as e:
-            logger.error(f"Error crítico creando mantenimiento: {e}"))
+            logger.error(f"Error crítico creando mantenimiento: {e}")
             return self._create_fallback_module("Mantenimiento", str(e))
 
     def _create_fallback_module(self, module_name: str, error_details: str | None = None) -> QWidget:
@@ -1958,9 +1958,15 @@ def main():
     print("[LOG 4.1] Inicializando QtWebEngine de forma robusta...")
 
     # Usar el gestor robusto de WebEngine
-    from rexus.utils.webengine_manager import webengine_manager
-
-    qtwebengine_available = webengine_manager.is_webengine_available()
+    # from rexus.utils.webengine_manager import webengine_manager  # TODO: Implementar webengine_manager
+    
+    # Simple fallback para WebEngine
+    qtwebengine_available = False
+    try:
+        from PyQt6 import QtWebEngineWidgets
+        qtwebengine_available = True
+    except ImportError:
+        pass
 
     if qtwebengine_available:
         print("[LOG 4.1] QtWebEngine disponible y inicializado")
@@ -2074,9 +2080,9 @@ def main():
         if backup_initialized:
             print("[CHECK] Sistema de backup automático inicializado")
         else:
-            logger.warning(Sistema de backup no se pudo inicializar, continuando sin backup automático)
+            logger.warning(f"Sistema de backup no se pudo inicializar, continuando sin backup automático")
     except Exception as e:
-        logger.warning(Error inicializando sistema de backup: {e})
+        logger.warning(f"Error inicializando sistema de backup:{e}")
 
     # Crear dialog de login moderno
     login_dialog = LoginDialog()
@@ -2139,7 +2145,7 @@ def main():
             )
             sys.exit(1)
         if not user_data:
-            logger.error([LOGIN] Error: No se pudo obtener datos del usuario)
+            logger.error(f"[LOGIN] Error: No se pudo obtener datos del usuario")
             return
 
         # [HOT] SOLUCIÓN CRÍTICA: Establecer contexto de seguridad ANTES de obtener módulos
@@ -2159,7 +2165,7 @@ def main():
                     not diagnosis.get("has_admin_access")
                     and user_data.get("role", "").upper() == "ADMIN"
                 ):
-                    logger.warning([SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema...)
+                    logger.warning(f"[SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema...")
 
             # Ahora obtener módulos permitidos
             modulos_permitidos = security_manager.get_user_modules(
@@ -2176,7 +2182,7 @@ def main():
                 user_data.get("role", "").upper() == "ADMIN"
                 and len(modulos_permitidos) < 12
             ):
-                logger.warning([SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12)
+                logger.warning(f"[SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12")
                 print(
                     f"[WARN] [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'"
                 )
@@ -2244,7 +2250,7 @@ def main():
         app.main_window = main_window_instance
 
     def on_login_failed(error_message):
-        logger.error([LOGIN] Autenticación fallida: {error_message})
+        logger.error(f"[LOGIN] Autenticación fallida:{error_message}")
 
     login_dialog.login_successful.connect(on_login_success)
     login_dialog.login_failed.connect(on_login_failed)

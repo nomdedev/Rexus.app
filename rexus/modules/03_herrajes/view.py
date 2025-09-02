@@ -417,7 +417,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 }}
                 QPushButton:hover {{
                     background-color: #0056b3;
-                }}
+                }
             """)
         elif estilo == "danger":
             boton.setStyleSheet(f"""
@@ -428,10 +428,10 @@ class HerrajesView(QWidget, ModuleExportMixin):
                     border-radius: 4px;
                     padding: 5px 15px;
                     font-weight: bold;
-                }}
+                }
                 QPushButton:hover {{
                     background-color: #c82333;
-                }}
+                }
             """)
         elif estilo == "success":
             boton.setStyleSheet(f"""
@@ -442,10 +442,10 @@ class HerrajesView(QWidget, ModuleExportMixin):
                     border-radius: 4px;
                     padding: 5px 15px;
                     font-weight: bold;
-                }}
+                }
                 QPushButton:hover {{
                     background-color: #218838;
-                }}
+                }
             """)
         elif estilo == "info":
             boton.setStyleSheet(f"""
@@ -456,10 +456,10 @@ class HerrajesView(QWidget, ModuleExportMixin):
                     border-radius: 4px;
                     padding: 5px 15px;
                     font-weight: bold;
-                }}
+                }
                 QPushButton:hover {{
                     background-color: #138496;
-                }}
+                }
             """)
         else:  # secondary
             boton.setStyleSheet(f"""
@@ -473,7 +473,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 }}
                 QPushButton:hover {{
                     background-color: #5a6268;
-                }}
+                }
             """)
 
         return boton

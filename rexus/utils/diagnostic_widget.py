@@ -559,15 +559,15 @@ class DiagnosticWidget(QWidget):
         try:
             report_content = f"""
 === REPORTE DE ERROR DEL MÓDULO {self.module_name.upper()} ===
-Fecha: {__import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+Fecha: {__import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M:%S}
 Sistema: {sys.platform}
 Python: {sys.version}
 
 ERROR PRINCIPAL:
-{self.error_info.get("error", "N/A")}
+{self.error_info.get("error", "N/A}
 
 TRACEBACK:
-{self.error_info.get("traceback", "N/A")}
+{self.error_info.get("traceback", "N/A}
 
 DIAGNÓSTICOS:
 {chr(10).join([f"- {d['description']}: {d['status']}" for d in self.run_diagnostics()])}

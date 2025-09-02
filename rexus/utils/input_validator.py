@@ -178,13 +178,13 @@ class InputValidator:
 
             # Verificar longitud máxima general
             if len(str_value) > self.max_input_length:
-                logger.warning(f"Entrada demasiado larga detectada en {field_name}: {len(str_value)} caracteres")
+                logger.warning(f"Entrada demasiado larga detectada en {field_name}: {len(str_value") caracteres")
                 return False, f"{field_name} excede la longitud máxima permitida", None
 
             # Detectar ataques de seguridad
             is_attack, attack_type = self._detect_security_threats(str_value, field_name)
             if is_attack:
-                logger.error(f"Intento de ataque detectado en {field_name}: {attack_type}")
+                logger.error(f"Intento de ataque detectado en {field_name}: {attack_type}"
                 return False, f"Entrada no válida detectada en {field_name}", None
 
             # Aplicar validación específica por tipo
@@ -202,7 +202,7 @@ class InputValidator:
                 return True, "", sanitized
 
         except Exception as e:
-            logger.error(f"Error validando entrada {field_name}: {e}")
+            logger.error(f"Error validando entrada {field_name}: {e}"
             return False, f"Error interno validando {field_name}", None
 
     def _detect_security_threats(self, value: str, field_name: str) -> Tuple[bool, str]:
@@ -212,25 +212,25 @@ class InputValidator:
         # Verificar SQL injection
         for pattern in self.sql_patterns:
             if re.search(pattern, value_lower, re.IGNORECASE):
-                logger.warning(f"Patrón SQL injection detectado en {field_name}: {pattern}")
+                logger.warning(f"Patrón SQL injection detectado en {field_name}: {pattern}"
                 return True, "SQL Injection"
 
         # Verificar XSS
         for pattern in self.xss_patterns:
             if re.search(pattern, value_lower, re.IGNORECASE):
-                logger.warning(f"Patrón XSS detectado en {field_name}: {pattern}")
+                logger.warning(f"Patrón XSS detectado en {field_name}: {pattern}"
                 return True, "XSS Attack"
 
         # Verificar path traversal
         for pattern in self.path_traversal_patterns:
             if re.search(pattern, value, re.IGNORECASE):
-                logger.warning(f"Patrón path traversal detectado en {field_name}: {pattern}")
+                logger.warning(f"Patrón path traversal detectado en {field_name}: {pattern}"
                 return True, "Path Traversal"
 
         # Verificar command injection
         for pattern in self.command_injection_patterns:
             if re.search(pattern, value_lower, re.IGNORECASE):
-                logger.warning(f"Patrón command injection detectado en {field_name}: {pattern}")
+                logger.warning(f"Patrón command injection detectado en {field_name}: {pattern}"
                 return True, "Command Injection"
 
         return False, ""

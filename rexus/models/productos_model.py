@@ -187,7 +187,7 @@ class ProductosModel:
 
             self.db_connection.commit()
 
-            logger.info(f"Producto creado: ID {product_id}, código {sanitized_data['codigo']}")
+            logger.info(f"Producto creado: ID {product_id}, código {sanitized_data['codigo']}"
 
             return {
                 'success': True,
@@ -229,7 +229,7 @@ class ProductosModel:
             return None
 
         except Exception as e:
-            logger.error(f"Error obteniendo producto por ID {product_id}: {e}")
+            logger.error(f"Error obteniendo producto por ID {product_id}: {e}"
             return None
 
     def get_product_by_code(self, codigo: str) -> Optional[Dict[str, Any]]:
@@ -258,7 +258,7 @@ class ProductosModel:
             return None
 
         except Exception as e:
-            logger.error(f"Error obteniendo producto por código {codigo}: {e}")
+            logger.error(f"Error obteniendo producto por código {codigo}: {e}"
             return None
 
     def search_products(self, filters: Dict[str, Any] = None, page: int = 1,
@@ -392,7 +392,7 @@ class ProductosModel:
 
             self.db_connection.commit()
 
-            logger.info(f"Stock actualizado - Producto {product_id}: {current_stock} → {new_stock}")
+            logger.info(f"Stock actualizado - Producto {product_id}: {current_stock} → {new_stock}"
 
             return {
                 'success': True,
@@ -402,7 +402,7 @@ class ProductosModel:
             }
 
         except Exception as e:
-            logger.error(f"Error actualizando stock del producto {product_id}: {e}")
+            logger.error(f"Error actualizando stock del producto {product_id}: {e}"
             if self.db_connection:
                 self.db_connection.rollback()
             return {
@@ -451,7 +451,7 @@ HERRAJE,
             return products
 
         except Exception as e:
-            logger.error(f"Error obteniendo productos por tipo {tipo_producto}: {e}")
+            logger.error(f"Error obteniendo productos por tipo {tipo_producto}: {e}"
             return []
 
     def get_low_stock_products(self, tipo_producto: str = None) -> List[Dict[str, Any]]:

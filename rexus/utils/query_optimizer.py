@@ -88,7 +88,7 @@ class QueryBatcher:
                 callback(result)
                 
         except Exception as e:
-            logger.error(f"Error ejecutando batch {query_key}: {e}")
+            logger.error(f"Error ejecutando batch {query_key}: {e")"
             # Notificar error a todos los callbacks
             for callback in batch_callbacks:
                 callback(None)
@@ -104,7 +104,7 @@ class QueryBatcher:
         Returns:
             List[Any]: Lista de resultados correspondientes
         """
-        raise NotImplementedError("Subclases deben implementar _execute_batch_query")
+        raise NotImplementedError("Subclases deben implementar _execute_batch_query}
 
     def flush_all(self):
         """Ejecuta todos los batches pendientes."""
@@ -185,7 +185,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[row[0]] = row  # Asumiendo que ID es la primera columna
                 
             except Exception as e:
-                logger.error(f"Error en batch query para {table}: {e}")
+                logger.error(f"Error en batch query para {table}: {e}"
         
         # Organizar resultados en el orden original
         for i, item in enumerate(batch_data):
@@ -235,7 +235,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[parent_id] = count
                 
             except Exception as e:
-                logger.error(f"Error en count batch para {table}: {e}")
+                logger.error(f"Error en count batch para {table}: {e}"
         
         # Organizar resultados (0 si no hay coincidencias)
         for i, item in enumerate(batch_data):
@@ -287,7 +287,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[parent_id].append(record)
                 
             except Exception as e:
-                logger.error(f"Error en relations batch para {table}: {e}")
+                logger.error(f"Error en relations batch para {table}: {e}"
         
         # Organizar resultados
         for i, item in enumerate(batch_data):
@@ -336,7 +336,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[value] = value in existing_values
                 
             except Exception as e:
-                logger.error(f"Error en exists batch para {table}: {e}")
+                logger.error(f"Error en exists batch para {table}: {e}"
         
         # Organizar resultados
         for i, item in enumerate(batch_data):
@@ -523,7 +523,7 @@ class QueryOptimizer:
             return result
             
         except Exception as e:
-            logger.error(f"Error en get_by_id para {table}:{id_value}: {e}")
+            logger.error(f"Error en get_by_id para {table}:{id_value}: {e}"
             return None
 
     def get_by_ids_batched(self, table: str, id_values: List[int], 
@@ -557,12 +557,12 @@ class QueryOptimizer:
                 result_map[row[0]] = row
             
             self._stats['batched_queries'] += 1
-            logger.debug(f"Batch query ejecutada para {len(id_values)} IDs en {table}")
+            logger.debug(f"Batch query ejecutada para {len(id_values)} IDs en {table}"
             
             return result_map
             
         except Exception as e:
-            logger.error(f"Error en get_by_ids_batched para {table}: {e}")
+            logger.error(f"Error en get_by_ids_batched para {table}: {e}"
             return {}
 
     def count_relations(self, table: str, foreign_key: str, 
@@ -603,7 +603,7 @@ class QueryOptimizer:
             return result_map
             
         except Exception as e:
-            logger.error(f"Error en count_relations para {table}: {e}")
+            logger.error(f"Error en count_relations para {table}: {e}"
             return {pid: 0 for pid in parent_ids}
 
     def invalidate_cache(self, pattern: str = None):

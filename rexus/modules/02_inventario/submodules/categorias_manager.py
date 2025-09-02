@@ -433,7 +433,7 @@ class CategoriasManager:
                 }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error creando categoría {nombre_categoria}: {e}")
+            self.logger.error(f"Error creando categoría {nombre_categoria}: {e}"
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -542,7 +542,7 @@ categoria_actual: str,
             self.db_connection.commit()
             cursor.close()
 
-            self.logger.info(f"Categoría renombrada: {categoria_actual_limpia} -> {categoria_nueva_limpia}, {productos_actualizados} productos actualizados")
+            self.logger.info(f"Categoría renombrada: {categoria_actual_limpia} -> {categoria_nueva_limpia}, {productos_actualizados") productos actualizados")"
 
             return {
                 'success': True,
@@ -636,7 +636,7 @@ categoria_origen: str,
             self.db_connection.commit()
             cursor.close()
 
-            self.logger.info(f"Productos migrados: {productos_migrados} de {origen_limpia} a {destino_limpia}")
+            self.logger.info(f"Productos migrados: {productos_migrados} de {origen_limpia} a {destino_limpia}"
 
             return {
                 'success': True,

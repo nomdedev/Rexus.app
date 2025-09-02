@@ -1355,3 +1355,5 @@ ERRORES CRÍTICOS:
 2025-08-24 21:58:58 | ERROR    | rexus.utils.dependency_validator |   ❌ ModuleManager falta método crítico: create_module_safely
 2025-08-25 09:52:44 | ERROR    | rexus.main      | [LOGIN] Autenticación fallida: Credenciales incorrectas. 4 intentos restantes.
 2025-08-25 09:53:14 | ERROR    | rexus.main      | [LOGIN] Autenticación fallida: Credenciales incorrectas. 3 intentos restantes.
+2025-09-01 13:23:39 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-09-01 14:40:25 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar

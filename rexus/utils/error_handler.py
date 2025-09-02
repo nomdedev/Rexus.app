@@ -22,7 +22,7 @@ class RexusErrorHandler:
         self.logger.error(error_msg,
 exc_info=(exc_type,
             exc_value,
-            exc_traceback))
+            exc_traceback)
 
         # Mostrar error amigable al usuario
         self.show_user_friendly_error(str(exc_value))
@@ -53,7 +53,7 @@ def error_boundary(func: Callable) -> Callable:
             return func(*args, **kwargs)
         except Exception as e:
             logger = get_logger('errors')
-            logger.error(f"Error in {func.__name__}: {str(e)}", exc_info=True)
+            logger.error(f"Error in {func.__name__}: {str(e")", exc_info=True)
 
             # Re-raise para que el llamador pueda manejar el error
             raise

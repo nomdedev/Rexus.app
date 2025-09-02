@@ -345,7 +345,7 @@ reserva_id: int,
                 }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error actualizando reserva {reserva_id}: {e}")
+            self.logger.error(f"Error actualizando reserva {reserva_id}: {e}"
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -425,7 +425,7 @@ reserva_id: int,
             if reserva.get('estado') != 'ACTIVA':
                 return {
                     'success': False,
-                    'error': f'Solo se pueden consumir reservas activas. Estado actual: {reserva.get("estado")}'
+                    'error': f'Solo se pueden consumir reservas activas. Estado actual: {reserva.get("estado}'
                 }
 
             # Determinar cantidad a consumir
@@ -493,7 +493,7 @@ reserva_id: int,
             self.db_connection.commit()
             cursor.close()
 
-            self.logger.info(f"Reserva {reserva_id} consumida: {cantidad_consumida} unidades")
+            self.logger.info(f"Reserva {reserva_id} consumida: {cantidad_consumida") unidades")"
 
             return {
                 'success': True,
@@ -502,7 +502,7 @@ reserva_id: int,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error consumiendo reserva {reserva_id}: {e}")
+            self.logger.error(f"Error consumiendo reserva {reserva_id}: {e}"
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -808,7 +808,7 @@ datos: Dict[str,
             return stock_total - stock_reservado
 
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error(f"Error obteniendo stock disponible para producto {producto_id}: {e}")
+            self.logger.error(f"Error obteniendo stock disponible para producto {producto_id}: {e}"
             return None
 
     def _obtener_reserva_por_id(self, reserva_id: int) -> Optional[Dict[str, Any]]:
@@ -923,7 +923,7 @@ reserva_id: int,
             cursor.close()
 
             if filas_afectadas > 0:
-                self.logger.info(f"Reserva {reserva_id} cambió de {estado_actual} a {nuevo_estado}")
+                self.logger.info(f"Reserva {reserva_id} cambió de {estado_actual} a {nuevo_estado}"
                 return {
                     'success': True,
                     'message': f'Reserva {nuevo_estado.lower()} exitosamente'
@@ -935,7 +935,7 @@ reserva_id: int,
                 }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error cambiando estado de reserva {reserva_id}: {e}")
+            self.logger.error(f"Error cambiando estado de reserva {reserva_id}: {e}"
             if self.db_connection:
                 try:
                     self.db_connection.rollback()

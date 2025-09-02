@@ -305,7 +305,7 @@ str]],
         if context_data:
             # Reemplazar placeholders en el mensaje
             for key, value in context_data.items():
-                placeholder = f"{{{key}}}"
+                placeholder = f"{{{key}}"
                 message = message.replace(placeholder, str(value))
                 suggestion = suggestion.replace(placeholder, str(value))
 

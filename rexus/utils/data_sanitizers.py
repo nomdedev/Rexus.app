@@ -172,11 +172,11 @@ class NumericSanitizer:
             
             # Verificar rango
             if min_value is not None and int_value < min_value:
-                logger.warning(f"Valor entero {int_value} menor que mínimo {min_value}")
+                logger.warning(f"Valor entero {int_value} menor que mínimo {min_value}"
                 return min_value
             
             if max_value is not None and int_value > max_value:
-                logger.warning(f"Valor entero {int_value} mayor que máximo {max_value}")
+                logger.warning(f"Valor entero {int_value} mayor que máximo {max_value}"
                 return max_value
             
             return int_value
@@ -215,7 +215,7 @@ class NumericSanitizer:
             
             # Verificar número máximo de dígitos
             if len(str(decimal_value).replace('.', '').replace('-', '')) > max_digits:
-                logger.warning(f"Decimal {decimal_value} excede máximo de dígitos {max_digits}")
+                logger.warning(f"Decimal {decimal_value} excede máximo de dígitos {max_digits}"
                 return None
             
             return decimal_value
@@ -695,7 +695,7 @@ class UnifiedSanitizer:
             try:
                 return sanitizer(value, **kwargs)
             except Exception as e:
-                logger.error(f"Error sanitizando {data_type}: {e}")
+                logger.error(f"Error sanitizando {data_type}: {e}"
                 return None
         else:
             logger.warning(f"Tipo de sanitizador no reconocido: {data_type}")

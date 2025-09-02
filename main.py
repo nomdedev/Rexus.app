@@ -35,7 +35,7 @@ def setup_environment():
 				# Configurar credenciales por defecto para desarrollo
 				os.environ.setdefault('REXUS_DEV_USER', 'admin')
 				os.environ.setdefault('REXUS_DEV_PASSWORD', 'admin')
-				os.environ.setdefault('REXUS_DEV_AUTO_LOGIN', 'true')
+				os.environ.setdefault('REXUS_DEV_AUTO_LOGIN', 'false')  # Seguridad: deshabilitado por defecto
 				print("[DEV] Usando credenciales por defecto: admin/admin")
 		else:
 			# Cargar configuración normal

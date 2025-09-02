@@ -152,7 +152,7 @@ query: str,
 
             except sqlite3.Error as e:
                 conn.rollback()
-                self.logger.error(f"Database query failed: {query[:100]}... Error: {e}")
+                self.logger.error(f"Database query failed: {query[:100]}... Error: {e}"
                 raise DatabaseConnectionError(f"Error en consulta: {e}")
 
     def execute_transaction(self, queries: list):

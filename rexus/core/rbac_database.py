@@ -734,13 +734,27 @@ user_id: int,
             access_by_result = dict(cursor.fetchall())
 
             # Recursos más accedidos
-            cursor.execute(f"""
-                SELECT resource, COUNT(*) as count
-                {base_query} {user_filter}
-                GROUP BY resource
-                ORDER BY count DESC
-                LIMIT 10
-            """, params)
+            if user_id:
+                resource_query = """
+                    SELECT resource, COUNT(*) as count
+                    FROM rbac_access_log
+                    WHERE timestamp > datetime('now', '-{} days')
+                    AND user_id = ?
+                    GROUP BY resource
+                    ORDER BY count DESC
+                    LIMIT 10
+                """.format(days)
+            else:
+                resource_query = """
+                    SELECT resource, COUNT(*) as count
+                    FROM rbac_access_log
+                    WHERE timestamp > datetime('now', '-{} days')
+                    GROUP BY resource
+                    ORDER BY count DESC
+                    LIMIT 10
+                """.format(days)
+            
+            cursor.execute(resource_query, params)
 
             top_resources = dict(cursor.fetchall())
 

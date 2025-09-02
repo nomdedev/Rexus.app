@@ -376,12 +376,12 @@ class DependencyValidator:
         if report['critical_errors']:
             print("\nERRORES CRÍTICOS:")
             for error in report['critical_errors']:
-                print(f"  ❌ {error}")
+                print(f"  [ERROR] {error}")
         
         if report['warnings']:
             print("\nADVERTENCIAS:")
             for warning in report['warnings']:
-                print(f"  ⚠️  {warning}")
+                print(f"  [WARNING] {warning}")
         
         print("\n" + "="*60)
 

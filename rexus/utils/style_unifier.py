@@ -55,7 +55,7 @@ class StyleUnifier:
             QTabWidget {{
                 border: none;
                 background: transparent;
-            }}
+            }
             QTabBar::tab {{
                 background: {colors['surface']};
                 color: {colors['text_secondary']};

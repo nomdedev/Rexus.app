@@ -88,7 +88,7 @@ query: str,
                 return results
 
         except Exception as e:
-            logger.error(f"Error ejecutando consulta: {query[:100]}... Error: {e}")
+            logger.error(f"Error ejecutando consulta: {query[:100]}... Error: {e")"
             raise
 
     def execute_non_query(self, query: str, params: Optional[Tuple] = None) -> int:
@@ -103,7 +103,7 @@ query: str,
             Número de filas afectadas
         """
         if not self._is_safe_query(query):
-            raise ValueError("Consulta SQL potencialmente insegura detectada")
+            raise ValueError("Consulta SQL potencialmente insegura detectada}
 
         params = params or ()
 
@@ -120,7 +120,7 @@ query: str,
                 return rows_affected
 
         except Exception as e:
-            logger.error(f"Error ejecutando query no-select: {query[:100]}... Error: {e}")
+            logger.error(f"Error ejecutando query no-select: {query[:100]}... Error: {e")"
             raise
 
     def execute_scalar(self, query: str, params: Optional[Tuple] = None) -> Any:
@@ -155,7 +155,7 @@ query: str,
             Número total de filas afectadas
         """
         if not self._is_safe_query(query):
-            raise ValueError("Consulta SQL potencialmente insegura detectada")
+            raise ValueError("Consulta SQL potencialmente insegura detectada}
 
         total_affected = 0
 
@@ -169,7 +169,7 @@ query: str,
                 if self.db_connection:
                     self.db_connection.commit()
 
-                logger.debug(f"Batch ejecutado. Operaciones: {len(params_list)}, Filas afectadas: {total_affected}")
+                logger.debug(f"Batch ejecutado. Operaciones: {len(params_list)}, Filas afectadas: {total_affected}"
                 return total_affected
 
         except Exception as e:

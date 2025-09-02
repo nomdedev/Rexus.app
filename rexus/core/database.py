@@ -144,29 +144,29 @@ class DatabaseConnection:
         try:
             if self.trusted:
                 connection_string = (
-                    f"DRIVER={{{self.driver}}};"
-                    f"SERVER={self.server};"
-                    f"DATABASE={self.database};"
-                    f"Trusted_Connection=yes;"
+                    "DRIVER={" + self.driver + "};"
+                    "SERVER=" + self.server + ";"
+                    "DATABASE=" + self.database + ";"
+                    "Trusted_Connection=yes;"
                 )
             else:
                 # String de conexión real (con contraseña)
                 real_connection_string = (
-                    f"DRIVER={{{self.driver}}};"
-                    f"SERVER={self.server};"
-                    f"DATABASE={self.database};"
-                    f"UID={self.username};"
-                    f"PWD={self.password};"
-                    f"TrustServerCertificate=yes;"
+                    "DRIVER={" + self.driver + "};"
+                    "SERVER=" + self.server + ";"
+                    "DATABASE=" + self.database + ";"
+                    "UID=" + self.username + ";"
+                    "PWD=" + self.password + ";"
+                    "TrustServerCertificate=yes;"
                 )
                 # String para mostrar (sin contraseña)
                 display_connection_string = (
-                    f"DRIVER={{{self.driver}}};"
-                    f"SERVER={self.server};"
-                    f"DATABASE={self.database};"
-                    f"UID={self.username};"
-                    f"PWD=******;"
-                    f"TrustServerCertificate=yes;"
+                    "DRIVER={" + self.driver + "};"
+                    "SERVER=" + self.server + ";"
+                    "DATABASE=" + self.database + ";"
+                    "UID=" + self.username + ";"
+                    "PWD=******;"
+                    "TrustServerCertificate=yes;"
                 )
             if self.trusted:
                 print(f"[DB] String de conexión: {connection_string}")
