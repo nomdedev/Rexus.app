@@ -56,11 +56,11 @@ class SQLQueryManager:
             if cursor:
                 cursor.close()
 
-    def execute_query(self,
-query: str,
-        params: Optional[Tuple] = None) -> List[Dict[str,
-        Any]]:
-        )
+    def execute_query(self, query: str, params: Optional[Tuple] = None) -> List[Dict[str, Any]]:
+        """
+        Ejecuta una consulta SELECT.
+
+        Args:
             query: Consulta SQL con placeholders (?)
             params: Parámetros para la consulta
 
@@ -84,15 +84,18 @@ query: str,
                 for row in cursor.fetchall():
                     results.append(dict(zip(columns, row)))
 
-                logger.debug(f"Query ejecutada exitosamente. Resultados: {len(results)})
+                logger.debug(f"Query ejecutada exitosamente. Resultados: {len(results)}")
                 return results
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error ejecutando query: {e}")
             raise
 
     def execute_non_query(self, query: str, params: Optional[Tuple] = None) -> int:
-        )
+        """
+        Ejecuta una consulta INSERT/UPDATE/DELETE.
+
+        Args:
             query: Consulta SQL con placeholders (?)
             params: Parámetros para la consulta
 
@@ -100,7 +103,7 @@ query: str,
             Número de filas afectadas
         """
         if not self._is_safe_query(query):
-            raise ValueError("Consulta SQL potencialmente insegura detectada}
+            raise ValueError("Consulta SQL potencialmente insegura detectada")
 
         params = params or ()
 
@@ -113,11 +116,13 @@ query: str,
                 if self.db_connection:
                     self.db_connection.commit()
 
-                logger.debug(f"Query no-select ejecutada. Filas afectadas: {rows_affected})
+                logger.debug(f"Query no-select ejecutada. Filas afectadas: {rows_affected}")
                 return rows_affected
 
         except Exception as e:
-            logger.error("))
+            logger.error(f"Error ejecutando query: {e}")
+            raise
+
     def execute_scalar(self, query: str, params: Optional[Tuple] = None) -> Any:
         """
         Ejecuta una consulta que retorna un valor único.
@@ -150,7 +155,7 @@ query: str,
             Número total de filas afectadas
         """
         if not self._is_safe_query(query):
-            raise ValueError("Consulta SQL potencialmente insegura detectada}
+            raise ValueError("Consulta SQL potencialmente insegura detectada")
 
         total_affected = 0
 
@@ -164,17 +169,22 @@ query: str,
                 if self.db_connection:
                     self.db_connection.commit()
 
-                logger.debug(f"Batch ejecutado. Operaciones: {len(params_list)}, Filas afectadas: {total_affected})
-            logger.error(")
+                logger.debug(f"Batch ejecutado. Operaciones: {len(params_list)}, Filas afectadas: {total_affected}")
+                return total_affected
+
+        except Exception as e:
+            logger.error(f"Error ejecutando batch: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             raise
 
-    def exists(self,
-table: str,
-        where_clause: str,
-        params: Optional[Tuple] = None) -> bool:
-        )
+    def exists(self, table: str, where_clause: str,
+              params: Optional[Tuple] = None) -> bool:
+        """
+        Verifica si existe un registro que cumple con la cláusula WHERE.
+
+        Args:
+            table: Nombre de la tabla
             where_clause: Cláusula WHERE con placeholders (?)
             params: Parámetros para la cláusula WHERE
 
@@ -184,7 +194,7 @@ table: str,
         # Sanitizar nombre de tabla
         table = self._sanitize_identifier(table)
 
-        query = f"SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1
+        query = f"SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1"
         result = self.execute_scalar(query, params)
 
         return result is not None
@@ -207,7 +217,7 @@ table: str,
         # Sanitizar nombre de tabla
         table = self._sanitize_identifier(table)
 
-        query = f"SELECT COUNT(*) FROM {table}
+        query = f"SELECT COUNT(*) FROM {table}"
         if where_clause:
             query += f" WHERE {where_clause}"
 
@@ -225,11 +235,11 @@ table: str,
             with self.get_cursor() as cursor:
                 return cursor.lastrowid
         except Exception as e:
-            logger.error("Error obteniendo último ID: {e})
+            logger.error(f"Error obteniendo último ID: {e}")
             return None
 
     def _is_safe_query(self, query: str) -> bool:
-        )
+        """
         Verifica que la consulta sea segura (uso básico de detección).
 
         Args:
@@ -249,13 +259,13 @@ table: str,
         dangerous_keywords = ['DROP', 'ALTER', 'CREATE', 'EXEC', 'EXECUTE']
         for keyword in dangerous_keywords:
             if keyword in query_upper:
-                logger.warning("Comando peligroso detectado: {keyword})
+                logger.warning(f"Comando peligroso detectado: {keyword}")
                 return False
 
         return True
 
     def _sanitize_identifier(self, identifier: str) -> str:
-        )
+        """
         Sanitiza identificadores de base de datos (nombres de tabla, columna).
 
         Args:
@@ -302,14 +312,16 @@ table: str,
             self.commit_transaction()
         except Exception as e:
             self.rollback_transaction()
-            logger.error("Transacción revertida debido a error: {e})
+            logger.error(f"Transacción revertida debido a error: {e}")
             raise
 
 # Instancia global para uso conveniente
 _global_sql_manager = None
 
 def get_sql_manager() -> SQLQueryManager:
-    )
+    """Obtiene la instancia global del gestor SQL."""
+    global _global_sql_manager
+    if _global_sql_manager is None:
         _global_sql_manager = SQLQueryManager()
     return _global_sql_manager
 

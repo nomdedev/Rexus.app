@@ -18,18 +18,16 @@ from rexus.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
-logger = logging.getLogger(__name__)
-
 
 @dataclass
 class InventoryItem:
     """Representa un item de inventario para sincronización."""
     codigo: str
     nombre: str
-    categoria_id: Optional[int]
-    cantidad: int
-    precio_unitario: float
-    proveedor_id: Optional[int]
+    categoria_id: Optional[int] = None
+    cantidad: int = 0
+    precio_unitario: float = 0.0
+    proveedor_id: Optional[int] = None
     observaciones: Optional[str] = None
 
 
@@ -60,7 +58,7 @@ class InventoryIntegration:
             bool: True si la integración fue exitosa
         """
         try:
-            logger.info(f"Procesando recepción completa para orden {orden_id})
+            logger.info(f"Procesando recepción completa para orden {orden_id}")
 
             # Obtener detalles de la orden
             detalles_orden = self._obtener_detalles_orden(orden_id)
@@ -74,7 +72,7 @@ class InventoryIntegration:
                 if self._actualizar_stock_inventario(item_recibido, detalles_orden):
                     items_procesados += 1
                 else:
-                    logger.warning(f"Error procesando item: {item_recibido})
+                    logger.warning(f"Error procesando item: {item_recibido}")
 
             # Registrar historial de integración
             self._registrar_integracion_inventario(
@@ -83,15 +81,16 @@ class InventoryIntegration:
                 len(items_recibidos)
             )
 
-            logger.info(f"Recepción procesada: {items_procesados}/{len(items_recibidos") items")"
+            logger.info(f"Recepción procesada: {items_procesados}/{len(items_recibidos)} items")
             return items_procesados == len(items_recibidos)
 
         except Exception as e:
-            logger.error("Error procesando recepción completa: {e}, exc_info=True)
+            logger.error(f"Error procesando recepción completa: {e}", exc_info=True)
             return False
 
     def _obtener_detalles_orden(self, orden_id: int) -> Optional[List[Dict]]:
-        )
+        """Obtiene los detalles de una orden de compra."""
+        try:
             cursor = self.compras_db.cursor()
             cursor.execute("""
                 SELECT
@@ -122,14 +121,17 @@ class InventoryIntegration:
             return detalles
 
         except Exception as e:
-            logger.error("Error obteniendo detalles de orden {orden_id}: {e})
+            logger.error(f"Error obteniendo detalles de orden {orden_id}: {e}")
+            return None
+
     def _actualizar_stock_inventario(self, item_recibido: Dict, detalles_orden: List[Dict]) -> bool:
-        )
+        """Actualiza el stock en inventario."""
+        try:
             codigo_producto = item_recibido.get('codigo_producto')
             cantidad_recibida = item_recibido.get('cantidad_recibida', 0)
 
             if not codigo_producto or cantidad_recibida <= 0:
-                logger.warning(f"Datos inválidos para actualización de stock: {item_recibido})
+                logger.warning(f"Datos inválidos para actualización de stock: {item_recibido}")
                 return False
 
             # Buscar detalle correspondiente
@@ -153,11 +155,12 @@ class InventoryIntegration:
                 )
 
         except Exception as e:
-            logger.error("Error actualizando stock: {e}, exc_info=True)
+            logger.error(f"Error actualizando stock: {e}", exc_info=True)
             return False
 
     def _producto_existe_en_inventario(self, codigo_producto: str) -> bool:
-        )
+        """Verifica si un producto existe en inventario."""
+        try:
             cursor = self.inventario_db.cursor()
             cursor.execute(
                 "SELECT COUNT(*) FROM inventario WHERE codigo = ?",
@@ -167,9 +170,12 @@ class InventoryIntegration:
             return count > 0
 
         except Exception as e:
-            logger.error("Error verificando existencia de producto {codigo_producto}: {e})
+            logger.error(f"Error verificando existencia de producto {codigo_producto}: {e}")
+            return False
+
     def _incrementar_stock_existente(self, codigo_producto: str, cantidad: int) -> bool:
-        )
+        """Incrementa el stock de un producto existente."""
+        try:
             cursor = self.inventario_db.cursor()
             cursor.execute("""
                 UPDATE inventario
@@ -185,9 +191,16 @@ class InventoryIntegration:
             ))
 
             self.inventario_db.commit()
-            logger.info("Stock incrementado para {codigo_producto}: +{cantidad})
-        cantidad: int) -> bool:
-        )
+            logger.info(f"Stock incrementado para {codigo_producto}: +{cantidad}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error incrementando stock: {e}", exc_info=True)
+            return False
+
+    def _crear_nuevo_item_inventario(self, codigo_producto: str, detalle: Dict, cantidad: int) -> bool:
+        """Crea un nuevo item de inventario."""
+        try:
             cursor = self.inventario_db.cursor()
             cursor.execute("""
                 INSERT INTO inventario (
@@ -210,18 +223,16 @@ class InventoryIntegration:
             ))
 
             self.inventario_db.commit()
-            logger.info(f"Nuevo item creado en inventario: {codigo_producto} ({cantidad} unidades))
+            logger.info(f"Nuevo item creado en inventario: {codigo_producto} ({cantidad} unidades)")
             return True
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error creando nuevo item en inventario: {e}", exc_info=True)
             return False
 
-    def _registrar_integracion_inventario(self,
-orden_id: int,
-        items_procesados: int,
-        total_items: int):
-        )
+    def _registrar_integracion_inventario(self, orden_id: int, items_procesados: int, total_items: int):
+        """Registra la integración de inventario."""
+        try:
             cursor = self.compras_db.cursor()
             cursor.execute("""
                 INSERT INTO integracion_inventario (
@@ -237,14 +248,22 @@ orden_id: int,
             ))
 
             self.compras_db.commit()
-            logger.info(f"Historial de integración registrado para orden {orden_id})
+            logger.info(f"Historial de integración registrado para orden {orden_id}")
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error registrando integración: {e}", exc_info=True)
 
     @auth_required
     def verificar_disponibilidad_stock(self, items_solicitud: List[Dict]) -> Dict[str, Any]:
-        )
+        """Verifica la disponibilidad de stock para los items solicitados."""
+        resultado = {
+            'disponible_completo': True,
+            'items_verificados': [],
+            'advertencias': []
+        }
+
+        try:
+            for item in items_solicitud:
                 codigo = item.get('codigo_producto')
                 cantidad_solicitada = item.get('cantidad', 0)
 
@@ -264,7 +283,7 @@ orden_id: int,
                 if not item_verificado['disponible']:
                     resultado['disponible_completo'] = False
                     resultado['advertencias'].append(
-                        f"Stock insuficiente para {codigo}: disponible {stock_actual}, solicitado {cantidad_solicitada}
+                        f"Stock insuficiente para {codigo}: disponible {stock_actual}, solicitado {cantidad_solicitada}"
                     )
 
                 resultado['items_verificados'].append(item_verificado)
@@ -272,11 +291,12 @@ orden_id: int,
             return resultado
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error verificando disponibilidad: {e}", exc_info=True)
             return {'disponible_completo': False, 'error': str(e)}
 
     def _obtener_stock_actual(self, codigo_producto: str) -> int:
-        )
+        """Obtiene el stock actual de un producto."""
+        try:
             cursor = self.inventario_db.cursor()
             cursor.execute(
                 "SELECT cantidad FROM inventario WHERE codigo = ? AND estado = 'ACTIVO'",
@@ -287,9 +307,12 @@ orden_id: int,
             return result[0] if result else 0
 
         except Exception as e:
-            logger.error("Error obteniendo stock para {codigo_producto}: {e})
+            logger.error(f"Error obteniendo stock para {codigo_producto}: {e}")
+            return 0
+
     def generar_reporte_integracion(self, fecha_inicio: datetime, fecha_fin: datetime) -> List[Dict]:
-        )
+        """Genera un reporte de integración de inventario."""
+        try:
             cursor = self.compras_db.cursor()
             cursor.execute("""
                 SELECT
@@ -319,15 +342,16 @@ orden_id: int,
                     'tasa_exito': (row[3] / row[4] * 100) if row[4] > 0 else 0
                 })
 
-            logger.info(f"Reporte de integración generado: {len(reporte)} registros)
+            logger.info(f"Reporte de integración generado: {len(reporte)} registros")
             return reporte
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error generando reporte: {e}", exc_info=True)
             return []
 
     def crear_tablas_integracion_si_no_existen(self):
-        )
+        """Crea las tablas de integración si no existen."""
+        try:
             cursor = self.compras_db.cursor()
 
             # Tabla para historial de integración
@@ -360,14 +384,17 @@ orden_id: int,
             logger.info("Tablas de integración verificadas/creadas exitosamente")
 
         except Exception as e:
-            logger.error("Error creando tablas de integración: {e})
+            logger.error(f"Error creando tablas de integración: {e}", exc_info=True)
 
 
 # Instancia global para uso en el módulo de compras
 _inventory_integration = None
 
+
 def get_inventory_integration(compras_db, inventario_db):
-    )
+    """Obtiene la instancia global de InventoryIntegration."""
+    global _inventory_integration
+    if _inventory_integration is None:
         _inventory_integration = InventoryIntegration(compras_db, inventario_db)
         _inventory_integration.crear_tablas_integracion_si_no_existen()
     return _inventory_integration

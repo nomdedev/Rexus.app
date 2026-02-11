@@ -17,12 +17,11 @@ try:
     from rexus.utils.sql_query_manager import SQLQueryManager
     SQL_SYSTEM_AVAILABLE = True
 except ImportError as e:
-    logger.warning("SQL System not available in contabilidad:{e})
+    logger.warning(f"SQL System not available in contabilidad:{e}")
     SQL_SYSTEM_AVAILABLE = False
 
 
 class ContabilidadModel:
-    )
     def __init__(self, db_connection=None):
         """
         Inicializa el modelo de contabilidad.
@@ -64,7 +63,7 @@ class ContabilidadModel:
 
         # Solo permitir nombres alfanuméricos y underscore
         if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
-            raise ValueError(f"Nombre de tabla inválido: {table_name})
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
 
         # Lista blanca de tablas permitidas
         allowed_tables = {
@@ -97,12 +96,12 @@ class ContabilidadModel:
                     (tabla,),
                 )
                 if cursor.fetchone():
-                    print(f"[CONTABILIDAD] Tabla '{tabla}' verificada correctamente.)
+                    print(f"[CONTABILIDAD] Tabla '{tabla}' verificada correctamente.")
                 else:
                     print(f"[ADVERTENCIA] La tabla '{tabla}' no existe en la base de datos.")
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error verificando tablas: {e})
+            print(f"[ERROR CONTABILIDAD] Error verificando tablas: {e}")
 
     # MÉTODOS PARA LIBRO CONTABLE
 
@@ -157,27 +156,22 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar el query SQL")
                 except Exception as e:
-                    logger.error("No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     # Fallback con query validada
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                    query = f)
+                    query = f"""
+                        SELECT
+                            id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
+                            referencia, debe, haber, saldo, estado, usuario_creacion,
+                            fecha_creacion, fecha_modificacion
+                        FROM [{tabla_validada}]
+                        WHERE 1=1
+                        {" AND fecha_asiento >= ?" if fecha_desde else ""}
+                        {" AND fecha_asiento <= ?" if fecha_hasta else ""}
+                        {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
+                        ORDER BY fecha_asiento DESC, numero_asiento DESC
+                    """
                     cursor.execute(query, params)
-            else:
-                # Fallback con query validada
-                tabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                query = f"""
-                    SELECT
-                        id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
-                        referencia, debe, haber, saldo, estado, usuario_creacion,
-                        fecha_creacion, fecha_modificacion
-                    FROM [{tabla_validada}]
-                    WHERE 1=1
-                    {" AND fecha_asiento >= ?" if fecha_desde else }
-                    {" AND fecha_asiento <= ?" if fecha_hasta else }
-                    {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else }
-                    ORDER BY fecha_asiento DESC, numero_asiento DESC
-                """
-                cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -189,7 +183,7 @@ fecha_desde=None,
             return asientos
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error obteniendo asientos: {e})
+            print(f"[ERROR CONTABILIDAD] Error obteniendo asientos: {e}")
             return []
 
     def crear_asiento_contable(self, datos_asiento):
@@ -217,7 +211,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     # Usar query parametrizada segura
                     query = "SELECT MAX(numero_asiento) FROM libro_contable"
                     cursor.execute(query)
@@ -254,22 +248,13 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    logger.error("No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                    query = f)
+                    query = f"""
+                        INSERT INTO [{tabla_validada}]
+                        (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
                          debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
-                        VALUES (?,
-?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            GETDATE(),
-                            GETDATE())
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
                     """
                     cursor.execute(query, (
                         numero_asiento,
@@ -289,18 +274,7 @@ fecha_desde=None,
                     INSERT INTO [{tabla_validada}]
                     (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
                      debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
-                    VALUES (?,
-?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        GETDATE(),
-                        GETDATE())
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
                 """
                 cursor.execute(query, (
                     numero_asiento,
@@ -321,7 +295,7 @@ fecha_desde=None,
             asiento_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
-            print(f"[CONTABILIDAD] Asiento contable creado con ID: {asiento_id})
+            print(f"[CONTABILIDAD] Asiento contable creado con ID: {asiento_id}")
             return asiento_id
 
         except Exception as e:

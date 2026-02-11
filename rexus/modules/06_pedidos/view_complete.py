@@ -209,7 +209,7 @@ class PedidoDialog(QDialog):
                 subcontrol-origin: margin;
                 left: 10px;
                 padding: 0 10px 0 10px;
-            }
+            }}
             QPushButton {{
                 background-color: {style_manager.colors.PRIMARY};
                 color: white;
@@ -353,7 +353,7 @@ class PedidoDialog(QDialog):
                 # Actualizar total de línea
                 total_item = self.tabla_productos.item(row, 5)
                 if total_item:
-                    total_item.setText(f"$ {total_linea:.2f})
+                    total_item.setText(f"$ {total_linea:.2f}")
 
         self.dsb_subtotal.setValue(subtotal)
 
@@ -613,7 +613,7 @@ class PedidosViewComplete(BaseModuleView):
             nombre_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             valor_label = QLabel(valor)
-            valor_label.setStyleSheet(f"font-size: 18px; font-weight: bold; color: {color};)
+            valor_label.setStyleSheet(f"font-size: 18px; font-weight: bold; color: {color};")
             valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             metric_layout.addWidget(nombre_label)
@@ -650,7 +650,7 @@ class PedidosViewComplete(BaseModuleView):
                 subcontrol-origin: margin;
                 left: 10px;
                 padding: 0 10px 0 10px;
-            }
+            }}
             QPushButton {{
                 background-color: {style_manager.colors.PRIMARY};
                 color: white;
@@ -691,7 +691,7 @@ class PedidosViewComplete(BaseModuleView):
                     self.cargar_pedidos()
                     self.pedido_actualizado.emit()
                 else:
-                    show_error(self, "Error", f"Error al crear pedido: {resultado['message']})
+                    show_error(self, "Error", f"Error al crear pedido: {resultado['message']}")
             else:
                 # Simulación para demo
                 show_success(self, "Éxito", "Pedido creado correctamente (simulación)")
@@ -731,7 +731,7 @@ class PedidosViewComplete(BaseModuleView):
                     self.cargar_pedidos()
                     self.pedido_actualizado.emit()
                 else:
-                    show_error(self, "Error", f"Error al actualizar: {resultado['message']})
+                    show_error(self, "Error", f"Error al actualizar: {resultado['message']}")
             else:
                 show_success(self, "Éxito", "Pedido actualizado correctamente (simulación)")
                 self.actualizar_fila_pedido(row, datos)
@@ -759,7 +759,7 @@ class PedidosViewComplete(BaseModuleView):
 
         reply = QMessageBox.question(
             self, "Confirmar Eliminación",
-            f"¿Está seguro de eliminar el pedido {codigo_item.text()}?,
+            f"¿Está seguro de eliminar el pedido {codigo_item.text()}?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
 
@@ -771,7 +771,7 @@ class PedidosViewComplete(BaseModuleView):
                     self.tabla_pedidos.removeRow(row)
                     self.pedido_actualizado.emit()
                 else:
-                    show_error(self, "Error", f"Error al eliminar: {resultado['message']})
+                    show_error(self, "Error", f"Error al eliminar: {resultado['message']}")
             else:
                 show_success(self, "Éxito", "Pedido eliminado correctamente (simulación)")
                 self.tabla_pedidos.removeRow(row)
@@ -917,7 +917,7 @@ class PedidosViewComplete(BaseModuleView):
             self.tabla_pedidos.setItem(row, 5, prioridad_item)
 
             self.tabla_pedidos.setItem(row, 6,
-                QTableWidgetItem(f"$ {pedido.get('total', 0):.2f}))
+                QTableWidgetItem(f"$ {pedido.get('total', 0):.2f}"))
             self.tabla_pedidos.setItem(row, 7,
                 QTableWidgetItem(str(pedido.get('productos', 0))))
             self.tabla_pedidos.setItem(row, 8,
@@ -950,7 +950,7 @@ class PedidosViewComplete(BaseModuleView):
         """Muestra el detalle del pedido."""
         codigo_item = self.tabla_pedidos.item(row, 0)
         if codigo_item:
-            show_success(self, "Detalle", f"Viendo detalle del pedido {codigo_item.text()})
+            show_success(self, "Detalle", f"Viendo detalle del pedido {codigo_item.text()}")
 
     def agregar_pedido_demo(self, datos):
         """Agrega un pedido de demostración a la tabla."""

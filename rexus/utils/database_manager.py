@@ -1,5 +1,5 @@
 """
-Mejoras en la gestión de base de datos para Rexus.app
+Mejoras en la gestion de base de datos para Rexus.app
 """
 
 import sqlite3
@@ -34,13 +34,13 @@ class DatabasePool:
                     self.connections.put(conn)
                     self.active_connections += 1
 
-            self.logger.info(f"Database pool initialized with {self.active_connections} connections)
+            self.logger.info(f"Database pool initialized with {self.active_connections} connections")
         except Exception as e:
             self.logger.error(f"Failed to initialize database pool: {e}")
-            raise DatabaseConnectionError(f"No se pudo inicializar el pool de BD: {e})
+            raise DatabaseConnectionError(f"No se pudo inicializar el pool de BD: {e}")
 
     def _create_connection(self) -> Optional[sqlite3.Connection]:
-        """Crea una nueva conexión a la base de datos"""
+        """Crea una nueva conexion a la base de datos"""
         try:
             conn = sqlite3.connect(
                 self.database_path,
@@ -56,16 +56,16 @@ class DatabasePool:
 
             return conn
         except Exception as e:
-            self.logger.error("Failed to create database connection: {e})
+            self.logger.error(f"Failed to create database connection: {e}")
             return None
 
     @contextmanager
     def get_connection(self, timeout: float = 10.0):
-        )
-        time.time()
+        """Obtiene una conexion del pool"""
+        start_time = time.time()
 
         try:
-            # Intentar obtener conexión existente
+            # Intentar obtener conexion existente
             try:
                 connection = self.connections.get(timeout=timeout)
             except Empty:
@@ -76,35 +76,35 @@ class DatabasePool:
                         if connection:
                             self.active_connections += 1
                         else:
-                            raise DatabaseConnectionError("No se pudo crear nueva conexión")
+                            raise DatabaseConnectionError("No se pudo crear nueva conexion")
                     else:
                         raise DatabaseConnectionError("Pool de conexiones agotado")
 
-            # Verificar que la conexión esté activa
+            # Verificar que la conexion este activa
             if connection:
                 try:
                     connection.execute("SELECT 1")
                 except sqlite3.Error:
-                    # Conexión inválida, crear una nueva
+                    # Conexion invalida, crear una nueva
                     connection.close()
                     connection = self._create_connection()
                     if not connection:
-                        raise DatabaseConnectionError("No se pudo restablecer la conexión")
+                        raise DatabaseConnectionError("No se pudo restablecer la conexion")
 
             yield connection
 
         except Exception as e:
-            self.logger.error(f"Database connection error: {e})
-            raise DatabaseConnectionError(f"Error de conexión a BD: {e}")
+            self.logger.error(f"Database connection error: {e}")
+            raise DatabaseConnectionError(f"Error de conexion a BD: {e}")
         finally:
-            # Devolver conexión al pool
+            # Devolver conexion al pool
             if connection:
                 try:
-                    # Verificar que la conexión siga siendo válida
+                    # Verificar que la conexion siga siendo valida
                     connection.execute("SELECT 1")
                     self.connections.put(connection)
                 except (sqlite3.Error, OSError):
-                    # Conexión dañada, cerrarla y decrementar contador
+                    # Conexion danada, cerrarla y decrementar contador
                     connection.close()
                     with self.lock:
                         self.active_connections -= 1
@@ -120,18 +120,16 @@ class DatabasePool:
                     pass
             self.active_connections = 0
 
-        self.logger.info(")
+        self.logger.info("Todas las conexiones del pool han sido cerradas")
 
 class DatabaseManager:
-    )
+    """Gestor principal de base de datos"""
+
     def __init__(self, database_path: str):
         self.pool = DatabasePool(database_path)
         self.logger = get_logger('database')
 
-    def execute_query(self,
-query: str,
-        params: tuple = (),
-        fetch: str = None):
+    def execute_query(self, query: str, params: tuple = (), fetch: str = None):
         """Ejecuta una consulta de forma segura"""
         with self.pool.get_connection() as conn:
             try:
@@ -150,11 +148,11 @@ query: str,
 
             except sqlite3.Error as e:
                 conn.rollback()
-                self.logger.error(f"Database query failed: {query[:100]}... Error: {e})
+                self.logger.error(f"Database query failed: {query[:100]}... Error: {e}")
                 raise DatabaseConnectionError(f"Error en consulta: {e}")
 
     def execute_transaction(self, queries: list):
-        """Ejecuta múltiples consultas en una transacción"""
+        """Ejecuta multiples consultas en una transaccion"""
         with self.pool.get_connection() as conn:
             try:
                 cursor = conn.cursor()
@@ -163,12 +161,12 @@ query: str,
                     cursor.execute(query, params or ())
 
                 conn.commit()
-                self.logger.info(f"Transaction completed with {len(queries)} queries)
+                self.logger.info(f"Transaction completed with {len(queries)} queries")
 
             except sqlite3.Error as e:
                 conn.rollback()
                 self.logger.error(f"Transaction failed: {e}")
-                raise DatabaseConnectionError(f"Error en transacción: {e})
+                raise DatabaseConnectionError(f"Error en transaccion: {e}")
 
 # Instancia global del manager
 db_manager: Optional[DatabaseManager] = None

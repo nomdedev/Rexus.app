@@ -243,7 +243,7 @@ class PedidoDialogManager:
     def show_edit_dialog(self, pedido_data: Dict[str, Any]) -> bool:
         """Muestra el diálogo para editar un pedido existente."""
         config = self.get_form_config()
-        config['title'] = f"Editar Pedido: {pedido_data.get('numero_pedido', '')}
+        config['title'] = f"Editar Pedido: {pedido_data.get('numero_pedido', '')}"
 
         # Preparar datos actuales para el formulario
         current_data = self._prepare_form_data(pedido_data)

@@ -29,7 +29,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}
+            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
             return self.sql_loader.load_script(script_name)
 
 
@@ -67,7 +67,7 @@ class ConsultasManager:
         import re
 
         if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
-            raise ValueError(f"Nombre de tabla inválido: {table_name})
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
 
         tablas_permitidas = {
             "usuarios",
@@ -76,7 +76,7 @@ class ConsultasManager:
             "auditoria_usuarios",
         }
         if table_name not in tablas_permitidas:
-            raise ValueError(f"Tabla no permitida: {table_name})
+            raise ValueError(f"Tabla no permitida: {table_name}")
         return table_name
 
     @auth_required
@@ -117,7 +117,7 @@ class ConsultasManager:
             return usuarios
 
         except Exception as e:
-            print(f"Error obteniendo usuarios: {str(e)})
+            print(f"Error obteniendo usuarios: {str(e)}")
             return []
 
     @auth_required
@@ -131,14 +131,14 @@ class ConsultasManager:
             termino_safe = sanitize_string(
                 termino_busqueda, max_length=100
             )
-            termino_like = f"%{termino_safe}%
+            termino_like = f"%{termino_safe}%"
 
             cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query(self.sql_path, "buscar_usuarios")
             cursor.execute(
                 query,
-(termino_like,
+                (termino_like,
                     termino_like,
                     termino_like,
                     termino_like)
@@ -159,7 +159,7 @@ class ConsultasManager:
             return usuarios
 
         except Exception as e:
-            print(f"Error en búsqueda: {str(e)})
+            print(f"Error en búsqueda: {str(e)}")
             return []
 
     @auth_required
@@ -178,7 +178,7 @@ class ConsultasManager:
             page_safe = max(1, self.sanitizer.sanitize_integer(page, min_val=1))
             per_page_safe = max(
                 1,
-min(100,
+                min(100,
                     self.sanitizer.sanitize_integer(per_page,
                     min_val=1))
             )
@@ -251,7 +251,7 @@ min(100,
             }
 
         except Exception as e:
-            print(f"Error en paginación: {str(e)})
+            print(f"Error en paginación: {str(e)}")
             return {"usuarios": [], "total": 0, "pages": 0}
 
     @auth_required
@@ -335,7 +335,7 @@ min(100,
             return estadisticas
 
         except Exception as e:
-            print(f"Error obteniendo estadísticas: {str(e)})
+            print(f"Error obteniendo estadísticas: {str(e)}")
             return {}
 
     @auth_required
@@ -369,7 +369,7 @@ min(100,
             return usuarios
 
         except Exception as e:
-            print(f"Error obteniendo usuarios por rol: {str(e)})
+            print(f"Error obteniendo usuarios por rol: {str(e)}")
             return []
 
     @auth_required
@@ -379,7 +379,7 @@ min(100,
     ) -> Dict[str, Any]:
         """Obtiene el historial de actividad de un usuario específico."""
         if not self.db_connection or not usuario_id:
-            return {"intentos_login": [], "estadisticas": {}
+            return {"intentos_login": [], "estadisticas": {}}
 
         try:
             usuario_id_safe = self.sanitizer.sanitize_integer(
@@ -429,8 +429,8 @@ min(100,
             return {"intentos_login": intentos, "estadisticas": estadisticas}
 
         except Exception as e:
-            print(f"Error obteniendo actividad de usuario: {str(e)})
-            return {"intentos_login": [], "estadisticas": {}
+            print(f"Error obteniendo actividad de usuario: {str(e)}")
+            return {"intentos_login": [], "estadisticas": {}}
 
     @auth_required
     @permission_required("admin")
@@ -509,7 +509,7 @@ min(100,
             return reporte
 
         except Exception as e:
-            print(f"Error generando reporte de seguridad: {str(e)})
+            print(f"Error generando reporte de seguridad: {str(e)}")
             return {}
 
     def _calcular_nivel_alerta(self, reporte: Dict[str, Any]) -> str:

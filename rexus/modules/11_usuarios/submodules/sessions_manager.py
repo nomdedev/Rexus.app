@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 try:
     from rexus.core.auth_decorators import admin_required, auth_required
 except ImportError:
-    logger.warning(")
+    logger.warning("Auth decorators not available - features disabled")
     DataSanitizer = None
     admin_required = lambda x: x
     auth_required = lambda x: x
@@ -34,7 +34,20 @@ except ImportError:
 
 @dataclass
 class SessionInfo:
-    )
+    """Información de una sesión de usuario."""
+    session_id: str
+    usuario_id: int
+    username: str
+    ip_address: str
+    user_agent: str
+    created_at: datetime.datetime
+    last_activity: datetime.datetime
+    is_active: bool
+
+
+class SessionsManager:
+    """Gestor de sesiones de usuarios."""
+
     def __init__(self, db_connection=None):
         self.db_connection = db_connection
         self.sanitizer = DataSanitizer() if DataSanitizer else None
@@ -84,7 +97,7 @@ class SessionInfo:
                     created_at, last_activity, is_active
                 ) VALUES (?, ?, ?, ?, ?, GETDATE(), GETDATE(), 1)
             """,
-(session_id,
+                (session_id,
                 usuario_id,
                 username,
                 ip_address or 'unknown',
@@ -92,7 +105,7 @@ class SessionInfo:
 
             self.db_connection.commit()
 
-            logger.info(f"Sesión creada para usuario {username} (ID: {usuario_id}))
+            logger.info(f"Sesión creada para usuario {username} (ID: {usuario_id})")
 
             return {
                 'success': True,
@@ -101,7 +114,7 @@ class SessionInfo:
             }
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error creando sesión: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -113,7 +126,11 @@ class SessionInfo:
                 cursor.close()
 
     def validar_sesion(self, session_id: str) -> Dict[str, Any]:
-        )
+        """Valida una sesión y actualiza su última actividad."""
+        try:
+            if not self.db_connection:
+                return {'valid': False, 'message': 'Sin conexión a base de datos'}
+
             cursor = self.db_connection.cursor()
 
             # Obtener información de la sesión
@@ -156,14 +173,18 @@ class SessionInfo:
             }
 
         except Exception as e:
-            logger.error("Error validando sesión: {e})
+            logger.error(f"Error validando sesión: {e}")
             return {'valid': False, 'message': 'Error interno del sistema'}
         finally:
             if 'cursor' in locals():
                 cursor.close()
 
     def cerrar_sesion(self, session_id: str) -> Dict[str, Any]:
-        )
+        """Cierra una sesión específica."""
+        try:
+            if not self.db_connection:
+                return {'success': False, 'message': 'Sin conexión a base de datos'}
+
             cursor = self.db_connection.cursor()
 
             # Marcar sesión como inactiva
@@ -178,11 +199,11 @@ class SessionInfo:
 
             self.db_connection.commit()
 
-            logger.info(f"Sesión cerrada: {session_id})
+            logger.info(f"Sesión cerrada: {session_id}")
             return {'success': True, 'message': 'Sesión cerrada correctamente'}
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error cerrando sesión: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -195,7 +216,11 @@ class SessionInfo:
 
     @admin_required
     def cerrar_todas_sesiones_usuario(self, usuario_id: int) -> Dict[str, Any]:
-        )
+        """Cierra todas las sesiones de un usuario."""
+        try:
+            if not self.db_connection:
+                return {'success': False, 'message': 'Sin conexión a base de datos'}
+
             cursor = self.db_connection.cursor()
 
             # Cerrar todas las sesiones activas del usuario
@@ -208,7 +233,7 @@ class SessionInfo:
             sesiones_cerradas = cursor.rowcount
             self.db_connection.commit()
 
-            logger.info(f"Cerradas {sesiones_cerradas} sesiones para usuario {usuario_id})
+            logger.info(f"Cerradas {sesiones_cerradas} sesiones para usuario {usuario_id}")
             return {
                 'success': True,
                 'message': f'{sesiones_cerradas} sesiones cerradas',
@@ -216,7 +241,7 @@ class SessionInfo:
             }
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error cerrando sesiones: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -229,7 +254,11 @@ class SessionInfo:
 
     @auth_required
     def obtener_sesiones_usuario(self, usuario_id: int) -> List[SessionInfo]:
-        )
+        """Obtiene todas las sesiones activas de un usuario."""
+        try:
+            if not self.db_connection:
+                return []
+
             cursor = self.db_connection.cursor()
 
             cursor.execute("""
@@ -257,7 +286,7 @@ class SessionInfo:
             return sesiones
 
         except Exception as e:
-            logger.error("Error obteniendo sesiones del usuario: {e})
+            logger.error(f"Error obteniendo sesiones del usuario: {e}")
             return []
         finally:
             if 'cursor' in locals():
@@ -265,7 +294,11 @@ class SessionInfo:
 
     @admin_required
     def obtener_estadisticas_sesiones(self) -> Dict[str, Any]:
-        )
+        """Obtiene estadísticas de sesiones."""
+        try:
+            if not self.db_connection:
+                return {}
+
             cursor = self.db_connection.cursor()
 
             stats = {}
@@ -284,10 +317,8 @@ class SessionInfo:
 
             # Promedio de duración de sesiones (últimas 24 horas)
             cursor.execute("""
-                SELECT AVG(DATEDIFF(MINUTE,
-created_at,
-                    COALESCE(closed_at,
-                    GETDATE())))
+                SELECT AVG(DATEDIFF(MINUTE, created_at,
+                    COALESCE(closed_at, GETDATE())))
                 FROM sesiones_usuario
                 WHERE created_at > DATEADD(DAY, -1, GETDATE())
             """)
@@ -313,14 +344,14 @@ created_at,
             return stats
 
         except Exception as e:
-            logger.error("Error obteniendo estadísticas de sesiones: {e})
+            logger.error(f"Error obteniendo estadísticas de sesiones: {e}")
             return {}
         finally:
             if 'cursor' in locals():
                 cursor.close()
 
     def _generar_session_id(self) -> str:
-        )
+        """Genera un ID de sesión seguro y único."""
         return secrets.token_urlsafe(32)
 
     def _verificar_limite_sesiones(self, usuario_id: int) -> bool:
@@ -348,14 +379,18 @@ created_at,
             return sesiones_activas < self.max_concurrent_sessions
 
         except Exception as e:
-            logger.error("Error verificando límite de sesiones: {e})
+            logger.error(f"Error verificando límite de sesiones: {e}")
             return True
         finally:
             if 'cursor' in locals():
                 cursor.close()
 
     def _cerrar_sesion_mas_antigua(self, usuario_id: int) -> None:
-        )
+        """Cierra la sesión más antigua de un usuario."""
+        try:
+            if not self.db_connection:
+                return
+
             cursor = self.db_connection.cursor()
 
             # Obtener la sesión más antigua
@@ -368,16 +403,20 @@ created_at,
             result = cursor.fetchone()
             if result:
                 self.cerrar_sesion(result[0])
-                logger.info(f"Sesión más antigua cerrada para usuario {usuario_id})
+                logger.info(f"Sesión más antigua cerrada para usuario {usuario_id}")
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error cerrando sesión antigua: {e}")
         finally:
             if 'cursor' in locals():
                 cursor.close()
 
     def _limpiar_sesiones_expiradas(self) -> None:
-        )
+        """Limpia sesiones expiradas por timeout."""
+        try:
+            if not self.db_connection:
+                return
+
             cursor = self.db_connection.cursor()
 
             # Calcular tiempo límite
@@ -393,16 +432,20 @@ created_at,
             sesiones_cerradas = cursor.rowcount
             if sesiones_cerradas > 0:
                 self.db_connection.commit()
-                logger.info(f"Limpiadas {sesiones_cerradas} sesiones expiradas)
+                logger.info(f"Limpiadas {sesiones_cerradas} sesiones expiradas")
 
         except Exception as e:
-            logger.error(")
+            logger.error(f"Error limpiando sesiones expiradas: {e}")
         finally:
             if 'cursor' in locals():
                 cursor.close()
 
     def _inicializar_tabla_sesiones(self) -> None:
-        )
+        """Inicializa la tabla de sesiones si no existe."""
+        try:
+            if not self.db_connection:
+                return
+
             cursor = self.db_connection.cursor()
 
             cursor.execute("""

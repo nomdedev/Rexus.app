@@ -78,7 +78,7 @@ class MovimientosManager:
         try:
             # Validar tipo de movimiento
             if tipo_movimiento not in self.TIPOS_MOVIMIENTO:
-                raise ValueError(f"Tipo de movimiento inválido: {tipo_movimiento})
+                raise ValueError(f"Tipo de movimiento inválido: {tipo_movimiento}")
 
             # Validar cantidad
             if cantidad == 0:
@@ -87,14 +87,14 @@ class MovimientosManager:
             # Obtener stock actual
             stock_actual = self._obtener_stock_actual(producto_id)
             if stock_actual is None:
-                raise ValueError(f"Producto {producto_id} no encontrado)
+                raise ValueError(f"Producto {producto_id} no encontrado")
 
             # Validar stock para salidas
             if tipo_movimiento in ["SALIDA", "TRANSFERENCIA"] and \
                 cantidad > 0:
                 if stock_actual < cantidad:
                     raise ValueError(
-                        f"Stock insuficiente. Disponible: {stock_actual}, Solicitado: {cantidad}
+                        f"Stock insuficiente. Disponible: {stock_actual}, Solicitado: {cantidad}"
                     )
 
             cursor = self.db_connection.cursor()
@@ -180,7 +180,7 @@ class MovimientosManager:
 
         except Exception as e:
             self.db_connection.rollback()
-            raise Exception(f"Error registrando movimiento: {str(e)})
+            raise Exception(f"Error registrando movimiento: {str(e)}")
 
     @auth_required
     @permission_required("view_movimientos")
@@ -233,7 +233,7 @@ class MovimientosManager:
             query += " ORDER BY m.fecha_movimiento DESC"
 
             if limite > 0:
-                query += f" OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY
+                query += f" OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY"
 
             cursor.execute(query, params)
             columns = [column[0] for column in cursor.description]
@@ -309,7 +309,7 @@ class MovimientosManager:
             }
 
         except Exception as e:
-            raise Exception(f"Error generando reporte: {str(e)})
+            raise Exception(f"Error generando reporte: {str(e)}")
 
     def _obtener_stock_actual(self, producto_id: int) -> Optional[float]:
         """Obtiene el stock actual de un producto."""

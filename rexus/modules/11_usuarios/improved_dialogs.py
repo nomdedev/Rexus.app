@@ -362,7 +362,7 @@ class UsuarioPermisosDialog:
                     show_success(
                         self.parent,
                         "Permisos Actualizados",
-                        f"Los permisos de {user_data.get('usuario')} han sido actualizados.
+                        f"Los permisos de {user_data.get('usuario')} han sido actualizados."
                     )
                     return True
                 else:
@@ -386,7 +386,7 @@ class UsuarioPasswordDialog:
         """Muestra diálogo para resetear contraseña de usuario."""
 
         password_config = {
-            'title': f'Resetear Contraseña - {user_data.get("usuario", "Usuario}',
+            'title': f'Resetear Contraseña - {user_data.get("usuario", "Usuario")}',
             'size': (400, 300),
             'groups': [
                 {
@@ -463,7 +463,7 @@ class UsuarioPasswordDialog:
                     show_success(
                         self.parent,
                         "Contraseña Actualizada",
-                        f"La contraseña de {user_data.get('usuario')} ha sido actualizada.
+                        f"La contraseña de {user_data.get('usuario')} ha sido actualizada."
                     )
                     return True
                 else:

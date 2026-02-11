@@ -1,0 +1,33 @@
+2026-02-11 16:36:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-11 16:36:32 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2026-02-11 16:36:33 | INFO     | rexus.startup   | ============================================================
+2026-02-11 16:36:33 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2026-02-11 16:36:33 | INFO     | rexus.startup   | Versión Python: 3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]
+2026-02-11 16:36:33 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Proyectos\Rexus.app
+2026-02-11 16:36:33 | INFO     | rexus.startup   | Argumentos: ['main.py', '--dev']
+2026-02-11 16:36:33 | INFO     | rexus.startup   | ============================================================
+2026-02-11 16:36:33 | INFO     | rexus.startup   | Iniciando Rexus.app
+2026-02-11 16:36:33 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2026-02-11 16:36:34 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2026-02-11 16:42:26 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-11 16:42:26 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2026-02-11 16:42:33 | INFO     | rexus.startup   | ============================================================
+2026-02-11 16:42:33 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2026-02-11 16:42:33 | INFO     | rexus.startup   | Versión Python: 3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]
+2026-02-11 16:42:33 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Proyectos\Rexus.app
+2026-02-11 16:42:33 | INFO     | rexus.startup   | Argumentos: ['main.py', '--dev']
+2026-02-11 16:42:33 | INFO     | rexus.startup   | ============================================================
+2026-02-11 16:42:33 | INFO     | rexus.startup   | Iniciando Rexus.app
+2026-02-11 16:42:33 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2026-02-11 16:42:45 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2026-02-11 16:44:58 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-11 16:44:58 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2026-02-11 16:44:58 | INFO     | rexus.startup   | ============================================================
+2026-02-11 16:44:58 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2026-02-11 16:44:58 | INFO     | rexus.startup   | Versión Python: 3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]
+2026-02-11 16:44:58 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Proyectos\Rexus.app
+2026-02-11 16:44:58 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2026-02-11 16:44:58 | INFO     | rexus.startup   | ============================================================
+2026-02-11 16:44:58 | INFO     | rexus.startup   | Iniciando Rexus.app
+2026-02-11 16:44:58 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2026-02-11 16:44:59 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar

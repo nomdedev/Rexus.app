@@ -80,10 +80,10 @@ try:
     from .base_utilities import BaseUtilities, TABLA_INVENTARIO
     BASE_AVAILABLE = True
 except ImportError as e:
-    logger.error("Error importando utilidades base: {e})
+    logger.error(f"Error importando utilidades base: {e}")
     BASE_AVAILABLE = False
     BaseUtilities = None
-    TABLA_INVENTARIO = )
+    TABLA_INVENTARIO = "inventario"
 # Tabla de categorías (podría ser independiente o columna en inventario)
 TABLA_CATEGORIAS = "categorias_inventario"
 
@@ -121,10 +121,16 @@ class CategoriasManager:
             self.base_utils = BaseUtilities(db_connection)
         else:
             self.base_utils = None
-            logger.warning(")
+            logger.warning("BaseUtilities no disponible")
 
     def _validar_conexion(self) -> bool:
-        )
+        """
+        Valida que la conexión a la base de datos esté activa.
+
+        Returns:
+            True si la conexión es válida
+        """
+        if not self.db_connection:
             self.logger.error("Sin conexión a base de datos")
             return False
 
@@ -139,7 +145,7 @@ class CategoriasManager:
             cursor.fetchone()
             return True
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error(f"Error validando conexión: {e})
+            self.logger.error(f"Error validando conexión: {e}")
             return False
         finally:
             if 'cursor' in locals():
@@ -229,7 +235,7 @@ class CategoriasManager:
             return categorias
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            self.logger.error(f"Error obteniendo categorías: {e})
+            self.logger.error(f"Error obteniendo categorías: {e}")
             # Devolver categorías por defecto en caso de error
             return [{'categoria': cat, 'total_productos': 0} for cat in self.CATEGORIAS_DEFAULT]
 
@@ -308,7 +314,7 @@ class CategoriasManager:
             if not incluir_inactivos:
                 query_productos += " AND activo = 1"
 
-            query_productos += f" ORDER BY codigo OFFSET {offset} ROWS FETCH NEXT {limite} ROWS ONLY
+            query_productos += f" ORDER BY codigo OFFSET {offset} ROWS FETCH NEXT {limite} ROWS ONLY"
 
             cursor.execute(query_productos, params_productos)
             columnas = [desc[0] for desc in cursor.description]
@@ -408,26 +414,32 @@ class CategoriasManager:
                 """
 
                 cursor.execute(query,
-(nombre_limpio,
-                    descripcion_limpia,
-                    categoria_padre_limpia))
+                             (nombre_limpio,
+                              descripcion_limpia,
+                              categoria_padre_limpia))
                 self.db_connection.commit()
                 cursor.close()
 
-                self.logger.info("Categoría creada en tabla independiente: {nombre_limpio})
+                self.logger.info(f"Categoría creada en tabla independiente: {nombre_limpio}")
 
                 return {
                     'success': True,
-                    'message': f'Categoría )
+                    'message': f'Categoría "{nombre_limpio}" creada exitosamente'
+                }
+            else:
                 cursor.close()
 
-                self.logger.info("Categoría validada para uso futuro: {nombre_limpio})
+                self.logger.info(f"Categoría validada para uso futuro: {nombre_limpio}")
 
                 return {
                     'success': True,
-                    'message': f'Categoría )
+                    'message': f'Categoría "{nombre_limpio}" validada para uso'
+                }
+
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error creando categoría {nombre_categoria}: {e})
+            self.logger.error(f"Error creando categoría {nombre_categoria}: {e}")
+            if self.db_connection:
+                try:
                     self.db_connection.rollback()
                 except (AttributeError, RuntimeError):
                     pass
@@ -481,11 +493,8 @@ categoria_actual: str,
             # Verificar que la categoría actual existe y tiene productos
             cursor = self.db_connection.cursor()
 
-            cursor.execute(
-        # FIXED: SQL Injection vulnerability
-                "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
-                (categoria_actual_limpia,)
-            )
+            query_check = f"SELECT COUNT(*) FROM {TABLA_INVENTARIO} WHERE categoria = ?"
+            cursor.execute(query_check, (categoria_actual_limpia,))
             productos_existentes = cursor.fetchone()[0]
 
             if productos_existentes == 0:
@@ -497,11 +506,8 @@ categoria_actual: str,
                 }
 
             # Verificar que la nueva categoría no existe (para evitar conflictos)
-            cursor.execute(
-        # FIXED: SQL Injection vulnerability
-                "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
-                (categoria_nueva_limpia,)
-            )
+            query_check_new = f"SELECT COUNT(*) FROM {TABLA_INVENTARIO} WHERE categoria = ?"
+            cursor.execute(query_check_new, (categoria_nueva_limpia,))
             productos_nueva_categoria = cursor.fetchone()[0]
 
             if productos_nueva_categoria > 0:
@@ -527,14 +533,14 @@ categoria_actual: str,
                 query_cat = f"""
                     UPDATE {TABLA_CATEGORIAS}
                     SET nombre = ?, fecha_modificacion = GETDATE()
-                    WHERE nombre = ?
+                    WHERE name = ?
                 """
                 cursor.execute(query_cat, (categoria_nueva_limpia, categoria_actual_limpia))
 
             self.db_connection.commit()
             cursor.close()
 
-            self.logger.info(f"Categoría renombrada: {categoria_actual_limpia} -> {categoria_nueva_limpia}, {productos_actualizados") productos actualizados")"
+            self.logger.info(f"Categoría renombrada: {categoria_actual_limpia} -> {categoria_nueva_limpia}, {productos_actualizados} productos actualizados")
 
             return {
                 'success': True,
@@ -543,7 +549,7 @@ categoria_actual: str,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error renombrando categoría: {e})
+            self.logger.error(f"Error renombrando categoría: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -600,11 +606,8 @@ categoria_origen: str,
             cursor = self.db_connection.cursor()
 
             # Verificar que existen productos en la categoría origen
-            cursor.execute(
-        # FIXED: SQL Injection vulnerability
-                "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
-                (origen_limpia,)
-            )
+            query_check = f"SELECT COUNT(*) FROM {TABLA_INVENTARIO} WHERE categoria = ?"
+            cursor.execute(query_check, (origen_limpia,))
             productos_origen = cursor.fetchone()[0]
 
             if productos_origen == 0:
@@ -628,7 +631,14 @@ categoria_origen: str,
             self.db_connection.commit()
             cursor.close()
 
-            self.logger.info(f"Productos migrados: {productos_migrados} de {origen_limpia} a {destino_limpia})
+            self.logger.info(f"Productos migrados: {productos_migrados} de {origen_limpia} a {destino_limpia}")
+
+            return {
+                'success': True,
+                'message': f'Se migraron {productos_migrados} productos de "{origen_limpia}" a "{destino_limpia}"',
+                'productos_migrados': productos_migrados
+            }
+
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error migrando productos de categoría: {e}")
             if self.db_connection:
@@ -700,7 +710,7 @@ categoria_origen: str,
             self.db_connection.commit()
             cursor.close()
 
-            self.logger.info(f"Categorías vacías desactivadas: {categorias_eliminadas})
+            self.logger.info(f"Categorías vacías desactivadas: {categorias_eliminadas}")
 
             return {
                 'success': True,
@@ -866,7 +876,7 @@ categoria_origen: str,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            self.logger.error("Error generando reporte de categorías: {e})
+            self.logger.error(f"Error generando reporte de categorías: {e}")
             return {
                 'success': False,
                 'error': f'Error interno: {str(e)}',
@@ -876,34 +886,43 @@ categoria_origen: str,
     # Métodos auxiliares privados
 
     def _existe_categoria(self, nombre_categoria: str) -> bool:
-        )
+        """
+        Verifica si existe una categoría.
+
+        Args:
+            nombre_categoria: Nombre de la categoría
+
+        Returns:
+            True si existe
+        """
+        try:
             cursor = self.db_connection.cursor()
 
             if self._tabla_categorias_existe():
                 # Verificar en tabla independiente
-                cursor.execute(
-        # FIXED: SQL Injection vulnerability
-                    "SELECT COUNT(*) FROM ? WHERE nombre = ? AND activa = 1", (TABLA_CATEGORIAS,),
-                    (nombre_categoria,)
-                )
+                query = f"SELECT COUNT(*) FROM {TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1"
+                cursor.execute(query, (nombre_categoria,))
             else:
                 # Verificar en productos
-                cursor.execute(
-        # FIXED: SQL Injection vulnerability
-                    "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
-                    (nombre_categoria,)
-                )
+                query = f"SELECT COUNT(*) FROM {TABLA_INVENTARIO} WHERE categoria = ?"
+                cursor.execute(query, (nombre_categoria,))
 
             count = cursor.fetchone()[0]
             cursor.close()
             return count > 0
 
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error("Error verificando existencia de categoría: {e})
+            self.logger.error(f"Error verificando existencia de categoría: {e}")
             return False
 
     def _tabla_categorias_existe(self) -> bool:
-        )
+        """
+        Verifica si existe la tabla de categorías.
+
+        Returns:
+            True si la tabla existe
+        """
+        try:
             cursor = self.db_connection.cursor()
             cursor.execute(f"""
                 SELECT COUNT(*)

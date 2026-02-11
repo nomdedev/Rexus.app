@@ -44,7 +44,7 @@ try:
 
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    logger.warning(f"Security utilities not available in inventario:{e})
+    logger.warning(f"Security utilities not available in inventario:{e}")
     SECURITY_AVAILABLE = False
 
 # Importar nueva utilidad de seguridad SQL

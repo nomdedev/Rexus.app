@@ -58,7 +58,8 @@ class ProductosManager:
         """Valida nombre de tabla contra lista blanca."""
         tablas_permitidas = {"inventario", "productos", "categorias"}
         if table_name not in tablas_permitidas:
-            raise ValueError(f"Tabla no permitida: {table_name})
+            raise ValueError(f"Tabla no permitida: {table_name}")
+        return table_name
         return table_name
 
     @auth_required
@@ -83,7 +84,7 @@ class ProductosManager:
             return dict(zip(columns, row))
 
         except Exception as e:
-            raise Exception(f"Error obteniendo producto: {str(e)})
+            raise Exception(f"Error obteniendo producto: {str(e)}")
 
     @auth_required
     @permission_required("view_inventario")
@@ -112,7 +113,7 @@ class ProductosManager:
             return dict(zip(columns, row))
 
         except Exception as e:
-            raise Exception(f"Error obteniendo producto por código: {str(e)})
+            raise Exception(f"Error obteniendo producto por código: {str(e)}")
 
     @auth_required
     @permission_required("create_producto")
@@ -140,7 +141,7 @@ class ProductosManager:
             # Verificar que no existe producto duplicado
             if self.obtener_producto_por_codigo(datos_sanitizados["codigo"]):
                 raise ValueError(
-                    f"Ya existe un producto con código: {datos_sanitizados['codigo']}
+                    f"Ya existe un producto con código: {datos_sanitizados['codigo']}"
                 )
 
             cursor = self.db_connection.cursor()
@@ -180,7 +181,7 @@ class ProductosManager:
 
         except Exception as e:
             self.db_connection.rollback()
-            raise Exception(f"Error creando producto: {str(e)})
+            raise Exception(f"Error creando producto: {str(e)}")
 
     @auth_required
     @permission_required("update_producto")
@@ -195,7 +196,7 @@ class ProductosManager:
             # Verificar que el producto existe
             producto_actual = self.obtener_producto_por_id(producto_id)
             if not producto_actual:
-                raise ValueError(f"Producto {producto_id} no encontrado)
+                raise ValueError(f"Producto {producto_id} no encontrado")
 
             # Sanitizar datos
             datos_sanitizados = self.sanitizer.sanitize_dict(datos_producto)
@@ -241,7 +242,7 @@ class ProductosManager:
 
         except Exception as e:
             self.db_connection.rollback()
-            raise Exception(f"Error actualizando producto: {str(e)})
+            raise Exception(f"Error actualizando producto: {str(e)}")
 
     def validar_stock_negativo(
         self, cantidad_nueva: float, producto_id: Optional[int] = None
@@ -284,7 +285,7 @@ class ProductosManager:
         """Genera código QR para el producto."""
         try:
             qr = qrcode.QRCode(version=1, box_size=10, border=5)
-            qr.add_data(f"REXUS_PRODUCTO:{codigo})
+            qr.add_data(f"REXUS_PRODUCTO:{codigo}")
             qr.make(fit=True)
 
             # Crear imagen QR
@@ -300,5 +301,5 @@ class ProductosManager:
             return qr_string
 
         except Exception as e:
-            print(f"[WARNING] No se pudo generar QR para {codigo}: {e})
+            print(f"[WARNING] No se pudo generar QR para {codigo}: {e}")
             return f"QR:{codigo}"

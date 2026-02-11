@@ -1,6 +1,6 @@
 """
 Sistema de Mensajes de Error Contextualizados - Rexus.app
-Reemplaza mensajes genéricos por específicos con sugerencias de solución
+Reemplaza mensajes genericos por especificos con sugerencias de solucion
 """
 
 from enum import Enum
@@ -31,9 +31,9 @@ class ErrorSeverity(Enum):
 
 
 class ErrorCode:
-    """Códigos de error estandardizados del sistema."""
+    """Codigos de error estandardizados del sistema."""
 
-    # Errores de Validación (1000-1999)
+    # Errores de Validacion (1000-1999)
     VALIDATION_REQUIRED_FIELD = "E1001"
     VALIDATION_INVALID_FORMAT = "E1002"
     VALIDATION_INVALID_LENGTH = "E1003"
@@ -72,7 +72,7 @@ class ErrorCode:
 
 
 class ErrorMessage:
-    """Representación de un mensaje de error contextualizado."""
+    """Representacion de un mensaje de error contextualizado."""
 
     def __init__(
         self,
@@ -96,20 +96,20 @@ class ErrorMessage:
 
 
 class ErrorCatalog:
-    """Catálogo de mensajes de error contextualizados."""
+    """Catalogo de mensajes de error contextualizados."""
 
     def __init__(self):
         self.errors: Dict[str, ErrorMessage] = {}
         self._initialize_error_catalog()
 
     def _initialize_error_catalog(self):
-        """Inicializa el catálogo con todos los mensajes de error."""
+        """Inicializa el catalogo con todos los mensajes de error."""
 
-        # Errores de Validación
+        # Errores de Validacion
         self.errors[ErrorCode.VALIDATION_REQUIRED_FIELD] = ErrorMessage(
             code=ErrorCode.VALIDATION_REQUIRED_FIELD,
             title="Campo Requerido",
-            message="Este campo es obligatorio y no puede estar vacío.",
+            message="Este campo es obligatorio y no puede estar vacio.",
             suggestion="Por favor, complete el campo marcado antes de continuar.",
             error_type=ErrorType.VALIDATION,
             severity=ErrorSeverity.WARNING,
@@ -117,8 +117,8 @@ class ErrorCatalog:
 
         self.errors[ErrorCode.VALIDATION_INVALID_FORMAT] = ErrorMessage(
             code=ErrorCode.VALIDATION_INVALID_FORMAT,
-            title="Formato Inválido",
-            message="El formato ingresado no es válido para este campo.",
+            title="Formato Invalido",
+            message="El formato ingresado no es valido para este campo.",
             suggestion="Verifique el formato esperado. Ejemplo: para email use 'usuario@dominio.com'",
             error_type=ErrorType.VALIDATION,
             severity=ErrorSeverity.WARNING,
@@ -128,7 +128,7 @@ class ErrorCatalog:
             code=ErrorCode.VALIDATION_DUPLICATE_VALUE,
             title="Valor Duplicado",
             message="Este valor ya existe en el sistema.",
-            suggestion="Use un valor único o modifique el registro existente.",
+            suggestion="Use un valor unico o modifique el registro existente.",
             error_type=ErrorType.VALIDATION,
             severity=ErrorSeverity.WARNING,
         )
@@ -136,19 +136,19 @@ class ErrorCatalog:
         # Errores de Base de Datos
         self.errors[ErrorCode.DATABASE_CONNECTION_FAILED] = ErrorMessage(
             code=ErrorCode.DATABASE_CONNECTION_FAILED,
-            title="Error de Conexión",
+            title="Error de Conexion",
             message="No se puede conectar con la base de datos.",
-            suggestion="Verifique su conexión de red y contacte al administrador del sistema.",
+            suggestion="Verifique su conexion de red y contacte al administrador del sistema.",
             error_type=ErrorType.DATABASE,
             severity=ErrorSeverity.CRITICAL,
-            technical_details="Verifique la configuración de conexión en config/database.json",
+            technical_details="Verifique la configuracion de conexion en config/database.json",
         )
 
         self.errors[ErrorCode.DATABASE_RECORD_NOT_FOUND] = ErrorMessage(
             code=ErrorCode.DATABASE_RECORD_NOT_FOUND,
             title="Registro No Encontrado",
             message="El registro solicitado no existe o fue eliminado.",
-            suggestion="Actualice la lista y seleccione un registro válido.",
+            suggestion="Actualice la lista y seleccione un registro valido.",
             error_type=ErrorType.DATABASE,
             severity=ErrorSeverity.ERROR,
         )
@@ -157,7 +157,7 @@ class ErrorCatalog:
         self.errors[ErrorCode.SECURITY_UNAUTHORIZED] = ErrorMessage(
             code=ErrorCode.SECURITY_UNAUTHORIZED,
             title="Acceso No Autorizado",
-            message="No tiene permisos para realizar esta acción.",
+            message="No tiene permisos para realizar esta accion.",
             suggestion="Contacte al administrador para solicitar los permisos necesarios.",
             error_type=ErrorType.SECURITY,
             severity=ErrorSeverity.ERROR,
@@ -165,9 +165,9 @@ class ErrorCatalog:
 
         self.errors[ErrorCode.SECURITY_INVALID_CREDENTIALS] = ErrorMessage(
             code=ErrorCode.SECURITY_INVALID_CREDENTIALS,
-            title="Credenciales Inválidas",
-            message="Usuario o contraseña incorrectos.",
-            suggestion="Verifique sus credenciales. Si olvida su contraseña, use 'Recuperar Contraseña'.",
+            title="Credenciales Invalidas",
+            message="Usuario o contrasena incorrectos.",
+            suggestion="Verifique sus credenciales. Si olvida su contrasena, use 'Recuperar Contrasena'.",
             error_type=ErrorType.SECURITY,
             severity=ErrorSeverity.WARNING,
         )
@@ -176,8 +176,8 @@ class ErrorCatalog:
         self.errors[ErrorCode.BUSINESS_INSUFFICIENT_STOCK] = ErrorMessage(
             code=ErrorCode.BUSINESS_INSUFFICIENT_STOCK,
             title="Stock Insuficiente",
-            message="No hay suficiente inventario para completar esta operación.",
-            suggestion="Verifique la cantidad disponible o realice un pedido de reposición.",
+            message="No hay suficiente inventario para completar esta operacion.",
+            suggestion="Verifique la cantidad disponible o realice un pedido de reposicion.",
             error_type=ErrorType.BUSINESS_RULE,
             severity=ErrorSeverity.WARNING,
         )
@@ -187,18 +187,18 @@ class ErrorCatalog:
             code=ErrorCode.SYSTEM_UNEXPECTED_ERROR,
             title="Error Inesperado",
             message="Ha ocurrido un error inesperado en el sistema.",
-            suggestion="Intente nuevamente. Si el problema persiste, contacte al soporte técnico.",
+            suggestion="Intente nuevamente. Si el problema persiste, contacte al soporte tecnico.",
             error_type=ErrorType.SYSTEM,
             severity=ErrorSeverity.CRITICAL,
-            technical_details="Revise los logs del sistema para más detalles",
+            technical_details="Revise los logs del sistema para mas detalles",
         )
 
     def get_error(self, code: str) -> Optional[ErrorMessage]:
-        """Obtiene un mensaje de error por código."""
+        """Obtiene un mensaje de error por codigo."""
         return self.errors.get(code)
 
     def get_errors_by_type(self, error_type: ErrorType) -> List[ErrorMessage]:
-        """Obtiene todos los errores de un tipo específico."""
+        """Obtiene todos los errores de un tipo especifico."""
         return [
             error for error in self.errors.values() if error.error_type == error_type
         ]
@@ -221,18 +221,18 @@ class ErrorManager:
         Muestra un mensaje de error contextualizado.
 
         Args:
-            parent: Widget padre para el diálogo
-            error_code: Código del error del catálogo
+            parent: Widget padre para el dialogo
+            error_code: Codigo del error del catalogo
             context_data: Datos adicionales para personalizar el mensaje
             custom_message: Mensaje personalizado adicional
 
         Returns:
-            Botón presionado por el usuario
+            Boton presionado por el usuario
         """
         error = self.catalog.get_error(error_code)
 
         if not error:
-            # Error no catalogado - usar mensaje genérico
+            # Error no catalogado - usar mensaje generico
             return self._show_generic_error(parent, error_code, custom_message)
 
         # Personalizar mensaje con datos del contexto
@@ -240,7 +240,7 @@ class ErrorManager:
 
         # Crear y configurar el mensaje
         msg_box = QMessageBox(parent)
-        msg_box.setWindowTitle(f"Rexus - {error.title})
+        msg_box.setWindowTitle(f"Rexus - {error.title}")
         msg_box.setText(message.message)
 
         # Configurar detalles y sugerencias
@@ -248,11 +248,11 @@ class ErrorManager:
         if detailed_text:
             msg_box.setDetailedText(detailed_text)
 
-        # Configurar icono según severidad
+        # Configurar icono segun severidad
         icon = self._get_icon_for_severity(message.severity)
         msg_box.setIcon(icon)
 
-        # Configurar botones según severidad
+        # Configurar botones segun severidad
         buttons = self._get_buttons_for_severity(message.severity)
         msg_box.setStandardButtons(buttons)
 
@@ -263,16 +263,14 @@ class ErrorManager:
     def show_validation_errors(
         self,
         parent: QWidget,
-        validation_errors: List[Tuple[str,
-str]],
-            # [(field_name, error_code), ...]
+        validation_errors: List[Tuple[str, str]],
     ):
         """
-        Muestra múltiples errores de validación en un solo diálogo.
+        Muestra multiples errores de validacion en un solo dialogo.
 
         Args:
             parent: Widget padre
-            validation_errors: Lista de tuplas (campo, código_error)
+            validation_errors: Lista de tuplas (campo, codigo_error)
         """
         if not validation_errors:
             return
@@ -282,12 +280,12 @@ str]],
         for field_name, error_code in validation_errors:
             error = self.catalog.get_error(error_code)
             if error:
-                error_messages.append(f"• {field_name}: {error.message})
+                error_messages.append(f"- {field_name}: {error.message}")
             else:
-                error_messages.append(f"• {field_name}: Error de validación")
+                error_messages.append(f"- {field_name}: Error de validacion")
 
         msg_box = QMessageBox(parent)
-        msg_box.setWindowTitle("Rexus - Errores de Validación")
+        msg_box.setWindowTitle("Rexus - Errores de Validacion")
         msg_box.setText("Se encontraron los siguientes errores:")
         msg_box.setDetailedText("\n".join(error_messages))
         msg_box.setIcon(QMessageBox.Icon.Warning)
@@ -305,7 +303,7 @@ str]],
         if context_data:
             # Reemplazar placeholders en el mensaje
             for key, value in context_data.items():
-                placeholder = f"{{{key}}
+                placeholder = f"{{{key}}}"
                 message = message.replace(placeholder, str(value))
                 suggestion = suggestion.replace(placeholder, str(value))
 
@@ -330,16 +328,16 @@ str]],
         """Construye el texto detallado del error."""
         details = []
 
-        # Sugerencia de solución
+        # Sugerencia de solucion
         if error.suggestion:
-            details.append(f"[IDEA] Sugerencia: {error.suggestion})
+            details.append(f"[IDEA] Sugerencia: {error.suggestion}")
 
-        # Código de error
-        details.append(f"[SEARCH] Código: {error.code}")
+        # Codigo de error
+        details.append(f"[SEARCH] Codigo: {error.code}")
 
-        # Información técnica
+        # Informacion tecnica
         if error.technical_details:
-            details.append(f"[TOOL] Detalles técnicos: {error.technical_details})
+            details.append(f"[TOOL] Detalles tecnicos: {error.technical_details}")
 
         # Datos del contexto
         if context_data:
@@ -347,22 +345,22 @@ str]],
             for key, value in context_data.items():
                 context_info.append(f"  {key}: {value}")
             if context_info:
-                details.append("📋 Información adicional:\n" + "\n".join(context_info))
+                details.append(" Informacion adicional:\n" + "\n".join(context_info))
 
         # URL de ayuda
         if error.help_url:
-            details.append(f"📖 Más información: {error.help_url})
+            details.append(f" Mas informacion: {error.help_url}")
 
         return "\n\n".join(details)
 
     def _show_generic_error(
         self, parent: QWidget, error_code: str, custom_message: str
     ) -> QMessageBox.StandardButton:
-        """Muestra un error genérico cuando no se encuentra en el catálogo."""
+        """Muestra un error generico cuando no se encuentra en el catalogo."""
         msg_box = QMessageBox(parent)
         msg_box.setWindowTitle("Rexus - Error")
         msg_box.setText(custom_message or "Ha ocurrido un error en el sistema.")
-        msg_box.setDetailedText(f"Código de error: {error_code})
+        msg_box.setDetailedText(f"Codigo de error: {error_code}")
         msg_box.setIcon(QMessageBox.Icon.Critical)
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
 
@@ -370,7 +368,7 @@ str]],
         return QMessageBox.StandardButton(result)
 
     def _get_icon_for_severity(self, severity: ErrorSeverity) -> QMessageBox.Icon:
-        """Obtiene el icono apropiado según la severidad."""
+        """Obtiene el icono apropiado segun la severidad."""
         severity_icons = {
             ErrorSeverity.INFO: QMessageBox.Icon.Information,
             ErrorSeverity.WARNING: QMessageBox.Icon.Warning,
@@ -382,7 +380,7 @@ str]],
     def _get_buttons_for_severity(
         self, severity: ErrorSeverity
     ) -> QMessageBox.StandardButton:
-        """Obtiene los botones apropiados según la severidad."""
+        """Obtiene los botones apropiados segun la severidad."""
         if severity == ErrorSeverity.CRITICAL:
             return QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Help
         else:
@@ -393,19 +391,19 @@ str]],
 error_manager = ErrorManager()
 
 
-# Funciones de utilidad para uso rápido
+# Funciones de utilidad para uso rapido
 def show_error(parent: QWidget, error_code: str, **kwargs):
-    """Función de utilidad para mostrar errores rápidamente."""
+    """Funcion de utilidad para mostrar errores rapidamente."""
     return error_manager.show_error(parent, error_code, **kwargs)
 
 
 def show_validation_errors(parent: QWidget, errors: List[Tuple[str, str]]):
-    """Función de utilidad para mostrar errores de validación."""
+    """Funcion de utilidad para mostrar errores de validacion."""
     return error_manager.show_validation_errors(parent, errors)
 
 
 def show_database_error(parent: QWidget, operation: str = ""):
-    """Función específica para errores de base de datos."""
+    """Funcion especifica para errores de base de datos."""
     context = {"operation": operation} if operation else None
     return error_manager.show_error(
         parent, ErrorCode.DATABASE_CONNECTION_FAILED, context_data=context
@@ -413,7 +411,7 @@ def show_database_error(parent: QWidget, operation: str = ""):
 
 
 def show_permission_error(parent: QWidget, action: str = ""):
-    """Función específica para errores de permisos."""
+    """Funcion especifica para errores de permisos."""
     context = {"action": action} if action else None
     return error_manager.show_error(
         parent, ErrorCode.SECURITY_UNAUTHORIZED, context_data=context

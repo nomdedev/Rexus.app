@@ -30,7 +30,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}
+            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
             return self.sql_loader.load_script(script_name)
 
 

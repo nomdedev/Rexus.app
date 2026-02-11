@@ -20,9 +20,9 @@ logger = logging.getLogger(__name__)
 
 # Importar utilidades de seguridad
 try:
-        from rexus.core.auth_decorators import admin_required, auth_required
+    from rexus.core.auth_decorators import admin_required, auth_required
 except ImportError:
-    logger.warning(")
+    logger.warning("Auth decorators not available - features disabled")
     DataSanitizer = None
     admin_required = lambda x: x
     auth_required = lambda x: x
@@ -32,7 +32,8 @@ from rexus.core.sql_query_manager import SQLQueryManager
 
 
 class ProfilesManager:
-    )
+    """Gestor de perfiles de usuarios."""
+
     def __init__(self, db_connection=None):
         self.db_connection = db_connection
         # Usar unified_sanitizer en lugar de DataSanitizer
@@ -73,61 +74,68 @@ class ProfilesManager:
                 return {'success': False, 'message': 'Username o email ya existe'}
 
             cursor = None
-            cursor = None
 
-            cursor = self.db_connection.cursor()
+            try:
+                cursor = self.db_connection.cursor()
 
-            # Sanitizar datos
-            datos_limpios = self._sanitizar_datos_usuario(datos_usuario)
+                # Sanitizar datos
+                datos_limpios = self._sanitizar_datos_usuario(datos_usuario)
 
-            # Insertar usuario
-            cursor.execute("""
-                INSERT INTO usuarios (
-                    username, password, nombre_completo, email, telefono,
-                    direccion, rol, activo, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
-            """, (
-                datos_limpios['username'],
-                datos_limpios['password_hash'],  # Ya hasheada por auth_manager
-                datos_limpios.get('nombre_completo', ''),
-                datos_limpios.get('email', ''),
-                datos_limpios.get('telefono', ''),
-                datos_limpios.get('direccion', ''),
-                datos_limpios.get('rol', 'viewer')
-            ))
+                # Insertar usuario
+                cursor.execute("""
+                    INSERT INTO usuarios (
+                        username, password, nombre_completo, email, telefono,
+                        direccion, rol, activo, created_at, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
+                """, (
+                    datos_limpios['username'],
+                    datos_limpios['password_hash'],  # Ya hasheada por auth_manager
+                    datos_limpios.get('nombre_completo', ''),
+                    datos_limpios.get('email', ''),
+                    datos_limpios.get('telefono', ''),
+                    datos_limpios.get('direccion', ''),
+                    datos_limpios.get('rol', 'viewer')
+                ))
 
-            # Obtener ID del usuario creado
-            cursor.execute("SELECT @@IDENTITY")
-            usuario_id = cursor.fetchone()[0]
+                # Obtener ID del usuario creado
+                cursor.execute("SELECT @@IDENTITY")
+                usuario_id = cursor.fetchone()[0]
 
-            self.db_connection.commit()
+                self.db_connection.commit()
 
-            logger.info(f"Usuario creado: {datos_limpios['username']} (ID: {usuario_id")}
-            return {
-                'success': True,
-                'message': 'Usuario creado exitosamente',
-                'usuario_id': usuario_id
-            }
+                logger.info(f"Usuario creado: {datos_limpios['username']} (ID: {usuario_id})")
+                return {
+                    'success': True,
+                    'message': 'Usuario creado exitosamente',
+                    'usuario_id': usuario_id
+                }
 
+            except Exception as rollback_error:
+                logger.error(f"Error en rollback: {rollback_error})")
+                return None
         except Exception as e:
             logger.error(f"Error creando usuario: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception as rollback_error:
-                    logger.error(f"Error en rollback: {rollback_error})
-                    return None
+                except Exception:
+                    logger.error("")
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error(")
+                    logger.error("")
 
     @auth_required
     def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
-        )
+        """Obtiene usuario por ID."""
+        cursor = None
+        try:
+            if not self.db_connection:
+                return None
+
             cursor = self.db_connection.cursor()
 
             cursor.execute("""
@@ -144,24 +152,27 @@ class ProfilesManager:
             return self._row_to_dict(row)
 
         except Exception as e:
-            logger.error(f"Error obteniendo usuario por ID: {e})
+            logger.error(f"Error obteniendo usuario por ID: {e})")
             return None
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error(")
+                    logger.error("")
 
     @auth_required
     def obtener_usuario_por_username(self, username: str) -> Optional[Dict[str, Any]]:
-        )
+        """Obtiene usuario por username."""
+        cursor = None
+        try:
+            if not self.db_connection:
+                return None
+
+            if self.sanitizer:
                 username_clean = sanitize_string(username, self.username_max_length)
             else:
                 username_clean = str(username)[:self.username_max_length]
-
-            cursor = None
-
 
             cursor = self.db_connection.cursor()
 
@@ -179,24 +190,27 @@ class ProfilesManager:
             return self._row_to_dict(row)
 
         except Exception as e:
-            logger.error(f"Error obteniendo usuario por username: {e})
+            logger.error(f"Error obteniendo usuario por username: {e})")
             return None
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error(")
+                    logger.error("")
 
     @auth_required
     def obtener_usuario_por_email(self, email: str) -> Optional[Dict[str, Any]]:
-        )
+        """Obtiene usuario por email."""
+        cursor = None
+        try:
+            if not self.db_connection:
+                return None
+
+            if self.sanitizer:
                 email_clean = sanitize_string(email, self.email_max_length)
             else:
                 email_clean = str(email)[:self.email_max_length]
-
-            cursor = None
-
 
             cursor = self.db_connection.cursor()
 
@@ -214,18 +228,22 @@ class ProfilesManager:
             return self._row_to_dict(row)
 
         except Exception as e:
-            logger.error(f"Error obteniendo usuario por email: {e})
+            logger.error(f"Error obteniendo usuario por email: {e})")
             return None
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error(")
+                    logger.error("")
 
     @auth_required
     def obtener_todos_usuarios(self, incluir_inactivos: bool = False) -> List[Dict[str, Any]]:
-        )
+        """Obtiene todos los usuarios."""
+        try:
+            if not self.db_connection:
+                return []
+
             cursor = self.db_connection.cursor()
 
             if incluir_inactivos:
@@ -253,22 +271,23 @@ class ProfilesManager:
             return usuarios
 
         except Exception as e:
-            logger.error(f"Error obteniendo todos los usuarios: {e})
+            logger.error(f"Error obteniendo todos los usuarios: {e})")
             return []
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error(")
+                    logger.error("")
 
     @auth_required
-    def actualizar_usuario(self,
-usuario_id: int,
-        datos_actualizados: Dict[str,
-        Any]) -> Dict[str,
-        Any]:
-        )
+    def actualizar_usuario(self, usuario_id: int, datos_actualizados: Dict[str, Any]) -> Dict[str, Any]:
+        """Actualiza un usuario existente."""
+        cursor = None
+        try:
+            if not self.db_connection:
+                return {'success': False, 'message': 'Sin conexión a base de datos'}
+
             if not self.obtener_usuario_por_id(usuario_id):
                 return {'success': False, 'message': 'Usuario no encontrado'}
 
@@ -277,16 +296,12 @@ usuario_id: int,
             if not validacion['valid']:
                 return {'success': False, 'message': validacion['message']}
 
-            cursor = None
-
-
             cursor = self.db_connection.cursor()
 
             # Sanitizar datos
             datos_limpios = self._sanitizar_datos_usuario(datos_actualizados)
 
             # Construir query de actualización dinámicamente
-
             campos_permitidos = ['nombre_completo', 'email', 'telefono', 'direccion', 'rol']
             updates = {}
 
@@ -301,10 +316,10 @@ usuario_id: int,
             sql_manager = SQLQueryManager(self.db_connection)
 
             # Construir placeholders y valores
-            set_clauses = [f"{campo} = ? for campo in updates.keys()]
+            set_clauses = [f"{campo} = ?" for campo in updates.keys()]
             set_clauses.append("updated_at = GETDATE()")
 
-            query = f"UPDATE usuarios SET {', '.join(set_clauses)} WHERE id = ?
+            query = f"UPDATE usuarios SET {', '.join(set_clauses)} WHERE id = ?"
             params = list(updates.values()) + [usuario_id]
 
             rows_affected = sql_manager.execute_non_query(query, tuple(params))
@@ -318,24 +333,23 @@ usuario_id: int,
             return {'success': True, 'message': 'Usuario actualizado exitosamente'}
 
         except Exception as e:
-            logger.error(f"Error actualizando usuario: {e})
+            logger.error(f"Error actualizando usuario: {e})")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception:
                     logger.error(f"Error en operación de base de datos: {e}")
-                    return None
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error("Error cerrando cursor: {e})
+                    logger.error(f"Error cerrando cursor: {e})")
 
     @admin_required
     def eliminar_usuario(self, usuario_id: int) -> Optional[Dict[str, Any]]:
-        )
+        """
         Elimina un usuario (soft delete).
 
         Args:
@@ -344,6 +358,7 @@ usuario_id: int,
         Returns:
             Resultado de la operación
         """
+        cursor = None
         try:
             if not self.db_connection:
                 return {'success': False, 'message': 'Sin conexión a base de datos'}
@@ -352,9 +367,6 @@ usuario_id: int,
             usuario = self.obtener_usuario_por_id(usuario_id)
             if not usuario:
                 return {'success': False, 'message': 'Usuario no encontrado'}
-
-            cursor = None
-
 
             cursor = self.db_connection.cursor()
 
@@ -370,30 +382,31 @@ usuario_id: int,
 
             self.db_connection.commit()
 
-            logger.info(f"Usuario eliminado: %s (ID: %s)")
-                "N/A"),
-                usuario_id)
+            logger.info(f"Usuario eliminado: {usuario.get('username', 'N/A')} (ID: {usuario_id})")
             return {'success': True, 'message': 'Usuario eliminado exitosamente'}
 
         except Exception as e:
-            logger.error(f"Error eliminando usuario: {e})
+            logger.error(f"Error eliminando usuario: {e})")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception:
                     logger.error(f"Error en operación de base de datos: {e}")
-                    return None
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error("Error cerrando cursor: {e})
+                    logger.error(f"Error cerrando cursor: {e})")
 
     @auth_required
     def obtener_estadisticas_usuarios(self) -> Dict[str, Any]:
-        )
+        """Obtiene estadísticas de usuarios."""
+        try:
+            if not self.db_connection:
+                return {}
+
             cursor = self.db_connection.cursor()
 
             stats = {}
@@ -435,17 +448,19 @@ usuario_id: int,
             return stats
 
         except Exception as e:
-            logger.error(f"Error obteniendo estadísticas: {e})
+            logger.error(f"Error obteniendo estadísticas: {e})")
             return {}
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error(")
+                    logger.error("")
 
     def _validar_datos_usuario(self, datos: Dict[str, Any]) -> Dict[str, Any]:
-        )
+        """Valida datos de usuario."""
+        errores = []
+
         username = datos.get('username', '')
         if not username:
             errores.append('Username es requerido')
@@ -478,10 +493,7 @@ usuario_id: int,
             'message': '; '.join(errores) if errores else 'Datos válidos'
         }
 
-    def _validar_datos_actualizacion(self,
-datos: Dict[str,
-        Any]) -> Dict[str,
-        Any]:
+    def _validar_datos_actualizacion(self, datos: Dict[str, Any]) -> Dict[str, Any]:
         """
         Valida datos para actualización (menos estricta).
 
@@ -523,12 +535,10 @@ datos: Dict[str,
         Returns:
             True si son únicos
         """
+        cursor = None
         try:
             if not self.db_connection:
                 return True
-
-            cursor = None
-
 
             cursor = self.db_connection.cursor()
 
@@ -546,20 +556,21 @@ datos: Dict[str,
             return True
 
         except Exception as e:
-            logger.error(f"Error verificando unicidad: {e})
+            logger.error(f"Error verificando unicidad: {e})")
             return False
         finally:
             if cursor is not None:
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error(")
+                    logger.error("")
 
-    def _sanitizar_datos_usuario(self,
-datos: Dict[str,
-        Any]) -> Dict[str,
-        Any]:
-        )
+    def _sanitizar_datos_usuario(self, datos: Dict[str, Any]) -> Dict[str, Any]:
+        """Sanitiza datos de usuario."""
+        datos_limpios = {}
+
+        for campo in ['username', 'nombre_completo', 'email', 'telefono', 'direccion']:
+            if campo in datos:
                 datos_limpios[campo] = sanitize_string(datos[campo], 200)
 
         # Campos especiales

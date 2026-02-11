@@ -419,7 +419,7 @@ precio_widget,
                 # Actualizar total de línea
                 total_item = self.tabla_productos.item(row, 6)
                 if total_item:
-                    total_item.setText(f"$ {total_linea:.2f})
+                    total_item.setText(f"$ {total_linea:.2f}")
 
         # Actualizar totales generales
         self.dsb_subtotal.setValue(subtotal)
@@ -666,7 +666,7 @@ class ComprasViewComplete(BaseModuleView):
             nombre_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             valor_label = QLabel(valor)
-            valor_label.setStyleSheet(f"font-size: 18px; font-weight: bold; color: {color};)
+            valor_label.setStyleSheet(f"font-size: 18px; font-weight: bold; color: {color};")
             valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             metric_layout.addWidget(nombre_label)
@@ -704,7 +704,7 @@ class ComprasViewComplete(BaseModuleView):
                 subcontrol-origin: margin;
                 left: 10px;
                 padding: 0 10px 0 10px;
-            }
+            }}
             QPushButton {{
                 background-color: {style_manager.colors.PRIMARY};
                 color: white;
@@ -745,7 +745,7 @@ class ComprasViewComplete(BaseModuleView):
                     self.cargar_compras()
                     self.compra_actualizada.emit()
                 else:
-                    show_error(self, "Error", f"Error al crear orden: {resultado['message']})
+                    show_error(self, "Error", f"Error al crear orden: {resultado['message']}")
             else:
                 show_success(self, "Éxito", "Orden creada correctamente (simulación)")
                 self.agregar_orden_demo(datos)
@@ -806,7 +806,7 @@ class ComprasViewComplete(BaseModuleView):
                 elif estado == 'CANCELADA':
                     estado_item.setBackground(Qt.GlobalColor.red)
 
-                show_success(self, "Éxito", f"Estado cambiado a: {estado})
+                show_success(self, "Éxito", f"Estado cambiado a: {estado}")
 
     def ver_detalle_orden(self):
         """Muestra el detalle de la orden seleccionada."""
@@ -817,7 +817,7 @@ class ComprasViewComplete(BaseModuleView):
 
         orden_item = self.tabla_compras.item(row, 0)
         if orden_item:
-            show_success(self, "Detalle", f"Mostrando detalle de la orden {orden_item.text()})
+            show_success(self, "Detalle", f"Mostrando detalle de la orden {orden_item.text()}")
 
     def generar_orden_compra(self):
         """Genera la orden de compra en PDF."""
@@ -875,9 +875,9 @@ class ComprasViewComplete(BaseModuleView):
                     self.llenar_tabla(compras['data'])
                     self.actualizar_estadisticas()
                 else:
-                    show_error(self, "Error", f"Error al cargar compras: {compras.get('message', 'Error desconocido')})
+                    show_error(self, "Error", f"Error al cargar compras: {compras.get('message', 'Error desconocido')}")
             except Exception as e:
-                show_error(self, "Error", f"Error al cargar compras: {str(e)})
+                show_error(self, "Error", f"Error al cargar compras: {str(e)}")
                 # Cargar datos de demo en caso de error
                 self.cargar_datos_demo()
         else:

@@ -417,7 +417,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 }}
                 QPushButton:hover {{
                     background-color: #0056b3;
-                }
+                }}
             """)
         elif estilo == "danger":
             boton.setStyleSheet(f"""
@@ -431,7 +431,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 }
                 QPushButton:hover {{
                     background-color: #c82333;
-                }
+                }}
             """)
         elif estilo == "success":
             boton.setStyleSheet(f"""
@@ -445,7 +445,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 }
                 QPushButton:hover {{
                     background-color: #218838;
-                }
+                }}
             """)
         elif estilo == "info":
             boton.setStyleSheet(f"""

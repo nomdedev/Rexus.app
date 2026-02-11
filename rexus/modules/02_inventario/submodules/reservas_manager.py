@@ -80,12 +80,20 @@ try:
     from .base_utilities import BaseUtilities, TABLA_RESERVAS
     BASE_AVAILABLE = True
 except ImportError as e:
-    logger.error("Error importando utilidades base: {e})
+    logger.error(f"Error importando utilidades base: {e}")
     BASE_AVAILABLE = False
     BaseUtilities = None
-    TABLA_RESERVAS = )
-    # Duración por defecto de reservas (en días)
-    DURACION_DEFAULT_DIAS = 30
+    TABLA_RESERVAS = "reservas_inventario"
+
+# Duración por defecto de reservas (en días)
+DURACION_DEFAULT_DIAS = 30
+
+
+class ReservasManager:
+    """Manager especializado para gestión de reservas de materiales."""
+
+    # Estados de reserva válidos
+    ESTADOS_RESERVA = ['ACTIVA', 'CONSUMIDA', 'LIBERADA', 'CANCELADA', 'VENCIDA']
 
     def __init__(self, db_connection=None):
         """
@@ -105,10 +113,10 @@ except ImportError as e:
             self.base_utils = BaseUtilities(db_connection)
         else:
             self.base_utils = None
-            logger.warning(")
+            self.logger.warning("BaseUtilities no disponible, usando fallback")
 
     def _validar_conexion(self) -> bool:
-        )
+        if not self.db_connection:
             self.logger.error("Sin conexión a base de datos")
             return False
 
@@ -123,7 +131,7 @@ except ImportError as e:
             cursor.fetchone()
             return True
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error(f"Error validando conexión: {e})
+            self.logger.error(f"Error validando conexión: {e}")
             return False
         finally:
             if 'cursor' in locals():
@@ -165,7 +173,7 @@ except ImportError as e:
             if stock_disponible is None:
                 return {
                     'success': False,
-                    'error': f"Producto {datos_limpios['producto_id']} no encontrado,
+                    'error': f"Producto {datos_limpios['producto_id']} no encontrado",
                     'reserva_id': None
                 }
 
@@ -179,7 +187,7 @@ except ImportError as e:
             # Calcular fecha de vencimiento si no se proporcionó
             if not datos_limpios.get('fecha_vencimiento'):
                 datos_limpios['fecha_vencimiento'] = (
-                    datetime.now() + timedelta(days=self.DURACION_DEFAULT_DIAS)
+                    datetime.now() + timedelta(days=DURACION_DEFAULT_DIAS)
                 ).strftime('%Y-%m-%d %H:%M:%S')
 
             # Usar script SQL externo para crear reserva
@@ -200,7 +208,7 @@ except ImportError as e:
                 if resultado is not None:
                     reserva_id = self._obtener_ultima_reserva_id()
 
-                    self.logger.info(f"Reserva creada exitosamente: {reserva_id})
+                    self.logger.info(f"Reserva creada exitosamente: {reserva_id}")
 
                     return {
                         'success': True,
@@ -228,11 +236,7 @@ except ImportError as e:
 
     @auth_required
     @permission_required("update_reserva")
-    def actualizar_reserva(self,
-reserva_id: int,
-        datos_reserva: Dict[str,
-        Any]) -> Dict[str,
-        Any]:
+    def actualizar_reserva(self, reserva_id: int, datos_reserva: Dict[str, Any]) -> Dict[str, Any]:
         """
         Actualiza una reserva existente.
 
@@ -299,7 +303,7 @@ reserva_id: int,
 
             for campo in campos_actualizables:
                 if campo in datos_limpios:
-                    campos_a_actualizar.append(f"{campo} = ?)
+                    campos_a_actualizar.append(f"{campo} = ?")
                     parametros.append(datos_limpios[campo])
 
             # Agregar fecha de modificación
@@ -311,8 +315,7 @@ reserva_id: int,
 
             # Ejecutar actualización
             set_clause = ", ".join(campos_a_actualizar)
-        # FIXED: SQL Injection vulnerability
-            query = "UPDATE {TABLA_RESERVAS} SET ? WHERE id = ?", (set_clause,)
+            query = f"UPDATE {TABLA_RESERVAS} SET {set_clause} WHERE id = ?"
 
             cursor.execute(query, parametros)
             self.db_connection.commit()
@@ -321,7 +324,7 @@ reserva_id: int,
             cursor.close()
 
             if filas_afectadas > 0:
-                self.logger.info(f"Reserva {reserva_id} actualizada exitosamente)
+                self.logger.info(f"Reserva {reserva_id} actualizada exitosamente")
                 return {
                     'success': True,
                     'message': 'Reserva actualizada exitosamente'
@@ -334,6 +337,8 @@ reserva_id: int,
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error actualizando reserva {reserva_id}: {e}")
+            if self.db_connection:
+                try:
                     self.db_connection.rollback()
                 except (AttributeError, RuntimeError):
                     pass
@@ -344,10 +349,7 @@ reserva_id: int,
 
     @auth_required
     @permission_required("cancel_reserva")
-    def liberar_reserva(self,
-reserva_id: int,
-        motivo: str = "Liberación manual") -> Dict[str,
-        Any]:
+    def liberar_reserva(self, reserva_id: int, motivo: str = "Liberación manual") -> Dict[str, Any]:
         """
         Libera una reserva activa.
 
@@ -362,10 +364,7 @@ reserva_id: int,
 
     @auth_required
     @permission_required("cancel_reserva")
-    def cancelar_reserva(self,
-reserva_id: int,
-        motivo: str = "Cancelación manual") -> Dict[str,
-        Any]:
+    def cancelar_reserva(self, reserva_id: int, motivo: str = "Cancelación manual") -> Dict[str, Any]:
         """
         Cancela una reserva.
 
@@ -411,7 +410,7 @@ reserva_id: int,
             if reserva.get('estado') != 'ACTIVA':
                 return {
                     'success': False,
-                    'error': f'Solo se pueden consumir reservas activas. Estado actual: {reserva.get("estado}'
+                    'error': f'Solo se pueden consumir reservas activas. Estado actual: {reserva.get("estado")}'
                 }
 
             # Determinar cantidad a consumir
@@ -454,7 +453,7 @@ reserva_id: int,
                     reserva_id
                 ))
 
-                mensaje = f"Reserva consumida totalmente: {cantidad_consumida} unidades
+                mensaje = f"Reserva consumida totalmente: {cantidad_consumida} unidades"
             else:
                 # Consumo parcial - actualizar cantidad reservada
                 nueva_cantidad_reservada = cantidad_reservada - cantidad_consumida
@@ -465,7 +464,7 @@ reserva_id: int,
                                observaciones_consumo = ISNULL(observaciones_consumo, '') + ?
                            WHERE id = ?"""
 
-                observacion_parcial = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Consumo parcial: {cantidad_consumida} - {motivo}; 
+                observacion_parcial = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Consumo parcial: {cantidad_consumida} - {motivo};"
 
                 cursor.execute(query, (
                     nueva_cantidad_reservada,
@@ -479,7 +478,7 @@ reserva_id: int,
             self.db_connection.commit()
             cursor.close()
 
-            self.logger.info(f"Reserva {reserva_id} consumida: {cantidad_consumida") unidades")"
+            self.logger.info(f"Reserva {reserva_id} consumida: {cantidad_consumida} unidades")
 
             return {
                 'success': True,
@@ -488,7 +487,9 @@ reserva_id: int,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(fError consumiendo reserva {reserva_id}: {e}")
+            self.logger.error(f"Error consumiendo reserva {reserva_id}: {e}")
+            if self.db_connection:
+                try:
                     self.db_connection.rollback()
                 except (AttributeError, RuntimeError):
                     pass
@@ -574,7 +575,7 @@ reserva_id: int,
             return reservas
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            self.logger.error(f"Error obteniendo reservas activas: {e})
+            self.logger.error(f"Error obteniendo reservas activas: {e}")
             return []
 
     @auth_required
@@ -627,7 +628,7 @@ reserva_id: int,
 
             cursor.execute(query_marcar, (
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                f"Vencimiento automático procesado el {datetime.now().strftime('%Y-%m-%d %H:%M:%S')},
+                f"Vencimiento automático procesado el {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             ))
 
@@ -645,7 +646,7 @@ reserva_id: int,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error("Error procesando reservas vencidas: {e})
+            self.logger.error(f"Error procesando reservas vencidas: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -659,16 +660,22 @@ reserva_id: int,
 
     # Métodos privados auxiliares
 
-    def _validar_datos_reserva(self,
-datos: Dict[str,
-        Any],
-        es_actualizacion: bool = False) -> Dict[str,
-        Any]:
-        )
+    def _validar_datos_reserva(self, datos: Dict[str, Any],
+                              es_actualizacion: bool = False) -> Dict[str, Any]:
+        """Valida los datos de una reserva."""
+        datos_limpios = {}
+        errores = []
+
+        try:
+            # Campos obligatorios para nueva reserva
+            if not es_actualizacion:
+                campos_obligatorios = ['producto_id', 'cantidad_reservada']
+                for campo in campos_obligatorios:
+                    if campo not in datos or datos[campo] is None:
                         if campo == 'obra_id' and datos.get('obra_id') == 0:
                             # Permitir obra_id = 0 para reservas generales
                             continue
-                        errores.append(f"Campo obligatorio faltante: {campo})
+                        errores.append(f"Campo obligatorio faltante: {campo}")
 
             # Sanitizar campos string
             campos_string = {
@@ -696,7 +703,7 @@ datos: Dict[str,
                         else:
                             datos_limpios[campo] = valor_entero
                     except (ValueError, TypeError):
-                        errores.append(f"Valor entero inválido para {campo})
+                        errores.append(f"Valor entero inválido para {campo}")
 
             # Cantidad reservada
             if 'cantidad_reservada' in datos:
@@ -726,7 +733,7 @@ datos: Dict[str,
                 if datos['estado'] in self.ESTADOS_RESERVA:
                     datos_limpios['estado'] = datos['estado']
                 else:
-                    errores.append(f"Estado de reserva inválido: {datos['estado']})
+                    errores.append(f"Estado de reserva inválido: {datos['estado']}")
 
             # Usuario por defecto
             if not es_actualizacion and \
@@ -771,8 +778,7 @@ datos: Dict[str,
 
             # Obtener cantidad total reservada activamente
             cursor.execute(
-        # FIXED: SQL Injection vulnerability
-                "SELECT ISNULL(SUM(cantidad_reservada), 0) FROM ? WHERE producto_id = ? AND estado = 'ACTIVA'", (TABLA_RESERVAS,),
+                f"SELECT ISNULL(SUM(cantidad_reservada), 0) FROM {TABLA_RESERVAS} WHERE producto_id = ? AND estado = 'ACTIVA'",
                 (producto_id,)
             )
             row_reservado = cursor.fetchone()
@@ -783,12 +789,14 @@ datos: Dict[str,
             return stock_total - stock_reservado
 
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error("Error obteniendo stock disponible para producto {producto_id}: {e})
+            self.logger.error(f"Error obteniendo stock disponible para producto {producto_id}: {e}")
+            return None
+
     def _obtener_reserva_por_id(self, reserva_id: int) -> Optional[Dict[str, Any]]:
-        )
+        """Obtiene una reserva por su ID."""
+        try:
             cursor = self.db_connection.cursor()
-        # FIXED: SQL Injection vulnerability
-            query = "SELECT * FROM ? WHERE id = ?", (TABLA_RESERVAS,)
+            query = f"SELECT * FROM {TABLA_RESERVAS} WHERE id = ?"
             cursor.execute(query, (reserva_id,))
             fila = cursor.fetchone()
             cursor.close()
@@ -799,11 +807,15 @@ datos: Dict[str,
             return None
 
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error("Error obteniendo reserva por ID: {e})
+            self.logger.error(f"Error obteniendo reserva por ID: {e}")
             return None
 
     def _obtener_columnas_tabla_reservas(self) -> List[str]:
-        )
+        """Obtiene las columnas de la tabla de reservas."""
+        columnas_default = ['id', 'producto_id', 'obra_id', 'cantidad_reservada', 'motivo',
+                           'usuario_reserva', 'fecha_creacion', 'fecha_vencimiento',
+                           'estado', 'cantidad_consumida']
+        try:
             cursor = self.db_connection.cursor()
             cursor.execute("SELECT TOP 1 * FROM reservas_inventario")
             columnas = [desc[0] for desc in cursor.description]
@@ -821,15 +833,12 @@ datos: Dict[str,
             cursor.close()
             return int(resultado[0]) if resultado and resultado[0] else None
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error("Error obteniendo último ID de reserva: {e})
+            self.logger.error(f"Error obteniendo último ID de reserva: {e}")
             return None
 
-    def _cambiar_estado_reserva(self,
-reserva_id: int,
-        nuevo_estado: str,
-        motivo: str) -> Dict[str,
-        Any]:
-        )
+    def _cambiar_estado_reserva(self, reserva_id: int, nuevo_estado: str,
+                               motivo: str) -> Dict[str, Any]:
+        """Cambia el estado de una reserva."""
         if not self._validar_conexion():
             return {
                 'success': False,
@@ -887,7 +896,9 @@ reserva_id: int,
             cursor.close()
 
             if filas_afectadas > 0:
-                self.logger.info(f"Reserva {reserva_id} cambió de {estado_actual} a {nuevo_estado})
+                self.logger.info(f"Reserva {reserva_id} cambió de {estado_actual} a {nuevo_estado}")
+                return {
+                    'success': True,
                     'message': f'Reserva {nuevo_estado.lower()} exitosamente'
                 }
             else:
@@ -897,7 +908,9 @@ reserva_id: int,
                 }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(")
+            self.logger.error(f"Error cambiando estado de reserva: {e}")
+            if self.db_connection:
+                try:
                     self.db_connection.rollback()
                 except (AttributeError, RuntimeError):
                     pass
@@ -906,11 +919,9 @@ reserva_id: int,
                 'error': f'Error interno: {str(e)}'
             }
 
-    def _crear_reserva_fallback(self,
-datos_limpios: Dict[str,
-        Any]) -> Dict[str,
-        Any]:
-        )
+    def _crear_reserva_fallback(self, datos_limpios: Dict[str, Any]) -> Dict[str, Any]:
+        """Crea una reserva usando el método fallback."""
+        try:
             cursor = self.db_connection.cursor()
 
             # Campos para inserción
@@ -928,11 +939,9 @@ datos_limpios: Dict[str,
                 else:
                     valores.append(datos_limpios.get(campo))
 
+            campos_str = ', '.join(campos)
             placeholders = ', '.join(['?'] * len(valores))
-            ', '.join(campos)
-
-        # FIXED: SQL Injection vulnerability
-            query = "INSERT INTO {TABLA_RESERVAS} ({campos_str}) VALUES (?)", (placeholders,)
+            query = f"INSERT INTO {TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})"
             cursor.execute(query, valores)
 
             self.db_connection.commit()
