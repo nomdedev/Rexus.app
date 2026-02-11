@@ -240,7 +240,7 @@ class ErrorManager:
 
         # Crear y configurar el mensaje
         msg_box = QMessageBox(parent)
-        msg_box.setWindowTitle(f"Rexus - {error.title}")
+        msg_box.setWindowTitle(f"Rexus - {error.title})
         msg_box.setText(message.message)
 
         # Configurar detalles y sugerencias
@@ -282,7 +282,7 @@ str]],
         for field_name, error_code in validation_errors:
             error = self.catalog.get_error(error_code)
             if error:
-                error_messages.append(f"• {field_name}: {error.message}")
+                error_messages.append(f"• {field_name}: {error.message})
             else:
                 error_messages.append(f"• {field_name}: Error de validación")
 
@@ -305,7 +305,7 @@ str]],
         if context_data:
             # Reemplazar placeholders en el mensaje
             for key, value in context_data.items():
-                placeholder = f"{{{key}}"
+                placeholder = f"{{{key}}
                 message = message.replace(placeholder, str(value))
                 suggestion = suggestion.replace(placeholder, str(value))
 
@@ -332,14 +332,14 @@ str]],
 
         # Sugerencia de solución
         if error.suggestion:
-            details.append(f"[IDEA] Sugerencia: {error.suggestion}")
+            details.append(f"[IDEA] Sugerencia: {error.suggestion})
 
         # Código de error
         details.append(f"[SEARCH] Código: {error.code}")
 
         # Información técnica
         if error.technical_details:
-            details.append(f"[TOOL] Detalles técnicos: {error.technical_details}")
+            details.append(f"[TOOL] Detalles técnicos: {error.technical_details})
 
         # Datos del contexto
         if context_data:
@@ -351,7 +351,7 @@ str]],
 
         # URL de ayuda
         if error.help_url:
-            details.append(f"📖 Más información: {error.help_url}")
+            details.append(f"📖 Más información: {error.help_url})
 
         return "\n\n".join(details)
 
@@ -362,7 +362,7 @@ str]],
         msg_box = QMessageBox(parent)
         msg_box.setWindowTitle("Rexus - Error")
         msg_box.setText(custom_message or "Ha ocurrido un error en el sistema.")
-        msg_box.setDetailedText(f"Código de error: {error_code}")
+        msg_box.setDetailedText(f"Código de error: {error_code})
         msg_box.setIcon(QMessageBox.Icon.Critical)
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
 

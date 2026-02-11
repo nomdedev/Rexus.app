@@ -12,6 +12,9 @@ from rexus.core.base_controller import BaseController
 from rexus.utils.message_system import show_success, show_error
 from rexus.utils.security import SecurityUtils
 from rexus.core.auth_decorators import auth_required, admin_required
+from rexus.utils.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 class UsuariosController(BaseController):
     """Controlador para el módulo de usuarios."""
@@ -112,7 +115,7 @@ datos: Dict[str,
 
         except Exception as e:
             print(f"[ERROR USUARIOS CONTROLLER] Error cargando usuarios: {e}")
-            self.mostrar_error(f"Error cargando usuarios: {str(e)}")
+            self.mostrar_error(f"Error cargando usuarios: {str(e)})
 
     def buscar_usuarios(self, termino_busqueda: str) -> Optional[List[Dict]]:
         """
@@ -130,7 +133,7 @@ datos: Dict[str,
             termino_sanitizado = SecurityUtils.sanitize_html_input(termino_sanitizado)
 
             if not SecurityUtils.is_safe_input(termino_sanitizado):
-                logger.warning(f"[SECURITY] Término de búsqueda malicioso:{termino_busqueda}")
+                logger.warning(f"[SECURITY] Término de búsqueda malicioso:{termino_busqueda})
                 return None
 
             # Buscar usuarios usando el modelo
@@ -141,7 +144,7 @@ datos: Dict[str,
             return usuarios
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error buscando usuarios: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error buscando usuarios: {e})
             self.mostrar_error(f"Error buscando usuarios: {str(e)}")
             return None
 
@@ -172,7 +175,7 @@ datos: Dict[str,
                 self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error creando usuario: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error creando usuario: {e})
             self.mostrar_error(f"Error creando usuario: {str(e)}")
 
     @auth_required
@@ -206,7 +209,7 @@ datos: Dict[str,
                 self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error actualizando usuario: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error actualizando usuario: {e})
             self.mostrar_error(f"Error actualizando usuario: {str(e)}")
 
     @admin_required
@@ -219,7 +222,7 @@ datos: Dict[str,
                 respuesta = QMessageBox.question(
                     self.view,
                     "Confirmar eliminación",
-                    f"¿Está seguro de eliminar el usuario con ID {usuario_id}?\n\n"
+                    f"¿Está seguro de eliminar el usuario con ID {usuario_id}?\n\n
                     "Esta acción no se puede deshacer.",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                     QMessageBox.StandardButton.No
@@ -237,7 +240,7 @@ datos: Dict[str,
                         self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error eliminando usuario: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error eliminando usuario: {e})
             self.mostrar_error(f"Error eliminando usuario: {str(e)}")
 
     def cambiar_password(self,
@@ -256,7 +259,7 @@ usuario_id:int,
                 self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error cambiando contraseña: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error cambiando contraseña: {e})
             self.mostrar_error(f"Error cambiando contraseña: {str(e)}")
 
     def resetear_password(self, usuario_id: int, nueva_password: str):
@@ -269,7 +272,7 @@ usuario_id:int,
                 self.mostrar_exito("Contraseña reseteada exitosamente")
                 # Registrar en auditoría
                 self.registrar_auditoria(
-                    f"Reset de contraseña para usuario ID {usuario_id}",
+                    f"Reset de contraseña para usuario ID {usuario_id},
                     "usuarios",
                     {"admin_id": self.usuario_actual.get("id"), "target_user": usuario_id}
                 )
@@ -277,7 +280,7 @@ usuario_id:int,
                 self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error reseteando contraseña: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error reseteando contraseña: {e})
             self.mostrar_error(f"Error reseteando contraseña: {str(e)}")
 
     def obtener_estadisticas_usuarios(self) -> Dict[str, Any]:
@@ -285,7 +288,7 @@ usuario_id:int,
         try:
             return self.model.obtener_estadisticas_usuarios()
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estadísticas: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estadísticas: {e})
             return {}
 
     def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
@@ -293,7 +296,7 @@ usuario_id:int,
         try:
             return self.model.obtener_usuario_por_id(usuario_id)
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo usuario: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo usuario: {e})
             return None
 
     def obtener_permisos_usuario(self, usuario_id: int) -> List[str]:
@@ -301,7 +304,7 @@ usuario_id:int,
         try:
             return self.model.obtener_permisos_usuario(usuario_id)
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo permisos: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo permisos: {e})
             return []
 
     @admin_required
@@ -351,11 +354,11 @@ datos: Dict[str,
         if not datos.get("rol"):
             errores.append("Rol es obligatorio")
         elif datos["rol"] not in self.model.ROLES:
-            errores.append(f"Rol inválido. Debe ser uno de: {', '.join(self.model.ROLES.keys())}")
+            errores.append(f"Rol inválido. Debe ser uno de: {', '.join(self.model.ROLES.keys())})
 
         # Validar estado
         if datos.get("estado") and datos["estado"] not in self.model.ESTADOS:
-            errores.append(f"Estado inválido. Debe ser uno de: {', '.join(self.model.ESTADOS.keys())}")
+            errores.append(f"Estado inválido. Debe ser uno de: {', '.join(self.model.ESTADOS.keys())})
 
         # Validar permisos
         if datos.get("permisos"):
@@ -365,11 +368,11 @@ datos: Dict[str,
             else:
                 for permiso in permisos:
                     if permiso not in self.model.MODULOS_SISTEMA:
-                        errores.append(f"Permiso inválido: {permiso}")
+                        errores.append(f"Permiso inválido: {permiso})
 
         if errores:
             mensaje_error = "Errores de validación:\n\n" + "\n".join(
-                f"• {error}" for error in errores
+                f"• {error} for error in errores
             )
             self.mostrar_error(mensaje_error)
             return False
@@ -388,18 +391,13 @@ username: str,
 
             # Verificar que el input sanitizado sea seguro
             if not SecurityUtils.is_safe_input(username_sanitizado):
-                logger.warning(f"[SECURITY] Intento de login con username malicioso:{username}")
+                logger.warning("[SECURITY] Intento de login con username malicioso:{username})
                 return None
 
             # [LOCK] VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO
             bloqueado, tiempo_restante = self.model.verificar_usuario_bloqueado(username_sanitizado)
             if bloqueado:
-                mensaje_bloqueo = f"Usuario bloqueado por exceso de intentos fallidos. "
-                if tiempo_restante > 0:
-                    mensaje_bloqueo += f"Intente nuevamente en {tiempo_restante} minutos."
-                else:
-                    mensaje_bloqueo += "Contacte al administrador."
-
+                mensaje_bloqueo = f)
                 self.mostrar_error(mensaje_bloqueo)
 
                 # Registrar intento de acceso en usuario bloqueado
@@ -416,13 +414,11 @@ username: str,
 
             if not usuario:
                 # Usuario no existe - también incrementar contador para prevenir ataques de enumeración
-                logger.warning(f"[SECURITY] Intento de login con usuario inexistente:{username}")
+                logger.warning("[SECURITY] Intento de login con usuario inexistente:{username})
 
                 # Registrar intento malicioso
                 self.registrar_auditoria(
-                    f"Intento de acceso con usuario inexistente",
-                    "usuarios",
-                    {"username": username_sanitizado}
+                    f)
                 )
 
                 return None
@@ -433,7 +429,7 @@ username: str,
                 bloqueado, intentos, tiempo_bloqueo = self.model.incrementar_intentos_fallidos(username_sanitizado)
 
                 if bloqueado:
-                    mensaje_error = f"Contraseña incorrecta. Usuario BLOQUEADO por {tiempo_bloqueo} minutos después de {intentos} intentos fallidos."
+                    mensaje_error = f"Contraseña incorrecta. Usuario BLOQUEADO por {tiempo_bloqueo} minutos después de {intentos} intentos fallidos.
                     self.mostrar_error(mensaje_error)
 
                     # Registrar bloqueo de usuario
@@ -444,7 +440,7 @@ username: str,
                     )
                 else:
                     intentos_restantes = 3 - intentos  # Máximo configurado en el modelo
-                    mensaje_error = f"Contraseña incorrecta. Intento {intentos} de 3. Quedan {intentos_restantes} intentos antes del bloqueo."
+                    mensaje_error = f"Contraseña incorrecta. Intento {intentos} de 3. Quedan {intentos_restantes} intentos antes del bloqueo.
                     self.mostrar_error(mensaje_error)
 
                     # Registrar intento fallido
@@ -471,7 +467,7 @@ username: str,
                 {"usuario_id": usuario["id"], "username": username_sanitizado}
             )
 
-            print(f"[CHECK] [SECURITY] Login exitoso para usuario '{username_sanitizado}'")
+            print(f"[CHECK] [SECURITY] Login exitoso para usuario '{username_sanitizado}')
 
             return usuario
 
@@ -506,7 +502,7 @@ username: str,
             username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
 
             if not SecurityUtils.is_safe_input(username_sanitizado):
-                logger.warning(f"[SECURITY] Intento de desbloqueo con username malicioso:{username}")
+                logger.warning("[SECURITY] Intento de desbloqueo con username malicioso:{username})
                 return False
 
             # Desbloquear usuario
@@ -514,18 +510,16 @@ username: str,
 
             # Registrar acción de administrador
             self.registrar_auditoria(
-                f"Usuario desbloqueado manualmente por administrador",
-                "usuarios",
-                {"username_desbloqueado": username_sanitizado, "admin_user": self.usuario_actual}
+                f)
             )
 
-            self.mostrar_exito(f"Usuario '{username}' desbloqueado exitosamente")
+            self.mostrar_exito(f"Usuario '{username}' desbloqueado exitosamente)
             print(f"[CHECK] [ADMIN] Usuario '{username}' desbloqueado manualmente")
 
             return True
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error desbloqueando usuario: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error desbloqueando usuario: {e})
             self.mostrar_error(f"Error desbloqueando usuario: {str(e)}")
             return False
 
@@ -567,7 +561,7 @@ username: str,
             return estado
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estado de bloqueo: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estado de bloqueo: {e})
             return {"error": str(e)}
 
     @admin_required
@@ -579,7 +573,7 @@ accion: str,
         """Registra una acción en el log de auditoría."""
         try:
             # Aquí se podría integrar con el módulo de auditoría
-            print(f"[AUDITORIA] {accion} - {modulo} - {detalles}")
+            print(f"[AUDITORIA] {accion} - {modulo} - {detalles})
         except Exception as e:
             print(f"[ERROR USUARIOS CONTROLLER] Error registrando auditoría: {e}")
 
@@ -598,7 +592,7 @@ accion: str,
     def set_usuario_actual(self, usuario: Dict[str, Any]):
         """Establece el usuario actual."""
         self.usuario_actual = usuario
-        print(f"[USUARIOS CONTROLLER] Usuario actual: {usuario.get('nombre_completo', 'Desconocido')}")
+        print(f"[USUARIOS CONTROLLER] Usuario actual: {usuario.get('nombre_completo', 'Desconocido')})
 
     def mostrar_exito(self, mensaje: str):
         """Muestra un mensaje de éxito con el sistema mejorado."""
@@ -631,9 +625,9 @@ accion: str,
                         )
 
         except Exception as e:
-            logger.error(f"Error cargando página: {e}")
+            logger.error(f"Error cargando página: {e})
             if hasattr(self, 'mostrar_error'):
-                self.mostrar_error("Error", f"Error cargando página: {str(e)}")
+                self.mostrar_error("Error", f"Error cargando página: {str(e)})
 
     def cambiar_registros_por_pagina(self, registros):
         """Cambia la cantidad de registros por página y recarga"""
@@ -647,12 +641,11 @@ accion: str,
                 return self.model.obtener_total_registros()
             return 0
         except Exception as e:
-            logger.error(f"Error obteniendo total de registros: {e}")
+            logger.error("Error obteniendo total de registros: {e})
             return 0
 
     def mostrar_error(self, mensaje: str):
-        """Muestra un mensaje de error con el sistema mejorado."""
-        if self.view:
+        )
             show_error(self.view, "Error", mensaje)
 
     def mostrar_advertencia(self, mensaje: str):
@@ -678,7 +671,7 @@ accion: str,
             # Desconectar señales si es necesario
             # Cerrar conexiones, etc.
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error en cleanup: {e}")
+            print(f"[ERROR USUARIOS CONTROLLER] Error en cleanup: {e})
 
     def inicializar_vista(self):
         """Inicializa la vista de usuarios."""

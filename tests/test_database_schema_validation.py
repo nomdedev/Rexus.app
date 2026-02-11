@@ -13,7 +13,13 @@ import os
 import sys
 import re
 import pytest
-import pyodbc
+
+# Verificar dependencias
+try:
+    import pyodbc
+except ImportError:
+    pytest.skip("pyodbc no está disponible", allow_module_level=True)
+
 from typing import Dict, List, Tuple
 import logging
 from pathlib import Path

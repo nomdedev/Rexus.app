@@ -34,10 +34,10 @@ class DatabasePool:
                     self.connections.put(conn)
                     self.active_connections += 1
 
-            self.logger.info(f"Database pool initialized with {self.active_connections} connections")
+            self.logger.info(f"Database pool initialized with {self.active_connections} connections)
         except Exception as e:
             self.logger.error(f"Failed to initialize database pool: {e}")
-            raise DatabaseConnectionError(f"No se pudo inicializar el pool de BD: {e}")
+            raise DatabaseConnectionError(f"No se pudo inicializar el pool de BD: {e})
 
     def _create_connection(self) -> Optional[sqlite3.Connection]:
         """Crea una nueva conexión a la base de datos"""
@@ -56,13 +56,12 @@ class DatabasePool:
 
             return conn
         except Exception as e:
-            self.logger.error(f"Failed to create database connection: {e}")
+            self.logger.error("Failed to create database connection: {e})
             return None
 
     @contextmanager
     def get_connection(self, timeout: float = 10.0):
-        """Obtiene una conexión del pool"""
-        connection = None
+        )
         time.time()
 
         try:
@@ -95,7 +94,7 @@ class DatabasePool:
             yield connection
 
         except Exception as e:
-            self.logger.error(f"Database connection error: {e}")
+            self.logger.error(f"Database connection error: {e})
             raise DatabaseConnectionError(f"Error de conexión a BD: {e}")
         finally:
             # Devolver conexión al pool
@@ -121,11 +120,10 @@ class DatabasePool:
                     pass
             self.active_connections = 0
 
-        self.logger.info("All database connections closed")
+        self.logger.info(")
 
 class DatabaseManager:
-    """Gestor mejorado de base de datos"""
-
+    )
     def __init__(self, database_path: str):
         self.pool = DatabasePool(database_path)
         self.logger = get_logger('database')
@@ -152,7 +150,7 @@ query: str,
 
             except sqlite3.Error as e:
                 conn.rollback()
-                self.logger.error(f"Database query failed: {query[:100]}... Error: {e}"
+                self.logger.error(f"Database query failed: {query[:100]}... Error: {e})
                 raise DatabaseConnectionError(f"Error en consulta: {e}")
 
     def execute_transaction(self, queries: list):
@@ -165,12 +163,12 @@ query: str,
                     cursor.execute(query, params or ())
 
                 conn.commit()
-                self.logger.info(f"Transaction completed with {len(queries)} queries")
+                self.logger.info(f"Transaction completed with {len(queries)} queries)
 
             except sqlite3.Error as e:
                 conn.rollback()
                 self.logger.error(f"Transaction failed: {e}")
-                raise DatabaseConnectionError(f"Error en transacción: {e}")
+                raise DatabaseConnectionError(f"Error en transacción: {e})
 
 # Instancia global del manager
 db_manager: Optional[DatabaseManager] = None

@@ -1,0 +1,283 @@
+# 🐍 Pyproject.toml - Configuración completa de herramientas Python
+# Basado en mejores prácticas de:
+# - https://github.com/psf/black
+# - https://github.com/PyCQA/flake8
+# - https://github.com/PyCQA/pylint
+# - https://docs.pytest.org/
+
+[project]
+name = "rexus-app"
+version = "2.0.0"
+description = "Sistema de Gestión Integral Rexus.app"
+requires-python = ">=3.10"
+authors = [
+    {name = "Rexus.app Team", email = "dev@rexus.app"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+
+# Dependencias principales
+dependencies = [
+    "PyQt6>=6.6.0",
+    "pyodbc>=5.0.0",
+    "python-dotenv>=1.0.0",
+    "bcrypt>=4.0.1",
+]
+
+# Dependencias de desarrollo
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.5.0",
+    "pytest-benchmark>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.11.1",
+
+    # Code quality
+    "black>=23.12.0",
+    "isort>=5.13.0",
+    "flake8>=6.1.0",
+    "pylint>=3.0.0",
+    "mypy>=1.7.0",
+
+    # Security
+    "bandit[toml]>=1.7.5",
+    "safety>=2.3.0",
+
+    # Type stubs
+    "types-requests",
+]
+
+# ============================================================================
+# CONFIGURACIÓN DE HERRAMIENTAS
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Black - Code Formatter (Estándar de facto en Python)
+# ----------------------------------------------------------------------------
+[tool.black]
+line-length = 100          # Longitud de línea (Google usa 80, Black usa 88)
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'        # Incluir archivos .py y .pyi
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | env
+  | venv
+)/
+'''
+
+# ----------------------------------------------------------------------------
+# isort - Import Sorter (Compatible con Black)
+# ----------------------------------------------------------------------------
+[tool.isort]
+profile = "black"          # Compatible con Black
+line_length = 100
+known_first_party = ["rexus"]
+known_third_party = ["PyQt6", "pyodbc", "dotenv"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+skip_gitignore = true
+skip = [".venv", "venv", "env"]
+
+# ----------------------------------------------------------------------------
+# Flake8 - Style Guide Enforcement (PEP 8)
+# ----------------------------------------------------------------------------
+[tool.flake8]
+max-line-length = 100
+extend-ignore = [
+    "E203",  # Whitespace before ':' (Black lo usa)
+    "W503",  # Line break before binary operator (Black lo usa)
+    "E501",  # Line too long (Black ya lo maneja)
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "env",
+    "build",
+    "dist",
+    "*.egg-info",
+]
+max-complexity = 10        # Complejidad ciclomática máxima
+per-file-ignores = [
+    "__init__.py:F401",    # Imports no usados en __init__
+]
+
+# ----------------------------------------------------------------------------
+# Pylint - Code Quality (Más estricto que flake8)
+# ----------------------------------------------------------------------------
+[tool.pylint.main]
+py-version = "3.10"
+ignore = [".venv", "venv", "build", "dist"]
+jobs = 4                   # Paralelizar análisis
+persistent = true         # Cache de análisis
+
+[tool.pylint.messages_control]
+disable = [
+    "C0111",  # missing-docstring  # Permitir docstrings opcionales
+    "W0511",  # fixme           # Permitir FIXME/TODO
+    "R0903",  # too-few-public-methods
+    "C0103",  # invalid-name    # Permitir nombres cortos
+]
+max-line-length = 100
+
+[tool.pylint.format]
+max-line-length = 100
+max-module-lines = 1000     # Máximo líneas por módulo
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "ex", "id", "db", "_", "qs"]  # Nombres aceptables
+
+[tool.pylint.design]
+max-args = 7               # Máximo argumentos por función
+max-locals = 15            # Máximo variables locales
+max-returns = 5            # Máximo return statements
+max-branches = 12          # Máximo branches
+max-statements = 50        # Máximo statements por función
+
+[tool.pylint.classes]
+def-rgx = "[a-z_][a-z0-9_]{2,30}$"  # snake_case para funciones
+
+# ----------------------------------------------------------------------------
+# MyPy - Type Checking (Estricto para mejor calidad)
+# ----------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false    # Progresivo: false -> true
+disallow_any_explicit = false    # Progresivo
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "PyQt6.*",
+    "pyodbc.*",
+]
+ignore_missing_imports = true   # PyQt6 no tiene stubs completos
+
+# ----------------------------------------------------------------------------
+# Pytest - Testing Framework
+# ----------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+python_classes = ["Test*"]
+addopts = [
+    "--verbose",
+    "--strict-markers",
+    "--tb=short",              # Traceback cortos
+    "--cov=rexus",             # Cobertura de código
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-fail-under=50",     # Mínimo 50% (progresivo a 70%)
+    "-n", "auto",              # Paralelizar tests
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "e2e: End-to-end tests",
+    "slow: Slow running tests",
+    "security: Security tests",
+]
+asyncio_mode = "auto"
+
+# ----------------------------------------------------------------------------
+# Coverage.py - Code Coverage
+# ----------------------------------------------------------------------------
+[tool.coverage.run]
+source = ["rexus"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+    "*/migrations/*",
+    "*/venv/*",
+]
+branch = true               # Cobertura de ramas if/else
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_empty = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# ============================================================================
+# BANDIT - Security Linter
+# ============================================================================
+[tool.bandit]
+exclude_dirs = [
+    ".venv",
+    "venv",
+    "env",
+    "tests",
+]
+skips = ["B101"]  # Permitir assert_used
+assert_used = true
+
+# ============================================================================
+# RUFF - Linter ultrarrápido (Alternativa moderna a flake8)
+# ============================================================================
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "C90",   # mccabe complexity
+    "N",     # pep8-naming
+    "UP",    # pyupgrade
+    "B",     # flake8-bugbear
+    "C4",    # flake8-comprehensions
+]
+ignore = [
+    "E501",  # Line too long
+    "B008",  # Do not perform function calls in argument defaults
+]
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "*.egg-info",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Imports no usados en __init__
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+# ============================================================================
+# CONFIGURACIÓN ADICIONAL
+# ============================================================================
+
+[tool.setuptools]
+package-data = {rexus = ["*.sql", "*.json", "*.yaml"]}

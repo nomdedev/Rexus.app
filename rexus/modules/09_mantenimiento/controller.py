@@ -218,7 +218,7 @@ model=None,
                         'mantenimiento': mantenimiento
                     })
 
-            logger.info(f"Verificación completada: {len(vencidos)} vencidos, {len(proximos") próximos")"
+            logger.info(f"Verificación completada: {len(vencidos)} vencidos, {len(proximos)} próximos")
 
         except Exception as e:
             logger.error(f"Error verificando mantenimientos pendientes: {e}")

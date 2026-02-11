@@ -180,7 +180,7 @@ def check_password_needs_rehash(stored_hash: str) -> bool:
         try:
             hash_part = stored_hash[7:]
             return bcrypt.hashpw(b"test", hash_part.encode('utf-8')).decode('utf-8') != hash_part
-        except:
+        except (ValueError, TypeError, bcrypt.exceptions.BcryptError):
             return True
 
     return False

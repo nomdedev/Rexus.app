@@ -88,9 +88,7 @@ class QueryBatcher:
                 callback(result)
                 
         except Exception as e:
-            logger.error(f"Error ejecutando batch {query_key}: {e")"
-            # Notificar error a todos los callbacks
-            for callback in batch_callbacks:
+            logger.error("))
                 callback(None)
 
     def _execute_batch_query(self, query_key: str, batch_data: List[Any]) -> List[Any]:
@@ -107,7 +105,7 @@ class QueryBatcher:
         raise NotImplementedError("Subclases deben implementar _execute_batch_query}
 
     def flush_all(self):
-        """Ejecuta todos los batches pendientes."""
+        ""Ejecuta todos los batches pendientes."""
         with self._lock:
             for query_key in list(self._batches.keys()):
                 if self._batches[query_key]:
@@ -144,22 +142,11 @@ class DatabaseQueryBatcher(QueryBatcher):
         if optimizer:
             return optimizer(batch_data)
         else:
-            logger.warning(f"No hay optimizador para query_key: {query_key}")
+            logger.warning("No hay optimizador para query_key: {query_key})
             return [None] * len(batch_data)
 
     def _optimize_get_by_ids(self, batch_data: List[Dict]) -> List[Any]:
-        """
-        Optimiza consultas get_by_id usando IN clause.
-        
-        Args:
-            batch_data: Lista de {'table': str, 'id': int, 'columns': str}
-        
-        Returns:
-            List[Any]: Resultados correspondientes
-        """
-        results = []
-        
-        # Agrupar por tabla y columnas
+        )
         grouped = defaultdict(list)
         for i, item in enumerate(batch_data):
             key = (item['table'], item.get('columns', '*'))
@@ -173,7 +160,7 @@ class DatabaseQueryBatcher(QueryBatcher):
             
             # Crear consulta IN
             placeholders = ','.join(['?'] * len(ids))
-            query = f"SELECT {columns} FROM {table} WHERE id IN ({placeholders})"
+            query = f"SELECT {columns} FROM {table} WHERE id IN ({placeholders})
             
             try:
                 cursor = self.db_connection.cursor()
@@ -185,27 +172,14 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[row[0]] = row  # Asumiendo que ID es la primera columna
                 
             except Exception as e:
-                logger.error(f"Error en batch query para {table}: {e}"
-        
-        # Organizar resultados en el orden original
+                logger.error(")
         for i, item in enumerate(batch_data):
             results.append(result_map.get(item['id']))
         
         return results
 
     def _optimize_count_relations(self, batch_data: List[Dict]) -> List[int]:
-        """
-        Optimiza consultas de conteo de relaciones.
-        
-        Args:
-            batch_data: Lista de {'table': str, 'foreign_key': str, 'parent_id': int}
-        
-        Returns:
-            List[int]: Conteos correspondientes
-        """
-        results = []
-        
-        # Agrupar por tabla y foreign_key
+        )
         grouped = defaultdict(list)
         for i, item in enumerate(batch_data):
             key = (item['table'], item['foreign_key'])
@@ -235,8 +209,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[parent_id] = count
                 
             except Exception as e:
-                logger.error(f"Error en count batch para {table}: {e}"
-        
+                logger.error("Error en count batch para {table}: {e})
         # Organizar resultados (0 si no hay coincidencias)
         for i, item in enumerate(batch_data):
             results.append(result_map.get(item['parent_id'], 0))
@@ -244,18 +217,7 @@ class DatabaseQueryBatcher(QueryBatcher):
         return results
 
     def _optimize_get_relations(self, batch_data: List[Dict]) -> List[List]:
-        """
-        Optimiza consultas para obtener relaciones múltiples.
-        
-        Args:
-            batch_data: Lista de {'table': str, 'foreign_key': str, 'parent_id': int, 'columns': str}
-        
-        Returns:
-            List[List]: Listas de registros relacionados
-        """
-        results = []
-        
-        # Agrupar por tabla, foreign_key y columnas
+        )
         grouped = defaultdict(list)
         for i, item in enumerate(batch_data):
             key = (item['table'], item['foreign_key'], item.get('columns', '*'))
@@ -287,27 +249,14 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[parent_id].append(record)
                 
             except Exception as e:
-                logger.error(f"Error en relations batch para {table}: {e}"
-        
-        # Organizar resultados
+                logger.error("Error en relations batch para {table}: {e})
         for i, item in enumerate(batch_data):
             results.append(result_map.get(item['parent_id'], []))
         
         return results
 
     def _optimize_exists_checks(self, batch_data: List[Dict]) -> List[bool]:
-        """
-        Optimiza verificaciones de existencia.
-        
-        Args:
-            batch_data: Lista de {'table': str, 'column': str, 'value': Any}
-        
-        Returns:
-            List[bool]: Resultados de existencia
-        """
-        results = []
-        
-        # Agrupar por tabla y columna
+        )
         grouped = defaultdict(list)
         for i, item in enumerate(batch_data):
             key = (item['table'], item['column'])
@@ -336,9 +285,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[value] = value in existing_values
                 
             except Exception as e:
-                logger.error(f"Error en exists batch para {table}: {e}"
-        
-        # Organizar resultados
+                logger.error("Error en exists batch para {table}: {e})
         for i, item in enumerate(batch_data):
             results.append(result_map.get(item['value'], False))
         
@@ -346,8 +293,7 @@ class DatabaseQueryBatcher(QueryBatcher):
 
 
 class QueryCache:
-    """Cache inteligente para consultas con TTL y invalidación."""
-
+    )
     def __init__(self, max_size: int = 1000, default_ttl: int = 300):
         """
         Inicializa el cache de consultas.
@@ -497,7 +443,7 @@ class QueryOptimizer:
         Returns:
             Optional[Any]: Registro encontrado o None
         """
-        cache_key = f"get_by_id:{table}:{id_value}:{columns}"
+        cache_key = f"get_by_id:{table}:{id_value}:{columns}
         
         # Intentar obtener del cache
         if use_cache:
@@ -523,28 +469,11 @@ class QueryOptimizer:
             return result
             
         except Exception as e:
-            logger.error(f"Error en get_by_id para {table}:{id_value}: {e}"
-            return None
-
-    def get_by_ids_batched(self, table: str, id_values: List[int], 
+            logger.error("Error en get_by_id para {table}:{id_value}: {e})
                           columns: str = '*') -> Dict[int, Any]:
-        """
-        Obtiene múltiples registros por ID usando batching.
-        
-        Args:
-            table: Nombre de la tabla
-            id_values: Lista de IDs
-            columns: Columnas a seleccionar
-        
-        Returns:
-            Dict[int, Any]: Mapeo de ID a registro
-        """
-        if not id_values:
-            return {}
-        
-        # Crear consulta IN optimizada
+        )
         placeholders = ','.join(['?'] * len(id_values))
-        query = f"SELECT {columns} FROM {table} WHERE id IN ({placeholders})"
+        query = f"SELECT {columns} FROM {table} WHERE id IN ({placeholders})
         
         try:
             cursor = self.db_connection.cursor()
@@ -557,15 +486,7 @@ class QueryOptimizer:
                 result_map[row[0]] = row
             
             self._stats['batched_queries'] += 1
-            logger.debug(f"Batch query ejecutada para {len(id_values)} IDs en {table}"
-            
-            return result_map
-            
-        except Exception as e:
-            logger.error(f"Error en get_by_ids_batched para {table}: {e}"
-            return {}
-
-    def count_relations(self, table: str, foreign_key: str, 
+            logger.debug(f"Batch query ejecutada para {len(id_values)} IDs en {table}")
                        parent_ids: List[int]) -> Dict[int, int]:
         """
         Cuenta relaciones para múltiples padres usando batching.
@@ -603,16 +524,14 @@ class QueryOptimizer:
             return result_map
             
         except Exception as e:
-            logger.error(f"Error en count_relations para {table}: {e}"
-            return {pid: 0 for pid in parent_ids}
-
+            logger.error("Error en count_relations para {table}: {e})
     def invalidate_cache(self, pattern: str = None):
-        """Invalida entradas del cache."""
+        )
         self.cache.invalidate(pattern)
-        logger.debug(f"Cache invalidado con patrón: {pattern}")
+        logger.debug("Cache invalidado con patrón: {pattern})
 
     def get_stats(self) -> Dict[str, Any]:
-        """Obtiene estadísticas del optimizador."""
+        )
         cache_stats = self.cache.get_stats()
         
         total_queries = self._stats['cache_hits'] + self._stats['cache_misses']
@@ -621,7 +540,7 @@ class QueryOptimizer:
         return {
             'cache': cache_stats,
             'queries': self._stats.copy(),
-            'cache_hit_rate': f"{cache_hit_rate:.1f}%",
+            'cache_hit_rate': f"{cache_hit_rate:.1f}%,
         }
 
     def cleanup(self):
@@ -651,7 +570,7 @@ def optimize_query(use_cache: bool = True, ttl: Optional[int] = None,
                 return func(*args, **kwargs)
             
             # Generar clave de cache
-            cache_key = f"{func.__name__}:{str(args)}:{str(sorted(kwargs.items()))}"
+            cache_key = f"{func.__name__}:{str(args)}:{str(sorted(kwargs.items()))}
             
             # Intentar obtener del cache
             if use_cache:

@@ -1357,3 +1357,6 @@ ERRORES CRÍTICOS:
 2025-08-25 09:53:14 | ERROR    | rexus.main      | [LOGIN] Autenticación fallida: Credenciales incorrectas. 3 intentos restantes.
 2025-09-01 13:23:39 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
 2025-09-01 14:40:25 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-09-03 09:03:45 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2026-02-10 19:16:23 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2026-02-10 19:17:26 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar

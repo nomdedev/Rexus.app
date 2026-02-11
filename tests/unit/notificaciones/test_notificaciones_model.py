@@ -54,7 +54,7 @@ class TestNotificacionesModel(unittest.TestCase):
         self.assertEqual(TipoNotificacion.ERROR.value, "error")
         self.assertEqual(TipoNotificacion.SUCCESS.value, "success")
 
-    @patch('rexus.modules.notificaciones.model.unified_sanitizer')
+    @patch('rexus.modules.13_notificaciones.model.unified_sanitizer')
     def test_crear_notificacion(self, mock_sanitizer):
         """Test de creación de notificación."""
         # Mock sanitizer
@@ -98,7 +98,7 @@ class TestNotificacionesModel(unittest.TestCase):
         result = model_sin_db.crear_notificacion(datos)
         self.assertFalse(result)
 
-    @patch('rexus.modules.notificaciones.model.unified_sanitizer')
+    @patch('rexus.modules.13_notificaciones.model.unified_sanitizer')
     def test_obtener_notificaciones(self, mock_sanitizer):
         """Test de obtención de notificaciones."""
         # Mock cursor y resultados
@@ -180,7 +180,7 @@ class TestNotificacionesModel(unittest.TestCase):
         result = self.model.validar_datos_notificacion(datos_invalidos)
         self.assertFalse(result)
 
-    @patch('rexus.modules.notificaciones.model.unified_sanitizer')
+    @patch('rexus.modules.13_notificaciones.model.unified_sanitizer')
     def test_sanitizacion_datos(self, mock_sanitizer):
         """Test de sanitización de datos."""
         mock_sanitizer.sanitize_dict.return_value = {

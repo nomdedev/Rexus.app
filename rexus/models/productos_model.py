@@ -16,6 +16,10 @@ Proporciona una API unificada para CRUD y operaciones de negocio.
 import logging
 from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional
+import sqlite3
+from rexus.utils.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 # Imports del sistema
 from rexus.utils.sql_query_manager import get_sql_manager
@@ -85,25 +89,15 @@ class ProductosModel:
                     (tabla,)
                 )
                 if cursor.fetchone()[0] > 0:
-                    logger.info(f"Tabla '{tabla}' verificada correctamente")
+                    logger.info(f"Tabla '{tabla}' verificada correctamente)
                 else:
                     logger.error(f"CRÍTICO: Tabla '{tabla}' no existe")
 
         except Exception as e:
-            logger.error(f"Error verificando tablas: {e}")
+            logger.error("Error verificando tablas: {e})
 
     def create_product(self, product_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Crea un nuevo producto en la tabla unificada.
-
-        Args:
-            product_data: Datos del producto
-
-        Returns:
-            Dict con resultado de la operación
-        """
-        try:
-            # Validar datos de entrada
+        )
             validation = self.validate_product_data(product_data)
             if not validation['valid']:
                 return {
@@ -121,7 +115,7 @@ class ProductosModel:
             if self._product_code_exists(sanitized_data['codigo']):
                 return {
                     'success': False,
-                    'error': f"El código '{sanitized_data['codigo']}' ya existe"
+                    'error': f"El código '{sanitized_data['codigo']}' ya existe
                 }
 
             # Preparar query de inserción
@@ -187,7 +181,7 @@ class ProductosModel:
 
             self.db_connection.commit()
 
-            logger.info(f"Producto creado: ID {product_id}, código {sanitized_data['codigo']}"
+            logger.info(f"Producto creado: ID {product_id}, código {sanitized_data['codigo']})
 
             return {
                 'success': True,
@@ -201,7 +195,7 @@ class ProductosModel:
                 self.db_connection.rollback()
             return {
                 'success': False,
-                'error': f"Error interno: {str(e)}"
+                'error': f"Error interno: {str(e)}
             }
 
     def get_product_by_id(self, product_id: int) -> Optional[Dict[str, Any]]:
@@ -229,20 +223,9 @@ class ProductosModel:
             return None
 
         except Exception as e:
-            logger.error(f"Error obteniendo producto por ID {product_id}: {e}"
-            return None
-
+            logger.error("Error obteniendo producto por ID {product_id}: {e})
     def get_product_by_code(self, codigo: str) -> Optional[Dict[str, Any]]:
-        """
-        Obtiene un producto por su código.
-
-        Args:
-            codigo: Código del producto
-
-        Returns:
-            Diccionario con datos del producto o None
-        """
-        try:
+        )
             codigo_sanitized = self.security_manager.sanitize_input(codigo)
             cursor = self.db_connection.cursor()
 
@@ -258,24 +241,9 @@ class ProductosModel:
             return None
 
         except Exception as e:
-            logger.error(f"Error obteniendo producto por código {codigo}: {e}"
-            return None
-
-    def search_products(self, filters: Dict[str, Any] = None, page: int = 1,
+            logger.error("Error obteniendo producto por código {codigo}: {e})
                        limit: int = 50) -> Dict[str, Any]:
-        """
-        Busca productos con filtros y paginación.
-
-        Args:
-            filters: Filtros de búsqueda
-            page: Página actual
-            limit: Registros por página
-
-        Returns:
-            Dict con productos y metadata de paginación
-        """
-        try:
-            filters = filters or {}
+        )
             offset = (page - 1) * limit
 
             cursor = self.db_connection.cursor()
@@ -302,7 +270,7 @@ class ProductosModel:
                 params.append(self.security_manager.sanitize_input(filters['estado']))
 
             if filters.get('search_text'):
-                search_text = f"%{self.security_manager.sanitize_input(filters['search_text'])}%"
+                search_text = f"%{self.security_manager.sanitize_input(filters['search_text'])}%
                 conditions.append("(codigo LIKE ? OR nombre LIKE ? OR descripcion LIKE ?)")
                 params.extend([search_text, search_text, search_text])
 
@@ -314,7 +282,7 @@ class ProductosModel:
                 base_query += " AND " + " AND ".join(conditions)
 
             # Query de conteo
-            count_query = f"SELECT COUNT(*) FROM ({base_query}) as counted"
+            count_query = f"SELECT COUNT(*) FROM ({base_query}) as counted
             cursor.execute(count_query, params)
             total_records = cursor.fetchone()[0]
 
@@ -340,7 +308,7 @@ class ProductosModel:
             }
 
         except Exception as e:
-            logger.error(f"Error buscando productos: {e}")
+            logger.error("Error buscando productos: {e})
             return {
                 'success': False,
                 'error': str(e),
@@ -350,21 +318,7 @@ class ProductosModel:
 
     def update_stock(self, product_id: int, new_stock: int, movement_type: str,
                     reference: str = None, user: str = 'SYSTEM') -> Dict[str, Any]:
-        """
-        Actualiza el stock de un producto y registra el movimiento.
-
-        Args:
-            product_id: ID del producto
-            new_stock: Nuevo stock
-            movement_type: Tipo de movimiento
-            reference: Referencia del movimiento
-            user: Usuario que realiza el cambio
-
-        Returns:
-            Dict con resultado de la operación
-        """
-        try:
-            # Obtener stock actual
+        )
             current_product = self.get_product_by_id(product_id)
             if not current_product:
                 return {
@@ -392,18 +346,7 @@ class ProductosModel:
 
             self.db_connection.commit()
 
-            logger.info(f"Stock actualizado - Producto {product_id}: {current_stock} → {new_stock}"
-
-            return {
-                'success': True,
-                'previous_stock': current_stock,
-                'new_stock': new_stock,
-                'change': quantity_change
-            }
-
-        except Exception as e:
-            logger.error(f"Error actualizando stock del producto {product_id}: {e}"
-            if self.db_connection:
+            logger.info("Stock actualizado - Producto {product_id}: {current_stock} → {new_stock})
                 self.db_connection.rollback()
             return {
                 'success': False,
@@ -414,13 +357,7 @@ class ProductosModel:
 tipo_producto: str,
         active_only: bool = True) -> List[Dict[str,
         Any]]:
-        """
-        Obtiene productos de un tipo específico.
-
-        Args:
-            tipo_producto: Tipo de producto (INVENTARIO,
-HERRAJE,
-                VIDRIO,
+        )
                 MATERIAL)
             active_only: Si solo incluir productos activos
 
@@ -429,7 +366,7 @@ HERRAJE,
         """
         try:
             if tipo_producto not in self.TIPOS_PRODUCTO:
-                raise ValueError(f"Tipo de producto inválido: {tipo_producto}")
+                raise ValueError(f"Tipo de producto inválido: {tipo_producto})
 
             cursor = self.db_connection.cursor()
 
@@ -451,14 +388,9 @@ HERRAJE,
             return products
 
         except Exception as e:
-            logger.error(f"Error obteniendo productos por tipo {tipo_producto}: {e}"
-            return []
-
+            logger.error("Error obteniendo productos por tipo {tipo_producto}: {e})
     def get_low_stock_products(self, tipo_producto: str = None) -> List[Dict[str, Any]]:
-        """
-        Obtiene productos con stock bajo.
-
-        Args:
+        )
             tipo_producto: Filtrar por tipo de producto (opcional)
 
         Returns:
@@ -490,29 +422,16 @@ HERRAJE,
             return products
 
         except Exception as e:
-            logger.error(f"Error obteniendo productos con stock bajo: {e}")
+            logger.error("Error obteniendo productos con stock bajo: {e})
             return []
 
     def validate_product_data(self,
 product_data: Dict[str,
         Any]) -> Dict[str,
         Any]:
-        """
-        Valida los datos de un producto.
-
-        Args:
-            product_data: Datos del producto
-
-        Returns:
-            Dict con resultado de validación
-        """
-        errors = []
-
-        # Campos requeridos
-        required_fields = ['codigo', 'nombre', 'tipo_producto']
-        for field in required_fields:
+        )
             if not product_data.get(field):
-                errors.append(f"Campo '{field}' es requerido")
+                errors.append(f"Campo '{field}' es requerido)
 
         # Validar tipo de producto
         if product_data.get('tipo_producto') not in self.TIPOS_PRODUCTO:
@@ -521,7 +440,7 @@ product_data: Dict[str,
         # Validar estado
         if product_data.get('estado') and \
             product_data['estado'] not in self.ESTADOS_PRODUCTO:
-            errors.append(f"Estado debe ser uno de: {', '.join(self.ESTADOS_PRODUCTO)}")
+            errors.append(f"Estado debe ser uno de: {', '.join(self.ESTADOS_PRODUCTO)})
 
         # Validar precios
         for field in ['precio_compra', 'precio_venta']:
@@ -531,7 +450,7 @@ product_data: Dict[str,
                     if price < 0:
                         errors.append(f"'{field}' no puede ser negativo")
                 except (ValueError, InvalidOperation):
-                    errors.append(f"'{field}' debe ser un número válido")
+                    errors.append(f"'{field}' debe ser un número válido)
 
         # Validar stock
         for field in ['stock', 'stock_minimo']:
@@ -541,7 +460,7 @@ product_data: Dict[str,
                     if stock < 0:
                         errors.append(f"'{field}' no puede ser negativo")
                 except ValueError:
-                    errors.append(f"'{field}' debe ser un número entero")
+                    errors.append(f"'{field}' debe ser un número entero)
 
         return {
             'valid': len(errors) == 0,
@@ -585,14 +504,13 @@ product_data: Dict[str,
                     documento_referencia, motivo, usuario_creacion, fecha_creacion
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
             """, (product_id, movement_type, quantity, old_stock, new_stock,
-                  reference, f"Movimiento de {movement_type.lower()}", user))
+                  reference, f"Movimiento de {movement_type.lower()}, user))
 
         except Exception as e:
-            logger.error(f"Error creando movimiento de stock: {e}")
+            logger.error(")
 
     def _row_to_dict(self, row, description) -> Dict[str, Any]:
-        """Convierte una fila de BD a diccionario."""
-        columns = [column[0] for column in description]
+        )
         return dict(zip(columns, row))
 
 # Funciones de conveniencia para compatibilidad

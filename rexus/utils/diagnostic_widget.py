@@ -38,7 +38,7 @@ class DiagnosticWidget(QWidget):
             else:
                 # No hay aplicación Qt, crear como objeto Python normal
                 self.qt_initialized = False
-        except:
+        except (ImportError, RuntimeError):
             self.qt_initialized = False
 
         self.module_name = module_name
@@ -64,7 +64,7 @@ class DiagnosticWidget(QWidget):
 
         # Título del error
         title_layout = QVBoxLayout()
-        title = QLabel(f"Error en Módulo: {self.module_name.title()}")
+        title = QLabel(f"Error en Módulo: {self.module_name.title()})
         title.setStyleSheet("""
             QLabel {
                 font-size: 18px;
@@ -131,7 +131,7 @@ class DiagnosticWidget(QWidget):
 
         # Error principal
         error_msg = self.error_info.get("error", "Error desconocido")
-        error_label = QLabel(f"Error: {error_msg}")
+        error_label = QLabel(f"Error: {error_msg})
         error_label.setStyleSheet("""
             QLabel {
                 background-color: #ffebee;
@@ -195,7 +195,7 @@ class DiagnosticWidget(QWidget):
                 if diagnostic["status"] == "error"
                 else "[WARN]"
             )
-            diagnostic_label = QLabel(f"{status_icon} {diagnostic['description']}")
+            diagnostic_label = QLabel(f"{status_icon} {diagnostic['description']})
 
             if diagnostic["status"] == "error":
                 diagnostic_label.setStyleSheet("color: #d32f2f; font-weight: bold;")
@@ -207,7 +207,7 @@ class DiagnosticWidget(QWidget):
             diagnostic_layout.addWidget(diagnostic_label)
 
             if diagnostic.get("details"):
-                details_label = QLabel(f"   → {diagnostic['details']}")
+                details_label = QLabel(f"   → {diagnostic['details']})
                 details_label.setStyleSheet(
                     "color: #666; font-size: 11px; margin-left: 20px;"
                 )
@@ -220,7 +220,7 @@ class DiagnosticWidget(QWidget):
         diagnostics = []
 
         # 1. Verificar archivos del módulo
-        module_path = Path(f"rexus/modules/{self.module_name}")
+        module_path = Path(f"rexus/modules/{self.module_name})
         required_files = ["__init__.py", "model.py", "view.py", "controller.py"]
 
         for file in required_files:
@@ -229,7 +229,7 @@ class DiagnosticWidget(QWidget):
                 diagnostics.append(
                     {
                         "status": "ok",
-                        "description": f"Archivo {file} encontrado",
+                        "description": f"Archivo {file} encontrado,
                         "details": str(file_path),
                     }
                 )
@@ -237,8 +237,8 @@ class DiagnosticWidget(QWidget):
                 diagnostics.append(
                     {
                         "status": "error",
-                        "description": f"Archivo {file} faltante",
-                        "details": f"Se esperaba en: {file_path}",
+                        "description": f"Archivo {file} faltante,
+                        "details": f"Se esperaba en: {file_path},
                     }
                 )
 
@@ -251,21 +251,21 @@ class DiagnosticWidget(QWidget):
                         content = f.read()
                     compile(content, str(file_path), "exec")
                     diagnostics.append(
-                        {"status": "ok", "description": f"Sintaxis de {file} correcta"}
+                        {"status": "ok", "description": f"Sintaxis de {file} correcta}
                     )
                 except SyntaxError as e:
                     diagnostics.append(
                         {
                             "status": "error",
-                            "description": f"Error de sintaxis en {file}",
-                            "details": f"Línea {e.lineno}: {e.msg}",
+                            "description": f"Error de sintaxis en {file},
+                            "details": f"Línea {e.lineno}: {e.msg},
                         }
                     )
                 except Exception as e:
                     diagnostics.append(
                         {
                             "status": "warning",
-                            "description": f"No se pudo verificar {file}",
+                            "description": f"No se pudo verificar {file},
                             "details": str(e),
                         }
                     )
@@ -275,7 +275,7 @@ class DiagnosticWidget(QWidget):
             import importlib.util
 
             spec = importlib.util.spec_from_file_location(
-                f"rexus.modules.{self.module_name}.model", module_path / "model.py"
+                f"rexus.modules.{self.module_name}.model, module_path / "model.py"
             )
             if spec and spec.loader:
                 diagnostics.append({"status": "ok", "description": "Modelo importable"})
@@ -301,7 +301,7 @@ class DiagnosticWidget(QWidget):
             diagnostics.append(
                 {
                     "status": "error",
-                    "description": f"Dependencia faltante: {missing_module}",
+                    "description": f"Dependencia faltante: {missing_module},
                     "details": "Ejecutar: pip install " + missing_module,
                 }
             )
@@ -341,18 +341,18 @@ class DiagnosticWidget(QWidget):
         solutions = self.generate_solutions()
 
         for i, solution in enumerate(solutions, 1):
-            solution_label = QLabel(f"{i}. {solution['title']}")
+            solution_label = QLabel(f"{i}. {solution['title']})
             solution_label.setStyleSheet("font-weight: bold; color: #1976d2;")
             solutions_layout.addWidget(solution_label)
 
             if solution.get("description"):
-                desc_label = QLabel(f"   {solution['description']}")
+                desc_label = QLabel(f"   {solution['description']})
                 desc_label.setStyleSheet("color: #666; margin-left: 15px;")
                 desc_label.setWordWrap(True)
                 solutions_layout.addWidget(desc_label)
 
             if solution.get("command"):
-                cmd_label = QLabel(f"   Comando: {solution['command']}")
+                cmd_label = QLabel(f"   Comando: {solution['command']})
                 cmd_label.setStyleSheet("""
                     background-color: #f5f5f5;
                     border: 1px solid #ddd;
@@ -416,12 +416,12 @@ class DiagnosticWidget(QWidget):
                 {
                     "title": "Verificar estructura del módulo",
                     "description": "Asegurar que todos los archivos requeridos existen.",
-                    "command": f"ls -la rexus/modules/{self.module_name}/",
+                    "command": f"ls -la rexus/modules/{self.module_name}/,
                 },
                 {
                     "title": "Ejecutar tests del módulo",
                     "description": "Verificar que el módulo pasa todas las pruebas.",
-                    "command": f"python -m pytest tests/{self.module_name}/ -v",
+                    "command": f"python -m pytest tests/{self.module_name}/ -v,
                 },
                 {
                     "title": "Reiniciar la aplicación",
@@ -512,7 +512,7 @@ class DiagnosticWidget(QWidget):
 
             show_info(
                 "Corrección Automática",
-                f"Ejecutando correcciones automáticas para el módulo {self.module_name}...\n\n"
+                f"Ejecutando correcciones automáticas para el módulo {self.module_name}...\n\n
                 "Esto puede tardar unos momentos.",
             )
 
@@ -546,13 +546,12 @@ class DiagnosticWidget(QWidget):
 
                 show_error(
                     "Error en Corrección",
-                    f"Algunas correcciones fallaron:\n{result1.stderr}\n{result2.stderr}",
+                    f"Algunas correcciones fallaron:\n{result1.stderr}\n{result2.stderr},
                 )
 
         except Exception as e:
-            from rexus.utils.dialogs import show_error
 
-            show_error("Error", f"Error ejecutando correcciones automáticas: {e}")
+            show_error("Error", f"Error ejecutando correcciones automáticas: {e})
 
     def report_error(self):
         """Genera un reporte detallado del error."""
@@ -570,7 +569,7 @@ TRACEBACK:
 {self.error_info.get("traceback", "N/A}
 
 DIAGNÓSTICOS:
-{chr(10).join([f"- {d['description']}: {d['status']}" for d in self.run_diagnostics()])}
+{chr(10).join([f"- {d['description']}}: {d['status']} for d in self.run_diagnostics()])}
 
 ARCHIVOS INVOLUCRADOS:
 - rexus/modules/{self.module_name}/model.py
@@ -580,22 +579,20 @@ ARCHIVOS INVOLUCRADOS:
 
             # Guardar reporte
             report_file = Path(
-                f"error_report_{self.module_name}_{__import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+                f"error_report_{self.module_name}_{__import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')}.txt
             )
             with open(report_file, "w", encoding="utf-8") as f:
                 f.write(report_content)
 
-            from rexus.utils.dialogs import show_info
 
             show_info(
                 "Reporte Generado",
-                f"Reporte de error guardado en:\n{report_file.absolute()}",
+                f"Reporte de error guardado en:\n{report_file.absolute()},
             )
 
         except Exception as e:
-            from rexus.utils.dialogs import show_error
 
-            show_error("Error", f"Error generando reporte: {e}")
+            show_error("Error", f"Error generando reporte: {e})
 
 
 def create_diagnostic_widget(

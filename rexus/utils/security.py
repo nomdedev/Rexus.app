@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Utilidades de seguridad para Rexus
-Implementa funciones de seguridad críticas
+Implementa funciones de seguridad críticas con estándares OWASP
 """
 
 import hashlib
@@ -9,6 +9,14 @@ import secrets
 import re
 from typing import Optional
 import logging
+
+# Intentar importar bcrypt (estándar OWASP para contraseñas)
+try:
+    import bcrypt
+    BCRYPT_AVAILABLE = True
+except ImportError:
+    BCRYPT_AVAILABLE = False
+    logging.warning("bcrypt no disponible, usando PBKDF2 como fallback")
 
 # Configuración de logging para seguridad
 logging.basicConfig(level=logging.INFO)
@@ -18,26 +26,96 @@ class SecurityUtils:
 
     @staticmethod
     def hash_password(password: str) -> str:
-        """Genera hash seguro de contraseña usando PBKDF2"""
-        salt = secrets.token_hex(32)
-        pwdhash = hashlib.pbkdf2_hmac('sha256',
-password.encode('utf-8'),
-            salt.encode('utf-8'),
-            100000)
-        return salt + pwdhash.hex()
+        """
+        Genera hash seguro de contraseña usando bcrypt (estándar OWASP).
+
+        Si bcrypt no está disponible, usa PBKDF2 como fallback seguro.
+
+        Args:
+            password: Contraseña en texto plano
+
+        Returns:
+            str: Hash de contraseña (bcrypt o PBKDF2)
+        """
+        if BCRYPT_AVAILABLE:
+            # ✅ bcrypt - Estándar OWASP (más lento, más seguro contra GPU)
+            salt = bcrypt.gensalt(rounds=12)  # 12 rounds es el recomendado
+            hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+            return hashed.decode('utf-8')
+        else:
+            # ⚠️ Fallback a PBKDF2 si bcrypt no está disponible
+            logging.warning("Usando PBKDF2 como fallback (bcrypt no disponible)")
+            salt = secrets.token_hex(32)
+            pwdhash = hashlib.pbkdf2_hmac(
+                'sha256',
+                password.encode('utf-8'),
+                salt.encode('utf-8'),
+                100000  # 100,000 iteraciones
+            )
+            # Prefijo para identificar que es PBKDF2
+            return f"pbkdf2${salt}${pwdhash.hex()}"
 
     @staticmethod
     def verify_password(password: str, hashed: str) -> bool:
-        """Verifica contraseña contra hash"""
+        """
+        Verifica contraseña contra hash.
+
+        Soporta hashes bcrypt y PBKDF2 (para compatibilidad con migración).
+
+        Args:
+            password: Contraseña en texto plano a verificar
+            hashed: Hash almacenado
+
+        Returns:
+            bool: True si la contraseña es correcta
+        """
         try:
-            salt = hashed[:64]
-            stored_hash = hashed[64:]
-            pwdhash = hashlib.pbkdf2_hmac('sha256',
-password.encode('utf-8'),
-                salt.encode('utf-8'),
-                100000)
-            return pwdhash.hex() == stored_hash
-        except (ValueError, TypeError, UnicodeDecodeError, IndexError):
+            # Verificar si es hash bcrypt
+            if not hashed.startswith("pbkdf2$"):
+                if BCRYPT_AVAILABLE:
+                    # ✅ Verificar bcrypt
+                    return bcrypt.checkpw(
+                        password.encode('utf-8'),
+                        hashed.encode('utf-8')
+                    )
+                else:
+                    # bcrypt no disponible pero el hash es bcrypt - no podemos verificar
+                    logging.error("Hash bcrypt detectado pero bcrypt no está instalado")
+                    return False
+
+            # ⚠️ Verificar PBKDF2 (legacy o fallback)
+            if hashed.startswith("pbkdf2$"):
+                # Formato: pbkdf2$salt$hash
+                parts = hashed.split('$')
+                if len(parts) != 3:
+                    return False
+
+                _, salt, stored_hash = parts
+                pwdhash = hashlib.pbkdf2_hmac(
+                    'sha256',
+                    password.encode('utf-8'),
+                    salt.encode('utf-8'),
+                    100000
+                )
+                return pwdhash.hex() == stored_hash
+
+            # Intento de verificación para formato antiguo (sin prefijo)
+            # TODO: Eliminar después de migración completa
+            if len(hashed) >= 128:  # Formato antiguo: 64 chars salt + 64+ chars hash
+                salt = hashed[:64]
+                stored_hash = hashed[64:]
+                pwdhash = hashlib.pbkdf2_hmac(
+                    'sha256',
+                    password.encode('utf-8'),
+                    salt.encode('utf-8'),
+                    100000
+                )
+                return pwdhash.hex() == stored_hash
+
+            return False
+
+        except (ValueError, TypeError, UnicodeDecodeError, IndexError) as e:
+            logging.error(f"Error verificando contraseña: {e}")
             return False
 
     @staticmethod

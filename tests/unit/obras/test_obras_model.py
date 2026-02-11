@@ -117,21 +117,21 @@ class TestObrasModel(unittest.TestCase):
         self.assertIsInstance(fecha_inicio, date)
         self.assertIsInstance(fecha_fin, date)
     
-    @patch('rexus.core.database.InventarioDatabaseConnection')
-    def test_obra_retrieval(self, mock_db_connection):
+    def test_obra_retrieval(self):
         """Test: Obtener obras de la base de datos."""
-        mock_db_connection.return_value = self.mock_db
-        
         # Configurar respuesta mock
         self.mock_db.cursor_mock.fetchall.return_value = [
             (1, 'OBR001', 'Obra Test 1', 'Cliente Test', 'activa', '2025-08-01', '2025-12-31', 100000.00, 'Juan Pérez'),
             (2, 'OBR002', 'Obra Test 2', 'Cliente Test 2', 'planificada', '2025-09-01', '2026-01-31', 150000.00, 'María García')
         ]
-        
+
+        # Simular consulta a la base de datos
+        cursor = self.mock_db.cursor()
+        obras = cursor.fetchall()
+
         # Test básico de estructura de datos
-        obras = self.mock_db.cursor_mock.fetchall()
         self.assertEqual(len(obras), 2)
-        
+
         # Validar estructura de cada obra
         for obra in obras:
             self.assertEqual(len(obra), 9)  # 9 campos esperados

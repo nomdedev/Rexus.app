@@ -109,7 +109,12 @@ class ObrasController(QObject):
         return True
 
     def _get_current_auth_user(self):
-        """Obtiene el usuario autenticado actual desde AuthManager."""
+        """
+        Obtiene el usuario autenticado actual desde AuthManager.
+
+        ✅ CORREGIDO: Fallback usa 'viewer' en lugar de 'admin' para evitar
+        elevación de privilegios no autorizada en caso de error.
+        """
         try:
             from rexus.core.auth_manager import AuthManager
 
@@ -122,20 +127,21 @@ class ObrasController(QObject):
                     'name': AuthManager.current_user
                 }
             else:
-                # Usuario por defecto para desarrollo/fallback
+                # ✅ CORREGIDO: Fallback con rol MÍNIMO (viewer) en lugar de admin
+                # Esto previene elevación de privilegios si AuthManager falla
                 return {
-                    'id': 1,
-                    'username': 'SISTEMA',
-                    'role': 'admin',
-                    'name': 'Usuario Sistema'
+                    'id': 0,
+                    'username': 'GUEST',
+                    'role': 'viewer',
+                    'name': 'Usuario Invitado (Sin autenticar)'
                 }
         except ImportError:
-            # Fallback si AuthManager no está disponible
+            # ✅ CORREGIDO: Fallback seguro con rol mínimo
             return {
-                'id': 1,
-                'username': 'SISTEMA',
-                'role': 'admin',
-                'name': 'Usuario Sistema'
+                'id': 0,
+                'username': 'GUEST',
+                'role': 'viewer',
+                'name': 'Usuario Invitado (AuthManager no disponible)'
             }
 
     def conectar_señales(self):

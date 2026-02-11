@@ -1,0 +1,51 @@
+# Configuración de Prometheus para Rexus.app
+#
+# Para usar esta configuración:
+# 1. Instala Prometheus: https://prometheus.io/download/
+# 2. Copia este archivo a prometheus.yml
+# 3. Ejecuta: ./prometheus --config.file=prometheus.yml
+#
+# Las métricas estarán disponibles en http://localhost:9090
+
+global:
+  scrape_interval: 15s  # Intervalo de scraping
+  evaluation_interval: 15s  # Evaluar reglas cada 15 segundos
+  external_labels:
+    monitor: 'rexus-app-monitor'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - localhost:9093  # Descomentar si usas Alertmanager
+
+# Reglas de alertas
+rule_files:
+  # - "alert_rules.yml"  # Descomentar si tienes archivo de reglas
+
+# Configuración de scraping
+scrape_configs:
+  # Métricas de Rexus.app
+  - job_name: 'rexus-app'
+    static_configs:
+      - targets: ['localhost:8000']  # Puerto configurado en PROMETHEUS_PORT
+        labels:
+          application: 'rexus'
+          environment: 'production'
+
+  # Opcional: Scrape de Node Exporter para métricas del sistema
+  # - job_name: 'node-exporter'
+  #   static_configs:
+  #     - targets: ['localhost:9100']
+
+  # Opcional: Scrape de PostgreSQL Exporter
+  # - job_name: 'postgres-exporter'
+  #   static_configs:
+  #     - targets: ['localhost:9187']
+
+  # Opcional: Scrape de Process Exporter
+  # - job_name: 'process-exporter'
+  #   static_configs:
+  #     - targets: ['localhost:9256']

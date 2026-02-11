@@ -10,6 +10,9 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set
 
 from PyQt6.QtCore import QObject, pyqtSignal
+from rexus.utils.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class SecurityManager(QObject):
@@ -33,7 +36,7 @@ class SecurityManager(QObject):
         # Configuración de seguridad
         self.session_timeout = 3600  # 1 hora en segundos
         self.max_login_attempts = 3
-        self.password_min_length = 6
+        self.password_min_length = 12  # ✅ CORREGIDO: Mínimo 12 caracteres  # ✅ CORREGIDO: Mínimo 12 caracteres (estándar OWASP)
 
         # No crear tablas ni usuarios por defecto - RIESGO DE SEGURIDAD
 

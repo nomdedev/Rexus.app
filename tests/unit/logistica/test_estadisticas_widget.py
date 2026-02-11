@@ -8,23 +8,47 @@ import pytest
 import sys
 from unittest.mock import Mock, patch, MagicMock
 from pathlib import Path
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtTest import QTest
+
+# Intentar importar PyQt6 - saltar tests si no está disponible
+try:
+    from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtCore import Qt, QTimer
+    from PyQt6.QtTest import QTest
+    PYQT6_AVAILABLE = True
+except ImportError:
+    PYQT6_AVAILABLE = False
+    pytest.skip("PyQt6 no está disponible - tests de UI omitidos", allow_module_level=True)
 
 # Configurar encoding UTF-8
-sys.stdout.reconfigure(encoding='utf-8')
+try:
+    sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    pass  # Ya está configurado o no es compatible
 
 # Agregar path del proyecto
 root_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
+# Verificar si el módulo existe antes de intentar importar
+estadisticas_widget_path = root_dir / 'rexus' / 'modules' / '05_logistica' / 'components' / 'estadisticas_widget.py'
+
+if not estadisticas_widget_path.exists():
+    pytest.skip(f"Module file not found: {estadisticas_widget_path}", allow_module_level=True)
+
 # Imports a testear
 try:
-    # Import usando importlib para evitar problemas de sintaxis
-    import importlib
-    estadisticas_widget_module = importlib.import_module('rexus.modules.05_logistica.components.estadisticas_widget')
-    EstadisticasWidget = estadisticas_widget_module.EstadisticasWidget
+    # Import usando helper para módulos con nombres numéricos
+    from tests.utils.module_import_helper import import_module_from_path
+
+    estadisticas_widget_module, success, error = import_module_from_path(str(estadisticas_widget_path))
+
+    if success:
+        EstadisticasWidget = getattr(estadisticas_widget_module, 'EstadisticasWidget', None)
+        if EstadisticasWidget is None:
+            pytest.skip("EstadisticasWidget class not found in module", allow_module_level=True)
+    else:
+        pytest.skip(f"Could not import estadisticas_widget: {error}", allow_module_level=True)
+
     from rexus.ui.components.base_components import RexusButton
 except ImportError as e:
     pytest.skip(f"Imports not available: {e}", allow_module_level=True)
@@ -286,7 +310,7 @@ class TestEstadisticasWidget:
         widget.toggle_auto_refresh(False)
         assert not widget.auto_refresh_timer.isActive()
     
-    @patch('rexus.modules.logistica.components.estadisticas_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.estadisticas_widget.QMessageBox')
     def test_exportar_estadisticas_sin_datos(self, mock_msgbox):
         """Test exportación sin datos."""
         widget = EstadisticasWidget(self.mock_parent)
@@ -299,7 +323,7 @@ class TestEstadisticasWidget:
             widget, "Exportar", "No hay datos estadísticos para exportar"
         )
     
-    @patch('rexus.modules.logistica.components.estadisticas_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.estadisticas_widget.QMessageBox')
     def test_exportar_estadisticas_exitoso(self, mock_msgbox):
         """Test exportación exitosa."""
         widget = EstadisticasWidget(self.mock_parent)
@@ -314,7 +338,7 @@ class TestEstadisticasWidget:
                 widget, "Exportar", "Estadísticas exportadas exitosamente"
             )
     
-    @patch('rexus.modules.logistica.components.estadisticas_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.estadisticas_widget.QMessageBox')
     def test_exportar_estadisticas_error(self, mock_msgbox):
         """Test error en exportación."""
         widget = EstadisticasWidget(self.mock_parent)

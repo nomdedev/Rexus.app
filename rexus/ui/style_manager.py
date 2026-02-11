@@ -30,6 +30,9 @@ from pathlib import Path
 from typing import Dict
 
 from PyQt6.QtWidgets import QApplication, QWidget
+from rexus.utils.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class StyleManager:
@@ -96,7 +99,7 @@ class StyleManager:
                 self._detect_linux_theme()
 
         except (OSError, ImportError, AttributeError, RuntimeError) as e:
-            logger.warning(f"Error detectando tema del sistema: {e}")
+            logger.warning(f"Error detectando tema del sistema: {e})
             self._current_theme = 'professional'
             print("[STYLE] Usando tema por defecto 'professional' por error")
 
@@ -153,7 +156,6 @@ class StyleManager:
     def _detect_linux_theme(self):
         """Detecta tema en Linux (GNOME/KDE)."""
         try:
-            import subprocess
             import os
 
             # Intentar GNOME primero
@@ -198,11 +200,11 @@ class StyleManager:
                 try:
                     with open(theme_path, 'r', encoding='utf-8') as f:
                         self._loaded_themes[theme_name] = f.read()
-                    logging.debug(f"Tema '{theme_name}' cargado exitosamente")
+                    logging.debug(f"Tema '{theme_name}' cargado exitosamente)
                 except (IOError, OSError, FileNotFoundError, UnicodeDecodeError) as e:
                     logging.error(f"Error cargando tema '{theme_name}': {e}")
             else:
-                logging.warning(f"Archivo de tema no encontrado: {theme_path}")
+                logging.warning(f"Archivo de tema no encontrado: {theme_path})
 
     def apply_global_theme(self, theme_name: str = None) -> bool:
         """Aplica un tema global a toda la aplicación sin modificaciones invasivas."""
@@ -210,7 +212,7 @@ class StyleManager:
             theme_name = self._current_theme
 
         if theme_name not in self._loaded_themes:
-            logging.error(f"Tema '{theme_name}' no disponible")
+            logging.error(f"Tema '{theme_name}' no disponible)
             # Si el tema solicitado no existe, intentar con el tema por defecto
             if 'professional' in self._loaded_themes:
                 theme_name = 'professional'
@@ -229,13 +231,13 @@ class StyleManager:
 
                 # SOLUCIÓN CRÍTICA: Aplicar correcciones de contraste automáticamente para tema oscuro
                 if 'dark' in theme_name.lower():
-                    print(f"[STYLE] [DARK] Detectado tema oscuro '{theme_name}' - aplicando correcciones críticas automáticas")
+                    print(f"[STYLE] [DARK] Detectado tema oscuro '{theme_name}' - aplicando correcciones críticas automáticas)
                     critical_success = self.apply_critical_contrast_fixes()
                     if not critical_success:
                         print("[STYLE] [WARNING] Aplicando tema claro de emergencia por problemas de contraste")
                         self.force_light_theme_for_forms()
 
-                logging.debug(f"Tema global '{theme_name}' aplicado exitosamente")
+                logging.debug(f"Tema global '{theme_name}' aplicado exitosamente)
                 print(f"[STYLE] Tema aplicado: {theme_name}")
                 return True
             else:
@@ -243,7 +245,7 @@ class StyleManager:
                 return False
 
         except (AttributeError, RuntimeError, OSError) as e:
-            logging.error(f"Error aplicando tema global '{theme_name}': {e}")
+            logging.error(f"Error aplicando tema global '{theme_name}': {e})
             return False
 
     def apply_unified_module_style(self, widget: QWidget):
@@ -260,14 +262,14 @@ class StyleManager:
 
                 # Aplicar estilos al widget
                 widget.setStyleSheet(unified_styles)
-                logging.debug(f"Estilos unificados aplicados a {widget.__class__.__name__}")
+                logging.debug(f"Estilos unificados aplicados a {widget.__class__.__name__})
                 return True
             else:
                 logging.warning("Archivo de estilos unificados no encontrado")
                 return False
 
         except (IOError, OSError, FileNotFoundError, UnicodeDecodeError, AttributeError) as e:
-            logging.error(f"Error aplicando estilos unificados: {e}")
+            logging.error(f"Error aplicando estilos unificados: {e})
             return False
 
     def get_module_styles(self) -> str:
@@ -408,7 +410,7 @@ class StyleManager:
                 specific_styles = self.load_module_stylesheet(module_name)
 
             # Combinar todos los estilos
-            combined_style = f"{current_style}\n{module_styles}\n{specific_styles}"
+            combined_style = f"{current_style}\n{module_styles}\n{specific_styles}
             widget.setStyleSheet(combined_style)
 
             # Forzar actualización de estilos
@@ -419,7 +421,7 @@ class StyleManager:
             return True
 
         except (AttributeError, RuntimeError, OSError, IOError) as e:
-            logging.error(f"Error aplicando tema a módulo: {e}")
+            logging.error(f"Error aplicando tema a módulo: {e})
             return False
 
     def apply_theme(self, widget: QWidget, theme_name: str = None) -> bool:
@@ -448,7 +450,7 @@ class StyleManager:
             return True
 
         except (AttributeError, RuntimeError, OSError, IOError) as e:
-            print(f"[WARNING] Error aplicando tema '{theme_name}': {e}")
+            print(f"[WARNING] Error aplicando tema '{theme_name}': {e})
             return False
 
     def apply_critical_contrast_fixes(self, widget: QWidget = None) -> bool:
@@ -518,7 +520,7 @@ class StyleManager:
                 # Aplicar a widget específico
                 current_style = widget.styleSheet()
                 widget.setStyleSheet(current_style + critical_styles)
-                print(f"[STYLE] Correcciones críticas aplicadas a {widget.__class__.__name__}")
+                print(f"[STYLE] Correcciones críticas aplicadas a {widget.__class__.__name__})
             else:
                 # Aplicar globalmente
                 app = QApplication.instance()
@@ -530,26 +532,20 @@ class StyleManager:
             return True
 
         except (AttributeError, RuntimeError, OSError) as e:
-            logger.error(f"Error aplicando correcciones críticas: {e}")
+            logger.error("Error aplicando correcciones críticas: {e})
             return False
 
     def load_module_stylesheet(self, module_name: str) -> str:
-        """Carga hoja de estilos específica de un módulo."""
-        try:
-            if module_name not in self.MODULE_STYLES:
-                return ""
-
-            stylesheet_path = self._themes_path / self.MODULE_STYLES[module_name]
-
+        )
             if stylesheet_path.exists():
                 with open(stylesheet_path, 'r', encoding='utf-8') as file:
                     return file.read()
             else:
-                logging.warning(f"Archivo de estilos no encontrado: {stylesheet_path}")
+                logging.warning(f"Archivo de estilos no encontrado: {stylesheet_path})
                 return ""
 
         except (IOError, OSError, FileNotFoundError, UnicodeDecodeError) as e:
-            logging.error(f"Error cargando estilos del módulo {module_name}: {e}")
+            logging.error(f"Error cargando estilos del módulo {module_name}: {e})
             return ""
 
     def apply_stats_panel_theme(self, panel_widget):
@@ -564,7 +560,7 @@ class StyleManager:
 
     def apply_table_theme(self, table_widget, module_name: str):
         """Aplica tema específico a tablas."""
-        table_widget.setObjectName(f"tabla_{module_name}")
+        table_widget.setObjectName(f"tabla_{module_name})
         table_widget.setProperty("standardTable", True)
 
     def apply_input_theme(self, input_widget):
@@ -599,7 +595,7 @@ class StyleManager:
             # Aplicar estilos específicos a QTabWidget encontrados
             for tab_widget in widget.findChildren(QTabWidget):
                 UnifiedStyles.apply_tab_styles_only(tab_widget)
-                print(f"[STYLE] Pestañas de 20px aplicadas a {tab_widget.objectName()}")
+                print(f"[STYLE] Pestañas de 20px aplicadas a {tab_widget.objectName()})
 
             # Aplicar estilos de botones (sin sobreescribir colores)
             for button in widget.findChildren(QPushButton):
@@ -609,7 +605,7 @@ class StyleManager:
             print(f"[STYLE] Estilos unificados aplicados a {widget.__class__.__name__}")
             return True
         except ImportError as e:
-            print(f"[STYLE] Error importando estilos unificados: {e}")
+            print(f"[STYLE] Error importando estilos unificados: {e})
             return False
         except (AttributeError, RuntimeError, OSError, IOError) as e:
             print(f"[STYLE] Error aplicando estilos unificados: {e}")
@@ -628,7 +624,7 @@ class StyleManager:
         Returns:
             str: Cadena vacía (sin estilos invasivos)
         """
-        print(f"[STYLE] _get_critical_form_styles DESHABILITADO para tema: {theme_name}")
+        print(f"[STYLE] _get_critical_form_styles DESHABILITADO para tema: {theme_name})
         return ""
 
     def apply_critical_form_fixes(self, widget: QWidget = None) -> bool:
@@ -649,101 +645,40 @@ class StyleManager:
                 app = QApplication.instance()
                 if app:
                     current_styles = app.styleSheet()
-                    new_styles = f"{current_styles}\n\n/* EMERGENCY FORM FIXES */\n{critical_styles}"
+                    new_styles = f"{current_styles}\n\n/* EMERGENCY FORM FIXES */\n{critical_styles}
                     app.setStyleSheet(new_styles)
                     print("[STYLE] Correcciones criticas de formularios aplicadas globalmente")
                     return True
             else:
                 # Aplicar a widget específico
                 current_styles = widget.styleSheet()
-                new_styles = f"{current_styles}\n{critical_styles}"
+                new_styles = f"{current_styles}\n{critical_styles}
                 widget.setStyleSheet(new_styles)
                 print(f"[STYLE] Correcciones criticas aplicadas a {widget.__class__.__name__}")
                 return True
 
         except (AttributeError, RuntimeError, OSError) as e:
-            logger.error(f"Error aplicando correcciones críticas: {e}")
+            logger.error("Error aplicando correcciones críticas: {e})
             return False
 
         return False
 
     def force_light_theme_for_forms(self) -> bool:
-        """
-        Fuerza tema claro específicamente para formularios críticos.
-        Útil cuando el tema oscuro causa problemas de legibilidad.
-
-        Returns:
-            bool: True si se aplicó correctamente
-        """
-        emergency_light_styles = """
-        /* EMERGENCY LIGHT THEME FOR FORMS */
-        QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox,
-        QDateEdit, QTimeEdit, QDateTimeEdit, QPlainTextEdit {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border: 2px solid #cccccc !important;
-            border-radius: 4px !important;
-            padding: 6px !important;
-            font-size: 14px !important;
-            font-weight: normal !important;
-        }
-
-        QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QSpinBox:focus,
-        QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus,
-        QDateTimeEdit:focus, QPlainTextEdit:focus {
-            background-color: #ffffff !important;
-            border: 2px solid #0066cc !important;
-            color: #000000 !important;
-        }
-
-        QLabel {
-            color: #000000 !important;
-            background: transparent !important;
-            font-weight: normal !important;
-        }
-
-        QPushButton {
-            background-color: #0066cc !important;
-            color: #ffffff !important;
-            border: 1px solid #0066cc !important;
-            border-radius: 4px !important;
-            padding: 8px 16px !important;
-            font-size: 14px !important;
-        }
-
-        QPushButton:hover {
-            background-color: #0052a3 !important;
-        }
-
-        QComboBox QAbstractItemView {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            selection-background-color: #0066cc !important;
-            selection-color: #ffffff !important;
-        }
-        """
-
-        try:
+        )
             app = QApplication.instance()
             if app:
                 current_styles = app.styleSheet()
-                new_styles = f"{current_styles}\n{emergency_light_styles}"
+                new_styles = f"{current_styles}\n{emergency_light_styles}
                 app.setStyleSheet(new_styles)
                 print("[STYLE] Tema de emergencia claro aplicado para formularios")
                 return True
         except (AttributeError, RuntimeError, OSError) as e:
-            logger.error(f"Error aplicando tema de emergencia: {e}")
+            logger.error("Error aplicando tema de emergencia: {e})
 
         return False
 
     def apply_emergency_readable_forms(self) -> bool:
-        """
-        DESHABILITADO: No se aplican correcciones invasivas.
-
-        Este método fue causante de problemas de UI invasivos.
-        Los temas se aplican directamente desde archivos QSS.
-
-        Returns:
+        )
             bool: True (sin aplicar correcciones)
         """
         print("[STYLE] apply_emergency_readable_forms DESHABILITADO - sin correcciones invasivas")
@@ -771,7 +706,7 @@ class StyleManager:
                 return False
 
         except (AttributeError, RuntimeError, OSError, IOError) as e:
-            print(f"[STYLE] [ERROR] Error aplicando correcciones automáticas: {e}")
+            print(f"[STYLE] [ERROR] Error aplicando correcciones automáticas: {e})
             return False
 
     @classmethod
@@ -829,7 +764,7 @@ class StyleManager:
                 self._apply_inline_dark_fixes()
                 
         except (IOError, OSError, FileNotFoundError, AttributeError, RuntimeError) as e:
-            print(f"[STYLE] [ERROR] Error aplicando correcciones de tema oscuro: {e}")
+            print(f"[STYLE] [ERROR] Error aplicando correcciones de tema oscuro: {e})
             self._apply_inline_dark_fixes()
     
     def _apply_inline_dark_fixes(self):

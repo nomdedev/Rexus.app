@@ -8,6 +8,13 @@ Cobertura: Formularios, botones, validaciones visuales, workflows UI
 """
 
 import pytest
+
+# Verificar dependencias
+try:
+    import PyQt6
+except ImportError:
+    pytest.skip("PyQt6 no está disponible", allow_module_level=True)
+
 import sys
 from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock

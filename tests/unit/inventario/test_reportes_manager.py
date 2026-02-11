@@ -29,10 +29,24 @@ sys.path.insert(0, str(root_dir))
 
 # Imports del sistema
 try:
-    # Import usando importlib para evitar problemas de sintaxis
-    import importlib
-    reportes_manager_module = importlib.import_module('rexus.modules.02_inventario.submodules.reportes_manager')
-    ReportesManager = reportes_manager_module.ReportesManager
+    # Verificar si el archivo existe primero
+    reportes_manager_path = root_dir / 'rexus' / 'modules' / '02_inventario' / 'submodules' / 'reportes_manager.py'
+
+    if not reportes_manager_path.exists():
+        pytest.skip(f"Module file not found: {reportes_manager_path}", allow_module_level=True)
+
+    # Import usando helper para módulos con nombres numéricos
+    from tests.utils.module_import_helper import import_module_from_path
+
+    reportes_manager_module, success, error = import_module_from_path(str(reportes_manager_path))
+
+    if success:
+        ReportesManager = getattr(reportes_manager_module, 'ReportesManager', None)
+        if ReportesManager is None:
+            pytest.skip("ReportesManager class not found in module", allow_module_level=True)
+    else:
+        pytest.skip(f"Could not import reportes_manager: {error}", allow_module_level=True)
+
     from rexus.utils.sql_query_manager import SQLQueryManager
     from rexus.utils.app_logger import get_logger
 except ImportError as e:
@@ -89,7 +103,7 @@ class TestReportesManager:
             }
         ]
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_generar_reporte_stock_basico(self, mock_sql_class):
         """Test generación básica de reporte de stock."""
         # Configurar mock
@@ -112,7 +126,7 @@ class TestReportesManager:
         # Verificar que se ejecutó la query
         self.mock_sql_manager.execute_query.assert_called()
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_generar_reporte_stock_con_filtros(self, mock_sql_class):
         """Test reporte de stock con filtros específicos."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -136,7 +150,7 @@ class TestReportesManager:
         call_args = self.mock_sql_manager.execute_query.call_args
         assert call_args is not None
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_generar_reporte_movimientos(self, mock_sql_class):
         """Test generación de reporte de movimientos."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -161,7 +175,7 @@ class TestReportesManager:
         assert 'total_entradas' in resultado['estadisticas']
         assert 'total_salidas' in resultado['estadisticas']
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_analisis_abc_inventario(self, mock_sql_class):
         """Test análisis ABC de clasificación de inventario."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -192,7 +206,7 @@ class TestReportesManager:
         )
         assert total_productos == len(productos_abc)
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_valoracion_inventario(self, mock_sql_class):
         """Test valoración total del inventario."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -210,7 +224,7 @@ class TestReportesManager:
         assert isinstance(resultado['valor_total'], (int, float, Decimal))
         assert resultado['valor_total'] > 0
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_generar_dashboard_kpis(self, mock_sql_class):
         """Test generación de KPIs para dashboard."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -236,7 +250,7 @@ class TestReportesManager:
         assert isinstance(resultado['total_productos'], int)
         assert isinstance(resultado['valor_total_inventario'], (int, float))
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_exportar_reporte_csv(self, mock_sql_class):
         """Test exportación de reporte a formato CSV."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -267,7 +281,7 @@ class TestReportesManager:
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_exportar_reporte_json(self, mock_sql_class):
         """Test exportación de reporte a formato JSON."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -297,7 +311,7 @@ class TestReportesManager:
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_reporte_productos_sin_movimientos(self, mock_sql_class):
         """Test reporte de productos sin movimientos en período."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -317,7 +331,7 @@ class TestReportesManager:
         assert len(resultado['productos']) == 1
         assert resultado['productos'][0]['codigo'] == 'PROD004'
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_error_conexion_base_datos(self, mock_sql_class):
         """Test manejo de errores de conexión a base de datos."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -330,7 +344,7 @@ class TestReportesManager:
         assert resultado.get('success') is False
         assert 'error' in resultado
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_filtros_fecha_invalidos(self, mock_sql_class):
         """Test manejo de filtros de fecha inválidos."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -350,7 +364,7 @@ class TestReportesManager:
         assert resultado.get('success') is False
         assert 'error' in resultado
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_exportacion_archivo_sin_permisos(self, mock_sql_class):
         """Test manejo de errores de permisos en exportación."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -370,7 +384,7 @@ class TestReportesManager:
             assert resultado['success'] is False
             assert 'error' in resultado
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_reporte_con_datos_vacios(self, mock_sql_class):
         """Test generación de reportes con datos vacíos."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -385,7 +399,7 @@ class TestReportesManager:
         assert 'resumen' in resultado
         assert resultado['resumen']['total_productos'] == 0
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_calculo_tendencias_stock(self, mock_sql_class):
         """Test cálculo de tendencias de stock."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -408,7 +422,7 @@ class TestReportesManager:
         # La tendencia debería ser negativa (stock disminuyendo)
         assert resultado['tendencia'] < 0
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')  
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')  
     def test_reporte_integracion_con_operaciones(self, mock_sql_class):
         """Test integración de reportes con operaciones de inventario."""
         mock_sql_class.return_value = self.mock_sql_manager
@@ -447,7 +461,7 @@ class TestReportesManagerIntegration:
         self.mock_cursor = Mock() 
         self.mock_db.cursor.return_value = self.mock_cursor
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_flujo_completo_generacion_exportacion(self, mock_sql_class):
         """Test flujo completo: generar reporte y exportar."""
         mock_sql_manager = Mock()
@@ -491,7 +505,7 @@ class TestReportesManagerIntegration:
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
 
-    @patch('rexus.modules.inventario.submodules.reportes_manager.SQLQueryManager')
+    @patch('rexus.modules.02_inventario.submodules.reportes_manager.SQLQueryManager')
     def test_performance_reportes_grandes(self, mock_sql_class):
         """Test performance con grandes volúmenes de datos."""
         mock_sql_manager = Mock()

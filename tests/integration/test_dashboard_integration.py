@@ -5,6 +5,13 @@ Verifica la correcta integración entre controladores, widgets y datos
 """
 
 import pytest
+
+# Verificar dependencias
+try:
+    import PyQt6
+except ImportError:
+    pytest.skip("PyQt6 no está disponible", allow_module_level=True)
+
 import sys
 import os
 import uuid

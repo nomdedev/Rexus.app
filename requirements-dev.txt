@@ -1,0 +1,241 @@
+# 📦 requirements-dev.txt - Dependencias de Desarrollo
+# Basado en mejores prácticas de:
+# - https://packaging.python.org/
+# - https://docs.pytest.org/
+
+# ============================================================================
+# TESTING FRAMEWORK
+# ============================================================================
+# Core testing framework
+pytest>=7.4.0                    # Framework principal
+pytest-cov>=4.1.0                 # Cobertura de código
+pytest-xdist>=3.5.0               # Paralelización de tests
+pytest-benchmark>=4.0.0          # Benchmarks de performance
+pytest-asyncio>=0.21.0            # Tests asíncronos
+pytest-mock>=3.11.1               # Mocking avanzado
+pytest-timeout>=2.2.0             # Timeout para tests lentos
+pytest-random-order>=1.1.0        # Ejecutar tests en orden aleatorio
+pytest-html>=4.1.0                # Reportes HTML
+
+# ============================================================================
+# CODE QUALITY & LINTING
+# ============================================================================
+# Formatters (ejecutados por CI/CD)
+black>=23.12.0                    # Formateador de código
+isort>=5.13.0                     # Organizador de imports
+autopep8>=2.0.4                   # Corrección automática PEP 8
+
+# Linters
+flake8>=6.1.0                     # Linter PEP 8
+flake8-docstrings>=1.7.0          # Docstrings
+flake8-bugbear>=23.12.0           # Detecta bugs comunes
+flake8-comprehensions>=3.14.0     # Comprehensions complejas
+pylint>=3.0.0                     # Linter avanzado
+mypy>=1.7.0                       # Type checking
+bandit[toml]>=1.7.5                # Security linter
+
+# ============================================================================
+# TYPE STUBS
+# ============================================================================
+types-requests>=2.31.0            # Type hints para requests
+types-PyYAML>=6.0.12               # Type hints para YAML
+types-setuptools>=69.0.0           # Type hints para setuptools
+
+# ============================================================================
+# SECURITY
+# ============================================================================
+safety>=2.3.0                      # Verifica vulnerabilidades en deps
+semgrep>=1.45.0                    # Static analysis security
+
+# ============================================================================
+# DOCUMENTATION
+# ============================================================================
+sphinx>=7.2.0                     # Generador de documentación
+sphinx-rtd-theme>=2.0.0            # Theme para docs
+sphinx-autodoc-typehints>=2.0.0    # Type hints en docs
+
+# ============================================================================
+# DEVELOPMENT TOOLS
+# ============================================================================
+pre-commit>=3.6.0                  # Git hooks pre-commit
+coverage>=7.3.0                    # Cobertura de código (CLI)
+pyinstaller>=6.3.0                 # Empaquetado a ejecutable
+
+# ============================================================================
+# DEBUGGING
+# ============================================================================
+ipdb>=0.13.13                     # Debugger mejorado
+pytest-icdiff>=0.8                 # Diff mejorado para tests
+pytest-clarity>=1.0.1              # Output más claro de tests
+
+# ============================================================================
+# PERFORMANCE PROFILING
+# ============================================================================
+py-spy>=0.3.14                    # Profiler de Python
+memory-profiler>=0.61.0            # Profiler de memoria
+
+# ============================================================================
+# CI/CD TOOLS
+# ============================================================================
+tox>=4.11.0                       # Testing en múltiples entornos
+build>=1.0.3                      # Build tool moderno
+twine>=4.0.2                       # Upload a PyPI
+
+# ============================================================================
+# MONITORING & LOGGING
+# ============================================================================
+prometheus-client>=0.19.0          # Métricas para Prometheus
+grafana-api>=1.0.3                # Cliente de Grafana API
+
+# ============================================================================
+# TESTING DATABASES
+# ============================================================================
+# Para tests con bases de datos reales
+pytest-postgresql>=5.0.0           # PostgreSQL testing
+pytest-redis>=3.0.2                # Redis testing
+
+# ============================================================================
+# MIGRATIONS
+# ============================================================================
+alembic>=1.13.0                   # Migraciones de base de datos
+
+# ============================================================================
+# DEPENDENCY MANAGEMENT
+# ============================================================================
+pip-audit>=2.6.0                   # Auditoría de dependencias
+pipdeptree>=2.13.0                 # Árbol de dependencias
+
+# ============================================================================
+# CODE METRICS
+# ============================================================================
+radon>=6.0.1                      # Métricas de complejidad
+lizard>=1.17.0                     # Complejidad ciclomática
+vulture>=2.10                      # Detecta código muerto
+
+# ============================================================================
+# IMPORT ORGANIZATION
+# ============================================================================
+importlib-metadata>=6.8.0          # Metadatos de imports
+import-resources>=5.12.0           # Python 3.9+ importlib
+
+# ============================================================================
+# CONFIG FILES
+# ============================================================================
+# Para leer configs YAML/TOML/INI
+pyyaml>=6.0.1
+toml>=0.10.2
+configparser>=6.0.0
+
+# ============================================================================
+# MISCELLANEOUS
+# ============================================================================
+rich>=13.7.0                      # Output bonito en terminal
+typer>=0.9.0                      # CLI tools
+click>=8.1.7                      # CLI framework (typer lo usa)
+python-dotenv>=1.0.0               # Environment variables
+
+# ============================================================================
+# THREADING & ASYNC
+# ============================================================================
+# Para debugging de concurrencia
+threadbug>=0.8.0
+asyncio-dgram>=2.1.0
+
+# ============================================================================
+# JSON & DATA
+# ============================================================================
+# Para manipular JSON/YAML en tests
+jsonschema>=4.20.0                 # Validación de schemas
+faker>=22.0.0                     # Datos falsos para tests
+factory-boy>=3.3.0                # Factories para tests
+
+# ============================================================================
+# HTTP TESTING
+# ============================================================================
+# Para tests de APIs HTTP
+requests-mock>=1.11.0
+responses>=0.24.0
+httpx>=0.26.0                      # Cliente HTTP async
+
+# ============================================================================
+# WEB FRAMEWORK TESTING (si usas FastAPI/FastAPI)
+# ============================================================================
+# pip install fastapi uvicorn  # Descomentar si se usa
+# pip install starlette         # Descomentar si se usa
+
+# ============================================================================
+# DEVELOPMENT SERVER
+# ============================================================================
+# Servidor de desarrollo con hot reload
+watchdog>=4.0.0                   # File watcher
+
+# ============================================================================
+# PROFILING & BENCHMARKING
+# ============================================================================
+# Para identificar cuellos de botella
+py-spy>=0.3.14                    # Sampling profiler
+scalene>=1.5.26                   # CPU y memory profiler
+pyinstrument>=0.6.1               # Lightweight profiler
+
+# ============================================================================
+# CODE COVERAGE REPORTING
+# ============================================================================
+# Generación de reportes de cobertura
+coverage>=7.3.0
+pytest-cov>=4.1.0
+codecov-cli>=0.4.0                 # Upload a Codecov
+
+# ============================================================================
+# DOCUMENTATION GENERATION
+# ============================================================================
+# Para generar docs automáticamente
+pdoc>=14.3.0                      # Documentación simple
+mkdocs>=1.5.3                     # Documentación con Markdown
+mkdocs-material>=9.5.0            # Theme para MkDocs
+
+# ============================================================================
+# TESTING FRAMEWORK EXTENSIONS
+# ============================================================================
+# Extensions para pytest
+pytest-django>=4.7.0               # Descomentar si usas Django
+pytest-flask>=1.2.0                # Descomentar si usas Flask
+pytest-qt>=4.2.0                   # Para PyQt6
+pytest-xvfb>=3.0.0                # Virtual framebuffer para GUI
+pytest-qt>=4.2.0                   # Qt testing
+
+# ============================================================================
+# MOBILE & GUI TESTING
+# ============================================================================
+# Para tests de GUI/PyQt
+pyqt6>=6.6.0
+pytest-qt>=4.2.0
+
+# ============================================================================
+# CONTAINERIZATION
+# ============================================================================
+# Docker integration
+docker>=7.0.0                      # Docker SDK para Python
+
+# ============================================================================
+# LOGGING & MONITORING
+# ============================================================================
+# Logging estructurado
+structlog>=23.2.0                  # Structured logging
+python-json-logger>=2.0.7          # JSON logging
+loguru>=0.7.2                      # Logging simplificado
+
+# ============================================================================
+# NOTEBOOKS & JUPYTER
+# ============================================================================
+# Para análisis exploratorio
+jupyter>=1.0.0
+ipython>=8.18.0                    # IPython mejorado
+ipdb>=0.13.13                     # Debugger para IPython
+
+# ============================================================================
+# PACKAGE MANAGEMENT
+# ============================================================================
+# Herramientas de packaging
+build>=1.0.3
+setuptools>=69.0.0
+wheel>=0.42.0

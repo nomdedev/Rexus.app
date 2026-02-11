@@ -1,0 +1,47 @@
+# Prometheus Configuration for Rexus.app
+
+global:
+  scrape_interval: 15s  # Scrape cada 15 segundos
+  evaluation_interval: 15s  # Evaluar reglas cada 15 segundos
+  external_labels:
+    monitor: 'rexus-app'
+    environment: 'production'
+
+# AlertManager configuration (opcional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Reglas de alerting
+rule_files:
+  - "alerts.yml"
+
+# Configuración de scrape
+scrape_configs:
+  # Métricas de Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Métricas de Rexus.app
+  - job_name: 'rexus_app'
+    scrape_interval: 10s  # Scrape más frecuente para la app
+    static_configs:
+      - targets: ['host.docker.internal:5000']  # Flask app
+    metrics_path: '/metrics'
+    params:
+      format: ['prometheus']
+
+  # Métricas de Redis (si usas redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 30s
+
+  # Métricas de SQL Server (si usas sql_exporter)
+  - job_name: 'sqlserver'
+    static_configs:
+      - targets: ['sqlserver:1433']
+    scrape_interval: 30s

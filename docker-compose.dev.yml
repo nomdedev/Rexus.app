@@ -1,0 +1,76 @@
+# 🐳 Docker Compose - Servicios de Desarrollo
+# ==========================================
+# Facilita el setup de Redis local para development
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Redis - Caching Service
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: rexus-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"  # Puerto estándar de Redis
+    volumes:
+      # Persistir datos de caché
+      - redis_data:/data
+      # Configuración custom de Redis
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_MAXMEMORY=256mb
+      - REDIS_MAXMEMORY_POLICY=allkeys-lru  # Evict keys menos usados
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - rexus-network
+
+  # ============================================================================
+  # Redis Commander - UI para Redis (Opcional)
+  # ============================================================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: rexus-redis-ui
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    networks:
+      - rexus-network
+
+  # ============================================================================
+  # SQL Server - Base de datos (para tests)
+  # ============================================================================
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: rexus-sqlserver-dev
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: YourStrong@Passw0rd
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - rexus-network
+
+volumes:
+  redis_data:
+    driver: local
+  sqlserver_data:
+    driver: local
+
+networks:
+  rexus-network:
+    driver: bridge

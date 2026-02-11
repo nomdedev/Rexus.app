@@ -1,0 +1,118 @@
+# Prometheus Alert Rules for Rexus.app
+
+groups:
+  - name: rexus_app_alerts
+    interval: 30s
+    rules:
+      # Alerta: Alta tasa de errores
+      - alert: HighErrorRate
+        expr: rate(rexus_errors_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: app
+        annotations:
+          summary: "Alta tasa de errores detectada"
+          description: "La tasa de errores es > 0.1 errores por segundo durante los últimos 5 minutos."
+
+      # Alerta: Queries lentas
+      - alert: SlowDatabaseQueries
+        expr: histogram_quantile(0.95, rate(rexus_db_query_duration_seconds_bucket[5m])) > 1.0
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Queries de BD lentas detectadas"
+          description: "El 95% de las queries toma más de 1 segundo."
+
+      # Alerta: Alta tasa de fallos de login
+      - alert: HighFailedLoginRate
+        expr: rate(rexus_logins_total{status="failed"}[5m]) > 5
+        for: 3m
+        labels:
+          severity: critical
+          component: auth
+        annotations:
+          summary: "Alta tasa de fallos de login"
+          description: "Más de 5 logins fallidos por segundo durante los últimos 3 minutos."
+
+      # Alerta: Respuestas HTTP lentas
+      - alert: SlowHTTPResponses
+        expr: histogram_quantile(0.95, rate(rexus_http_request_duration_seconds_bucket[5m])) > 2.0
+        for: 5m
+        labels:
+          severity: warning
+          component: http
+        annotations:
+          summary: "Respuestas HTTP lentas"
+          description: "El 95% de las requests HTTP toma más de 2 segundos."
+
+      # Alerta: Aplicación no responde
+      - alert: ApplicationDown
+        expr: up{job="rexus_app"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: app
+        annotations:
+          summary: "Rexus.app no está respondiendo"
+          description: "La aplicación ha estado down por más de 2 minutos."
+
+      # Alerta: Conexiones de BD agotadas
+      - alert: DatabasePoolExhausted
+        expr: rexus_db_connections / rexus_db_connections > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Pool de conexiones de BD casi agotado"
+          description: "Más del 90% del pool de conexiones está en uso."
+
+  - name: rexus_performance_alerts
+    interval: 1m
+    rules:
+      # Alerta: Memoria alta
+      - alert: HighMemoryUsage
+        expr: (process_resident_memory_bytes / 1024 / 1024) > 1024  # > 1GB
+        for: 15m
+        labels:
+          severity: warning
+          component: resources
+        annotations:
+          summary: "Alto uso de memoria"
+          description: "La aplicación está usando más de 1GB de memoria."
+
+      # Alerta: Muchas queries por segundo
+      - alert: HighQueryRate
+        expr: sum(rate(rexus_db_queries_total[1m])) > 100
+        for: 5m
+        labels:
+          severity: info
+          component: database
+        annotations:
+          summary: "Alta tasa de queries"
+          description: "Se están ejecutando más de 100 queries por segundo."
+
+      # Alerta: Stock bajo
+      - alert: LowStockDetected
+        expr: rexus_inventory_items{status="low"} > 0
+        for: 1m
+        labels:
+          severity: warning
+          component: inventory
+        annotations:
+          summary: "Stock bajo detectado"
+          description: "Hay productos con stock por debajo del mínimo."
+
+      # Alerta: Pedidos pendientes altos
+      - alert: HighPendingOrders
+        expr: rexus_pending_orders{status="pending"} > 50
+        for: 10m
+        labels:
+          severity: warning
+          component: orders
+        annotations:
+          summary: "Muchos pedidos pendientes"
+          description: "Hay más de 50 pedidos pendientes de procesamiento."

@@ -11,8 +11,12 @@ pyodbc>=4.0.35  # SQL Server connection
 
 # Security & Crypto
 cryptography>=41.0.0
-bcrypt>=4.0.1
-argon2-cffi>=21.3.0
+bcrypt>=4.0.1  # Hashing seguro de contraseñas (OWASP standard)
+argon2-cffi>=21.3.0  # Alternativa moderna a bcrypt
+
+# Caching & Performance
+redis>=5.0.0  # Cliente de Redis para caching de alto performance
+hiredis>=2.2.0  # Parser C de Redis para mayor velocidad
 
 # Utilities
 python-dotenv>=1.0.0

@@ -39,7 +39,19 @@
       "Bash(for:*)",
       "Bash(copy:*)",
       "Bash(taskkill:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(findstr:*)",
+      "Bash(xargs:*)",
+      "Bash(perl:*)",
+      "Bash(test:*)",
+      "Bash(if:*)",
+      "Bash(then:*)",
+      "Bash(else echo \"Carpeta ya existe\")",
+      "Bash(fi)",
+      "Bash(\"d:\\\\martin\\\\Proyectos\\\\Rexus.app\\\\docs\\\\_archive\\\\INDEX.md\" << 'EOF'\n# Indice de Documentos Archivados\n\n**Fecha de archivo**: 2025-02-10\n\n## Descripcion\nEste directorio contiene documentos obsoletos que han sido movidos desde la carpeta principal de documentacion \\(`docs/`\\). Estos documentos se conservan con fines historicos pero no se consideran activos ni esenciales para el proyecto actual.\n\n## Archivos Movidos \\(2025-02-10\\)\n\n| Archivo | Descripcion |\n|---------|-------------|\n| ANALISIS_MEJORAS_SISTEMA.md | Analisis de mejoras del sistema \\(obsoleto\\) |\n| ANALISIS_MODULOS_CONSOLIDADO.md | Analisis de modulos consolidado \\(obsoleto\\) |\n| ANALISIS_TECNICO_COMPLETO.md | Analisis tecnico completo \\(obsoleto\\) |\n| AUDITORIA_COMPLETA_EXPERTA_2025.md | Auditoria completa experta 2025 \\(obsoleto\\) |\n| AUDITORIA_CONSOLIDADA.md | Auditoria consolidada \\(obsoleto\\) |\n| CORRECCIONES_SEGURIDAD_20250207.md | Correcciones de seguridad 2025-02-07 \\(obsoleto\\) |\n| CORRECCIONES_SESION_20250207.md | Correcciones de sesion 2025-02-07 \\(obsoleto\\) |\n| EVALUACION_EXHAUSTIVA_MEJORAS.md | Evaluacion exhaustiva de mejoras \\(obsoleto\\) |\n| INFORME_FINAL_VALIDACION.md | Informe final de validacion \\(obsoleto\\) |\n| OPTIMIZACION_N1_COMPLETADAS.md | Optimizaciones N1 completadas \\(obsoleto\\) |\n| ORGANIZACION_PROYECTO_COMPLETADA.md | Organizacion del proyecto completada \\(obsoleto\\) |\n| PLAN_CORRECCIONES_ANALISIS_HERRAMIENTAS.md | Plan de correcciones de analisis de herramientas \\(obsoleto\\) |\n| PLAN_DE_IMPLEMENTACION_CONSOLIDADO.md | Plan de implementacion consolidado \\(obsoleto\\) |\n| PROGRESO_SESION_20250207.md | Progreso de sesion 2025-02-07 \\(obsoleto\\) |\n| REPORTE_CORRECCIONES_ERRORES.md | Reporte de correcciones de errores \\(obsoleto\\) |\n| REPORTE_FINAL_MEJORAS.md | Reporte final de mejoras \\(obsoleto\\) |\n| REPORTE_IMPLEMENTACION_CORRECCIONES.md | Reporte de implementacion de correcciones \\(obsoleto\\) |\n\n## Otros Archivos en el Archivo\n\n| Archivo | Fecha | Notas |\n|---------|-------|-------|\n| checklist_pendientes_2025-08-16.md | 2025-08-16 | Backup previo |\n| checklist_pendientes_preMerge_2025-08-16.md | 2025-08-16 | Backup previo |\n| issues_found_2025-08-16.md | 2025-08-16 | Backup previo |\n| problemas_pendientes_backup_2025-08-16.md | 2025-08-16 | Backup previo |\n\n## Nota importante\n- Estos documentos se mantienen solo como referencia historica\n- La informacion activa del proyecto se encuentra en la carpeta `docs/` principal\n- No modificar estos documentos sin justificacion explicita\nEOF)",
+      "Bash(git checkout:*)",
+      "Bash(git config:*)"
     ],
     "deny": [],
     "ask": [],
@@ -49,7 +61,8 @@
       "C:\\c\\Users\\itachi\\Desktop\\martin",
       "D:\\d D:\\martin",
       "D:\\martin",
-      "D:\\d\\martin"
+      "D:\\d\\martin",
+      "d:\\martin\\Proyectos\\Rexus.app\\docs"
     ]
   }
 }

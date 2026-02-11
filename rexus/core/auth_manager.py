@@ -5,6 +5,9 @@ Controla permisos y acceso a funcionalidades
 
 from enum import Enum
 from typing import Dict, List, Optional
+from rexus.utils.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class UserRole(Enum):
@@ -179,20 +182,26 @@ class AuthManager:
             stored_hash = user_data[1]
             user_role = user_data[2]
 
-            # Verificar contraseña usando el sistema de seguridad mejorado
+            # Verificar contraseña usando métodos seguros (bcrypt, Argon2, PBKDF2)
             try:
-                # Intentar verificación con sistema seguro (PBKDF2, bcrypt, argon2)
-                password_valid = verify_password_secure(password, stored_hash)
-            except (ValueError, TypeError, ImportError, AttributeError) as e:
-                # Fallback para contraseñas SHA-256 legacy (durante migración)
-                logger.warning(f"Error verificación segura, usando fallback legacy: {e}")
-                password_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-                password_valid = password_hash == stored_hash
-
-                # Log de advertencia para contraseñas legacy
-                logger.warning(
-                    f"Usuario '{username}' usando contraseña SHA-256 legacy. Migración recomendada."
+                # Usar el sistema seguro de verificación de contraseñas
+                # Soporta: argon2, bcrypt, pbkdf2, y compatibilidad con SHA-256 legacy
+                from rexus.utils.password_security import (
+                    verify_password_secure,
+                    check_password_needs_rehash,
                 )
+
+                password_valid = verify_password_secure(password, stored_hash)
+
+                # Verificar si el hash necesita ser actualizado (migración de SHA-256 legacy)
+                if password_valid and check_password_needs_rehash(stored_hash):
+                    logger.info(f"Usuario '{username}' usa hash legacy - debería migrarse a método seguro")
+                    # NOTA: La migración debería hacerse en un proceso por lotes separado
+                    # para no afectar el login del usuario
+
+            except (ValueError, TypeError) as e:
+                logger.error(f"Error verificando contraseña para usuario '{username}': {e}")
+                password_valid = False
 
             # Verificar contraseña
             if password_valid:

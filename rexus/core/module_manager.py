@@ -8,8 +8,10 @@ manejo de errores y prevención de vulnerabilidades SQL injection.
 from typing import Any, Dict
 
 from PyQt6.QtWidgets import QWidget
+from rexus.utils.logging_config import get_logger
 
 # Utilidades locales para módulos (reemplazando module_utils no disponible)
+logger = get_logger(__name__)
 
 
 class ModuleManager:

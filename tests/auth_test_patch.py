@@ -99,31 +99,52 @@ def mock_auth_decorators():
 
 def apply_auth_patches():
     """Aplica patches globales para autenticación en tests."""
-    
-    # Patch de AuthManager
-    auth_manager_patch = patch('rexus.core.auth_manager.AuthManager', TestAuthManager)
-    auth_manager_patch.start()
-    
-    # Patch de decoradores individuales
-    admin_required_patch = patch('rexus.core.auth_decorators.admin_required', mock_auth_decorators())
-    admin_required_patch.start()
-    
-    login_required_patch = patch('rexus.core.auth_decorators.login_required', mock_auth_decorators())
-    login_required_patch.start()
-    
-    permission_required_patch = patch('rexus.core.auth_decorators.permission_required', mock_auth_decorators())
-    permission_required_patch.start()
-    
+
+    # Patch de AuthManager - con manejo de errores si el módulo no existe
+    try:
+        auth_manager_patch = patch('rexus.core.auth_manager.AuthManager', TestAuthManager)
+        auth_manager_patch.start()
+    except (ImportError, AttributeError):
+        pass  # El módulo no existe, ignorar
+
+    # Patch de decoradores individuales - con manejo de errores
+    try:
+        admin_required_patch = patch('rexus.core.auth_decorators.admin_required', mock_auth_decorators())
+        admin_required_patch.start()
+    except (ImportError, AttributeError):
+        pass
+
+    try:
+        login_required_patch = patch('rexus.core.auth_decorators.login_required', mock_auth_decorators())
+        login_required_patch.start()
+    except (ImportError, AttributeError):
+        pass
+
+    try:
+        permission_required_patch = patch('rexus.core.auth_decorators.permission_required', mock_auth_decorators())
+        permission_required_patch.start()
+    except (ImportError, AttributeError):
+        pass
+
     # Patch de funciones de verificación específicas
-    check_role_patch = patch('rexus.core.auth_manager.AuthManager.check_role', return_value=True)
-    check_role_patch.start()
-    
-    check_permission_patch = patch('rexus.core.auth_manager.AuthManager.check_permission', return_value=True)
-    check_permission_patch.start()
-    
+    try:
+        check_role_patch = patch('rexus.core.auth_manager.AuthManager.check_role', return_value=True)
+        check_role_patch.start()
+    except (ImportError, AttributeError):
+        pass
+
+    try:
+        check_permission_patch = patch('rexus.core.auth_manager.AuthManager.check_permission', return_value=True)
+        check_permission_patch.start()
+    except (ImportError, AttributeError):
+        pass
+
     # Patch de get_current_user
-    get_user_patch = patch('rexus.core.auth_manager.AuthManager.get_current_user', return_value=MockUser())
-    get_user_patch.start()
+    try:
+        get_user_patch = patch('rexus.core.auth_manager.AuthManager.get_current_user', return_value=MockUser())
+        get_user_patch.start()
+    except (ImportError, AttributeError):
+        pass
     
     # También patch en módulos que importan directamente
     try:

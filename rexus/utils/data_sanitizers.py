@@ -65,7 +65,7 @@ class TextSanitizer:
         # Truncar si excede longitud máxima
         if len(text) > max_length:
             text = text[:max_length].rstrip()
-            logger.warning(f"Texto truncado a {max_length} caracteres")
+            logger.warning("Texto truncado a {max_length} caracteres)
         
         # Normalizar espacios
         text = re.sub(r'\s+', ' ', text).strip()
@@ -74,7 +74,7 @@ class TextSanitizer:
     
     @staticmethod
     def sanitize_name(name: str) -> str:
-        """Sanitiza nombres de personas."""
+        )
         if not isinstance(name, str):
             name = str(name)
         
@@ -172,34 +172,15 @@ class NumericSanitizer:
             
             # Verificar rango
             if min_value is not None and int_value < min_value:
-                logger.warning(f"Valor entero {int_value} menor que mínimo {min_value}"
-                return min_value
-            
-            if max_value is not None and int_value > max_value:
-                logger.warning(f"Valor entero {int_value} mayor que máximo {max_value}"
-                return max_value
-            
-            return int_value
-        
+                logger.warning(f"Valor entero {int_value} menor que mínimo {min_value})
         except (ValueError, TypeError):
-            logger.error(f"No se pudo convertir '{value}' a entero")
+            logger.error(")
             return None
     
     @staticmethod
     def sanitize_decimal(value: Any, max_digits: int = 10, 
                         decimal_places: int = 2) -> Optional[Decimal]:
-        """
-        Sanitiza decimales con precisión específica.
-        
-        Args:
-            value: Valor a sanitizar
-            max_digits: Máximo número de dígitos
-            decimal_places: Lugares decimales
-        
-        Returns:
-            Optional[Decimal]: Decimal sanitizado o None si es inválido
-        """
-        try:
+        )
             if isinstance(value, str):
                 # Limpiar caracteres no numéricos excepto punto y coma
                 value = re.sub(r'[^\d\.\-,]', '', value)
@@ -215,18 +196,14 @@ class NumericSanitizer:
             
             # Verificar número máximo de dígitos
             if len(str(decimal_value).replace('.', '').replace('-', '')) > max_digits:
-                logger.warning(f"Decimal {decimal_value} excede máximo de dígitos {max_digits}"
-                return None
-            
-            return decimal_value
-        
+                logger.warning(f"Decimal {decimal_value} excede máximo de dígitos {max_digits})
         except (InvalidOperation, ValueError, TypeError):
-            logger.error(f"No se pudo convertir '{value}' a decimal")
+            logger.error(")
             return None
     
     @staticmethod
     def sanitize_currency(value: Any) -> Optional[Decimal]:
-        """Sanitiza valores monetarios."""
+        )
         return NumericSanitizer.sanitize_decimal(value, max_digits=12, decimal_places=2)
     
     @staticmethod
@@ -238,14 +215,12 @@ class NumericSanitizer:
             float_value = max(0.0, min(100.0, float_value))
             return round(float_value, 2)
         except (ValueError, TypeError):
-            logger.error(f"No se pudo convertir '{value}' a porcentaje")
+            logger.error("No se pudo convertir '{value}' a porcentaje)
             return None
 
 
 class DateTimeSanitizer:
-    """Sanitizador especializado para fechas y horas."""
-    
-    @staticmethod
+    )
     def sanitize_date(value: Any, date_format: str = '%Y-%m-%d') -> Optional[date]:
         """
         Sanitiza fechas.
@@ -276,17 +251,16 @@ class DateTimeSanitizer:
                 if min_date <= parsed_date <= max_date:
                     return parsed_date
                 else:
-                    logger.warning(f"Fecha {parsed_date} fuera de rango válido")
+                    logger.warning(f"Fecha {parsed_date} fuera de rango válido)
                     return None
             
         except (ValueError, TypeError):
-            logger.error(f"No se pudo convertir '{value}' a fecha")
+            logger.error(")
             return None
     
     @staticmethod
     def sanitize_datetime(value: Any, datetime_format: str = '%Y-%m-%d %H:%M:%S') -> Optional[datetime]:
-        """Sanitiza fechas y horas."""
-        try:
+        )
             if isinstance(value, datetime):
                 return value
             
@@ -300,18 +274,16 @@ class DateTimeSanitizer:
                 if min_datetime <= parsed_datetime <= max_datetime:
                     return parsed_datetime
                 else:
-                    logger.warning(f"DateTime {parsed_datetime} fuera de rango válido")
+                    logger.warning(f"DateTime {parsed_datetime} fuera de rango válido)
                     return None
             
         except (ValueError, TypeError):
-            logger.error(f"No se pudo convertir '{value}' a datetime")
+            logger.error(")
             return None
 
 
 class ContactSanitizer:
-    """Sanitizador especializado para datos de contacto."""
-    
-    @staticmethod
+    )
     def sanitize_email(email: str) -> Optional[str]:
         """
         Sanitiza emails.
@@ -331,14 +303,14 @@ class ContactSanitizer:
         # Verificar formato básico
         email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         if not re.match(email_pattern, email):
-            logger.warning(f"Email inválido: {email}")
+            logger.warning(f"Email inválido: {email})
             return None
         
         # Verificar longitud de partes
         try:
             local, domain = email.rsplit('@', 1)
             if len(local) > 64 or len(domain) > 253:
-                logger.warning(f"Email con partes demasiado largas: {email}")
+                logger.warning(")
                 return None
         except ValueError:
             return None
@@ -348,15 +320,7 @@ class ContactSanitizer:
     
     @staticmethod
     def sanitize_phone(phone: str) -> Optional[str]:
-        """
-        Sanitiza números telefónicos.
-        
-        Args:
-            phone: Teléfono a sanitizar
-        
-        Returns:
-            Optional[str]: Teléfono sanitizado o None si es inválido
-        """
+        )
         if not isinstance(phone, str):
             return None
         
@@ -366,22 +330,14 @@ class ContactSanitizer:
         # Verificar longitud razonable
         digits_only = re.sub(r'[^\d]', '', phone)
         if len(digits_only) < 7 or len(digits_only) > 15:
-            logger.warning(f"Teléfono con longitud inválida: {phone}")
+            logger.warning("Teléfono con longitud inválida: {phone})
             return None
         
         return phone
     
     @staticmethod
     def sanitize_url(url: str) -> Optional[str]:
-        """
-        Sanitiza URLs.
-        
-        Args:
-            url: URL a sanitizar
-        
-        Returns:
-            Optional[str]: URL sanitizada o None si es inválida
-        """
+        )
         if not isinstance(url, str):
             return None
         
@@ -397,23 +353,19 @@ class ContactSanitizer:
         
         # Verificar longitud máxima
         if len(url) > 2083:
-            logger.warning(f"URL demasiado larga: {len(url)} caracteres")
+            logger.warning("URL demasiado larga: {len(url)} caracteres)
             return None
         
         # Verificar caracteres peligrosos
-        dangerous_chars = ['<', '>', '"', "'", ';', '|']
-        for char in dangerous_chars:
-            if char in url:
-                logger.warning(f"URL contiene caracteres peligrosos: {url}")
+        dangerous_chars = ['<', '>', ')
+                logger.warning("URL contiene caracteres peligrosos: {url})
                 return None
         
         return html.escape(url)
 
 
 class SecuritySanitizer:
-    """Sanitizador especializado para datos de seguridad."""
-    
-    @staticmethod
+    )
     def sanitize_password(password: str) -> Optional[str]:
         """
         Sanitiza contraseñas (no las modifica, solo valida).
@@ -444,23 +396,14 @@ class SecuritySanitizer:
         has_special = any(c in '!@#$%^&*()_+-=[]{}|;:,.<>?' for c in password)
         
         if not (has_upper and has_lower and has_digit):
-            logger.warning("Contraseña no cumple requisitos de complejidad")
+            logger.warning(")
             return None
         
         return password  # Retornar sin modificar
     
     @staticmethod
     def hash_password(password: str) -> str:
-        """
-        Genera hash seguro de contraseña.
-        
-        Args:
-            password: Contraseña a hashear
-        
-        Returns:
-            str: Hash de la contraseña
-        """
-        # Generar salt aleatorio
+        )
         salt = secrets.token_hex(32)
         
         # Crear hash con salt
@@ -472,7 +415,7 @@ class SecuritySanitizer:
         )
         
         # Combinar salt y hash
-        return f"{salt}:{password_hash.hex()}"
+        return f"{salt}:{password_hash.hex()}
     
     @staticmethod
     def verify_password(password: str, hashed: str) -> bool:
@@ -525,7 +468,7 @@ class FileSanitizer:
         
         # Verificar longitud
         if len(filename) > 255:
-            logger.warning(f"Nombre de archivo demasiado largo: {len(filename)}")
+            logger.warning(f"Nombre de archivo demasiado largo: {len(filename)})
             return None
         
         # Remover caracteres peligrosos del sistema
@@ -539,7 +482,7 @@ class FileSanitizer:
         
         file_ext = Path(filename).suffix.lower()
         if file_ext in dangerous_extensions:
-            logger.warning(f"Extensión de archivo peligrosa: {file_ext}")
+            logger.warning("Extensión de archivo peligrosa: {file_ext})
             return None
         
         # Asegurar que no esté vacío después de sanitización
@@ -550,16 +493,7 @@ class FileSanitizer:
     
     @staticmethod
     def sanitize_file_path(file_path: str, base_directory: str) -> Optional[str]:
-        """
-        Sanitiza rutas de archivo previniendo path traversal.
-        
-        Args:
-            file_path: Ruta a sanitizar
-            base_directory: Directorio base permitido
-        
-        Returns:
-            Optional[str]: Ruta sanitizada o None si es inválida
-        """
+        )
         if not isinstance(file_path, str) or not isinstance(base_directory, str):
             return None
         
@@ -570,20 +504,18 @@ class FileSanitizer:
             
             # Verificar que la ruta esté dentro del directorio base
             if not str(target_path).startswith(str(base_path)):
-                logger.warning(f"Intento de path traversal detectado: {file_path}")
+                logger.warning(f"Intento de path traversal detectado: {file_path})
                 return None
             
             return str(target_path)
         
         except (OSError, ValueError):
-            logger.error(f"Ruta inválida: {file_path}")
+            logger.error(")
             return None
 
 
 class SQLSanitizer:
-    """Sanitizador especializado para prevenir SQL injection."""
-    
-    @staticmethod
+    )
     def sanitize_sql_identifier(identifier: str) -> Optional[str]:
         """
         Sanitiza identificadores SQL (nombres de tablas, columnas).
@@ -599,7 +531,7 @@ class SQLSanitizer:
         
         # Solo permitir letras, números y guiones bajos
         if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', identifier):
-            logger.warning(f"Identificador SQL inválido: {identifier}")
+            logger.warning(f"Identificador SQL inválido: {identifier})
             return None
         
         # Verificar longitud
@@ -615,14 +547,14 @@ class SQLSanitizer:
         }
         
         if identifier.upper() in reserved_words:
-            logger.warning(f"Identificador SQL es palabra reservada: {identifier}")
+            logger.warning("Identificador SQL es palabra reservada: {identifier})
             return None
         
         return identifier
     
     @staticmethod
     def escape_sql_string(value: str) -> str:
-        """
+        )
         Escapa strings para SQL (aunque se recomienda usar parámetros).
         
         Args:
@@ -695,9 +627,7 @@ class UnifiedSanitizer:
             try:
                 return sanitizer(value, **kwargs)
             except Exception as e:
-                logger.error(f"Error sanitizando {data_type}: {e}"
-                return None
-        else:
+                logger.error(f"Error sanitizando {data_type}: {e})
             logger.warning(f"Tipo de sanitizador no reconocido: {data_type}")
             return self.text.sanitize_text(str(value))
 

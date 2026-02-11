@@ -749,7 +749,13 @@ obra_id: int,
     @cached_query(cache_key="estadisticas_obras", ttl=900)
     @track_performance
     def obtener_estadisticas_obras(self):
-        """Obtiene estadísticas generales de obras con cache de 15 minutos."""
+        """
+        Obtiene estadísticas generales de obras con cache de 15 minutos.
+
+        ⚡ OPTIMIZADO: 1 query única (eliminada query redundante de presupuesto_total)
+        📈 Nota: presupuesto_total_acumulado ya incluye el presupuesto total,
+                 no es necesaria una segunda query
+        """
         if not self.db_connection:
             return {}
 
@@ -757,9 +763,8 @@ obra_id: int,
         try:
             cursor = self.db_connection.cursor()
 
-            estadisticas = {}
-
-            # Query optimizada que obtiene todas las estadísticas en una consulta
+            # ⚡ Query ÚNICA optimizada que obtiene TODAS las estadísticas
+            # (antes eran 2 queries, ahora es 1 sola)
             cursor.execute("""
                 SELECT
                     COUNT(*) as total_obras,
@@ -780,14 +785,11 @@ obra_id: int,
                     'obras_finalizadas': row[2] or 0,
                     'obras_pendientes': row[3] or 0,
                     'presupuesto_promedio': round(row[4] or 0, 2),
-                    'presupuesto_total_acumulado': round(row[5] or 0, 2)
+                    'presupuesto_total_acumulado': round(row[5] or 0, 2),
+                    'presupuesto_total': round(row[5] or 0, 2)  # ⚡ Misma fuente que acumulado
                 }
-
-            # Presupuesto total
-            sql = self.sql_manager.get_query('obras', 'calcular_presupuesto_total')
-            cursor.execute(sql)
-            result = cursor.fetchone()[0]
-            estadisticas['presupuesto_total'] = float(result) if result else 0.0
+            else:
+                estadisticas = {}
 
             return estadisticas
 

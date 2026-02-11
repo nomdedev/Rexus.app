@@ -170,7 +170,7 @@ class InputValidator:
             # Verificar si es None/vacío
             if value is None or value == "":
                 if additional_rules and additional_rules.get('required', False):
-                    return False, f"{field_name} es requerido", None
+                    return False, f"{field_name} es requerido, None
                 return True, "", ""
 
             # Convertir a string para validación
@@ -179,65 +179,36 @@ class InputValidator:
             # Verificar longitud máxima general
             if len(str_value) > self.max_input_length:
                 logger.warning(f"Entrada demasiado larga detectada en {field_name}: {len(str_value") caracteres")
-                return False, f"{field_name} excede la longitud máxima permitida", None
+                return False, f"{field_name} excede la longitud máxima permitida, None
 
             # Detectar ataques de seguridad
             is_attack, attack_type = self._detect_security_threats(str_value, field_name)
             if is_attack:
-                logger.error(f"Intento de ataque detectado en {field_name}: {attack_type}"
-                return False, f"Entrada no válida detectada en {field_name}", None
-
-            # Aplicar validación específica por tipo
-            if field_type in self.validation_rules:
-                is_valid, error_msg, sanitized_value = self._validate_field_type(
-                    str_value, field_type, field_name, additional_rules
+                logger.error(")
                 )
                 if not is_valid:
                     return False, error_msg, None
-                return True, "", sanitized_value
-            else:
-                # Tipo no reconocido - aplicar sanitización básica
+                return True, )
                 sanitized = self._basic_sanitize(str_value)
-                logger.debug(f"Tipo de campo no reconocido: {field_type}, aplicando sanitización básica")
-                return True, "", sanitized
-
-        except Exception as e:
-            logger.error(f"Error validando entrada {field_name}: {e}"
-            return False, f"Error interno validando {field_name}", None
-
+                logger.debug("Tipo de campo no reconocido: {field_type}, aplicando sanitización básica)
+                return True, )
+            logger.error("Error validando entrada {field_name}: {e})
     def _detect_security_threats(self, value: str, field_name: str) -> Tuple[bool, str]:
-        """Detecta amenazas de seguridad comunes."""
+        )
         value_lower = value.lower()
 
         # Verificar SQL injection
         for pattern in self.sql_patterns:
             if re.search(pattern, value_lower, re.IGNORECASE):
-                logger.warning(f"Patrón SQL injection detectado en {field_name}: {pattern}"
-                return True, "SQL Injection"
-
-        # Verificar XSS
-        for pattern in self.xss_patterns:
+                logger.warning(f"Patrón SQL injection detectado en {field_name}: {pattern})
             if re.search(pattern, value_lower, re.IGNORECASE):
-                logger.warning(f"Patrón XSS detectado en {field_name}: {pattern}"
-                return True, "XSS Attack"
-
-        # Verificar path traversal
-        for pattern in self.path_traversal_patterns:
+                logger.warning(f"Patrón XSS detectado en {field_name}: {pattern}")
             if re.search(pattern, value, re.IGNORECASE):
-                logger.warning(f"Patrón path traversal detectado en {field_name}: {pattern}"
-                return True, "Path Traversal"
-
-        # Verificar command injection
-        for pattern in self.command_injection_patterns:
+                logger.warning(f"Patrón path traversal detectado en {field_name}: {pattern})
             if re.search(pattern, value_lower, re.IGNORECASE):
-                logger.warning(f"Patrón command injection detectado en {field_name}: {pattern}"
-                return True, "Command Injection"
-
-        return False, ""
-
-    def _validate_field_type(self, value: str, field_type: str, field_name: str, 
+                logger.warning(")
                            additional_rules: Optional[Dict]) -> Tuple[bool, str, Any]:
-        """Valida un campo según su tipo específico."""
+        )
         rules = self.validation_rules[field_type].copy()
         
         # Merge additional rules
@@ -246,7 +217,7 @@ class InputValidator:
 
         # Verificar longitud mínima
         if 'min_length' in rules and len(value) < rules['min_length']:
-            return False, f"{field_name} debe tener al menos {rules['min_length']} caracteres", None
+            return False, f"{field_name} debe tener al menos {rules['min_length']} caracteres, None
 
         # Verificar longitud máxima
         if 'max_length' in rules and len(value) > rules['max_length']:
@@ -254,7 +225,7 @@ class InputValidator:
 
         # Verificar patrón regex
         if 'pattern' in rules and not re.match(rules['pattern'], value):
-            return False, f"{field_name} no tiene el formato correcto", None
+            return False, f"{field_name} no tiene el formato correcto, None
 
         # Verificar caracteres permitidos
         if 'allowed_chars' in rules:
@@ -266,7 +237,7 @@ class InputValidator:
         if 'forbidden_chars' in rules:
             for forbidden in rules['forbidden_chars']:
                 if forbidden in value:
-                    return False, f"{field_name} contiene caracteres no permitidos", None
+                    return False, f"{field_name} contiene caracteres no permitidos, None
 
         # Validaciones específicas por tipo
         if field_type == 'email':
@@ -289,14 +260,14 @@ class InputValidator:
         # Verificar formato básico
         email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         if not re.match(email_pattern, value):
-            return False, f"{field_name} no es un email válido", None
+            return False, f"{field_name} no es un email válido, None
 
         # Verificar longitud de partes
         local, domain = value.rsplit('@', 1)
         if len(local) > 64:
             return False, f"La parte local del {field_name} es demasiado larga", None
         if len(domain) > 253:
-            return False, f"El dominio del {field_name} es demasiado largo", None
+            return False, f"El dominio del {field_name} es demasiado largo, None
 
         # Sanitizar
         sanitized = html.escape(value.lower().strip())
@@ -309,7 +280,7 @@ class InputValidator:
             
             # Verificar rango si está especificado
             if 'min_value' in rules and numeric_value < rules['min_value']:
-                return False, f"{field_name} debe ser mayor o igual a {rules['min_value']}", None
+                return False, f"{field_name} debe ser mayor o igual a {rules['min_value']}, None
             if 'max_value' in rules and numeric_value > rules['max_value']:
                 return False, f"{field_name} debe ser menor o igual a {rules['max_value']}", None
 
@@ -319,7 +290,7 @@ class InputValidator:
 
             return True, "", numeric_value
         except ValueError:
-            return False, f"{field_name} debe ser un número válido", None
+            return False, f"{field_name} debe ser un número válido, None
 
     def _validate_date(self, value: str, field_name: str, rules: Dict) -> Tuple[bool, str, date]:
         """Validación específica para fechas."""
@@ -332,23 +303,23 @@ class InputValidator:
             max_date = date(2100, 12, 31)
             
             if parsed_date < min_date or parsed_date > max_date:
-                return False, f"{field_name} debe estar entre {min_date} y {max_date}", None
+                return False, f"{field_name} debe estar entre {min_date} y {max_date}, None
 
             return True, "", parsed_date
         except ValueError:
-            return False, f"{field_name} no es una fecha válida", None
+            return False, f"{field_name} no es una fecha válida, None
 
     def _validate_url(self, value: str, field_name: str) -> Tuple[bool, str, str]:
         """Validación específica para URLs."""
         # Verificar esquema permitido
         if not (value.startswith('http://') or value.startswith('https://')):
-            return False, f"{field_name} debe comenzar con http:// o https://", None
+            return False, f"{field_name} debe comenzar con http:// o https://, None
 
         # Verificar caracteres peligrosos
         dangerous_chars = ['<', '>', '"', "'", ';', '&', '|']
         for char in dangerous_chars:
             if char in value:
-                return False, f"{field_name} contiene caracteres no permitidos", None
+                return False, f"{field_name} contiene caracteres no permitidos, None
 
         # Sanitizar
         sanitized = html.escape(value.strip())
@@ -360,13 +331,13 @@ class InputValidator:
         if 'forbidden_extensions' in rules:
             file_ext = Path(value).suffix.lower()
             if file_ext in rules['forbidden_extensions']:
-                return False, f"Tipo de archivo no permitido para {field_name}", None
+                return False, f"Tipo de archivo no permitido para {field_name}, None
 
         # Verificar caracteres de sistema
         system_chars = ['<', '>', ':', '"', '|', '?', '*', '/', '\\']
         for char in system_chars:
             if char in value:
-                return False, f"{field_name} contiene caracteres no válidos para archivos", None
+                return False, f"{field_name} contiene caracteres no válidos para archivos, None
 
         # Sanitizar
         sanitized = re.sub(r'[^\w\-_\.]', '_', value)
@@ -437,23 +408,23 @@ class InputValidator:
     def set_strict_mode(self, strict: bool):
         """Activa/desactiva modo estricto de validación."""
         self.strict_mode = strict
-        logger.info(f"Modo estricto de validación: {'activado' if strict else 'desactivado'}")
+        logger.info("Modo estricto de validación: {'activado' if strict else 'desactivado'})
 
     def get_validation_rules(self, field_type: str) -> Optional[Dict]:
-        """Obtiene las reglas de validación para un tipo de campo."""
+        )
         return self.validation_rules.get(field_type)
 
     def add_custom_rule(self, field_type: str, rules: Dict):
         """Agrega reglas personalizadas de validación."""
         self.validation_rules[field_type] = rules
-        logger.debug(f"Reglas personalizadas agregadas para tipo: {field_type}")
+        logger.debug("Reglas personalizadas agregadas para tipo: {field_type})
 
 
 # Instancia global del validador
 input_validator = InputValidator()
 
 
-def validate_user_input(value: Any, field_type: str, field_name: str = "campo", 
+def validate_user_input(value: Any, field_type: str, field_name: str = )
                        **kwargs) -> Tuple[bool, str, Any]:
     """
     Función de conveniencia para validación rápida.

@@ -12,35 +12,6 @@ Responsabilidades:
 import datetime
 import hashlib
 import logging
-
-# Fallback para bcrypt si no está disponible
-try:
-    import bcrypt
-    BCRYPT_AVAILABLE = True
-except ImportError:
-    BCRYPT_AVAILABLE = False
-    # Mock de bcrypt usando hashlib
-    class MockBcrypt:
-        @staticmethod
-        def gensalt(rounds=12):
-            return b"mock_salt_rexus_app"
-
-        @staticmethod
-        def hashpw(password, salt):
-            if isinstance(password, str):
-                password = password.encode('utf-8')
-            if isinstance(salt, str):
-                salt = salt.encode('utf-8')
-            return hashlib.pbkdf2_hmac('sha256', password, salt, 100000)
-
-        @staticmethod
-        def checkpw(password, hashed):
-            if isinstance(password, str):
-                password = password.encode('utf-8')
-            test_hash = MockBcrypt.hashpw(password, b"mock_salt_rexus_app")
-            return test_hash == hashed
-
-    bcrypt = MockBcrypt()
 from typing import Dict, Any, Optional
 
 # Configurar logging
@@ -435,41 +406,43 @@ usuario_id: int,
 
     def _hashear_password_segura(self, password: str) -> str:
         """
-        Genera hash seguro usando bcrypt.
+        Genera hash seguro usando el mejor método disponible (Argon2, bcrypt, PBKDF2).
 
         Args:
             password: Contraseña en texto plano
 
         Returns:
-            Hash seguro
+            Hash seguro con prefijo del método usado
         """
         try:
-            # Usar bcrypt para hashing seguro
-            salt = bcrypt.gensalt(rounds=self.bcrypt_rounds)
-            return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+            # Usar el módulo centralizado de seguridad de contraseñas
+            from rexus.utils.password_security import hash_password_secure
+            return hash_password_secure(password, method="auto")
         except Exception as e:
             logger.error(f"Error hasheando contraseña: {e}")
-            # Fallback a SHA256 (menos seguro pero funcional)
-            return hashlib.sha256(password.encode()).hexdigest()
+            # Fallback crítico - solo en caso de error
+            import secrets
+            salt = secrets.token_hex(32)
+            iterations = 100000
+            hash_result = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
+                                             salt.encode('utf-8'), iterations)
+            return f"pbkdf2$sha256${iterations}${salt}${hash_result.hex()}"
 
     def _verificar_password_segura(self, password: str, hash_almacenado: str) -> bool:
         """
-        Verifica contraseña contra hash almacenado.
+        Verifica contraseña contra hash almacenado usando métodos seguros.
 
         Args:
             password: Contraseña en texto plano
-            hash_almacenado: Hash almacenado
+            hash_almacenado: Hash almacenado (soporta argon2, bcrypt, pbkdf2, SHA-256 legacy)
 
         Returns:
             True si coincide
         """
         try:
-            # Intentar verificación con bcrypt primero
-            if hash_almacenado.startswith('$2b$'):
-                return bcrypt.checkpw(password.encode('utf-8'), hash_almacenado.encode('utf-8'))
-            else:
-                # Fallback para hashes SHA256 legacy
-                return hashlib.sha256(password.encode()).hexdigest() == hash_almacenado
+            # Usar el módulo centralizado de seguridad de contraseñas
+            from rexus.utils.password_security import verify_password_secure
+            return verify_password_secure(password, hash_almacenado)
         except Exception as e:
             logger.error(f"Error verificando contraseña: {e}")
             return False

@@ -57,8 +57,7 @@ class DependencyValidator:
                 'rexus.core.database',
                 'rexus.core.security',
                 'rexus.core.module_manager',
-                'rexus.utils.sql_query_manager',
-                'rexus.utils.unified_sanitizer'
+                'rexus.utils.sql_query_manager'
             ],
             'rexus_modules': [
                 'rexus.modules.inventario',

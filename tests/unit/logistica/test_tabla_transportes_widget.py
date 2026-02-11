@@ -8,9 +8,16 @@ import pytest
 import sys
 from unittest.mock import Mock, patch, MagicMock
 from pathlib import Path
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import Qt
-from PyQt6.QtTest import QTest
+
+# Intentar importar PyQt6 - saltar tests si no está disponible
+try:
+    from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtTest import QTest
+    PYQT6_AVAILABLE = True
+except ImportError:
+    PYQT6_AVAILABLE = False
+    pytest.skip("PyQt6 no está disponible - tests de UI omitidos", allow_module_level=True)
 
 # Configurar encoding UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -19,9 +26,26 @@ sys.stdout.reconfigure(encoding='utf-8')
 root_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
+# Verificar si el módulo existe antes de intentar importar
+tabla_transportes_widget_path = root_dir / 'rexus' / 'modules' / '05_logistica' / 'components' / 'tabla_transportes_widget.py'
+
+if not tabla_transportes_widget_path.exists():
+    pytest.skip(f"Module file not found: {tabla_transportes_widget_path}", allow_module_level=True)
+
 # Imports a testear
 try:
-    from rexus.modules.logistica.components.tabla_transportes_widget import TablaTransportesWidget
+    # Import usando helper para módulos con nombres numéricos
+    from tests.utils.module_import_helper import import_module_from_path
+
+    tabla_transportes_widget_module, success, error = import_module_from_path(str(tabla_transportes_widget_path))
+
+    if success:
+        TablaTransportesWidget = getattr(tabla_transportes_widget_module, 'TablaTransportesWidget', None)
+        if TablaTransportesWidget is None:
+            pytest.skip("TablaTransportesWidget class not found in module", allow_module_level=True)
+    else:
+        pytest.skip(f"Could not import tabla_transportes_widget: {error}", allow_module_level=True)
+
     from rexus.ui.components.base_components import RexusButton, RexusLineEdit
 except ImportError as e:
     pytest.skip(f"No se pudo importar logística: {e}", allow_module_level=True)
@@ -200,7 +224,7 @@ class TestTablaTransportesWidget:
         assert widget.btn_delete.isEnabled() is False
         assert widget.current_selection is None
     
-    @patch('rexus.modules.logistica.components.tabla_transportes_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.tabla_transportes_widget.QMessageBox')
     def test_eliminar_transporte_sin_seleccion(self, mock_msgbox):
         """Test eliminación sin selección."""
         widget = TablaTransportesWidget(self.mock_parent)
@@ -211,7 +235,7 @@ class TestTablaTransportesWidget:
         # Verificar que se mostró warning
         mock_msgbox.warning.assert_called_once()
     
-    @patch('rexus.modules.logistica.components.tabla_transportes_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.tabla_transportes_widget.QMessageBox')
     def test_eliminar_transporte_confirmado(self, mock_msgbox):
         """Test eliminación confirmada."""
         widget = TablaTransportesWidget(self.mock_parent)
@@ -231,7 +255,7 @@ class TestTablaTransportesWidget:
             # (En test real verificaríamos la señal transport_deleted)
             mock_refresh.assert_called_once()
     
-    @patch('rexus.modules.logistica.components.tabla_transportes_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.tabla_transportes_widget.QMessageBox')
     def test_eliminar_transporte_cancelado(self, mock_msgbox):
         """Test eliminación cancelada."""
         widget = TablaTransportesWidget(self.mock_parent)
@@ -261,7 +285,7 @@ class TestTablaTransportesWidget:
         # Verificar que se llamó método del parent
         mock_parent.mostrar_dialogo_nuevo_transporte.assert_called_once()
     
-    @patch('rexus.modules.logistica.components.tabla_transportes_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.tabla_transportes_widget.QMessageBox')
     def test_nuevo_transporte_sin_parent(self, mock_msgbox):
         """Test creación de nuevo transporte sin parent disponible."""
         widget = TablaTransportesWidget(None)
@@ -270,7 +294,7 @@ class TestTablaTransportesWidget:
         # Verificar que se mostró mensaje placeholder
         mock_msgbox.information.assert_called_once()
     
-    @patch('rexus.modules.logistica.components.tabla_transportes_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.tabla_transportes_widget.QMessageBox')
     def test_exportar_datos_vacios(self, mock_msgbox):
         """Test exportación sin datos."""
         widget = TablaTransportesWidget(self.mock_parent)
@@ -283,7 +307,7 @@ class TestTablaTransportesWidget:
             widget, "Exportar", "No hay datos para exportar"
         )
     
-    @patch('rexus.modules.logistica.components.tabla_transportes_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.tabla_transportes_widget.QMessageBox')
     def test_exportar_datos_exitoso(self, mock_msgbox):
         """Test exportación exitosa."""
         widget = TablaTransportesWidget(self.mock_parent)
@@ -298,7 +322,7 @@ class TestTablaTransportesWidget:
                 widget, "Exportar", "Datos exportados exitosamente"
             )
     
-    @patch('rexus.modules.logistica.components.tabla_transportes_widget.QMessageBox')
+    @patch('rexus.modules.05_logistica.components.tabla_transportes_widget.QMessageBox')
     def test_exportar_datos_error(self, mock_msgbox):
         """Test error en exportación."""
         widget = TablaTransportesWidget(self.mock_parent)

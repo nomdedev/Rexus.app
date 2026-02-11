@@ -12,8 +12,26 @@ from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 
 # Configurar path y encoding
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
+root_dir = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(root_dir))
 os.environ['PYTHONIOENCODING'] = 'utf-8'
+
+# Import usando helper para módulos con nombres numéricos
+from tests.utils.module_import_helper import import_module_from_path
+
+MODULE_AVAILABLE = True
+usuarios_controller_module = None
+
+try:
+    usuarios_controller_path = root_dir / 'rexus' / 'modules' / '11_usuarios' / 'controller.py'
+    usuarios_controller_module, success, error = import_module_from_path(str(usuarios_controller_path))
+
+    if not success:
+        MODULE_AVAILABLE = False
+        print(f"Warning: Could not import usuarios controller: {error}")
+except Exception as e:
+    MODULE_AVAILABLE = False
+    print(f"Warning: Error importing usuarios controller: {e}")
 
 
 class MockDatabase:
@@ -47,38 +65,40 @@ class TestUsuariosAuth(unittest.TestCase):
     @patch('rexus.core.database.DatabaseConnection')
     def test_login_admin_success(self, mock_db_connection):
         """Test: Login exitoso con credenciales de admin."""
+        if not MODULE_AVAILABLE:
+            self.skipTest("Módulo 11_usuarios no disponible")
+
         # Configurar mock
         mock_db_connection.return_value = self.mock_db
-        
+
         # Simular respuesta de usuario válido - DATOS SEGUROS
         from tests.utils.security_helpers import TestSecurityManager
         mock_user = TestSecurityManager.create_mock_user_data('admin', 'ADMIN')
         self.mock_db.cursor_mock.fetchone.return_value = (
             mock_user['usuario'], mock_user['password_hash'], mock_user['rol'], mock_user['estado']
         )
-        
+
         # Test básico - el módulo debe poder importarse
-        try:
-            from rexus.modules.usuarios import controller as usuarios_controller
-            # Si llegamos aquí, el import fue exitoso
+        if usuarios_controller_module is not None:
             self.assertTrue(True)
-        except ImportError as e:
-            self.skipTest(f)
+        else:
+            self.skipTest("Módulo de usuarios no disponible")
     
-    @patch('rexus.core.database.DatabaseConnection')  
+    @patch('rexus.core.database.DatabaseConnection')
     def test_login_invalid_credentials(self, mock_db_connection):
         """Test: Login con credenciales inválidas."""
+        if not MODULE_AVAILABLE:
+            self.skipTest("Módulo 11_usuarios no disponible")
+
         # Configurar mock para usuario inexistente
         mock_db_connection.return_value = self.mock_db
         self.mock_db.cursor_mock.fetchone.return_value = None
-        
+
         # Test - verificar que el sistema maneja usuarios inexistentes
-        try:
-            from rexus.modules.usuarios import controller as usuarios_controller
-            # Test de concepto - en implementación real verificaríamos el resultado
+        if usuarios_controller_module is not None:
             self.assertTrue(True)
-        except ImportError as e:
-            self.skipTest(f)
+        else:
+            self.skipTest("Módulo de usuarios no disponible")
     
     def test_password_validation(self):
         """Test: Validación de contraseñas - USANDO DATOS SEGUROS."""

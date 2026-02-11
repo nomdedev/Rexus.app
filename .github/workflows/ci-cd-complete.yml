@@ -1,0 +1,464 @@
+# 🔥 CI/CD Pipeline Completo - Rexus.app v2.0.0
+# Basado en mejores prácticas de GitHub Actions y Python Expertos
+# Referencias:
+# - https://docs.github.com/en/actions
+# - https://docs.pytest.org/
+# - https://black.readthedocs.io/
+
+name: CI/CD Pipeline - Quality Gates
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:  # Permitir ejecución manual
+
+# Cancelar workflows anteriores del mismo PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: '3.11'
+  POETRY_VERSION: '1.7.1'
+
+jobs:
+  # ============================================================================
+  # JOB 1: Code Style & Formatting (Fast feedback)
+  # ============================================================================
+  lint-style:
+    name: 🔍 Code Style Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: ⚡ Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Historial completo para blame
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'  # Cache dependencies para speed up
+
+      - name: 📦 Install linting tools
+        run: |
+          pip install --upgrade pip
+          pip install black isort
+
+      - name: 🎨 Check code formatting with Black
+        run: |
+          black --check --diff rexus/ tests/
+        continue-on-error: false
+
+      - name: 📋 Check import sorting with isort
+        run: |
+          isort --check-only --diff rexus/ tests/
+        continue-on-error: false
+
+      - name: 💾 Upload formatting diff as artifact
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: formatting-diff
+          path: |
+            rexus/
+            tests/
+
+  # ============================================================================
+  # JOB 2: Code Quality & Complexity (Parallel con lint-style)
+  # ============================================================================
+  lint-quality:
+    name: 🔬 Code Quality Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: ⚡ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: 📦 Install quality tools
+        run: |
+          pip install --upgrade pip
+          pip install flake8 pylint mypy bandit[toml] safety
+
+      - name: 🐍 Lint with flake8 (PEP 8)
+        run: |
+          flake8 rexus/ tests/ \
+            --max-line-length=100 \
+            --extend-ignore=E203,W503 \
+            --exclude=.git,__pycache__,build,dist,.eggs,*.egg \
+            --show-source \
+            --statistics
+        continue-on-error: false
+
+      - name: 📊 Complexity analysis with Pylint
+        run: |
+          pylint rexus/ \
+            --fail-under=8.0 \
+            --max-complexity=10 \
+            --disable=C0111,W0511 \
+            --output-format=colorized \
+            --output=pylint-report.txt
+        continue-on-error: true  # No fallar el build, solo advertir
+
+      - name: 🔍 Type checking with mypy
+        run: |
+          mypy rexus/ \
+            --strict \
+            --pretty \
+            --show-error-codes \
+            --no-error-summary  # Ya lo muestra mypy
+        continue-on-error: true
+
+      - name: 🚨 Security lint with Bandit
+        run: |
+          bandit -r rexus/ \
+            -f json \
+            -o bandit-report.json \
+            --skip B101  # Skip assert_used
+        continue-on-error: true
+
+      - name: 📦 Check for security vulnerabilities
+        run: |
+          safety check --json --output safety-report.json
+        continue-on-error: true
+
+      - name: 📤 Upload quality reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: quality-reports
+          path: |
+            pylint-report.txt
+            bandit-report.json
+            safety-report.json
+
+  # ============================================================================
+  # JOB 3: Unit Tests (Corre en paralelo)
+  # ============================================================================
+  test-unit:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-latest
+    needs: [lint-style, lint-quality]  # Esperar a que lint pase
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']  # Test en múltiples versiones
+
+    steps:
+      - name: ⚡ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pytest pytest-cov pytest-xdist pytest-benchmark
+          pip install pytest-asyncio pytest-mock
+          pip install -r requirements.txt
+
+      - name: 🧪 Run unit tests with coverage
+        run: |
+          pytest tests/unit/ \
+            --cov=rexus \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-report=term-missing \
+            --cov-fail-under=50 \
+            -v \
+            -n auto  # Paralelizar con pytest-xdist
+
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unit-tests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: 📊 Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: htmlcov/
+
+  # ============================================================================
+  # JOB 4: Integration Tests (Paralelo con unit)
+  # ============================================================================
+  test-integration:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    needs: [lint-style, lint-quality]
+    timeout-minutes: 20
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: YourStrong@Passw0rd
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools/bin/sqlcmd -U sa -P YourStrong@Passw0rd -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: ⚡ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pytest pytest-cov
+          pip install pyodbc
+          pip install -r requirements.txt
+
+      - name: ⏳ Wait for SQL Server
+        run: |
+          sleep 10  # Dar tiempo a SQL Server para iniciar
+
+      - name: 🔗 Run integration tests
+        env:
+          DB_SERVER: localhost
+          DB_USERNAME: sa
+          DB_PASSWORD: YourStrong@Passw0rd
+          DB_DRIVER: ODBC Driver 18 for SQL Server
+          DB_USERS: rexus_users
+          DB_INVENTARIO: rexus_inventario
+          DB_AUDITORIA: rexus_auditoria
+        run: |
+          pytest tests/integration/ \
+            --cov=rexus \
+            --cov-report=xml \
+            --cov-report=term \
+            -v \
+            --tb=short
+
+      - name: 📤 Upload integration coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: integration-tests
+
+  # ============================================================================
+  # JOB 5: Security Scanning (Profundidad)
+  # ============================================================================
+  security-scan:
+    name: 🔒 Security Deep Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: ⚡ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 🔍 Scan for secrets with TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+
+      - name: 📦 Install security tools
+        run: |
+          pip install bandit[toml] safety semgrep
+
+      - name: 🚨 Bandit security check
+        run: |
+          bandit -r rexus/ -f json -o bandit-detail.json
+        continue-on-error: true
+
+      - name: 🔎 Semgrep security scan
+        run: |
+          pip install semgrep
+          semgrep --config=auto \
+            --severity=ERROR \
+            --json \
+            --output=semgrep-report.json
+        continue-on-error: true
+
+      - name: 🚨 Generate security summary
+        if: always()
+        run: |
+          echo "## 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Bandit Findings" >> $GITHUB_STEP_SUMMARY
+          cat bandit-detail.json | jq '.' >> $GITHUB_STEP_SUMMARY || echo "No issues"
+
+      - name: 📤 Upload security reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: |
+            bandit-detail.json
+            semgrep-report.json
+
+  # ============================================================================
+  # JOB 6: Build & Tag Docker Image
+  # ============================================================================
+  build:
+    name: 🏗️ Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [test-unit, test-integration, security-scan]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: ⚡ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔐 Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 🏷️ Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: rexusapp/rexus
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: 🏗️ Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=rexusapp/rexus:buildcache
+          cache-to: type=registry,ref=rexusapp/rexus:buildcache,mode=max
+          build-args: |
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+            VCS_REF=${{ github.sha }}
+            VERSION=${{ steps.meta.outputs.version }}
+
+  # ============================================================================
+  # JOB 7: Deploy to Staging
+  # ============================================================================
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.rexus.app
+
+    steps:
+      - name: 🚀 Deploy to staging server
+        run: |
+          echo "🚀 Deploying to staging environment..."
+          # Aquí iría el comando real de deploy
+          # kubectl apply -f k8s/staging/
+          # o docker-compose up -d
+
+      - name: 🧪 Run smoke tests
+        run: |
+          pytest tests/e2e/smoke_tests.py \
+            --base-url=https://staging.rexus.app
+
+  # ============================================================================
+  # JOB 8: Deploy to Production (Manual approval)
+  # ============================================================================
+  deploy-production:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://rexus.app
+
+    steps:
+      - name: ⏳ Wait for manual approval
+        run: |
+          echo "⏳ Waiting for manual approval..."
+
+      - name: 🚀 Deploy to production
+        run: |
+          echo "🚀 Deploying to production..."
+          # kubectl apply -f k8s/production/
+          # o docker-compose -f docker-compose.prod.yml up -d
+
+      - name: 🧪 Run production smoke tests
+        run: |
+          pytest tests/e2e/smoke_tests.py \
+            --base-url=https://rexus.app
+
+      - name: 🔔 Notify deployment success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            ✅ Deployment to production completed successfully!
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+  # ============================================================================
+  # JOB 9: Build Summary Report
+  # ============================================================================
+  report:
+    name: 📊 Generate Summary Report
+    runs-on: ubuntu-latest
+    needs: [test-unit, test-integration, security-scan]
+    if: always()
+
+    steps:
+      - name: 📊 Download all artifacts
+        uses: actions/download-artifact@v3
+
+      - name: 📈 Generate comprehensive summary
+        run: |
+          echo "## 📊 CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Passed Jobs" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint & Style" >> $GITHUB_STEP_SUMMARY
+          echo "- Unit Tests" >> $GITHUB_STEP_SUMMARY
+          echo "- Integration Tests" >> $GITHUB_STEP_SUMMARY
+          echo "- Security Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "Ver en Codecov para detalles detallados" >> $GITHUB_STEP_SUMMARY

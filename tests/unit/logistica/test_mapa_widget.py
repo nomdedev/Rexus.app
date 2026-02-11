@@ -8,9 +8,16 @@ import pytest
 import sys
 from unittest.mock import Mock, patch, MagicMock
 from pathlib import Path
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import Qt
-from PyQt6.QtTest import QTest
+
+# Intentar importar PyQt6 - saltar tests si no está disponible
+try:
+    from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtTest import QTest
+    PYQT6_AVAILABLE = True
+except ImportError:
+    PYQT6_AVAILABLE = False
+    pytest.skip("PyQt6 no está disponible - tests de UI omitidos", allow_module_level=True)
 
 # Configurar encoding UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -19,9 +26,26 @@ sys.stdout.reconfigure(encoding='utf-8')
 root_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
+# Verificar si el módulo existe antes de intentar importar
+mapa_widget_path = root_dir / 'rexus' / 'modules' / '05_logistica' / 'components' / 'mapa_widget.py'
+
+if not mapa_widget_path.exists():
+    pytest.skip(f"Module file not found: {mapa_widget_path}", allow_module_level=True)
+
 # Imports a testear
 try:
-    from rexus.modules.logistica.components.mapa_widget import MapaWidget
+    # Import usando helper para módulos con nombres numéricos
+    from tests.utils.module_import_helper import import_module_from_path
+
+    mapa_widget_module, success, error = import_module_from_path(str(mapa_widget_path))
+
+    if success:
+        MapaWidget = getattr(mapa_widget_module, 'MapaWidget', None)
+        if MapaWidget is None:
+            pytest.skip("MapaWidget class not found in module", allow_module_level=True)
+    else:
+        pytest.skip(f"Could not import mapa_widget: {error}", allow_module_level=True)
+
     from rexus.ui.components.base_components import RexusButton, RexusLineEdit
 except ImportError as e:
     pytest.skip(f"Imports not available: {e}", allow_module_level=True)
@@ -365,7 +389,7 @@ class TestMapaWidget:
         """Test exportación sin datos."""
         widget = MapaWidget(self.mock_parent)
         
-        with patch('rexus.modules.logistica.components.mapa_widget.QMessageBox') as mock_msgbox:
+        with patch('rexus.modules.05_logistica.components.mapa_widget.QMessageBox') as mock_msgbox:
             widget.exportar_mapa()
             
             mock_msgbox.warning.assert_called_once_with(
@@ -377,7 +401,7 @@ class TestMapaWidget:
         widget = MapaWidget(self.mock_parent)
         widget.cargar_ubicaciones(self.sample_locations)
         
-        with patch('rexus.modules.logistica.components.mapa_widget.QMessageBox') as mock_msgbox, \
+        with patch('rexus.modules.05_logistica.components.mapa_widget.QMessageBox') as mock_msgbox, \
              patch.object(widget, 'save_map_html', return_value=True) as mock_save:
             
             widget.exportar_mapa()

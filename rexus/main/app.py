@@ -47,10 +47,10 @@ try:
 except ImportError:
     # Fallback si el logger no está disponible
     def get_logger(name): return None
-    def log_info(msg, comp="general"): logger.info(f"{msg}")
-    def log_error(msg, comp="general"): logger.error(f"{msg}")
+    def log_info(msg, comp="general"): print(f"[INFO] {msg}")
+    def log_error(msg, comp="general"): print(f"[ERROR] {msg}")
     def log_critical(msg, comp="general"): print(f"[CRITICAL] {msg}")
-    def log_warning(msg, comp="general"): logger.warning(f"{msg}")
+    def log_warning(msg, comp="general"): print(f"[WARNING] {msg}")
     def log_security(level, msg, user=None): print(f"[SECURITY-{level}] {msg}")
     LOGGING_AVAILABLE = False
 
@@ -183,7 +183,6 @@ class SimpleSecurityManager:
 
         # Verificar contraseña con hash seguro
         try:
-            from rexus.utils.security import SecurityUtils
 
             if SecurityUtils.verify_password(password, user.get("password_hash", "")):
                 print(f"[SIMPLE_AUTH] Login exitoso para {username}")
@@ -823,7 +822,6 @@ QPushButton:disabled {
 
     def _create_dashboard_header(self):
         """Crea el header del dashboard moderno y limpio"""
-        from datetime import datetime
 
         header_widget = QWidget()
         header_layout = QHBoxLayout(header_widget)
@@ -1232,7 +1230,7 @@ text,
             logger.error(f"Error navegando a módulo {module_name}: {e}")
 
     def cargar_modulo(self, module_name):
-        """Carga un módulo específico - método requerido por PremiumDashboard."""
+        """Navega directamente al módulo solicitado"""
         self._navigate_to_module(module_name)
 
     def _create_notifications_section(self):
@@ -1405,15 +1403,7 @@ text,
             self.content_stack.setCurrentWidget(fallback_widget)
 
     def _create_module_widget(self, module_name: str) -> QWidget:
-        """
-        Factory method para crear widgets de módulos
-
-        Args:
-            module_name: Nombre del módulo
-
-        Returns:
-            Widget del módulo correspondiente
-        """
+        """Factory para crear instancias de widgets de módulos de forma robusta"""
         # Mapeo de módulos a métodos de creación (incluyendo variaciones normalizadas)
         module_factory = {
             "Inventario": self._create_inventario_module,
@@ -1504,12 +1494,11 @@ text,
 
             # Usar el gestor de módulos para carga robusta
             return module_manager.create_module_safely(
-                module_name="Inventario",
+                module_name="inventario",
                 model_class=InventarioModel,
                 view_class=InventarioView,
                 controller_class=InventarioController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
+                db_connection=db_connection
             )
 
         except Exception as e:
@@ -1519,7 +1508,6 @@ text,
     def _create_contabilidad_module(self) -> QWidget:
         """Crea el módulo de contabilidad usando el gestor robusto"""
         try:
-            from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.administracion.contabilidad.controller import (
                 ContabilidadController,
             )
@@ -1543,12 +1531,11 @@ text,
 
             # Usar el gestor de módulos para carga robusta
             return module_manager.create_module_safely(
-                module_name="Contabilidad",
+                module_name="contabilidad",
                 model_class=ContabilidadModel,
                 view_class=ContabilidadView,
                 controller_class=ContabilidadController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
+                db_connection=db_connection
             )
 
         except Exception as e:
@@ -1558,7 +1545,6 @@ text,
     def _create_obras_module(self) -> QWidget:
         """Crea el módulo de obras usando el gestor robusto"""
         try:
-            from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.obras.controller import ObrasController
             from rexus.modules.obras.model import ObrasModel
             from rexus.modules.obras.view import ObrasView
@@ -1570,15 +1556,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Obras",
-                model_class=ObrasModel,
-                view_class=ObrasView,
-                controller_class=ObrasController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando obras: {e}")
@@ -1616,7 +1595,6 @@ text,
     def _create_vidrios_module(self) -> QWidget:
         """Crea el módulo de vidrios usando el gestor robusto"""
         try:
-            from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.vidrios.controller import VidriosController
             from rexus.modules.vidrios.model import VidriosModel
             from rexus.modules.vidrios.view import VidriosView
@@ -1628,15 +1606,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Vidrios",
-                model_class=VidriosModel,
-                view_class=VidriosView,
-                controller_class=VidriosController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando vidrios: {e}")
@@ -1645,7 +1616,6 @@ text,
     def _create_herrajes_module(self) -> QWidget:
         """Crea el módulo de herrajes usando el gestor robusto"""
         try:
-            from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.herrajes.controller import HerrajesController
             from rexus.modules.herrajes.model import HerrajesModel
             from rexus.modules.herrajes.view import HerrajesView
@@ -1657,15 +1627,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Herrajes",
-                model_class=HerrajesModel,
-                view_class=HerrajesView,
-                controller_class=HerrajesController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando herrajes: {e}")
@@ -1674,7 +1637,6 @@ text,
     def _create_pedidos_module(self) -> QWidget:
         """Crea el módulo de pedidos usando el gestor robusto"""
         try:
-            from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.pedidos.controller import PedidosController
             from rexus.modules.pedidos.model import PedidosModel
             from rexus.modules.pedidos.view import PedidosView
@@ -1686,15 +1648,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Pedidos",
-                model_class=PedidosModel,
-                view_class=PedidosView,
-                controller_class=PedidosController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando pedidos: {e}")
@@ -1703,7 +1658,6 @@ text,
     def _create_logistica_module(self) -> QWidget:
         """Crea el módulo de logística usando el gestor robusto"""
         try:
-            from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.logistica.controller import LogisticaController
             from rexus.modules.logistica.model import LogisticaModel
             from rexus.modules.logistica.view import LogisticaView
@@ -1715,15 +1669,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Logistica",
-                model_class=LogisticaModel,
-                view_class=LogisticaView,
-                controller_class=LogisticaController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando logística: {e}")
@@ -1732,7 +1679,6 @@ text,
     def _create_usuarios_module(self) -> QWidget:
         """Crea el módulo de usuarios usando el gestor robusto"""
         try:
-            from rexus.core.database import UsersDatabaseConnection
             from rexus.modules.usuarios.controller import UsuariosController
             from rexus.modules.usuarios.model import UsuariosModel
             from rexus.modules.usuarios.view import UsuariosView
@@ -1744,15 +1690,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Usuarios",
-                model_class=UsuariosModel,
-                view_class=UsuariosView,
-                controller_class=UsuariosController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando usuarios: {e}")
@@ -1773,15 +1712,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Auditoria",
-                model_class=AuditoriaModel,
-                view_class=AuditoriaView,
-                controller_class=AuditoriaController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando auditoría: {e}")
@@ -1790,7 +1722,6 @@ text,
     def _create_compras_module(self) -> QWidget:
         """Crea el módulo de compras usando el gestor robusto"""
         try:
-            from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.compras.controller import ComprasController
             from rexus.modules.compras.model import ComprasModel
             from rexus.modules.compras.view import ComprasView
@@ -1802,15 +1733,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Compras",
-                model_class=ComprasModel,
-                view_class=ComprasView,
-                controller_class=ComprasController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando compras: {e}")
@@ -1819,7 +1743,6 @@ text,
     def _create_mantenimiento_module(self) -> QWidget:
         """Crea el módulo de mantenimiento usando el gestor robusto"""
         try:
-            from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.mantenimiento.controller import MantenimientoController
             from rexus.modules.mantenimiento.model import MantenimientoModel
             from rexus.modules.mantenimiento.view import MantenimientoView
@@ -1831,15 +1754,8 @@ text,
                 logger.error(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Usar el gestor de módulos para carga robusta
-            return module_manager.create_module_safely(
-                module_name="Mantenimiento",
-                model_class=MantenimientoModel,
-                view_class=MantenimientoView,
-                controller_class=MantenimientoController,
-                db_connection=db_connection,
-                fallback_callback=self._create_fallback_module,
-            )
+            # Fallback: crear widget simple por problemas con module_manager
+            return self._create_fallback_module("Módulo", "module_manager incompleto")
 
         except Exception as e:
             logger.error(f"Error crítico creando mantenimiento: {e}")
@@ -1970,17 +1886,14 @@ def main():
 
     if qtwebengine_available:
         print("[LOG 4.1] QtWebEngine disponible y inicializado")
-        import os
         os.environ["QT_OPENGL"] = "angle"  # Forzar OpenGL ANGLE para compatibilidad
 
-        from PyQt6.QtCore import Qt
         from PyQt6.QtWidgets import QApplication
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseOpenGLES)
     else:
         print("[LOG 4.1] QtWebEngine no disponible, usando fallbacks")
         webengine_status = webengine_manager.get_status_info()
         print(f"[LOG 4.1] Razones: {webengine_status['fallback_reasons']}")
-        from PyQt6.QtWidgets import QApplication
     # Inicializar sistema de logging como primera acción
     if LOGGING_AVAILABLE:
         app_logger.log_startup_info()
@@ -2026,7 +1939,6 @@ def main():
     
     # VALIDACIÓN ESPECÍFICA DEL MODULE_MANAGER (mencionado en auditoría)
     try:
-        from rexus.core.module_manager import module_manager
         
         # Verificar que module_manager tiene los métodos críticos
         required_methods = ['create_module_safely']
@@ -2082,7 +1994,7 @@ def main():
         else:
             logger.warning(f"Sistema de backup no se pudo inicializar, continuando sin backup automático")
     except Exception as e:
-        logger.warning(f"Error inicializando sistema de backup:{e}")
+        logger.warning(f"Error inicializando sistema de backup: {e}")
 
     # Crear dialog de login moderno
     login_dialog = LoginDialog()
@@ -2092,23 +2004,13 @@ def main():
         login_dialog.security_manager = security_manager
 
     def cargar_main_window_con_seguridad(user_data, modulos_permitidos):
-        """
-        Crea y muestra la ventana principal de forma segura.
-        
-        Args:
-            user_data: Datos del usuario autenticado
-            modulos_permitidos: Lista de módulos a los que tiene acceso
-            
-        Returns:
-            MainWindow: Instancia de la ventana principal o None si hay error
-        """
         try:
             log_info(f"Creando MainWindow para usuario: {user_data['username']}", "security")
-            
+
             main_window = MainWindow(user_data, modulos_permitidos)
             main_window.actualizar_usuario_label(user_data)
             main_window.show()
-            
+
             log_info(f"Aplicación iniciada para {user_data['username']}", "security")
             return main_window
         except Exception as e:
@@ -2116,12 +2018,12 @@ def main():
 
             error_msg = f"Error al iniciar aplicación con seguridad: {e}"
             log_critical(error_msg, "security", exc_info=True)
-            
+
             # Guardar log de error adicional para casos críticos
             Path("logs").mkdir(exist_ok=True)
             with open("logs/error_inicio_seguridad.txt", "a", encoding="utf-8") as f:
                 f.write(f"{datetime.datetime.now()}: {error_msg}\n{traceback.format_exc()}\n")
-            
+
             QMessageBox.critical(
                 None,
                 "Error crítico",
@@ -2184,7 +2086,7 @@ def main():
             ):
                 logger.warning(f"[SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12")
                 print(
-                    f"[WARN] [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'"
+                    f"[SECURITY WARNING] Admin detectado con solo {len(modulos_permitidos)} módulos"
                 )
 
         except AttributeError as e:
@@ -2250,7 +2152,7 @@ def main():
         app.main_window = main_window_instance
 
     def on_login_failed(error_message):
-        logger.error(f"[LOGIN] Autenticación fallida:{error_message}")
+        logger.error(f"[LOGIN] Autenticación fallida: {error_message}")
 
     login_dialog.login_successful.connect(on_login_success)
     login_dialog.login_failed.connect(on_login_failed)

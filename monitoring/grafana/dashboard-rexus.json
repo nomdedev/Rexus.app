@@ -1,0 +1,98 @@
+{
+  "dashboard": {
+    "title": "Rexus.app - Performance Dashboard",
+    "tags": ["rexus", "performance"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Requests por Segundo",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "sum(rate(rexus_counter_http_requests_total[1m]))",
+            "legendFormat": "Requests/sec"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Duración de Requests (P95)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(rexus_histogram_http_request_duration_seconds_bucket[5m])) by (le))",
+            "legendFormat": "P95 Latency"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Queries de BD por Segundo",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(rexus_counter_database_queries_total[1m])) by (query_type)",
+            "legendFormat": "{{query_type}}"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Duración de Queries BD (P95)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(rexus_histogram_database_query_duration_seconds_bucket[5m])) by (le, query_type))",
+            "legendFormat": "{{query_type}}"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Cache Hit Rate",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "sum(rate(rexus_counter_cache_operations_total{result=\"hit\"}[5m])) / sum(rate(rexus_counter_cache_operations_total[5m]))",
+            "legendFormat": "Hit Rate"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Errores por Segundo",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "sum(rate(rexus_counter_errors_total[1m])) by (error_type)",
+            "legendFormat": "{{error_type}}"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Módulos Más Activos",
+        "type": "table",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 24},
+        "targets": [
+          {
+            "expr": "sum(rexus_counter_module_calls_total) by (module)",
+            "legendFormat": "{{module}}"
+          }
+        ]
+      }
+    ],
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  }
+}
