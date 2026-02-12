@@ -156,7 +156,7 @@ class SessionInfo:
             }
 
         except Exception as e:
-            logger.error("Error validando sesión: {e})
+            logger.error(f"Error validando sesión: {e}")
             return {'valid': False, 'message': 'Error interno del sistema'}
         finally:
             if 'cursor' in locals():
@@ -257,7 +257,7 @@ class SessionInfo:
             return sesiones
 
         except Exception as e:
-            logger.error("Error obteniendo sesiones del usuario: {e})
+            logger.error(f"Error obteniendo sesiones del usuario: {e}")
             return []
         finally:
             if 'cursor' in locals():
@@ -313,7 +313,7 @@ created_at,
             return stats
 
         except Exception as e:
-            logger.error("Error obteniendo estadísticas de sesiones: {e})
+            logger.error(f"Error obteniendo estadísticas de sesiones: {e}")
             return {}
         finally:
             if 'cursor' in locals():
@@ -348,7 +348,7 @@ created_at,
             return sesiones_activas < self.max_concurrent_sessions
 
         except Exception as e:
-            logger.error("Error verificando límite de sesiones: {e})
+            logger.error(f"Error verificando límite de sesiones: {e}")
             return True
         finally:
             if 'cursor' in locals():

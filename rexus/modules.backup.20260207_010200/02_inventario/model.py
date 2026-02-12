@@ -430,7 +430,7 @@ datos_reserva: Dict[str,
             return productos, total_items
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error obteniendo datos paginados de inventario: {e})
+            logger.error(f"Error obteniendo datos paginados de inventario: {e}")
             return [], 0
 
     def obtener_productos_paginados(
@@ -649,7 +649,7 @@ datos_reserva: Dict[str,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error validando stock:{e})
+            logger.error(f"Error validando stock:{e}")
             return {
                 )
     def obtener_producto_por_id(self, producto_id):
@@ -1655,7 +1655,7 @@ fecha_fin,
                     base_query = " ".join(lines)
 
                 except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                    logger.error("Error con script loader:{e})
+                    logger.error(f"Error con script loader:{e}")
                     # Query base de respaldo segura
                     base_query = )
                 if filtros.get("categoria"):
@@ -2045,7 +2045,7 @@ descripcion,
                     )
 
             except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                logger.error("Error usando scripts:{e})
+                logger.error(f"Error usando scripts:{e}")
                 # Fallback completo con queries seguras fijas
                 cursor.execute(
                     )
@@ -2252,7 +2252,7 @@ descripcion,
                     else:
                         raise Exception("Script no disponible")
                 except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                    logger.error("Error usando script:{e})
+                    logger.error(f"Error usando script:{e}")
                     # Fallback con query segura
                     cursor.execute(
                         )
@@ -2299,7 +2299,7 @@ descripcion,
                             movimiento_params,
                         )
                 except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                    logger.error("Error usando script movimiento:{e})
+                    logger.error(f"Error usando script movimiento:{e}")
                     cursor.execute(
                         )
                             detalles)
@@ -2499,7 +2499,7 @@ descripcion,
             return obras
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error al obtener obras activas: {str(e)})
+            logger.error(f"Error al obtener obras activas: {str(e)}")
             return []
 
     def obtener_categorias(self):
@@ -2519,7 +2519,7 @@ descripcion,
             return categorias
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error al obtener categorías: {str(e)})
+            logger.error(f"Error al obtener categorías: {str(e)}")
             return []
 
     def obtener_estadisticas_generales(self):
@@ -2560,7 +2560,7 @@ descripcion,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error al obtener estadísticas generales: {str(e)})
+            logger.error(f"Error al obtener estadísticas generales: {str(e)}")
             return {
                 )
     def buscar_productos(self, filtros):
@@ -2599,7 +2599,7 @@ descripcion,
             return productos
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error al buscar productos: {str(e)})
+            logger.error(f"Error al buscar productos: {str(e)}")
             return []
 
     def obtener_estadisticas_reservas(self, obra_id):
@@ -2662,7 +2662,7 @@ descripcion,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error al obtener estadísticas de reservas: {str(e)})
+            logger.error(f"Error al obtener estadísticas de reservas: {str(e)}")
             return {
                 )
     def obtener_productos_disponibles_para_reserva(self):
@@ -2708,7 +2708,7 @@ descripcion,
                             ORDER BY i.codigo
                         """)
                 except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                    logger.error("Error con script loader:{e})
+                    logger.error(f"Error con script loader:{e}")
                     # Consulta de respaldo parameterizada
                     cursor.execute()
                             COALESCE(r.stock_reservado, 0) as stock_reservado,
@@ -2762,7 +2762,7 @@ descripcion,
 
             return productos
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error en obtener_productos_disponibles_para_reserva:{e})
+            logger.error(f"Error en obtener_productos_disponibles_para_reserva:{e}")
             return []
 
     def obtener_info_obra(self, obra_id):
@@ -2795,7 +2795,7 @@ descripcion,
             return None
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error al obtener información de obra: {str(e)})
+            logger.error(f"Error al obtener información de obra: {str(e)}")
             return None
 
     def obtener_detalle_disponibilidad(self, producto_id):
@@ -2836,7 +2836,7 @@ descripcion,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error al obtener detalle de disponibilidad: {str(e)})
+            logger.error(f"Error al obtener detalle de disponibilidad: {str(e)}")
             return None
 
     def _get_productos_demo(self):
@@ -2879,7 +2879,7 @@ descripcion,
                     else:
                         raise Exception("No se pudo cargar script de paginación")
                 except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                    logger.error("Error cargando script paginados:{e})
+                    logger.error(f"Error cargando script paginados:{e}")
                     # Query de respaldo
                     base_paginated_query = )
             count_query = self._get_count_query()
@@ -2943,7 +2943,7 @@ descripcion,
             return datos, total_registros
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error obteniendo datos paginados:{e})
+            logger.error(f"Error obteniendo datos paginados:{e}")
             return [], 0
 
     def obtener_total_registros(self, filtros=None):
@@ -2951,7 +2951,7 @@ descripcion,
                                                    filtros=filtros)
             return total
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error("Error obteniendo total de registros:{e})
+            logger.error(f"Error obteniendo total de registros:{e}")
             return 0
 
     def _get_base_query(self):
@@ -2960,7 +2960,7 @@ descripcion,
                 if script_content:
                     return script_content.strip()
             except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                logger.error("Error cargando script base:{e})
+                logger.error(f"Error cargando script base:{e}")
 
         # Query de respaldo segura usando tabla fija
         return self.sql_manager.get_query('inventario', 'obtener_reportes_inventario')
@@ -2971,7 +2971,7 @@ descripcion,
                 if script_content:
                     return script_content.strip()
             except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                logger.error("Error cargando script count:{e})
+                logger.error(f"Error cargando script count:{e}")
 
         # Query de respaldo segura usando tabla fija
         return self.sql_manager.get_query('inventario', 'contar_perfiles_activos')

@@ -87,7 +87,7 @@ class InventoryIntegration:
             return items_procesados == len(items_recibidos)
 
         except Exception as e:
-            logger.error("Error procesando recepción completa: {e}, exc_info=True)
+            logger.error(f"Error procesando recepción completa: {e}, exc_info=True")
             return False
 
     def _obtener_detalles_orden(self, orden_id: int) -> Optional[List[Dict]]:
@@ -122,7 +122,7 @@ class InventoryIntegration:
             return detalles
 
         except Exception as e:
-            logger.error("Error obteniendo detalles de orden {orden_id}: {e})
+            logger.error(f"Error obteniendo detalles de orden {orden_id}: {e}")
     def _actualizar_stock_inventario(self, item_recibido: Dict, detalles_orden: List[Dict]) -> bool:
         )
             codigo_producto = item_recibido.get('codigo_producto')
@@ -153,7 +153,7 @@ class InventoryIntegration:
                 )
 
         except Exception as e:
-            logger.error("Error actualizando stock: {e}, exc_info=True)
+            logger.error(f"Error actualizando stock: {e}, exc_info=True")
             return False
 
     def _producto_existe_en_inventario(self, codigo_producto: str) -> bool:
@@ -167,7 +167,7 @@ class InventoryIntegration:
             return count > 0
 
         except Exception as e:
-            logger.error("Error verificando existencia de producto {codigo_producto}: {e})
+            logger.error(f"Error verificando existencia de producto {codigo_producto}: {e}")
     def _incrementar_stock_existente(self, codigo_producto: str, cantidad: int) -> bool:
         )
             cursor = self.inventario_db.cursor()
@@ -185,7 +185,7 @@ class InventoryIntegration:
             ))
 
             self.inventario_db.commit()
-            logger.info("Stock incrementado para {codigo_producto}: +{cantidad})
+            logger.info(f"Stock incrementado para {codigo_producto}: +{cantidad}")
         cantidad: int) -> bool:
         )
             cursor = self.inventario_db.cursor()
@@ -287,7 +287,7 @@ orden_id: int,
             return result[0] if result else 0
 
         except Exception as e:
-            logger.error("Error obteniendo stock para {codigo_producto}: {e})
+            logger.error(f"Error obteniendo stock para {codigo_producto}: {e}")
     def generar_reporte_integracion(self, fecha_inicio: datetime, fecha_fin: datetime) -> List[Dict]:
         )
             cursor = self.compras_db.cursor()
@@ -360,7 +360,7 @@ orden_id: int,
             logger.info("Tablas de integración verificadas/creadas exitosamente")
 
         except Exception as e:
-            logger.error("Error creando tablas de integración: {e})
+            logger.error(f"Error creando tablas de integración: {e}")
 
 
 # Instancia global para uso en el módulo de compras

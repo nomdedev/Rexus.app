@@ -821,3 +821,75 @@ WHERE usuario_...
 2025-08-31 22:24:09,842 - rexus.style_manager - INFO - Estilos de emergencia aplicados
 2025-08-31 22:24:09,845 - rexus.dashboard_integration - INFO - Botón del dashboard creado: Dashboard Ejecutivo
 2025-08-31 22:24:09,851 - rexus.main - DEBUG - Módulos permitidos: ['CONFIGURACION']
+{"timestamp": "2026-02-12T14:34:57.721378Z", "level": "WARNING", "logger": "__main__", "message": "Metrics initialization failed: unterminated f-string literal (detected at line 74) (prometheus_exporter.py, line 74)", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 168, "function": "_init_metrics"}}
+{"timestamp": "2026-02-12T14:34:57.722351Z", "level": "WARNING", "logger": "__main__", "message": "Task queue initialization failed: unmatched ']' (task_queue.py, line 163)", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 182, "function": "_init_queue"}}
+{"timestamp": "2026-02-12T14:34:57.915684Z", "level": "INFO", "logger": "rexus.core.alerts_manager", "message": "Regla de alerta agregada: Stock Bajo", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py", "line": 477, "function": "add_rule"}}
+{"timestamp": "2026-02-12T14:34:57.915848Z", "level": "INFO", "logger": "rexus.core.alerts_manager", "message": "Regla de alerta agregada: Backup Fallido", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py", "line": 477, "function": "add_rule"}}
+{"timestamp": "2026-02-12T14:34:57.915932Z", "level": "INFO", "logger": "rexus.core.alerts_manager", "message": "Regla de alerta agregada: Múltiples Logins Fallidos", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py", "line": 477, "function": "add_rule"}}
+{"timestamp": "2026-02-12T14:34:57.915992Z", "level": "INFO", "logger": "rexus.core.alerts_manager", "message": "Regla de alerta agregada: Base de Datos Desconectada", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py", "line": 477, "function": "add_rule"}}
+{"timestamp": "2026-02-12T14:35:00.825114Z", "level": "WARNING", "logger": "root", "message": "cryptography no disponible, usando fallback", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\secrets_manager.py", "line": 31, "function": "<module>"}}
+{"timestamp": "2026-02-12T14:35:00.825346Z", "level": "INFO", "logger": "rexus.core.secrets_manager", "message": "Using local encrypted backend for secrets", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\secrets_manager.py", "line": 464, "function": "_detect_backend"}}
+{"timestamp": "2026-02-12T14:35:00.825437Z", "level": "WARNING", "logger": "rexus.core.secrets_manager", "message": "No se proporcionó SECRETS_MASTER_KEY. Generando una temporal.", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\secrets_manager.py", "line": 93, "function": "__init__"}}
+{"timestamp": "2026-02-12T14:35:00.852438Z", "level": "INFO", "logger": "__main__", "message": "============================================================", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 100, "function": "initialize_all"}}
+{"timestamp": "2026-02-12T14:35:00.852510Z", "level": "INFO", "logger": "__main__", "message": "All services initialized successfully", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 101, "function": "initialize_all"}}
+{"timestamp": "2026-02-12T14:35:00.852557Z", "level": "INFO", "logger": "__main__", "message": "============================================================", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 102, "function": "initialize_all"}}
+{"timestamp": "2026-02-12T14:39:03.949234Z", "level": "WARNING", "logger": "__main__", "message": "Metrics initialization failed: unterminated f-string literal (detected at line 74) (prometheus_exporter.py, line 74)", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 168, "function": "_init_metrics"}}
+{"timestamp": "2026-02-12T14:39:03.956445Z", "level": "INFO", "logger": "rexus.utils.task_queue", "message": "Started 4 task workers", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\task_queue.py", "line": 300, "function": "start"}}
+{"timestamp": "2026-02-12T14:39:04.063881Z", "level": "INFO", "logger": "rexus.core.alerts_manager", "message": "Regla de alerta agregada: Stock Bajo", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py", "line": 477, "function": "add_rule"}}
+{"timestamp": "2026-02-12T14:39:04.063969Z", "level": "INFO", "logger": "rexus.core.alerts_manager", "message": "Regla de alerta agregada: Backup Fallido", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py", "line": 477, "function": "add_rule"}}
+{"timestamp": "2026-02-12T14:39:04.064074Z", "level": "INFO", "logger": "rexus.core.alerts_manager", "message": "Regla de alerta agregada: Múltiples Logins Fallidos", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py", "line": 477, "function": "add_rule"}}
+{"timestamp": "2026-02-12T14:39:04.064131Z", "level": "INFO", "logger": "rexus.core.alerts_manager", "message": "Regla de alerta agregada: Base de Datos Desconectada", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py", "line": 477, "function": "add_rule"}}
+{"timestamp": "2026-02-12T14:39:04.079567Z", "level": "WARNING", "logger": "root", "message": "cryptography no disponible, usando fallback", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\secrets_manager.py", "line": 31, "function": "<module>"}}
+{"timestamp": "2026-02-12T14:39:04.079770Z", "level": "INFO", "logger": "rexus.core.secrets_manager", "message": "Using local encrypted backend for secrets", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\secrets_manager.py", "line": 464, "function": "_detect_backend"}}
+{"timestamp": "2026-02-12T14:39:04.079840Z", "level": "WARNING", "logger": "rexus.core.secrets_manager", "message": "No se proporcionó SECRETS_MASTER_KEY. Generando una temporal.", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\secrets_manager.py", "line": 93, "function": "__init__"}}
+{"timestamp": "2026-02-12T14:39:04.094786Z", "level": "INFO", "logger": "__main__", "message": "============================================================", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 100, "function": "initialize_all"}}
+{"timestamp": "2026-02-12T14:39:04.094859Z", "level": "INFO", "logger": "__main__", "message": "All services initialized successfully", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 101, "function": "initialize_all"}}
+{"timestamp": "2026-02-12T14:39:04.094904Z", "level": "INFO", "logger": "__main__", "message": "============================================================", "service": "rexus", "environment": "development", "source": {"file": "d:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py", "line": 102, "function": "initialize_all"}}
+2026-02-12 12:35:32 - rexus - INFO - Sistema de logging Rexus inicializado
+2026-02-12 12:41:44 - rexus - INFO - Sistema de logging Rexus inicializado
+2026-02-12 12:44:20 - rexus - INFO - Sistema de logging Rexus inicializado
+2026-02-12 12:49:15 - test_integration - INFO - Mensaje de prueba de integraciÃ³n
+2026-02-12 12:49:15 - rexus.utils.task_queue - INFO - Task enqueued: ec287f96-1b66-47f5-bc4c-a5d2079a5db8 (<lambda>)
+2026-02-12 13:00:24 - rexus - INFO - Sistema de logging Rexus inicializado
+2026-02-12 13:43:00 - rexus - INFO - Sistema de logging Rexus inicializado
+2026-02-12 13:52:38 - rexus - INFO - Sistema de logging Rexus inicializado
+2026-02-12 13:52:48 - errors - ERROR - Uncaught exception: SyntaxError: invalid syntax. Perhaps you forgot a comma? (controller.py, line 357)
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; importlib.import_module('rexus.modules.01_obras')
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\__init__.py", line 48, in <module>
+    usuarios = _import_numeric_module('11_usuarios')
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\__init__.py", line 33, in _import_numeric_module
+    return importlib.import_module(f'.{name}', package='rexus.modules')
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\__init__.py", line 3, in <module>
+    from .controller import UsuariosController
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\controller.py", line 357
+    errores.append(f"Estado invÃ¡lido. Debe ser uno de: {', '.join(self.model.ESTADOS.keys()")}")
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+2026-02-12 14:42:30 - rexus - INFO - Sistema de logging Rexus inicializado
+2026-02-12 14:46:04 - rexus - INFO - Sistema de logging Rexus inicializado

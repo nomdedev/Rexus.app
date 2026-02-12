@@ -391,7 +391,7 @@ username: str,
 
             # Verificar que el input sanitizado sea seguro
             if not SecurityUtils.is_safe_input(username_sanitizado):
-                logger.warning("[SECURITY] Intento de login con username malicioso:{username})
+                logger.warning(f"[SECURITY] Intento de login con username malicioso:{username}")
                 return None
 
             # [LOCK] VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO
@@ -414,7 +414,7 @@ username: str,
 
             if not usuario:
                 # Usuario no existe - también incrementar contador para prevenir ataques de enumeración
-                logger.warning("[SECURITY] Intento de login con usuario inexistente:{username})
+                logger.warning(f"[SECURITY] Intento de login con usuario inexistente:{username}")
 
                 # Registrar intento malicioso
                 self.registrar_auditoria(
@@ -502,7 +502,7 @@ username: str,
             username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
 
             if not SecurityUtils.is_safe_input(username_sanitizado):
-                logger.warning("[SECURITY] Intento de desbloqueo con username malicioso:{username})
+                logger.warning(f"[SECURITY] Intento de desbloqueo con username malicioso:{username}")
                 return False
 
             # Desbloquear usuario
@@ -641,7 +641,7 @@ accion: str,
                 return self.model.obtener_total_registros()
             return 0
         except Exception as e:
-            logger.error("Error obteniendo total de registros: {e})
+            logger.error(f"Error obteniendo total de registros: {e}")
             return 0
 
     def mostrar_error(self, mensaje: str):

@@ -80,7 +80,7 @@ try:
     from .base_utilities import BaseUtilities, TABLA_INVENTARIO
     BASE_AVAILABLE = True
 except ImportError as e:
-    logger.error("Error importando utilidades base: {e})
+    logger.error(f"Error importando utilidades base: {e}")
     BASE_AVAILABLE = False
     BaseUtilities = None
     TABLA_INVENTARIO = )
@@ -414,14 +414,14 @@ class CategoriasManager:
                 self.db_connection.commit()
                 cursor.close()
 
-                self.logger.info("Categoría creada en tabla independiente: {nombre_limpio})
+                self.logger.info(f"Categoría creada en tabla independiente: {nombre_limpio}")
 
                 return {
                     'success': True,
                     'message': f'Categoría )
                 cursor.close()
 
-                self.logger.info("Categoría validada para uso futuro: {nombre_limpio})
+                self.logger.info(f"Categoría validada para uso futuro: {nombre_limpio}")
 
                 return {
                     'success': True,
@@ -866,7 +866,7 @@ categoria_origen: str,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            self.logger.error("Error generando reporte de categorías: {e})
+            self.logger.error(f"Error generando reporte de categorías: {e}")
             return {
                 'success': False,
                 'error': f'Error interno: {str(e)}',
@@ -899,7 +899,7 @@ categoria_origen: str,
             return count > 0
 
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error("Error verificando existencia de categoría: {e})
+            self.logger.error(f"Error verificando existencia de categoría: {e}")
             return False
 
     def _tabla_categorias_existe(self) -> bool:

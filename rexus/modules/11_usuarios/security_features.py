@@ -44,7 +44,7 @@ class UserSecurityManager:
         else:
             score += 2
 
-        if not any(c.isupper() for c in password):
+        if not any(c.isupper(" for c in password":
             issues.append("Al menos una letra mayúscula")
         else:
             score += 1
@@ -92,10 +92,7 @@ class UserSecurityManager:
             'requirements_met': len(issues) == 0
         }
 
-    def register_login_attempt(self,
-username: str,
-        success: bool,
-        ip_address: str = "unknown") -> Dict[str,
+    def register_login_attempt() -> Dict[str,
         Any]:
         """
         Registra un intento de login y maneja el lockout.
@@ -105,7 +102,6 @@ username: str,
         """
         username = sanitize_string(username)
         current_time = datetime.datetime.now()
-
         # Obtener datos del usuario
         user_data = self.usuarios_model.obtener_usuario_por_nombre(username)
         if not user_data:
@@ -127,10 +123,8 @@ username: str,
             # Login exitoso - resetear intentos
             self.reset_failed_attempts(username)
             self.log_security_event(user_id, 'LOGIN_SUCCESS', f'Login exitoso desde {ip_address}')
-
             # Actualizar último login
             self.update_last_login(user_id, current_time, ip_address)
-
             return {
                 'success': True,
                 'message': 'Login exitoso',
@@ -140,12 +134,10 @@ username: str,
             # Login fallido - incrementar intentos
             attempts = self.increment_failed_attempts(username)
             self.log_security_event(user_id, 'LOGIN_FAILED', f'Intento fallido #{attempts} desde {ip_address}')
-
             if attempts >= self.MAX_LOGIN_ATTEMPTS:
                 # Bloquear usuario
                 self.lock_user(username, self.LOCKOUT_DURATION)
                 self.log_security_event(user_id, 'ACCOUNT_LOCKED', f'Cuenta bloqueada por {self.MAX_LOGIN_ATTEMPTS} intentos fallidos')
-
                 return {
                     'success': False,
                     'locked': True,
@@ -168,14 +160,12 @@ username: str,
 
         attempt_data = self.failed_attempts[username]
         locked_until = attempt_data.get('locked_until')
-
         if locked_until and datetime.datetime.now() < locked_until:
             return True
 
         # Lockout expirado, limpiar
         if locked_until and datetime.datetime.now() >= locked_until:
             self.reset_failed_attempts(username)
-
         return False
 
     def get_lockout_time(self, username: str) -> Optional[datetime.datetime]:
@@ -196,7 +186,6 @@ username: str,
 
         self.failed_attempts[username]['count'] += 1
         self.failed_attempts[username]['last_attempt'] = datetime.datetime.now()
-
         return self.failed_attempts[username]['count']
 
     def reset_failed_attempts(self, username: str):
@@ -211,7 +200,6 @@ username: str,
 
         self.failed_attempts[username]['locked_until'] = (
             datetime.datetime.now() + datetime.timedelta(seconds=duration_seconds)
-        )
 
     def unlock_user(self, username: str) -> bool:
         """Desbloquea manualmente un usuario."""
@@ -222,10 +210,9 @@ username: str,
 
             self.reset_failed_attempts(username)
             self.log_security_event(user_data['id'], 'ACCOUNT_UNLOCKED', 'Cuenta desbloqueada manualmente')
-
             return True
         except Exception as e:
-            print(f"[ERROR] Error desbloqueando usuario: {e})
+            print(f"[ERROR] Error desbloqueando usuario: {e}")
             return False
 
     def requires_2fa(self, username: str) -> bool:
@@ -245,15 +232,12 @@ username: str,
     def setup_2fa(self, username: str) -> Dict[str, Any]:
         """Configura 2FA para un usuario."""
         return self.two_factor.habilitar_2fa_usuario(self.usuarios_model, username)
-
     def verify_2fa_setup(self, username: str, verification_code: str) -> bool:
         """Verifica la configuración inicial de 2FA."""
         return self.two_factor.verificar_setup_2fa(self.usuarios_model, username, verification_code)
-
     def validate_2fa_login(self, username: str, code: str) -> bool:
         """Valida código 2FA durante login."""
         return self.two_factor.validar_2fa_login(self.usuarios_model, username, code)
-
     def disable_2fa(self, username: str) -> bool:
         """Deshabilita 2FA para un usuario."""
         success = self.two_factor.deshabilitar_2fa(self.usuarios_model, username)
@@ -275,20 +259,18 @@ user_id: int,
         except ImportError:
             # Fallback a print si no está disponible
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[SECURITY {timestamp}] User {user_id}: {event_type} - {description})
-
+            print(f"[SECURITY {timestamp}] User {user_id}: {event_type} - {description}")
     def update_last_login(self,
 user_id: int,
         login_time: datetime.datetime,
-        ip_address: str):
+        ip_address: str":
         """Actualiza el último login del usuario."""
         try:
             if hasattr(self.usuarios_model, 'actualizar_ultimo_login'):
                 self.usuarios_model.actualizar_ultimo_login(user_id, login_time, ip_address)
         except Exception as e:
-            print(f"[ERROR] Error actualizando último login: {e})
-
-    def get_user_security_status(self, username: str) -> Dict[str, Any]:
+            print(f"[ERROR] Error actualizando último login: {e}")
+    def get_user_security_status(self, username: str" -> Dict[str, Any]:
         """Obtiene el estado de seguridad completo de un usuario."""
         user_data = self.usuarios_model.obtener_usuario_por_nombre(username)
         if not user_data:
@@ -298,7 +280,6 @@ user_id: int,
         config_dict = json.loads(config_personal) if config_personal else {}
 
         failed_data = self.failed_attempts.get(username, {})
-
         return {
             'username': username,
             'is_locked': self.is_user_locked(username),
@@ -319,7 +300,6 @@ user_id: int,
             # Estadísticas de usuarios
             total_users = len(self.usuarios_model.obtener_todos_usuarios())
             locked_users = len([u for u in self.failed_attempts.keys() if self.is_user_locked(u)])
-
             # Usuarios con 2FA habilitado
             users_with_2fa = 0
             for user in self.usuarios_model.obtener_todos_usuarios():
@@ -332,7 +312,6 @@ user_id: int,
                 data['count'] for data in self.failed_attempts.values()
                 if data.get('last_attempt') and
                 (datetime.datetime.now() - data['last_attempt']).total_seconds() < 3600
-            )
 
             return {
                 'total_users': total_users,
@@ -348,17 +327,15 @@ user_id: int,
                 }
             }
         except Exception as e:
-            print(f"[ERROR] Error generando dashboard de seguridad: {e})
-            return {'error': str(e)}
+            print(f"[ERROR] Error generando dashboard de seguridad: {e}"
+            return {'error': str(e")}
 
 
-def create_security_manager(usuarios_model) -> UserSecurityManager:
+def create_security_manager(usuarios_model" -> UserSecurityManager:
     """Factory function para crear el gestor de seguridad."""
     return UserSecurityManager(usuarios_model)
-
-
 # Funciones de utilidad para integración fácil
-def validate_login_with_security(usuarios_model, username: str, password: str, ip_address: str = "unknown") -> Dict[str, Any]:
+def validate_login_with_security() -> Dict[str, Any]:
     """
     Valida login con todas las funcionalidades de seguridad.
 
@@ -366,25 +343,18 @@ def validate_login_with_security(usuarios_model, username: str, password: str, i
         Dict con resultado completo de validación
     """
     security_manager = create_security_manager(usuarios_model)
-
     # Verificar si está bloqueado antes de validar credenciales
     if security_manager.is_user_locked(username):
         return security_manager.register_login_attempt(username, False, ip_address)
-
     # Validar credenciales básicas
     user_valid = usuarios_model.validar_usuario(username, password)
-
     # Registrar intento
     return security_manager.register_login_attempt(username, user_valid, ip_address)
-
-
 if __name__ == "__main__":
     # Test básico del sistema de seguridad
     print("Sistema de seguridad avanzada para usuarios inicializado")
-
     # Ejemplo de validación de contraseña
     security = UserSecurityManager(None)
-
     test_passwords = [
         "123",
         "password",

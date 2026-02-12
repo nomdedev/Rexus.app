@@ -331,7 +331,7 @@ usuario_id: int,
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error("Error cerrando cursor: {e})
+                    logger.error(f"Error cerrando cursor: {e}")
 
     @admin_required
     def eliminar_usuario(self, usuario_id: int) -> Optional[Dict[str, Any]]:
@@ -389,7 +389,7 @@ usuario_id: int,
                 try:
                     cursor.close()
                 except Exception as e:
-                    logger.error("Error cerrando cursor: {e})
+                    logger.error(f"Error cerrando cursor: {e}")
 
     @auth_required
     def obtener_estadisticas_usuarios(self) -> Dict[str, Any]:

@@ -88,7 +88,7 @@ class QueryBatcher:
                 callback(result)
                 
         except Exception as e:
-            logger.error("))
+            logger.error(f")")
                 callback(None)
 
     def _execute_batch_query(self, query_key: str, batch_data: List[Any]) -> List[Any]:
@@ -142,7 +142,7 @@ class DatabaseQueryBatcher(QueryBatcher):
         if optimizer:
             return optimizer(batch_data)
         else:
-            logger.warning("No hay optimizador para query_key: {query_key})
+            logger.warning(f"No hay optimizador para query_key: {query_key}")
             return [None] * len(batch_data)
 
     def _optimize_get_by_ids(self, batch_data: List[Dict]) -> List[Any]:
@@ -209,7 +209,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[parent_id] = count
                 
             except Exception as e:
-                logger.error("Error en count batch para {table}: {e})
+                logger.error(f"Error en count batch para {table}: {e}")
         # Organizar resultados (0 si no hay coincidencias)
         for i, item in enumerate(batch_data):
             results.append(result_map.get(item['parent_id'], 0))
@@ -249,7 +249,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[parent_id].append(record)
                 
             except Exception as e:
-                logger.error("Error en relations batch para {table}: {e})
+                logger.error(f"Error en relations batch para {table}: {e}")
         for i, item in enumerate(batch_data):
             results.append(result_map.get(item['parent_id'], []))
         
@@ -285,7 +285,7 @@ class DatabaseQueryBatcher(QueryBatcher):
                     result_map[value] = value in existing_values
                 
             except Exception as e:
-                logger.error("Error en exists batch para {table}: {e})
+                logger.error(f"Error en exists batch para {table}: {e}")
         for i, item in enumerate(batch_data):
             results.append(result_map.get(item['value'], False))
         
@@ -469,7 +469,7 @@ class QueryOptimizer:
             return result
             
         except Exception as e:
-            logger.error("Error en get_by_id para {table}:{id_value}: {e})
+            logger.error(f"Error en get_by_id para {table}:{id_value}: {e}")
                           columns: str = '*') -> Dict[int, Any]:
         )
         placeholders = ','.join(['?'] * len(id_values))
@@ -524,11 +524,11 @@ class QueryOptimizer:
             return result_map
             
         except Exception as e:
-            logger.error("Error en count_relations para {table}: {e})
+            logger.error(f"Error en count_relations para {table}: {e}")
     def invalidate_cache(self, pattern: str = None):
         )
         self.cache.invalidate(pattern)
-        logger.debug("Cache invalidado con patrón: {pattern})
+        logger.debug(f"Cache invalidado con patrón: {pattern}")
 
     def get_stats(self) -> Dict[str, Any]:
         )

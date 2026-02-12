@@ -165,7 +165,7 @@ model=None,
             logger.debug("Cargando entregas desde el modelo")
             entregas = self.model.obtener_entregas()
             self.view.cargar_entregas_en_tabla(entregas)
-            logger.info("Cargadas {len(entregas) if entregas else 0} entregas)
+            logger.info(f"Cargadas {len(entregas) if entregas else 0} entregas")
         except Exception as e:
             error_msg = f)
             logger.error("error_msg, exc_info=True")
@@ -182,7 +182,7 @@ model=None,
         Returns:
             tuple: (exito, mensaje, entrega_id)
         """
-        logger.info("Iniciando creación de entrega para usuario: {self.usuario_actual})
+        logger.info(f"Iniciando creación de entrega para usuario: {self.usuario_actual}")
         
         if not self.model:
             error_msg = )
@@ -241,7 +241,7 @@ model=None,
             logger.debug("Cargando servicios desde el modelo")
             services = self.model.obtener_services()
             self.view.cargar_services_en_tabla(services)
-            logger.info("Cargados {len(services) if services else 0} servicios)
+            logger.info(f"Cargados {len(services) if services else 0} servicios")
         except Exception as e:
             error_msg = f)
             logger.error("error_msg, exc_info=True")
@@ -258,7 +258,7 @@ model=None,
         Returns:
             tuple: (exito, mensaje, service_id)
         """
-        logger.info("Iniciando creación de servicio para usuario: {self.usuario_actual})
+        logger.info(f"Iniciando creación de servicio para usuario: {self.usuario_actual}")
         
         if not self.model:
             error_msg = )
@@ -427,7 +427,7 @@ model=None,
         Returns:
             tuple: (exito, mensaje)
         """
-        logger.info("Iniciando eliminación de transporte ID: {transporte_id} por usuario: {self.usuario_actual})
+        logger.info(f"Iniciando eliminación de transporte ID: {transporte_id} por usuario: {self.usuario_actual}")
         if not transporte_id or not isinstance(transporte_id, (int, str)):
             error_msg = )
             logger.warning("error_msg")
@@ -565,7 +565,7 @@ model=None,
             mensaje: Mensaje a mostrar
             tipo: Tipo de mensaje ('info', 'success', 'warning', 'error')
         """
-        logger.info("Mensaje mostrado: {mensaje})
+        logger.info(f"Mensaje mostrado: {mensaje}")
         
         if self.view:
             if tipo == )

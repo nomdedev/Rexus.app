@@ -17,7 +17,7 @@ try:
     from rexus.utils.sql_query_manager import SQLQueryManager
     SQL_SYSTEM_AVAILABLE = True
 except ImportError as e:
-    logger.warning("SQL System not available in contabilidad:{e})
+    logger.warning(f"SQL System not available in contabilidad:{e}")
     SQL_SYSTEM_AVAILABLE = False
 
 
@@ -157,7 +157,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar el query SQL")
                 except Exception as e:
-                    logger.error("No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     # Fallback con query validada
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f)
@@ -254,7 +254,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    logger.error("No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f)
                          debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
@@ -371,7 +371,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar script SQL")
                 except Exception as e:
-                    logger.error("No se pudo usar script SQL: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar script SQL: {e}. Usando fallback seguro.")
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f)
                                 fecha_modificacion = GETDATE()

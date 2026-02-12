@@ -1,0 +1,1 @@
+lines.append("{0}{{{1}}} {2}".format(prometheus_name, label_str, value)) 

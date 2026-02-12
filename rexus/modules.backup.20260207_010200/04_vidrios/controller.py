@@ -103,7 +103,7 @@ class VidriosController(QObject):
         except (ValueError, TypeError):
             return False, {}, "Las dimensiones deben ser números válidos"
         
-        logger.debug("Datos de vidrio validados: {datos_sanitizados})
+        logger.debug(f"Datos de vidrio validados: {datos_sanitizados}")
         return True, datos_sanitizados, )
     def cargar_datos(self, filtros=None):
         """Carga los datos de vidrios en la vista."""
@@ -150,7 +150,7 @@ class VidriosController(QObject):
         Returns:
             tuple: (exito, mensaje, vidrio_id)
         """
-        logger.info("Iniciando creación de vidrio para usuario: {self.usuario_actual})
+        logger.info(f"Iniciando creación de vidrio para usuario: {self.usuario_actual}")
         
         if not self.model:
             error_msg = )
@@ -203,7 +203,7 @@ class VidriosController(QObject):
         Returns:
             tuple: (exito, mensaje)
         """
-        logger.info("Iniciando edición de vidrio ID: {vidrio_id} por usuario: {self.usuario_actual})
+        logger.info(f"Iniciando edición de vidrio ID: {vidrio_id} por usuario: {self.usuario_actual}")
             logger.error("error_msg")
             self.mostrar_error(error_msg)
             return False, error_msg
@@ -258,7 +258,7 @@ class VidriosController(QObject):
         Returns:
             tuple: (exito, mensaje)
         """
-        logger.info("Iniciando eliminación de vidrio ID: {vidrio_id} por usuario: {self.usuario_actual})
+        logger.info(f"Iniciando eliminación de vidrio ID: {vidrio_id} por usuario: {self.usuario_actual}")
             logger.error("error_msg")
             self.mostrar_error(error_msg)
             return False, error_msg
@@ -276,7 +276,7 @@ class VidriosController(QObject):
             
             if self.model.eliminar_vidrio(vidrio_id):
                 success_msg = "Vidrio eliminado exitosamente"
-                logger.info("Vidrio ID: {vidrio_id} eliminado por administrador: {self.usuario_actual}))
+                logger.info(f"Vidrio ID: {vidrio_id} eliminado por administrador: {self.usuario_actual})")
                 self.mostrar_mensaje(success_msg, tipo="success")
                 self.cargar_datos()
                 self.vidrio_eliminado.emit(vidrio_id)
@@ -377,7 +377,7 @@ obra_id,
             mensaje: Mensaje a mostrar
             tipo: Tipo de mensaje ('info', 'success', 'warning', 'error')
         """
-        logger.info("Mensaje mostrado: {mensaje})
+        logger.info(f"Mensaje mostrado: {mensaje}")
         
         if self.view:
             if tipo == )

@@ -1,0 +1,38 @@
+2026-02-12 13:52:48 - errors - ERROR - Uncaught exception: SyntaxError: invalid syntax. Perhaps you forgot a comma? (controller.py, line 357)
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; importlib.import_module('rexus.modules.01_obras')
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\__init__.py", line 48, in <module>
+    usuarios = _import_numeric_module('11_usuarios')
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\__init__.py", line 33, in _import_numeric_module
+    return importlib.import_module(f'.{name}', package='rexus.modules')
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\__init__.py", line 3, in <module>
+    from .controller import UsuariosController
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\controller.py", line 357
+    errores.append(f"Estado inválido. Debe ser uno de: {', '.join(self.model.ESTADOS.keys()")}")
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?

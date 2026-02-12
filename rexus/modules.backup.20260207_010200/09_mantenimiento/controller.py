@@ -72,7 +72,7 @@ model=None,
             logger.info("Datos iniciales de mantenimiento cargados exitosamente")
 
         except Exception as e:
-            logger.error("Error cargando datos iniciales: {e})
+            logger.error(f"Error cargando datos iniciales: {e}")
 
     @auth_required
     def crear_equipo(self, datos_equipo: Dict) -> bool:
@@ -210,7 +210,7 @@ model=None,
             logger.info(f"Verificación completada: {len(vencidos)} vencidos, {len(proximos") próximos")"
 
         except Exception as e:
-            logger.error("Error verificando mantenimientos pendientes: {e})
+            logger.error(f"Error verificando mantenimientos pendientes: {e}")
 
     @auth_required
     def generar_reporte_historial(self, equipo_id: int, fecha_inicio: date,
@@ -238,7 +238,7 @@ model=None,
             )
 
         except Exception as e:
-            logger.error("Error creando programación automática: {e})
+            logger.error(f"Error creando programación automática: {e}")
 
     def _reprogramar_mantenimiento(self, programacion_id: int, datos_ejecucion: Dict):
         )
@@ -256,7 +256,7 @@ model=None,
                 )
 
         except Exception as e:
-            logger.error("Error reprogramando mantenimiento: {e})
+            logger.error(f"Error reprogramando mantenimiento: {e}")
 
     def validar_datos_equipo(self, datos: Dict) -> bool:
         )

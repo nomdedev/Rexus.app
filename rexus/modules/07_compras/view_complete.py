@@ -970,7 +970,7 @@ class ComprasViewComplete(BaseModuleView):
             self.tabla_compras.setItem(row, 4, prioridad_item)
 
             self.tabla_compras.setItem(row, 5,
-                                            QTableWidgetItem(f"$ {compra.get('total', 0):.2f}))
+                                            QTableWidgetItem(f"$ {compra.get('total', 0):.2f}"))
             self.tabla_compras.setItem(row, 6,
                                             QTableWidgetItem(str(compra.get('productos', 0))))
             self.tabla_compras.setItem(row, 7,
@@ -1018,7 +1018,7 @@ class ComprasViewComplete(BaseModuleView):
         self.tabla_compras.setItem(row, 2, QTableWidgetItem(datos['proveedor']))
         self.tabla_compras.setItem(row, 3, QTableWidgetItem(datos['estado']))
         self.tabla_compras.setItem(row, 4, QTableWidgetItem(datos['prioridad']))
-        self.tabla_compras.setItem(row, 5, QTableWidgetItem(f"$ {datos['total_final']:.2f}))
+        self.tabla_compras.setItem(row, 5, QTableWidgetItem(f"$ {datos['total_final']:.2f}"))
         self.tabla_compras.setItem(row, 6, QTableWidgetItem(str(len(datos['productos']))))
         self.tabla_compras.setItem(row, 7, QTableWidgetItem(datos['fecha_entrega']))
         self.tabla_compras.setItem(row, 8, QTableWidgetItem(datos['metodo_pago']))
@@ -1035,7 +1035,7 @@ class ComprasViewComplete(BaseModuleView):
         self.tabla_compras.setItem(row, 2, QTableWidgetItem(datos['proveedor']))
         self.tabla_compras.setItem(row, 3, QTableWidgetItem(datos['estado']))
         self.tabla_compras.setItem(row, 4, QTableWidgetItem(datos['prioridad']))
-        self.tabla_compras.setItem(row, 5, QTableWidgetItem(f"$ {datos['total_final']:.2f}))
+        self.tabla_compras.setItem(row, 5, QTableWidgetItem(f"$ {datos['total_final']:.2f}"))
         self.tabla_compras.setItem(row, 6, QTableWidgetItem(str(len(datos['productos']))))
         self.tabla_compras.setItem(row, 7, QTableWidgetItem(datos['fecha_entrega']))
         self.tabla_compras.setItem(row, 8, QTableWidgetItem(datos['metodo_pago']))

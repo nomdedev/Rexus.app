@@ -354,7 +354,7 @@ datos: Dict[str,
 
         # Validar estado
         if datos.get("estado") and datos["estado"] not in self.model.ESTADOS:
-            errores.append(f"Estado inválido. Debe ser uno de: {', '.join(self.model.ESTADOS.keys())}")
+            errores.append(f"Estado invalido. Debe ser uno de: {', '.join(self.model.ESTADOS.keys())}")
 
         # Validar permisos
         if datos.get("permisos"):
@@ -368,7 +368,7 @@ datos: Dict[str,
 
         if errores:
             mensaje_error = "Errores de validación:\n\n" + "\n".join(
-                f"• {error} for error in errores
+                f"• {error}" for error in errores
             )
             self.mostrar_error(mensaje_error)
             return False
@@ -510,13 +510,13 @@ username: str,
                 f"Desbloqueo de usuario: {username}",
             )
 
-            self.mostrar_exito(f"Usuario '{username}' desbloqueado exitosamente)
+            self.mostrar_exito(f"Usuario \'{username}\' desbloqueado exitosamente")
             print(f"[CHECK] [ADMIN] Usuario '{username}' desbloqueado manualmente")")
 
             return True
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error desbloqueando usuario: {e})
+            print(f"[ERROR USUARIOS CONTROLLER] Error desbloqueando usuario: {e}")
             self.mostrar_error(f"Error desbloqueando usuario: {str(e)}")
             return False
 
@@ -558,7 +558,7 @@ username: str,
             return estado
 
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estado de bloqueo: {e})
+            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estado de bloqueo: {e}")
             return {"error": str(e)}
 
     @admin_required
@@ -570,7 +570,7 @@ accion: str,
         """Registra una acción en el log de auditoría."""
         try:
             # Aquí se podría integrar con el módulo de auditoría
-            print(f"[AUDITORIA] {accion} - {modulo} - {detalles})
+            print(f"[AUDITORIA] {accion} - {modulo} - {detalles}")
         except Exception as e:
             print(f"[ERROR USUARIOS CONTROLLER] Error registrando auditoría: {e}")
 
@@ -589,7 +589,7 @@ accion: str,
     def set_usuario_actual(self, usuario: Dict[str, Any]):
         """Establece el usuario actual."""
         self.usuario_actual = usuario
-        print(f"[USUARIOS CONTROLLER] Usuario actual: {usuario.get('nombre_completo', 'Desconocido')})
+        print(f"[USUARIOS CONTROLLER] Usuario actual: {usuario.get(\'nombre_completo\', \'Desconocido\')}")
 
     def mostrar_exito(self, mensaje: str):
         """Muestra un mensaje de éxito con el sistema mejorado."""
@@ -622,9 +622,9 @@ accion: str,
                         )
 
         except Exception as e:
-            logger.error(f"Error cargando página: {e})
+            logger.error(f"Error cargando página: {e}")
             if hasattr(self, 'mostrar_error'):
-                self.mostrar_error("Error", f"Error cargando página: {str(e)})
+                self.mostrar_error("Error", f"Error cargando página: {str(e)}")
 
     def cambiar_registros_por_pagina(self, registros):
         """Cambia la cantidad de registros por página y recarga"""
@@ -668,7 +668,7 @@ accion: str,
             # Desconectar señales si es necesario
             # Cerrar conexiones, etc.
         except Exception as e:
-            print(f"[ERROR USUARIOS CONTROLLER] Error en cleanup: {e})
+            print(f"[ERROR USUARIOS CONTROLLER] Error en cleanup: {e}")
 
     def inicializar_vista(self):
         """Inicializa la vista de usuarios."""

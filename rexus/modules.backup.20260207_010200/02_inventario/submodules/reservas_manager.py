@@ -80,7 +80,7 @@ try:
     from .base_utilities import BaseUtilities, TABLA_RESERVAS
     BASE_AVAILABLE = True
 except ImportError as e:
-    logger.error("Error importando utilidades base: {e})
+    logger.error(f"Error importando utilidades base: {e}")
     BASE_AVAILABLE = False
     BaseUtilities = None
     TABLA_RESERVAS = )
@@ -645,7 +645,7 @@ reserva_id: int,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error("Error procesando reservas vencidas: {e})
+            self.logger.error(f"Error procesando reservas vencidas: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
@@ -783,7 +783,7 @@ datos: Dict[str,
             return stock_total - stock_reservado
 
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error("Error obteniendo stock disponible para producto {producto_id}: {e})
+            self.logger.error(f"Error obteniendo stock disponible para producto {producto_id}: {e}")
     def _obtener_reserva_por_id(self, reserva_id: int) -> Optional[Dict[str, Any]]:
         )
             cursor = self.db_connection.cursor()
@@ -799,7 +799,7 @@ datos: Dict[str,
             return None
 
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error("Error obteniendo reserva por ID: {e})
+            self.logger.error(f"Error obteniendo reserva por ID: {e}")
             return None
 
     def _obtener_columnas_tabla_reservas(self) -> List[str]:
@@ -821,7 +821,7 @@ datos: Dict[str,
             cursor.close()
             return int(resultado[0]) if resultado and resultado[0] else None
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error("Error obteniendo último ID de reserva: {e})
+            self.logger.error(f"Error obteniendo último ID de reserva: {e}")
             return None
 
     def _cambiar_estado_reserva(self,

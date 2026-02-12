@@ -160,7 +160,7 @@ class MemoryQueueBackend(QueueBackend):
         return self._queue.qsize()
 
     def clear(self):
-        with self._lock]:
+        with self._lock:
             self._queue = queue.PriorityQueue()
             self._tasks.clear()
 

@@ -45,7 +45,7 @@ try:
     sys.path.insert(0, str(root_dir))
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    logger.warning("Security utilities not available:{e})
+    logger.warning(f"Security utilities not available:{e}")
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
@@ -696,7 +696,7 @@ class UsuariosModel:
                     )
                 except (ValueError, TypeError, AttributeError) as e:
                     # Si no se puede parsear, asumir que no está bloqueado
-                    logger.warning("Error parseando fecha de bloqueo:{e})
+                    logger.warning(f"Error parseando fecha de bloqueo:{e}")
                     return False, 0
 
             ahora = datetime.now()
@@ -1027,7 +1027,7 @@ username: str,
                             return False, "Formato de email inválido"
                         datos_limpios["email"] = email_limpio
                     except (ValueError, AttributeError, TypeError) as e:
-                        logger.warning("Error validando email:{e})
+                        logger.warning(f"Error validando email:{e}")
                         return False, )
                 if datos_limpios.get("telefono"):
                     telefono_limpio = sanitize_string(
@@ -1646,7 +1646,7 @@ username: str,
                                                    filtros=filtros)
             return total
         except Exception as e:
-            logger.error("Error obteniendo total de registros: {e})
+            logger.error(f"Error obteniendo total de registros: {e}")
             return 0
 
     def _get_base_query(self):

@@ -822,7 +822,7 @@ class PedidosViewComplete(BaseModuleView):
                 self.llenar_tabla(pedidos['data'])
                 self.actualizar_estadisticas()
             else:
-                show_error(self, "Error", f"Error al cargar pedidos: {pedidos['message']})
+                show_error(self, "Error", f"Error al cargar pedidos: {pedidos['message']}")
         else:
             # Datos de demo
             self.cargar_datos_demo()
@@ -963,7 +963,7 @@ class PedidosViewComplete(BaseModuleView):
         self.tabla_pedidos.setItem(row, 3, QTableWidgetItem(datos['fecha']))
         self.tabla_pedidos.setItem(row, 4, QTableWidgetItem(datos['estado']))
         self.tabla_pedidos.setItem(row, 5, QTableWidgetItem(datos['prioridad']))
-        self.tabla_pedidos.setItem(row, 6, QTableWidgetItem(f"$ {datos['total']:.2f}))
+        self.tabla_pedidos.setItem(row, 6, QTableWidgetItem(f"$ {datos['total']:.2f}"))
         self.tabla_pedidos.setItem(row, 7, QTableWidgetItem(str(len(datos['productos']))))
         self.tabla_pedidos.setItem(row, 8, QTableWidgetItem(datos['observaciones']))
 
@@ -979,7 +979,7 @@ class PedidosViewComplete(BaseModuleView):
         self.tabla_pedidos.setItem(row, 3, QTableWidgetItem(datos['fecha']))
         self.tabla_pedidos.setItem(row, 4, QTableWidgetItem(datos['estado']))
         self.tabla_pedidos.setItem(row, 5, QTableWidgetItem(datos['prioridad']))
-        self.tabla_pedidos.setItem(row, 6, QTableWidgetItem(f"$ {datos['total']:.2f}))
+        self.tabla_pedidos.setItem(row, 6, QTableWidgetItem(f"$ {datos['total']:.2f}"))
         self.tabla_pedidos.setItem(row, 7, QTableWidgetItem(str(len(datos['productos']))))
         self.tabla_pedidos.setItem(row, 8, QTableWidgetItem(datos['observaciones']))
 

@@ -1,0 +1,36 @@
+{
+  "total_modules": 18,
+  "successful_imports": 17,
+  "failed_imports": 1,
+  "success_rate": 94.44444444444444,
+  "syntax_errors": 1,
+  "import_errors": 0,
+  "details": {
+    "modules_imported": [
+      "rexus.core.auth_decorators",
+      "rexus.utils.unified_sanitizer",
+      "rexus.utils.sql_script_loader",
+      "rexus.utils.logging_config",
+      "rexus.utils.two_factor_auth",
+      "rexus.utils.dependency_validator",
+      "rexus.utils.task_queue",
+      "rexus.modules.05_logistica.model",
+      "rexus.modules.06_pedidos.model",
+      "rexus.modules.08_administracion.contabilidad.model",
+      "rexus.modules.04_vidrios.controller",
+      "rexus.modules.05_logistica.controller",
+      "rexus.modules.06_pedidos.controller",
+      "rexus.modules.08_administracion.contabilidad.controller",
+      "rexus.main",
+      "business_integration",
+      "core_functionality"
+    ],
+    "modules_failed": [
+      "rexus.modules.04_vidrios.model"
+    ],
+    "syntax_errors": [
+      "Error de sintaxis en rexus.modules.04_vidrios.model: unterminated string literal (detected at line 514) (controller.py, line 514)"
+    ],
+    "import_errors": []
+  }
+}

@@ -149,7 +149,7 @@ class PedidosController(QObject):
                 return
 
             # Implementar actualización de pedidos
-            logger.info("Actualizando pedido ID: {pedido_id})
+            logger.info(f"Actualizando pedido ID: {pedido_id}")
             
             # Agregar información de auditoría
             datos_pedido['usuario_modificacion'] = self.usuario_actual.get('id', 1)
@@ -188,7 +188,7 @@ class PedidosController(QObject):
 
                 if respuesta == QMessageBox.StandardButton.Yes:
                     # Implementar eliminación de pedidos
-                    logger.info("Eliminando pedido ID: {pedido_id})
+                    logger.info(f"Eliminando pedido ID: {pedido_id}")
                     
                     if self.model.eliminar_pedido(pedido_id):
                         success_msg = f)
@@ -389,7 +389,7 @@ class PedidosController(QObject):
             show_error(self.view, "Error - Pedidos", mensaje)
         else:
             # Fallback si no hay vista
-            logger.error("[NO VIEW] Error: {mensaje})
+            logger.error(f"[NO VIEW] Error: {mensaje}")
 
     def mostrar_advertencia(self, mensaje: str):
         )
@@ -413,7 +413,7 @@ class PedidosController(QObject):
             mensaje: Mensaje a mostrar
             tipo: Tipo de mensaje ('info', 'success', 'warning', 'error')
         """
-        logger.info("Mensaje mostrado: {mensaje})
+        logger.info(f"Mensaje mostrado: {mensaje}")
         
         if self.view:
             if tipo == )
