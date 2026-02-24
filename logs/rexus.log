@@ -893,3 +893,140 @@ Traceback (most recent call last):
 SyntaxError: invalid syntax. Perhaps you forgot a comma?
 2026-02-12 14:42:30 - rexus - INFO - Sistema de logging Rexus inicializado
 2026-02-12 14:46:04 - rexus - INFO - Sistema de logging Rexus inicializado
+2026-02-12 15:21:05 - errors - ERROR - Uncaught exception: SyntaxError: unterminated string literal (detected at line 514) (controller.py, line 514)
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; module = importlib.import_module('rexus.modules.01_obras'); print('Modulo 01_obras importado correctamente')
+                               ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\__init__.py", line 48, in <module>
+    usuarios = _import_numeric_module('11_usuarios')
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\__init__.py", line 33, in _import_numeric_module
+    return importlib.import_module(f'.{name}', package='rexus.modules')
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\__init__.py", line 3, in <module>
+    from .controller import UsuariosController
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\controller.py", line 514
+    print(f"[CHECK] [ADMIN] Usuario '{username}' desbloqueado manualmente")")
+                                                                           ^
+SyntaxError: unterminated string literal (detected at line 514)
+2026-02-12 15:22:06 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.utils.message_system'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; module = importlib.import_module('rexus.modules.01_obras'); print('Modulo 01_obras importado correctamente')
+                               ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\__init__.py", line 3, in <module>
+    from .controller import ObrasController
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 11, in <module>
+    from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
+ModuleNotFoundError: No module named 'rexus.utils.message_system'
+2026-02-12 15:23:23 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.core.query_optimizer'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; module = importlib.import_module('rexus.modules.01_obras'); print('Modulo 01_obras importado correctamente')
+                               ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\__init__.py", line 4, in <module>
+    from .model import ObrasModel
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\model.py", line 7, in <module>
+    from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
+ModuleNotFoundError: No module named 'rexus.core.query_optimizer'
+2026-02-12 15:27:35 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.ui.standard_components'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; module = importlib.import_module('rexus.modules.01_obras'); print('Modulo 01_obras importado correctamente')
+                               ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\__init__.py", line 11, in <module>
+    from .view import ObrasModernView as ObrasView
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\view.py", line 22, in <module>
+    from rexus.ui.standard_components import StandardComponents
+ModuleNotFoundError: No module named 'rexus.ui.standard_components'
+2026-02-12 15:28:20 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.ui.components.base_components'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; module = importlib.import_module('rexus.modules.01_obras'); print('Modulo 01_obras importado correctamente')
+                               ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\__init__.py", line 11, in <module>
+    from .view import ObrasModernView as ObrasView
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\view.py", line 23, in <module>
+    from rexus.ui.components.base_components import RexusLabel
+  File "d:\martin\Proyectos\Rexus.app\rexus\ui\components\__init__.py", line 7, in <module>
+    from .base_components import (
+    ...<17 lines>...
+    )
+ModuleNotFoundError: No module named 'rexus.ui.components.base_components'
+2026-02-12 15:29:47 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.utils.xss_protection'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; module = importlib.import_module('rexus.modules.01_obras'); print('Modulo 01_obras importado correctamente')
+                               ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\__init__.py", line 11, in <module>
+    from .view import ObrasModernView as ObrasView
+  File "d:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\view.py", line 26, in <module>
+    from rexus.utils.xss_protection import FormProtector
+ModuleNotFoundError: No module named 'rexus.utils.xss_protection'

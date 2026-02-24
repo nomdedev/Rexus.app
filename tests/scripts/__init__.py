@@ -1,0 +1,1 @@
+# Scripts de pruebas para el proyecto Rexus.app

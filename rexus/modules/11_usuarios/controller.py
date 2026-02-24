@@ -511,7 +511,7 @@ username: str,
             )
 
             self.mostrar_exito(f"Usuario \'{username}\' desbloqueado exitosamente")
-            print(f"[CHECK] [ADMIN] Usuario '{username}' desbloqueado manualmente")")
+            print(f"[CHECK] [ADMIN] Usuario '{username}' desbloqueado manualmente")
 
             return True
 
@@ -589,7 +589,7 @@ accion: str,
     def set_usuario_actual(self, usuario: Dict[str, Any]):
         """Establece el usuario actual."""
         self.usuario_actual = usuario
-        print(f"[USUARIOS CONTROLLER] Usuario actual: {usuario.get(\'nombre_completo\', \'Desconocido\')}")
+        print(f"[USUARIOS CONTROLLER] Usuario actual: {usuario.get('nombre_completo', 'Desconocido')}")
 
     def mostrar_exito(self, mensaje: str):
         """Muestra un mensaje de éxito con el sistema mejorado."""
@@ -642,7 +642,9 @@ accion: str,
             return 0
 
     def mostrar_error(self, mensaje: str):
-        )
+        """Muestra un mensaje de error con el sistema mejorado."""
+        if self.view:
+            from rexus.utils.message_system import show_error
             show_error(self.view, "Error", mensaje)
 
     def mostrar_advertencia(self, mensaje: str):

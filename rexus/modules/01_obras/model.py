@@ -4,7 +4,7 @@ from sqlite3 import IntegrityError
 
 from rexus.utils.sql_script_loader import sql_script_loader
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
+from rexus.utils.query_optimizer_exports import cached_query, track_performance, prevent_n_plus_one, paginated
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.unified_sanitizer import sanitize_string
 

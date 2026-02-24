@@ -1,0 +1,1 @@
+# Archivo init para el directorio tests/reports/performance
