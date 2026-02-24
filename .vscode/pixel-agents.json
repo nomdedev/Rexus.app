@@ -1,0 +1,182 @@
+{
+  "version": "1.0.0",
+  "framework": "rexus-agents",
+  "agents": [
+    {
+      "id": "audit-obras",
+      "name": "ObrasAgent",
+      "description": "Auditoría de módulo de Obras - proyectos, producción y cronogramas",
+      "type": "audit",
+      "module": "obras",
+      "status": "active",
+      "icon": "🏗️",
+      "color": "#e74c3c",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "seguridad", "rendimiento", "código"]
+    },
+    {
+      "id": "audit-inventario",
+      "name": "InventarioAgent",
+      "description": "Auditoría de módulo de Inventario - stock, productos y reservas",
+      "type": "audit",
+      "module": "inventario",
+      "status": "active",
+      "icon": "📦",
+      "color": "#3498db",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "rendimiento", "base de datos"]
+    },
+    {
+      "id": "audit-herrajes",
+      "name": "HerrajesAgent",
+      "description": "Auditoría de módulo de Herrajes - gestión de herrajes",
+      "type": "audit",
+      "module": "herrajes",
+      "status": "active",
+      "icon": "🔧",
+      "color": "#95a5a6",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "código"]
+    },
+    {
+      "id": "audit-vidrios",
+      "name": "VidriosAgent",
+      "description": "Auditoría de módulo de Vidrios - gestión de vidrios",
+      "type": "audit",
+      "module": "vidrios",
+      "status": "active",
+      "icon": "🪟",
+      "color": "#85c1e9",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "código"]
+    },
+    {
+      "id": "audit-logística",
+      "name": "LogísticaAgent",
+      "description": "Auditoría de módulo de Logística - transporte y entregas",
+      "type": "audit",
+      "module": "logística",
+      "status": "active",
+      "icon": "🚚",
+      "color": "#f39c12",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "rendimiento"]
+    },
+    {
+      "id": "audit-pedidos",
+      "name": "PedidosAgent",
+      "description": "Auditoría de módulo de Pedidos - gestión de órdenes",
+      "type": "audit",
+      "module": "pedidos",
+      "status": "active",
+      "icon": "📋",
+      "color": "#9b59b6",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "seguridad"]
+    },
+    {
+      "id": "audit-compras",
+      "name": "ComprasAgent",
+      "description": "Auditoría de módulo de Compras - proveedores y adquisiciones",
+      "type": "audit",
+      "module": "compras",
+      "status": "active",
+      "icon": "🛒",
+      "color": "#e67e22",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "código"]
+    },
+    {
+      "id": "audit-administración",
+      "name": "AdministraciónAgent",
+      "description": "Auditoría de módulo de Administración - gestión administrativa",
+      "type": "audit",
+      "module": "administración",
+      "status": "active",
+      "icon": "📊",
+      "color": "#2c3e50",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "seguridad", "base de datos"]
+    },
+    {
+      "id": "audit-mantenimiento",
+      "name": "MantenimientoAgent",
+      "description": "Auditoría de módulo de Mantenimiento - gestión de mantenimiento",
+      "type": "audit",
+      "module": "mantenimiento",
+      "status": "active",
+      "icon": "🔧",
+      "color": "#16a085",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad"]
+    },
+    {
+      "id": "audit-auditoría",
+      "name": "AuditoríaAgent",
+      "description": "Auditoría de módulo de Auditoría - sistema de auditorías",
+      "type": "audit",
+      "module": "auditoría",
+      "status": "active",
+      "icon": "🔍",
+      "color": "#34495e",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "documentación"]
+    },
+    {
+      "id": "audit-usuarios",
+      "name": "UsuariosAgent",
+      "description": "Auditoría de módulo de Usuarios - autenticación y permisos",
+      "type": "audit",
+      "module": "usuarios",
+      "status": "active",
+      "icon": "👥",
+      "color": "#8e44ad",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "seguridad"]
+    },
+    {
+      "id": "audit-configuración",
+      "name": "ConfiguraciónAgent",
+      "description": "Auditoría de módulo de Configuración - settings del sistema",
+      "type": "audit",
+      "module": "configuración",
+      "status": "active",
+      "icon": "⚙️",
+      "color": "#7f8c8d",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad"]
+    },
+    {
+      "id": "audit-notificaciones",
+      "name": "NotificacionesAgent",
+      "description": "Auditoría de módulo de Notificaciones - sistema de alertas",
+      "type": "audit",
+      "module": "notificaciones",
+      "status": "active",
+      "icon": "🔔",
+      "color": "#d35400",
+      "capabilities": ["analyze_module", "generate_report", "propose_improvements", "execute_changes"],
+      "categories": ["funcionalidad", "rendimiento"]
+    }
+  ],
+  "orchestrator": {
+    "name": "RexusMainOrchestrator",
+    "log_level": "INFO",
+    "enable_tracing": true,
+    "enable_persistence": true
+  },
+  "audit_cycle": {
+    "enabled": true,
+    "schedule": "weekly",
+    "day": "monday",
+    "time": "02:00",
+    "generate_council_report": true
+  },
+  "metadata": {
+    "total_agents": 13,
+    "categories": ["audit"],
+    "created_at": "2025-02-24",
+    "framework_version": "2.0.0",
+    "project": "Rexus.app"
+  }
+}

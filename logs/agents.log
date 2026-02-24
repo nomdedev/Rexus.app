@@ -1,0 +1,28 @@
+2026-02-24 13:48:02,738 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-obras
+2026-02-24 13:48:02,738 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-inventario
+2026-02-24 13:48:02,739 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-herrajes
+2026-02-24 13:48:02,739 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-vidrios
+2026-02-24 13:48:02,739 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-logística
+2026-02-24 13:48:02,739 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-pedidos
+2026-02-24 13:48:02,740 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-compras
+2026-02-24 13:48:02,740 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-administración
+2026-02-24 13:48:02,740 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-mantenimiento
+2026-02-24 13:48:02,741 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-auditoría
+2026-02-24 13:48:02,741 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-usuarios
+2026-02-24 13:48:02,741 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-configuración
+2026-02-24 13:48:02,741 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-notificaciones
+2026-02-24 13:48:45,242 - INFO - __main__ - [OK] Orquestador creado: RexusMainOrchestrator
+2026-02-24 13:48:45,242 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-obras
+2026-02-24 13:48:45,242 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-inventario
+2026-02-24 13:48:45,243 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-herrajes
+2026-02-24 13:48:45,243 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-vidrios
+2026-02-24 13:48:45,243 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-logÃ­stica
+2026-02-24 13:48:45,243 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-pedidos
+2026-02-24 13:48:45,243 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-compras
+2026-02-24 13:48:45,244 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-administraciÃ³n
+2026-02-24 13:48:45,244 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-mantenimiento
+2026-02-24 13:48:45,244 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-auditorÃ­a
+2026-02-24 13:48:45,244 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-usuarios
+2026-02-24 13:48:45,244 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-configuraciÃ³n
+2026-02-24 13:48:45,245 - INFO - rexus.orchestrator.RexusMainOrchestrator - Agente registrado: audit-notificaciones
+2026-02-24 13:48:45,245 - INFO - __main__ - Sistema de agentes inicializado

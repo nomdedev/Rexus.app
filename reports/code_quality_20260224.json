@@ -1,0 +1,753 @@
+{
+  "timestamp": "2026-02-24T14:32:02.481571",
+  "total_files": 259,
+  "total_lines": 99405,
+  "files_analyzed": 259,
+  "metrics": {
+    "total_functions": 3335,
+    "total_classes": 463,
+    "total_docstrings": 225,
+    "docstring_coverage": 5.92,
+    "average_complexity": 3.04,
+    "total_lines_of_code": 99405,
+    "total_comments": 5175,
+    "comment_ratio": 5.21,
+    "average_function_length": 0.0,
+    "files_with_issues": 204
+  },
+  "top_issues": {
+    "top_10_problematic_files": [
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\02_inventario\\submodules\\reportes_manager.py",
+        "score": 20,
+        "issues_count": 6,
+        "issues_by_type": {
+          "high_complexity": 5,
+          "missing_module_docstring": 1
+        },
+        "complexity": 127,
+        "lines": 1106
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\validator_extended.py",
+        "score": 15,
+        "issues_count": 5,
+        "issues_by_type": {
+          "high_complexity": 4,
+          "missing_module_docstring": 1
+        },
+        "complexity": 92,
+        "lines": 461
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\model.py",
+        "score": 14,
+        "issues_count": 6,
+        "issues_by_type": {
+          "high_complexity": 5,
+          "missing_module_docstring": 1
+        },
+        "complexity": 129,
+        "lines": 802
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\monitoring\\prometheus_exporter.py",
+        "score": 10,
+        "issues_count": 1,
+        "issues_by_type": {
+          "syntax_error": 1
+        },
+        "complexity": 0,
+        "lines": 235
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\query_optimizer.py",
+        "score": 10,
+        "issues_count": 1,
+        "issues_by_type": {
+          "syntax_error": 1
+        },
+        "complexity": 0,
+        "lines": 608
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\style_unifier.py",
+        "score": 10,
+        "issues_count": 1,
+        "issues_by_type": {
+          "syntax_error": 1
+        },
+        "complexity": 0,
+        "lines": 248
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\03_herrajes\\view.py",
+        "score": 10,
+        "issues_count": 1,
+        "issues_by_type": {
+          "syntax_error": 1
+        },
+        "complexity": 0,
+        "lines": 1195
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\06_pedidos\\improved_dialogs.py",
+        "score": 10,
+        "issues_count": 1,
+        "issues_by_type": {
+          "syntax_error": 1
+        },
+        "complexity": 0,
+        "lines": 628
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\11_usuarios\\improved_dialogs.py",
+        "score": 10,
+        "issues_count": 1,
+        "issues_by_type": {
+          "syntax_error": 1
+        },
+        "complexity": 0,
+        "lines": 477
+      },
+      {
+        "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\11_usuarios\\model.py",
+        "score": 10,
+        "issues_count": 1,
+        "issues_by_type": {
+          "syntax_error": 1
+        },
+        "complexity": 0,
+        "lines": 1688
+      }
+    ],
+    "total_files_with_issues": 204
+  },
+  "duplicates": [
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\demo_agents.py",
+      "start_line": 18,
+      "block_preview": "logging.basicConfig(\n    level=logging.INFO,\n    format='%(asctime)s - %(name)s - %(levelname)s - %("
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\demo_agents.py",
+      "start_line": 19,
+      "block_preview": "level=logging.INFO,\n    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'\n)\n\nlogger"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\demo_agents.py",
+      "start_line": 20,
+      "block_preview": "format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'\n)\n\nlogger = logging.getLogger(__na"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\demo_agents.py",
+      "start_line": 21,
+      "block_preview": ")\n\nlogger = logging.getLogger(__name__)"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\pixel_bridge.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\pixel_bridge.py",
+      "start_line": 142,
+      "block_preview": "}\n                        ]\n                    },\n                },"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\api\\middleware.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\api\\middleware.py",
+      "start_line": 358,
+      "block_preview": "return func(*args, **kwargs)\n\n        return wrapper\n    return decorator"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\api\\middleware.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\api\\middleware.py",
+      "start_line": 359,
+      "block_preview": "return func(*args, **kwargs)\n\n        return wrapper\n    return decorator"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\api\\middleware.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\api\\middleware.py",
+      "start_line": 360,
+      "block_preview": "return wrapper\n    return decorator"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "start_line": 306,
+      "block_preview": "}\n\n            if self.channel:\n                payload[\"channel\"] = self.channel"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "start_line": 307,
+      "block_preview": "if self.channel:\n                payload[\"channel\"] = self.channel\n\n            respons"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "start_line": 308,
+      "block_preview": "if self.channel:\n                payload[\"channel\"] = self.channel\n\n            response"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "start_line": 358,
+      "block_preview": "response = requests.post(\n                self.url,\n                json=payload,"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "start_line": 359,
+      "block_preview": "response = requests.post(\n                self.url,\n                json=payload,"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "start_line": 360,
+      "block_preview": "self.url,\n                json=payload,\n                headers=self.headers,"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "start_line": 361,
+      "block_preview": "json=payload,\n                headers=self.headers,\n                timeout=10"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "start_line": 91,
+      "block_preview": "Args:\n        f: Función a decorar\n        \n    Returns:"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "start_line": 92,
+      "block_preview": "Args:\n        f: Función a decorar\n        \n    Returns:\n        Callable: Función decorada"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "start_line": 93,
+      "block_preview": "f: Función a decorar\n        \n    Returns:\n        Callable: Función decorada\n    \"\"\""
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "start_line": 121,
+      "block_preview": "Returns:\n        Callable: Función decorada\n    \"\"\"\n    def decorator(f: Callable):"
+    },
+    {
+      "original": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "duplicate": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "start_line": 141,
+      "block_preview": "Returns:\n        Callable: Función decorada\n    \"\"\"\n    def decorator(f: Callable):"
+    }
+  ],
+  "documentation_coverage": {
+    "function_coverage": 85.55,
+    "class_coverage": 87.26,
+    "total_functions": 3335,
+    "documented_functions": 2853,
+    "total_classes": 463,
+    "documented_classes": 404,
+    "files_missing_docstrings": [
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\bootstrap.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\__init__.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\agents_registry.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\demo_agents.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\pixel_bridge.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\state_manager.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\agents\\__init__.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\api\\middleware.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\api\\__init__.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\alerts_manager.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_decorators.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\auth_manager.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\backup_manager.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\backup_scheduler.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\business_rules.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\database.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\database_manager.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\database_pool.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\event_bus.py",
+      "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\inventory_integration.py"
+    ]
+  },
+  "complexity": {
+    "very_high_complexity": [
+      {
+        "function": "_evaluate_condition",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\business_rules.py",
+        "complexity": 17
+      },
+      {
+        "function": "get_connection",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\database_pool.py",
+        "complexity": 16
+      },
+      {
+        "function": "main",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\main\\app.py",
+        "complexity": 30
+      },
+      {
+        "function": "validate",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\security\\password_policy.py",
+        "complexity": 28
+      },
+      {
+        "function": "add_form_group",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\dialog_utils.py",
+        "complexity": 18
+      },
+      {
+        "function": "format_relative_date",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\format_utils.py",
+        "complexity": 17
+      },
+      {
+        "function": "_validate_by_type",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\input_validator.py",
+        "complexity": 20
+      },
+      {
+        "function": "validar_datos_obra",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\controller.py",
+        "complexity": 16
+      },
+      {
+        "function": "crear_obra",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\model.py",
+        "complexity": 20
+      },
+      {
+        "function": "_validar_formatos",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\validator_extended.py",
+        "complexity": 23
+      }
+    ],
+    "high_complexity": [
+      {
+        "function": "_get_latest_backup",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\backup_manager.py",
+        "complexity": 12
+      },
+      {
+        "function": "main",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\backup_scheduler.py",
+        "complexity": 12
+      },
+      {
+        "function": "process_pedido",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\inventory_integration.py",
+        "complexity": 11
+      },
+      {
+        "function": "handle_login",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\login_dialog.py",
+        "complexity": 12
+      },
+      {
+        "function": "_analyze_error",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\module_manager.py",
+        "complexity": 11
+      },
+      {
+        "function": "_policy_matches",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\rbac_database.py",
+        "complexity": 11
+      },
+      {
+        "function": "has_permission",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\rbac_system.py",
+        "complexity": 11
+      },
+      {
+        "function": "_get_permission_module",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\rbac_system.py",
+        "complexity": 11
+      },
+      {
+        "function": "on_login_success",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\main\\app.py",
+        "complexity": 13
+      },
+      {
+        "function": "validate_product_data",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\models\\productos_model.py",
+        "complexity": 14
+      },
+      {
+        "function": "_detect_linux_theme",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\ui\\style_manager.py",
+        "complexity": 11
+      },
+      {
+        "function": "run_diagnostics",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\diagnostic_widget.py",
+        "complexity": 12
+      },
+      {
+        "function": "set_form_data",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\dialog_utils.py",
+        "complexity": 11
+      },
+      {
+        "function": "main",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\password_migration.py",
+        "complexity": 11
+      },
+      {
+        "function": "hash_password_secure",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\password_security.py",
+        "complexity": 13
+      },
+      {
+        "function": "verify_password_secure",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\password_security.py",
+        "complexity": 14
+      },
+      {
+        "function": "setup_smart_tooltips",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\smart_tooltips.py",
+        "complexity": 12
+      },
+      {
+        "function": "sanitize_dict",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\unified_sanitizer.py",
+        "complexity": 11
+      },
+      {
+        "function": "filtrar_obras",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\cronograma_view.py",
+        "complexity": 14
+      },
+      {
+        "function": "validar_obra_dict",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\data_mapper.py",
+        "complexity": 11
+      }
+    ],
+    "total_high_complexity": 87
+  },
+  "naming_issues": {
+    "naming_violations": [
+      {
+        "type": "function_naming",
+        "name": "keyPressEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\core\\login_dialog.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "showEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\modern_form_components.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "resizeEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\utils\\modern_form_components.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "conectar_señales",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\controller.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "paintEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\cronograma_view.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "mousePressEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\cronograma_view.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "mouseMoveEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\cronograma_view.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "conectar_señales",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\widgets_advanced.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "conectar_señales",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\widgets_advanced.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "initUI",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\02_inventario\\obras_asociadas_dialog.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "conectar_señales",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\06_pedidos\\controller.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "conectar_señales",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\07_compras\\controller.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "conectar_señales",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\09_mantenimiento\\controller.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "cargar_registros_auditoría",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\10_auditoria\\view.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "conectar_señales",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\12_configuracion\\controller.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "mousePressEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\components\\enhanced_label_widget.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "enterEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\components\\enhanced_label_widget.py",
+        "suggestion": "function_names should use snake_case"
+      },
+      {
+        "type": "function_naming",
+        "name": "leaveEvent",
+        "file": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras\\components\\enhanced_label_widget.py",
+        "suggestion": "function_names should use snake_case"
+      }
+    ],
+    "total_violations": 18
+  },
+  "architecture": {
+    "module_structure": {
+      ".": 330,
+      "agents": 949,
+      "api": 425,
+      "core": 9762,
+      "main": 2168,
+      "models": 616,
+      "modules": 51,
+      "monitoring": 1355,
+      "repositories": 284,
+      "security": 731,
+      "services": 814,
+      "ui": 1515,
+      "utils": 17675,
+      "ui\\components": 402,
+      "ui\\dashboard": 1,
+      "services\\inventario": 421,
+      "repositories\\inventario": 266,
+      "modules\\01_obras": 5132,
+      "modules\\02_inventario": 2881,
+      "modules\\03_herrajes": 3248,
+      "modules\\04_vidrios": 1949,
+      "modules\\05_logistica": 3071,
+      "modules\\06_pedidos": 3817,
+      "modules\\07_compras": 4308,
+      "modules\\08_administracion": 3229,
+      "modules\\09_mantenimiento": 2933,
+      "modules\\10_auditoria": 1543,
+      "modules\\11_usuarios": 4579,
+      "modules\\12_configuracion": 2413,
+      "modules\\13_notificaciones": 848,
+      "modules\\11_usuarios\\submodules": 3578,
+      "modules\\08_administracion\\contabilidad": 941,
+      "modules\\08_administracion\\recursos_humanos": 1533,
+      "modules\\07_compras\\dialogs": 781,
+      "modules\\07_compras\\pedidos": 568,
+      "modules\\04_vidrios\\submodules": 1284,
+      "modules\\02_inventario\\dialogs": 1314,
+      "modules\\02_inventario\\submodules": 4629,
+      "modules\\01_obras\\components": 1232,
+      "modules\\01_obras\\dialogs": 476,
+      "modules\\01_obras\\produccion": 62,
+      "modules\\01_obras\\submodules": 1372,
+      "agents\\core": 309,
+      "agents\\integration_agents": 1,
+      "agents\\module_auditors": 312,
+      "agents\\module_specialists": 1138,
+      "agents\\monitoring_agents": 315,
+      "agents\\optimization_agents": 263,
+      "agents\\orchestrators": 230,
+      "agents\\security_agents": 256,
+      "agents\\skill_agents": 292,
+      "agents\\task_agents": 506,
+      "agents\\testing_agents": 297
+    },
+    "circular_imports_risk": [],
+    "large_modules": [
+      {
+        "module": "utils",
+        "lines": 17675
+      },
+      {
+        "module": "core",
+        "lines": 9762
+      },
+      {
+        "module": "modules\\01_obras",
+        "lines": 5132
+      },
+      {
+        "module": "modules\\02_inventario\\submodules",
+        "lines": 4629
+      },
+      {
+        "module": "modules\\11_usuarios",
+        "lines": 4579
+      },
+      {
+        "module": "modules\\07_compras",
+        "lines": 4308
+      },
+      {
+        "module": "modules\\06_pedidos",
+        "lines": 3817
+      },
+      {
+        "module": "modules\\11_usuarios\\submodules",
+        "lines": 3578
+      },
+      {
+        "module": "modules\\03_herrajes",
+        "lines": 3248
+      },
+      {
+        "module": "modules\\08_administracion",
+        "lines": 3229
+      },
+      {
+        "module": "modules\\05_logistica",
+        "lines": 3071
+      },
+      {
+        "module": "modules\\09_mantenimiento",
+        "lines": 2933
+      },
+      {
+        "module": "modules\\02_inventario",
+        "lines": 2881
+      },
+      {
+        "module": "modules\\12_configuracion",
+        "lines": 2413
+      },
+      {
+        "module": "main",
+        "lines": 2168
+      },
+      {
+        "module": "modules\\04_vidrios",
+        "lines": 1949
+      },
+      {
+        "module": "modules\\10_auditoria",
+        "lines": 1543
+      },
+      {
+        "module": "modules\\08_administracion\\recursos_humanos",
+        "lines": 1533
+      },
+      {
+        "module": "ui",
+        "lines": 1515
+      },
+      {
+        "module": "modules\\01_obras\\submodules",
+        "lines": 1372
+      },
+      {
+        "module": "monitoring",
+        "lines": 1355
+      },
+      {
+        "module": "modules\\02_inventario\\dialogs",
+        "lines": 1314
+      },
+      {
+        "module": "modules\\04_vidrios\\submodules",
+        "lines": 1284
+      },
+      {
+        "module": "modules\\01_obras\\components",
+        "lines": 1232
+      },
+      {
+        "module": "agents\\module_specialists",
+        "lines": 1138
+      }
+    ],
+    "design_patterns": []
+  },
+  "recommendations": [
+    {
+      "priority": "high",
+      "category": "documentation",
+      "issue": "Baja cobertura de documentación (5.92%)",
+      "recommendation": "Añadir docstrings a todas las funciones y clases públicas siguiendo el estilo de Google o NumPy",
+      "impact": "Mejora la mantenibilidad y facilita la colaboración"
+    },
+    {
+      "priority": "high",
+      "category": "testing",
+      "issue": "Cobertura de pruebas no evaluada",
+      "recommendation": "Implementar pytest con mínimo 70% de cobertura",
+      "impact": "Previene regresiones y mejora la calidad"
+    },
+    {
+      "priority": "high",
+      "category": "error_handling",
+      "issue": "Manejo de errores inconsistente",
+      "recommendation": "Implementar manejo de errores centralizado y logging estructurado",
+      "impact": "Mejora la robustez y facilita el debugging"
+    },
+    {
+      "priority": "medium",
+      "category": "comments",
+      "issue": "Baja proporción de comentarios (5.21%)",
+      "recommendation": "Añadir comentarios explicativos en lógica compleja y algoritmos",
+      "impact": "Facilita la comprensión del código"
+    },
+    {
+      "priority": "medium",
+      "category": "type_safety",
+      "issue": "Falta de type hints",
+      "recommendation": "Añadir type hints a todas las funciones según PEP 484",
+      "impact": "Mejora la documentación y permite verificación estática con mypy"
+    },
+    {
+      "priority": "medium",
+      "category": "organization",
+      "issue": "Posible duplicación de código",
+      "recommendation": "Extraer lógica común a utilidades reutilizables",
+      "impact": "Reduce la duplicación y mejora la consistencia"
+    }
+  ]
+}

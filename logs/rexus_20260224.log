@@ -1,0 +1,126 @@
+2026-02-24 14:08:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:08:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:14:15 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:14:37 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:14:37 | WARNING  | rexus.agents.AuditAgent-inventario | No se pudo registrar tarea en Pixel Agents: 'PixelAgentsBridge' object has no attribute 'start_task'
+2026-02-24 14:14:37 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de inventario
+2026-02-24 14:14:37 | INFO     | rexus.agents.AuditAgent-inventario | Auditar inventario: success
+2026-02-24 14:18:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-obras
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-logistica
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-administracion
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-auditoria
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-configuracion
+2026-02-24 14:18:36 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 14:18:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-obras
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-logística
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-administración
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-auditoría
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-configuración
+2026-02-24 14:18:49 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 14:22:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-obras
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-logística
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-administración
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-auditoría
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-configuración
+2026-02-24 14:22:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 14:28:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-obras
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-logística
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-administración
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-auditoría
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-configuración
+2026-02-24 14:28:24 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 14:29:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:32:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-obras
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-logística
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-administración
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-auditoría
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-configuración
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 14:32:50 | INFO     | rexus.orchestrator.MasterOrchestrator | Analizando estructura del proyecto...
+2026-02-24 14:33:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-obras
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-logística
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-administración
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-auditoría
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-configuración
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Analizando estructura del proyecto...
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Auditoría de módulos...
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-obras | Iniciando auditoría de obras
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-obras | Auditar obras: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de inventario
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-inventario | Auditar inventario: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-herrajes | Iniciando auditoría de herrajes
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-herrajes | Auditar herrajes: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-vidrios | Iniciando auditoría de vidrios
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-vidrios | Auditar vidrios: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-logística | Iniciando auditoría de logística
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-logística | Auditar logística: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-pedidos | Iniciando auditoría de pedidos
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-pedidos | Auditar pedidos: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de compras
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-compras | Auditar compras: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-administración | Iniciando auditoría de administración
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-administración | Auditar administración: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-mantenimiento | Iniciando auditoría de mantenimiento
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-mantenimiento | Auditar mantenimiento: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-auditoría | Iniciando auditoría de auditoría
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-auditoría | Auditar auditoría: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de usuarios
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar usuarios: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-configuración | Iniciando auditoría de configuración
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-configuración | Auditar configuración: success
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-notificaciones | Iniciando auditoría de notificaciones
+2026-02-24 14:33:01 | INFO     | rexus.agents.AuditAgent-notificaciones | Auditar notificaciones: success
+2026-02-24 14:33:01 | INFO     | rexus.orchestrator.MasterOrchestrator | Analizando calidad de código global...
+2026-02-24 14:33:02 | INFO     | rexus.orchestrator.MasterOrchestrator | Analizando seguridad...
+2026-02-24 14:33:02 | INFO     | rexus.orchestrator.MasterOrchestrator | Analizando rendimiento...
+2026-02-24 14:33:03 | INFO     | rexus.orchestrator.MasterOrchestrator | Generando reporte consolidado...
+2026-02-24 14:33:03 | INFO     | rexus.orchestrator.MasterOrchestrator | Reporte guardado en: D:\martin\Proyectos\Rexus.app\reports\audits\audit_20260224_143303.json

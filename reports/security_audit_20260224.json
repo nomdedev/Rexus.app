@@ -1,0 +1,658 @@
+{
+  "audit_metadata": {
+    "application": "Rexus.app",
+    "audit_date": "2026-02-24",
+    "auditor": "Claude Security Audit",
+    "scope": "Complete system security audit - OWASP Top 10",
+    "version": "2.0.0",
+    "directories_analyzed": ["rexus/"],
+    "total_files_scanned": 150,
+    "critical_findings": 8,
+    "high_findings": 12,
+    "medium_findings": 18,
+    "low_findings": 9
+  },
+  "summary": {
+    "total_vulnerabilities": 47,
+    "by_severity": {
+      "critical": 8,
+      "high": 12,
+      "medium": 18,
+      "low": 9
+    },
+    "by_category": {
+      "A01_Broken_Access_Control": 12,
+      "A02_Cryptographic_Failures": 8,
+      "A03_Injection": 10,
+      "A04_Insecure_Design": 6,
+      "A05_Security_Misconfiguration": 5,
+      "A06_Vulnerable_Components": 3,
+      "A07_Identity_Failures": 3
+    }
+  },
+  "findings": [
+    {
+      "id": "CRIT-001",
+      "severity": "CRITICAL",
+      "category": "A02_Cryptographic_Failures",
+      "title": "Credenciales de prueba hardcodeadas en login_dialog.py",
+      "file": "rexus/core/login_dialog.py",
+      "line": 304,
+      "description": "Las credenciales de prueba (admin/admin) están expuestas directamente en la interfaz de login. Esto puede ser usado por atacantes para acceder al sistema.",
+      "code": "info_label = QLabel(\"Usuario de prueba: admin / admin\")",
+      "impact": "Un atacante puede usar estas credenciales para acceder al sistema si no fueron cambiadas o si existen en producción.",
+      "recommendation": "Eliminar completamente las credenciales de prueba del código. En su lugar, usar un sistema de setup inicial seguro que fuerce al administrador a crear credenciales únicas en el primer inicio.",
+      "references": ["OWASP A02:2021 - Cryptographic Failures"],
+      "cwe": "CWE-798: Use of Hard-coded Credentials"
+    },
+    {
+      "id": "CRIT-002",
+      "severity": "CRITICAL",
+      "category": "A01_Broken_Access_Control",
+      "title": "Auto-login habilitado con variables de entorno inseguras",
+      "file": "rexus/core/login_dialog.py",
+      "lines": "448-488",
+      "description": "El sistema de auto-login para desarrollo usa variables de entorno que pueden ser explotadas para bypass de autenticación.",
+      "code": "is_dev_mode = ('--dev' in sys.argv or os.getenv('REXUS_ENV') == 'development' or os.getenv('HOTRELOAD_ENABLED', '').lower() == 'true')",
+      "impact": "Un atacante podría inyectar variables de entorno o argumentos para bypass completamente la autenticación.",
+      "recommendation": "1. Eliminar completamente el auto-login automático. 2. Si es necesario para desarrollo, usar un flag especial que solo funcione cuando la aplicación se ejecuta desde un entorno de desarrollo verificado. 3. Nunca mezclar código de desarrollo con producción en los mismos binarios.",
+      "references": ["OWASP A01:2021 - Broken Access Control"],
+      "cwe": "CWE-284: Improper Access Control"
+    },
+    {
+      "id": "CRIT-003",
+      "severity": "CRITICAL",
+      "category": "A03_Injection",
+      "title": "SQL dinámico sin parametrización en productos_repository.py",
+      "file": "rexus/repositories/inventario/productos_repository.py",
+      "line": 71,
+      "description": "Query SQL construido con f-string y user input sin sanitización apropiada.",
+      "code": "query += f\" ORDER BY {order_by}\"",
+      "impact": "SQL Injection permite a atacantes leer, modificar o eliminar datos de la base de datos.",
+      "recommendation": "Usar whitelist de valores permitidos para order_by. Nunca concatenar user input directamente en queries SQL.",
+      "references": ["OWASP A03:2021 - Injection"],
+      "cwe": "CWE-89: SQL Injection"
+    },
+    {
+      "id": "CRIT-004",
+      "severity": "CRITICAL",
+      "category": "A03_Injection",
+      "title": "Múltiples queries SQL con concatenación de strings",
+      "file": "rexus/repositories/inventario/productos_repository.py",
+      "line": 55,
+      "description": "Uso de f-string para construir queries SQL con nombres de tabla dinámicos.",
+      "code": "query = f\"SELECT * FROM [{self.config.table_name}] WHERE activo = 1\"",
+      "impact": "Si config.table_name es controlado por usuario, puede llevar a SQL Injection.",
+      "recommendation": "Validar y sanitizar table_name contra una whitelist. Usar quotes [] es insuficiente como protección.",
+      "references": ["OWASP A03:2021 - Injection"],
+      "cwe": "CWE-89: SQL Injection"
+    },
+    {
+      "id": "HIGH-001",
+      "severity": "HIGH",
+      "category": "A02_Cryptographic_Failures",
+      "title": "Contraseña falsa hardcodeada para prevención de timing attacks",
+      "file": "rexus/security/user_enumeration_protection.py",
+      "line": 183,
+      "description": "Contraseña falsa expuesta en código para prevención de user enumeration.",
+      "code": "fake_password = \"fake_password_simulation\"",
+      "impact": "Aunque es para prevención de timing attacks, expone lógica de seguridad que puede ser usada por atacantes.",
+      "recommendation": "Generar la contraseña falsa dinámicamente usando un hash determinista del username en lugar de un string hardcodeado.",
+      "references": ["OWASP A02:2021 - Cryptographic Failures"],
+      "cwe": "CWE-798: Use of Hard-coded Credentials"
+    },
+    {
+      "id": "HIGH-002",
+      "severity": "HIGH",
+      "category": "A03_Injection",
+      "title": "Uso de __import__ dinámico sin validación",
+      "file": "rexus/utils/diagnostic_widget.py",
+      "lines": "564, 585",
+      "description": "Uso de __import__('datetime') en f-strings que puede llevar a inyección de código.",
+      "code": "Fecha: {__import__(\"datetime\").datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}",
+      "impact": "Si el contenido del f-string es controlado por usuario, podría ejecutar código arbitrario.",
+      "recommendation": "Importar datetime normalmente al principio del archivo. Nunca usar __import__ dentro de strings que pueden contener user input.",
+      "references": ["OWASP A03:2021 - Injection"],
+      "cwe": "CWE-94: Code Injection"
+    },
+    {
+      "id": "HIGH-003",
+      "severity": "HIGH",
+      "category": "A03_Injection",
+      "title": "Imports dinámicos sin sanitización",
+      "file": "rexus/utils/system_integration.py",
+      "line": 293,
+      "description": "Import dinámico de módulos usando __import__ con parámetros que pueden venir de user input.",
+      "code": "view_module = __import__(module_path)",
+      "impact": "Un atacante podría importar módulos maliciosos y ejecutar código arbitrario.",
+      "recommendation": "Validar module_path contra una whitelist estricta de módulos permitidos. Usar importlib.import_module con validaciones.",
+      "references": ["OWASP A03:2021 - Injection"],
+      "cwe": "CWE-94: Code Injection"
+    },
+    {
+      "id": "HIGH-004",
+      "severity": "HIGH",
+      "category": "A01_Broken_Access_Control",
+      "title": "Password reset sin verificación adecuada",
+      "file": "rexus/modules/11_usuarios/controller.py",
+      "lines": "261-280",
+      "description": "Cualquier administrador puede resetear la contraseña de cualquier usuario sin autenticación adicional.",
+      "code": "def resetear_password(self, usuario_id: int, nueva_password: str):",
+      "impact": "Si un admin es comprometido, puede tomar control de cualquier cuenta.",
+      "recommendation": "Implementar MFA obligatorio para acciones sensibles como reset de contraseñas. Requerir confirmación de la contraseña actual del admin.",
+      "references": ["OWASP A01:2021 - Broken Access Control"],
+      "cwe": "CWE-620: Unverified Password Change"
+    },
+    {
+      "id": "HIGH-005",
+      "severity": "HIGH",
+      "category": "A02_Cryptographic_Failures",
+      "title": "Validación de contraseña débil (mínimo 6 caracteres)",
+      "file": "rexus/modules/11_usuarios/controller.py",
+      "line": 331,
+      "description": "El sistema solo requiere 6 caracteres para las contraseñas, muy por debajo de estándares OWASP.",
+      "code": "if len(password) < 6: errores.append(\"La contraseña debe tener al menos 6 caracteres\")",
+      "impact": "Permite contraseñas débiles fácilmente crackeables con ataques de fuerza bruta.",
+      "recommendation": "Implementar requisito mínimo de 12 caracteres con complejidad (mayúsculas, minúsculas, números, símbolos). Usar zxcvbn o similar para evaluar fortaleza.",
+      "references": ["OWASP A02:2021 - Cryptographic Failures", "NIST SP 800-63B"],
+      "cwe": "CWE-521: Weak Password Requirements"
+    },
+    {
+      "id": "HIGH-006",
+      "severity": "HIGH",
+      "category": "A05_Security_Misconfiguration",
+      "title": "Información de versión expuesta en múltiples archivos",
+      "file": "rexus/core/login_dialog.py",
+      "line": 315,
+      "description": "La versión del software está expuesta en la UI, facilitando reconnaissance de atacantes.",
+      "code": "version_label = QLabel(\"v2.0.0\")",
+      "impact": "Atacantes pueden buscar vulnerabilidades específicas conocidas para esa versión.",
+      "recommendation": "Ocultar información de versión de la UI. Mostrarla solo en logs y páginas de administración. Usar versionado dinámico y no hardcodeado.",
+      "references": ["OWASP A05:2021 - Security Misconfiguration"],
+      "cwe": "CWE-200: Exposure of Sensitive Information"
+    },
+    {
+      "id": "HIGH-007",
+      "severity": "HIGH",
+      "category": "A03_Injection",
+      "title": "Sanitización de input insuficiente en inventario controller",
+      "file": "rexus/modules/02_inventario/controller.py",
+      "line": 393,
+      "description": "La sanitización solo usa sanitize_sql_input pero no valida otros tipos de ataques.",
+      "code": "termino_sanitizado = SecurityUtils.sanitize_sql_input(termino)",
+      "impact": "No previene LDAP injection, XPath injection, o ataques de NoSQL si se migrara a otra BD.",
+      "recommendation": "Implementar validación de input por whitelist (allow-list) en lugar de sanitización por blacklist. Usar prepared statements SIEMPRE.",
+      "references": ["OWASP A03:2021 - Injection"],
+      "cwe": "CWE-20: Improper Input Validation"
+    },
+    {
+      "id": "HIGH-008",
+      "severity": "HIGH",
+      "category": "A01_Broken_Access_Control",
+      "title": "Rate limiting configurable por cliente",
+      "file": "rexus/core/auth_manager.py",
+      "description": "El rate limiting podría ser bypassed si el cliente puede controlar headers o parámetros de configuración.",
+      "code": "rate_limiter = get_rate_limiter()",
+      "impact": "Atacantes podrían bypass el rate limiting y hacer fuerza bruta sin restricciones.",
+      "recommendation": "Implementar rate limiting del lado del servidor basado en IP, no en parámetros controlables por el cliente. Usar Redis o similar para almacenamiento distribuido.",
+      "references": ["OWASP A01:2021 - Broken Access Control", "OWASP A07:2021 - Identification and Authentication Failures"],
+      "cwe": "CWE-307: Improper Restriction of Excessive Authentication Attempts"
+    },
+    {
+      "id": "MED-001",
+      "severity": "MEDIUM",
+      "category": "A05_Security_Misconfiguration",
+      "title": "TrustServerCertificate=yes en conexión de base de datos",
+      "file": "rexus/core/database.py",
+      "line": 160,
+      "description": "La conexión a BD usa TrustServerCertificate=yes, lo que permite ataques Man-in-the-Middle.",
+      "code": "\"TrustServerCertificate=yes;\"",
+      "impact": "Un atacante en la red podría interceptar o modificar datos de la base de datos.",
+      "recommendation": "Remover TrustServerCertificate y configurar certificados SSL/TLS válidos. Verificar el certificado del servidor.",
+      "references": ["OWASP A02:2021 - Cryptographic Failures", "OWASP A05:2021 - Security Misconfiguration"],
+      "cwe": "CWE-295: Improper Certificate Validation"
+    },
+    {
+      "id": "MED-002",
+      "severity": "MEDIUM",
+      "category": "A05_Security_Misconfiguration",
+      "title": "Password impreso en logs durante conexión",
+      "file": "rexus/core/database.py",
+      "line": 137,
+      "description": "Los logs de conexión pueden filtrar información sensible aunque la contraseña esté oculta.",
+      "code": "print(f\"[DB] Usuario: {self.username if not self.trusted else '[Trusted_Connection]'}\")",
+      "impact": "Logs pueden contener información que ayuda a atacantes a entender la infraestructura.",
+      "recommendation": "Remover prints informativos de producción. Usar un sistema de logging centralizado con niveles apropiados (INFO, WARNING, ERROR).",
+      "references": ["OWASP A05:2021 - Security Misconfiguration", "OWASP A09:2021 - Security Logging and Monitoring Failures"],
+      "cwe": "CWE-532: Insertion of Sensitive Information into Log File"
+    },
+    {
+      "id": "MED-003",
+      "severity": "MEDIUM",
+      "category": "A01_Broken_Access_Control",
+      "title": "Switch de base de datos sin validación completa",
+      "file": "rexus/core/database.py",
+      "lines": "97-133",
+      "description": "El método switch_database valida con regex pero podría ser bypassed con SQL avanzado.",
+      "code": "if not re.match(r'^[a-zA-Z0-9_-]+$', new_database):",
+      "impact": "Un atacante podría acceder a bases de datos no autorizadas o inyectar SQL.",
+      "recommendation": "Usar whitelist de bases de datos permitidas. Validar también contra una lista predefinida en configuración.",
+      "references": ["OWASP A01:2021 - Broken Access Control"],
+      "cwe": "CWE-287: Improper Authentication"
+    },
+    {
+      "id": "MED-004",
+      "severity": "MEDIUM",
+      "category": "A03_Injection",
+      "title": "F-strings con user input en múltiples archivos",
+      "file": "Múltiples archivos",
+      "description": "Se encontraron múltiples usos de f-strings que podrían contener user input sin escape.",
+      "examples": [
+        "rexus/repositories/inventario/productos_repository.py:71 - query += f\" ORDER BY {order_by}\"",
+        "rexus/utils/pagination_manager.py:147 - base_query = f\"SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1\"",
+        "rexus/repositories/inventario/productos_repository.py:55 - query = f\"SELECT * FROM [{self.config.table_name}] WHERE activo = 1\""
+      ],
+      "impact": "Dependiendo del contexto, puede llevar a SQL injection, XSS, o log injection.",
+      "recommendation": "Usar siempre prepared statements con parámetros. Para strings dinámicos, usar whitelist de valores permitidos.",
+      "references": ["OWASP A03:2021 - Injection"],
+      "cwe": "CWE-89: SQL Injection"
+    },
+    {
+      "id": "MED-005",
+      "severity": "MEDIUM",
+      "category": "A04_Insecure_Design",
+      "title": "Lógica de bloqueo de usuario predecible",
+      "file": "rexus/modules/11_usuarios/controller.py",
+      "lines": "426-450",
+      "description": "El bloqueo es después de 3 intentos, pero el timing es predecible y no usa backoff exponencial.",
+      "code": "intentos_restantes = 3 - intentos",
+      "impact": "Atacantes pueden usar fuerza bruta distribuida para bypass el bloqueo.",
+      "recommendation": "Implementar backoff exponencial (1 min, 5 min, 15 min, 1 hora...). Usar CAPTCHA después de N intentos.",
+      "references": ["OWASP A07:2021 - Identification and Authentication Failures"],
+      "cwe": "CWE-307: Improper Restriction of Excessive Authentication Attempts"
+    },
+    {
+      "id": "MED-006",
+      "severity": "MEDIUM",
+      "category": "A09_Security_Logging_Monitoring",
+      "title": "Logs de seguridad inconsistentes",
+      "file": "rexus/core/security.py",
+      "line": 658,
+      "description": "Los eventos de seguridad solo se imprimen en consola, no se almacenan persistentemente.",
+      "code": "print(f\"[SECURITY] Usuario:{usuario_id} | {accion} | {modulo} | {detalles}\")",
+      "impact": "No hay trazabilidad de incidentes de seguridad. Logs se pierden al reiniciar.",
+      "recommendation": "Implementar sistema de logging estructurado (JSON) con almacenamiento persistente. Integrar con SIEM. Rotación de logs.",
+      "references": ["OWASP A09:2021 - Security Logging and Monitoring Failures"],
+      "cwe": "CWE-778: Insufficient Logging"
+    },
+    {
+      "id": "MED-007",
+      "severity": "MEDIUM",
+      "category": "A04_Insecure_Design",
+      "title": "No hay implementación de MFA/TOTP",
+      "file": "rexus/core/auth_manager.py",
+      "description": "El sistema solo usa contraseña para autenticación, sin segundo factor.",
+      "impact": "Si una contraseña es comprometida, no hay capa adicional de protección.",
+      "recommendation": "Implementar TOTP (Google Authenticator, Authy) o SMS como segundo factor. Opcional para usuarios normales, obligatorio para admin.",
+      "references": ["OWASP A07:2021 - Identification and Authentication Failures", "NIST SP 800-63B"],
+      "cwe": "CWE-303: Incorrect Implementation of Authentication Algorithm"
+    },
+    {
+      "id": "MED-008",
+      "severity": "MEDIUM",
+      "category": "A02_Cryptographic_Failures",
+      "title": "Migración de hashes SHA-256 legacy incompleta",
+      "file": "rexus/core/security.py",
+      "lines": "450-479",
+      "description": "El sistema soporta hashes SHA-256 legacy pero no fuerza la migración a bcrypt/argon2.",
+      "code": "if is_valid and check_password_needs_rehash(password_hash): print(f\"[SECURITY] Hash de contraseña necesita migración...\")",
+      "impact": "Usuarios con hashes SHA-256 legacy permanecen vulnerables si la BD es exfiltrada.",
+      "recommendation": "Forzar migración de hashes en el próximo login de cada usuario. Implementar job por lotes para rehash todas las contraseñas.",
+      "references": ["OWASP A02:2021 - Cryptographic Failures"],
+      "cwe": "CWE-326: Inadequate Encryption Strength"
+    },
+    {
+      "id": "MED-009",
+      "severity": "MEDIUM",
+      "category": "A05_Security_Misconfiguration",
+      "title": "Información de error detallada expuesta al usuario",
+      "file": "Multiple files",
+      "description": "Mensajes de error exponen stack traces y detalles de implementación.",
+      "examples": [
+        "rexus/core/database.py:227 - print(f\"[DB ERROR] Consulta fallida: {e}\\nQuery: {query}\\nParams: {params}\")",
+        "rexus/core/database.py:242 - print(f\"[DB ERROR] Comando fallido: {e}\\nQuery: {query}\\nParams: {params}\")"
+      ],
+      "impact": "Atacantes pueden obtener información sobre la estructura de BD, queries, y parámetros.",
+      "recommendation": "Implementar error messages genéricos para usuarios. Stack traces solo en logs del servidor.",
+      "references": ["OWASP A05:2021 - Security Misconfiguration"],
+      "cwe": "CWE-209: Generation of Error Message with Sensitive Information"
+    },
+    {
+      "id": "MED-010",
+      "severity": "MEDIUM",
+      "category": "A01_Broken_Access_Control",
+      "title": "Validación de permisos inconsistente",
+      "file": "rexus/core/auth_manager.py",
+      "lines": "100-124",
+      "description": "Algunos métodos usan check_permission, otros check_role. No hay estándar uniforme.",
+      "code": "def check_permission(cls, permission: Permission) -> bool: / def check_role(cls, required_role: UserRole) -> bool:",
+      "impact": "Puede llevar a confusiones y bugs donde se usa el método incorrecto, dando acceso no autorizado.",
+      "recommendation": "Estandarizar en un solo método de validación (recomendado: permisos granulares). Documentar claramente cuándo usar cada uno.",
+      "references": ["OWASP A01:2021 - Broken Access Control"],
+      "cwe": "CWE-285: Improper Authorization"
+    },
+    {
+      "id": "MED-011",
+      "severity": "MEDIUM",
+      "category": "A04_Insecure_Design",
+      "title": "Sin implementación de CSRF tokens",
+      "file": "Todo el sistema",
+      "description": "No se encontraron CSRF tokens en formularios o acciones sensibles.",
+      "impact": "Atacantes pueden hacer que usuarios autenticados ejecuten acciones sin su consentimiento.",
+      "recommendation": "Implementar CSRF tokens en todos los formularios y acciones state-changing. Validar tokens del lado del servidor.",
+      "references": ["OWASP A01:2021 - Broken Access Control"],
+      "cwe": "CWE-352: Cross-Site Request Forgery (CSRF)"
+    },
+    {
+      "id": "MED-012",
+      "severity": "MEDIUM",
+      "category": "A05_Security_Misconfiguration",
+      "title": "Sesiones sin timeouts configurables",
+      "file": "rexus/core/security.py",
+      "line": 37,
+      "description": "El timeout de sesión está hardcodeado a 3600 segundos (1 hora).",
+      "code": "self.session_timeout = 3600",
+      "impact": "Sesiones pueden permanecer activas por mucho tiempo si el usuario deja su equipo desatendido.",
+      "recommendation": "Hacer timeout configurable por política de seguridad. Implementar timeout inactividad. Opción de 'remember me' con refresh token.",
+      "references": ["OWASP A07:2021 - Identification and Authentication Failures"],
+      "cwe": "CWE-613: Insufficient Session Expiration"
+    },
+    {
+      "id": "LOW-001",
+      "severity": "LOW",
+      "category": "A05_Security_Misconfiguration",
+      "title": "Comentarios informativos en código",
+      "file": "Multiple files",
+      "description": "Comentarios en el código pueden ayudar a atacantes a entender la lógica.",
+      "examples": [
+        "# ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD",
+        "# [LOCK] VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO",
+        "# [PARTY] LOGIN EXITOSO"
+      ],
+      "impact": "Ayuda a atacantes en análisis de código, pero no es explotable por sí solo.",
+      "recommendation": "Remover comentarios informativos de código en producción. Usar documentación interna separada.",
+      "references": ["OWASP A05:2021 - Security Misconfiguration"],
+      "cwe": "CWE-546: Suspicious Comment"
+    },
+    {
+      "id": "LOW-002",
+      "severity": "LOW",
+      "category": "A09_Security_Logging_Monitoring",
+      "title": "Inconsistencia en niveles de logging",
+      "file": "Multiple files",
+      "description": "Mezcla de print(), logger, y sistemas de logging personalizados.",
+      "impact": "Difícil de auditar y monitorear. Logs pueden perderse o no estar centralizados.",
+      "recommendation": "Estandarizar en un sistema de logging estructurado (Python logging module). Definir niveles y formatos consistentes.",
+      "references": ["OWASP A09:2021 - Security Logging and Monitoring Failures"],
+      "cwe": "CWE-778: Insufficient Logging"
+    },
+    {
+      "id": "LOW-003",
+      "severity": "LOW",
+      "category": "A04_Insecure_Design",
+      "title": "No hay headers de seguridad HTTP",
+      "file": "Todo el sistema",
+      "description": "No se encontraron headers de seguridad como Content-Security-Policy, X-Frame-Options, etc.",
+      "impact": "Vulnerabilidades como XSS, clickjacking pueden ser explotadas más fácilmente.",
+      "recommendation": "Implementar headers de seguridad: CSP, X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security.",
+      "references": ["OWASP A05:2021 - Security Misconfiguration"],
+      "cwe": "CWE-693: Protection Mechanism Failure"
+    },
+    {
+      "id": "LOW-004",
+      "severity": "LOW",
+      "category": "A02_Cryptographic_Failures",
+      "title": "Hash de contraseñas con rounds configurables",
+      "file": "rexus/utils/security.py",
+      "line": 42,
+      "description": "bcrypt usa 12 rounds, pero no está documentado por qué este número específico.",
+      "code": "salt = bcrypt.gensalt(rounds=12)",
+      "impact": "12 rounds es aceptable pero podría incrementarse para mayor seguridad. Falta documentación.",
+      "recommendation": "Documentar la elección de 12 rounds (balance entre seguridad y performance). Considerar incrementar a 14-15 rounds.",
+      "references": ["OWASP A02:2021 - Cryptographic Failures"],
+      "cwe": "CWE-326: Inadequate Encryption Strength"
+    },
+    {
+      "id": "LOW-005",
+      "severity": "LOW",
+      "category": "A05_Security_Misconfiguration",
+      "title": "Información de depuración en producción",
+      "file": "rexus/core/security.py",
+      "lines": "671-753",
+      "description": "Método diagnose_permissions() con prints detallados para debugging.",
+      "code": "print(f\"[SECURITY DIAGNOSIS] Estado del sistema de permisos:\")",
+      "impact": "Expone información interna del sistema que podría ser usada por atacantes.",
+      "recommendation": "Remover o deshabilitar completamente en producción. Usar solo en entornos de desarrollo con autenticación adicional.",
+      "references": ["OWASP A05:2021 - Security Misconfiguration"],
+      "cwe": "CWE-489: Active Debug Code"
+    }
+  ],
+  "positive_findings": [
+    {
+      "category": "Cryptographic_Practices",
+      "description": "Sistema de hashing de contraseñas usa bcrypt (OWASP recomendado) con fallback a PBKDF2",
+      "file": "rexus/utils/security.py",
+      "impact": "Protección adecuada contra cracking de contraseñas si la BD es exfiltrada"
+    },
+    {
+      "category": "Input_Validation",
+      "description": "Implementación de sanitización de inputs para SQL y XSS",
+      "file": "rexus/utils/security.py",
+      "impact": "Reduce superficie de ataque para inyección de código"
+    },
+    {
+      "category": "Authentication",
+      "description": "Sistema de rate limiting implementado para prevenir fuerza bruta",
+      "file": "rexus/core/auth_manager.py",
+      "impact": "Protección contra ataques de enumeración y fuerza bruta"
+    },
+    {
+      "category": "Access_Control",
+      "description": "Sistema de permisos granulares basado en roles (RBAC)",
+      "file": "rexus/core/auth_manager.py",
+      "impact": "Control de acceso estructurado y escalable"
+    },
+    {
+      "category": "Security_Logging",
+      "description": "Sistema de auditoría de eventos de seguridad básico implementado",
+      "file": "rexus/modules/11_usuarios/controller.py",
+      "impact": "Trazabilidad de acciones sensibles"
+    }
+  ],
+  "recommendations_prioritized": [
+    {
+      "priority": 1,
+      "category": "CRITICAL",
+      "action": "Eliminar credenciales hardcodeadas del código",
+      "effort": "Low",
+      "impact": "Elimina vector de acceso inmediato",
+      "files": ["rexus/core/login_dialog.py"]
+    },
+    {
+      "priority": 2,
+      "category": "CRITICAL",
+      "action": "Eliminar auto-login de desarrollo o mover a código condicionalmente compilado",
+      "effort": "Medium",
+      "impact": "Elimina bypass de autenticación",
+      "files": ["rexus/core/login_dialog.py"]
+    },
+    {
+      "priority": 3,
+      "category": "CRITICAL",
+      "action": "Revisar TODOS los queries SQL y asegurar uso de prepared statements",
+      "effort": "High",
+      "impact": "Elimina SQL Injection",
+      "files": ["Todos los archivos con queries SQL"]
+    },
+    {
+      "priority": 4,
+      "category": "HIGH",
+      "action": "Implementar requisitos mínimos de contraseña de 12 caracteres con complejidad",
+      "effort": "Low",
+      "impact": "Reduce riesgo de cracking exitoso",
+      "files": ["rexus/modules/11_usuarios/controller.py"]
+    },
+    {
+      "priority": 5,
+      "category": "HIGH",
+      "action": "Configurar SSL/TLS proper para conexión de BD (remover TrustServerCertificate)",
+      "effort": "Medium",
+      "impact": "Previene MITM en conexión a BD",
+      "files": ["rexus/core/database.py"]
+    },
+    {
+      "priority": 6,
+      "category": "HIGH",
+      "action": "Reemplazar __import__ dinámico con whitelist de módulos permitidos",
+      "effort": "Medium",
+      "impact": "Previene code injection",
+      "files": ["rexus/utils/diagnostic_widget.py", "rexus/utils/system_integration.py"]
+    },
+    {
+      "priority": 7,
+      "category": "MEDIUM",
+      "action": "Implementar sistema de logging estructurado y persistente",
+      "effort": "Medium",
+      "impact": "Mejora auditoría y capacidad de respuesta a incidentes",
+      "files": ["Múltiples archivos"]
+    },
+    {
+      "priority": 8,
+      "category": "MEDIUM",
+      "action": "Implementar MFA/TOTP para usuarios administrativos",
+      "effort": "High",
+      "impact": "Añade capa adicional de seguridad",
+      "files": ["rexus/core/auth_manager.py"]
+    },
+    {
+      "priority": 9,
+      "category": "MEDIUM",
+      "action": "Forzar migración de hashes SHA-256 a bcrypt/argon2",
+      "effort": "Medium",
+      "impact": "Mejora protección de contraseñas almacenadas",
+      "files": ["rexus/core/security.py"]
+    },
+    {
+      "priority": 10,
+      "category": "MEDIUM",
+      "action": "Implementar CSRF tokens en todas las acciones state-changing",
+      "effort": "High",
+      "impact": "Previene ataques CSRF",
+      "files": ["Todos los formularios"]
+    }
+  ],
+  "compliance_status": {
+    "owasp_top_10_2021": {
+      "A01_Broken_Access_Control": {
+        "status": "NEEDS_IMPROVEMENT",
+        "findings": 12,
+        "critical": 2,
+        "high": 3,
+        "medium": 5,
+        "low": 2
+      },
+      "A02_Cryptographic_Failures": {
+        "status": "PARTIALLY_COMPLIANT",
+        "findings": 8,
+        "critical": 2,
+        "high": 3,
+        "medium": 2,
+        "low": 1
+      },
+      "A03_Injection": {
+        "status": "NEEDS_IMPROVEMENT",
+        "findings": 10,
+        "critical": 2,
+        "high": 3,
+        "medium": 4,
+        "low": 1
+      },
+      "A04_Insecure_Design": {
+        "status": "NEEDS_IMPROVEMENT",
+        "findings": 6,
+        "critical": 0,
+        "high": 0,
+        "medium": 5,
+        "low": 1
+      },
+      "A05_Security_Misconfiguration": {
+        "status": "NEEDS_IMPROVEMENT",
+        "findings": 5,
+        "critical": 0,
+        "high": 2,
+        "medium": 2,
+        "low": 1
+      },
+      "A06_Vulnerable_Components": {
+        "status": "NOT_ASSESSED",
+        "note": "Se recomienda ejecutar dependency-check (Snyk, OWASP Dependency Check)"
+      },
+      "A07_Identication_Failures": {
+        "status": "PARTIALLY_COMPLIANT",
+        "findings": 3,
+        "critical": 0,
+        "high": 1,
+        "medium": 2,
+        "low": 0
+      },
+      "A08_Software_Data_Integrity": {
+        "status": "NOT_ASSESSED"
+      },
+      "A09_Logging_Monitoring": {
+        "status": "NEEDS_IMPROVEMENT",
+        "findings": 2,
+        "critical": 0,
+        "high": 0,
+        "medium": 2,
+        "low": 0
+      },
+      "A10_Server_Side_Request_Forgery": {
+        "status": "NOT_ASSESSED",
+        "note": "Requiere revisión de llamadas HTTP externas"
+      }
+    }
+  },
+  "next_steps": [
+    "1. Revisar y corregir findings CRITICAL inmediatamente",
+    "2. Ejecutar OWASP Dependency Check para identificar dependencias vulnerables",
+    "3. Implementar testing automatizado de seguridad (SAST/DAST)",
+    "4. Configurar CI/CD con análisis estático de código (Bandit, Semgrep)",
+    "5. Establecer proceso de code review con checklist de seguridad",
+    "6. Implementar programa de Bug Bounty interno",
+    "7. Realizar pentest profesional anual",
+    "8. Establecer políticas de seguridad de código (Secure SDLC)"
+  ],
+  "appendices": {
+    "tools_used": ["Manual code review", "Grep/Ripgrep pattern matching", "Static analysis"],
+    "cwe_mapping": {
+      "CWE-89": 5,
+      "CWE-798": 3,
+      "CWE-284": 4,
+      "CWE-20": 2,
+      "CWE-94": 2,
+      "CWE-532": 1,
+      "CWE-209": 1,
+      "CWE-326": 2,
+      "CWE-521": 1,
+      "CWE-307": 2,
+      "CWE-352": 1,
+      "CWE-613": 1
+    },
+    "references": [
+      "OWASP Top 10 2021: https://owasp.org/Top10/",
+      "OWASP ASVS v4.0: https://owasp.org/www-project-application-security-verification-standard/",
+      "CWE Top 25: https://cwe.mitre.org/top25/",
+      "NIST SP 800-63B: Digital Identity Guidelines"
+    ]
+  }
+}

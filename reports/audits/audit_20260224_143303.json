@@ -1,0 +1,3736 @@
+{
+  "audit_metadata": {
+    "timestamp": "2026-02-24T14:33:03.176381",
+    "orchestrator": "MasterOrchestrator",
+    "project_root": "D:\\martin\\Proyectos\\Rexus.app",
+    "audit_type": "comprehensive"
+  },
+  "executive_summary": {
+    "total_modules_analyzed": 13,
+    "audits_completed": 13,
+    "audits_failed": 0,
+    "critical_findings": 13,
+    "high_priority_findings": 0,
+    "medium_priority_findings": 0,
+    "total_files_analyzed": 123,
+    "frameworks_detected": [
+      "PyTest"
+    ],
+    "overall_health_score": {
+      "score": 0,
+      "category": "Crítico",
+      "max_score": 100
+    }
+  },
+  "detailed_findings": {
+    "structure": {
+      "modules_found": [
+        {
+          "name": "01_obras",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\01_obras",
+          "file_count": 21,
+          "line_count": 8253
+        },
+        {
+          "name": "02_inventario",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\02_inventario",
+          "file_count": 18,
+          "line_count": 8808
+        },
+        {
+          "name": "03_herrajes",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\03_herrajes",
+          "file_count": 6,
+          "line_count": 3242
+        },
+        {
+          "name": "04_vidrios",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\04_vidrios",
+          "file_count": 8,
+          "line_count": 3225
+        },
+        {
+          "name": "05_logistica",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\05_logistica",
+          "file_count": 6,
+          "line_count": 3065
+        },
+        {
+          "name": "06_pedidos",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\06_pedidos",
+          "file_count": 6,
+          "line_count": 3812
+        },
+        {
+          "name": "07_compras",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\07_compras",
+          "file_count": 15,
+          "line_count": 5643
+        },
+        {
+          "name": "08_administracion",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\08_administracion",
+          "file_count": 10,
+          "line_count": 5694
+        },
+        {
+          "name": "09_mantenimiento",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\09_mantenimiento",
+          "file_count": 5,
+          "line_count": 2928
+        },
+        {
+          "name": "10_auditoria",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\10_auditoria",
+          "file_count": 4,
+          "line_count": 1539
+        },
+        {
+          "name": "11_usuarios",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\11_usuarios",
+          "file_count": 15,
+          "line_count": 8145
+        },
+        {
+          "name": "12_configuracion",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\12_configuracion",
+          "file_count": 5,
+          "line_count": 2409
+        },
+        {
+          "name": "13_notificaciones",
+          "path": "D:\\martin\\Proyectos\\Rexus.app\\rexus\\modules\\13_notificaciones",
+          "file_count": 4,
+          "line_count": 844
+        }
+      ],
+      "total_files": 123,
+      "total_lines": 57607,
+      "frameworks_detected": [
+        "PyTest"
+      ],
+      "patterns": {}
+    },
+    "modules": {
+      "audit-obras": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-obras",
+          "status": "success",
+          "content": "Auditoría completada para obras",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "obras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "obras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "obras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "obras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "obras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "obras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "obras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.760080"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "obras",
+          "agente": "AuditAgent-obras",
+          "fecha": "2026-02-24T14:33:01.760640",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "obras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "obras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "obras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "obras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "obras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "obras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "obras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-inventario": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-inventario",
+          "status": "success",
+          "content": "Auditoría completada para inventario",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "inventario",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "inventario",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "inventario",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "inventario",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "inventario",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "inventario",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "inventario",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.763175"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "inventario",
+          "agente": "AuditAgent-inventario",
+          "fecha": "2026-02-24T14:33:01.763672",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "inventario",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "inventario",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "inventario",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "inventario",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "inventario",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "inventario",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "inventario",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-herrajes": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-herrajes",
+          "status": "success",
+          "content": "Auditoría completada para herrajes",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "herrajes",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "herrajes",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "herrajes",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "herrajes",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "herrajes",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "herrajes",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "herrajes",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.766249"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "herrajes",
+          "agente": "AuditAgent-herrajes",
+          "fecha": "2026-02-24T14:33:01.766666",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "herrajes",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "herrajes",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "herrajes",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "herrajes",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "herrajes",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "herrajes",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "herrajes",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-vidrios": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-vidrios",
+          "status": "success",
+          "content": "Auditoría completada para vidrios",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "vidrios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "vidrios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "vidrios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "vidrios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "vidrios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "vidrios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "vidrios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.768727"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "vidrios",
+          "agente": "AuditAgent-vidrios",
+          "fecha": "2026-02-24T14:33:01.769127",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "vidrios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "vidrios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "vidrios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "vidrios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "vidrios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "vidrios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "vidrios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-logística": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-logística",
+          "status": "success",
+          "content": "Auditoría completada para logística",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "logística",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "logística",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "logística",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "logística",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "logística",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "logística",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "logística",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.771763"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "logística",
+          "agente": "AuditAgent-logística",
+          "fecha": "2026-02-24T14:33:01.772345",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "logística",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "logística",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "logística",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "logística",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "logística",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "logística",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "logística",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-pedidos": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-pedidos",
+          "status": "success",
+          "content": "Auditoría completada para pedidos",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "pedidos",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "pedidos",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "pedidos",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "pedidos",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "pedidos",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "pedidos",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "pedidos",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.775564"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "pedidos",
+          "agente": "AuditAgent-pedidos",
+          "fecha": "2026-02-24T14:33:01.776025",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "pedidos",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "pedidos",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "pedidos",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "pedidos",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "pedidos",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "pedidos",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "pedidos",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-compras": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-compras",
+          "status": "success",
+          "content": "Auditoría completada para compras",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "compras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "compras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "compras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "compras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "compras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "compras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "compras",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.779489"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "compras",
+          "agente": "AuditAgent-compras",
+          "fecha": "2026-02-24T14:33:01.780153",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "compras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "compras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "compras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "compras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "compras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "compras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "compras",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-administración": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-administración",
+          "status": "success",
+          "content": "Auditoría completada para administración",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "administración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "administración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "administración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "administración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "administración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "administración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "administración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.783311"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "administración",
+          "agente": "AuditAgent-administración",
+          "fecha": "2026-02-24T14:33:01.784089",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "administración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "administración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "administración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "administración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "administración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "administración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "administración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-mantenimiento": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-mantenimiento",
+          "status": "success",
+          "content": "Auditoría completada para mantenimiento",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "mantenimiento",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "mantenimiento",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "mantenimiento",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "mantenimiento",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "mantenimiento",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "mantenimiento",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "mantenimiento",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.786842"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "mantenimiento",
+          "agente": "AuditAgent-mantenimiento",
+          "fecha": "2026-02-24T14:33:01.787291",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "mantenimiento",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "mantenimiento",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "mantenimiento",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "mantenimiento",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "mantenimiento",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "mantenimiento",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "mantenimiento",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-auditoría": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-auditoría",
+          "status": "success",
+          "content": "Auditoría completada para auditoría",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "auditoría",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "auditoría",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "auditoría",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "auditoría",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "auditoría",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "auditoría",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "auditoría",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.791278"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "auditoría",
+          "agente": "AuditAgent-auditoría",
+          "fecha": "2026-02-24T14:33:01.791685",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "auditoría",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "auditoría",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "auditoría",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "auditoría",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "auditoría",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "auditoría",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "auditoría",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-usuarios": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-usuarios",
+          "status": "success",
+          "content": "Auditoría completada para usuarios",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "usuarios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "usuarios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "usuarios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "usuarios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "usuarios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "usuarios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "usuarios",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.793917"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "usuarios",
+          "agente": "AuditAgent-usuarios",
+          "fecha": "2026-02-24T14:33:01.794306",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "usuarios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "usuarios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "usuarios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "usuarios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "usuarios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "usuarios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "usuarios",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-configuración": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-configuración",
+          "status": "success",
+          "content": "Auditoría completada para configuración",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "configuración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "configuración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "configuración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "configuración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "configuración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "configuración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "configuración",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.796796"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "configuración",
+          "agente": "AuditAgent-configuración",
+          "fecha": "2026-02-24T14:33:01.797316",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "configuración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "configuración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "configuración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "configuración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "configuración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "configuración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "configuración",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      },
+      "audit-notificaciones": {
+        "status": "completed",
+        "response": {
+          "agent": "AuditAgent-notificaciones",
+          "status": "success",
+          "content": "Auditoría completada para notificaciones",
+          "metadata": {
+            "audit_results": {
+              "funcionalidad": {
+                "category": "funcionalidad",
+                "target": "notificaciones",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "seguridad": {
+                "category": "seguridad",
+                "target": "notificaciones",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "rendimiento": {
+                "category": "rendimiento",
+                "target": "notificaciones",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "código": {
+                "category": "código",
+                "target": "notificaciones",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "base de datos": {
+                "category": "base de datos",
+                "target": "notificaciones",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "documentación": {
+                "category": "documentación",
+                "target": "notificaciones",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              },
+              "pruebas": {
+                "category": "pruebas",
+                "target": "notificaciones",
+                "status": "pending",
+                "findings": [],
+                "severity_counts": {
+                  "critical": 0,
+                  "high": 0,
+                  "medium": 0,
+                  "low": 0
+                }
+              }
+            }
+          },
+          "timestamp": "2026-02-24T14:33:01.799762"
+        },
+        "report": {
+          "tipo_reporte": "AUDITORÍA_MÓDULO",
+          "módulo": "notificaciones",
+          "agente": "AuditAgent-notificaciones",
+          "fecha": "2026-02-24T14:33:01.800172",
+          "resumen": {
+            "total_categorías": 7,
+            "categorías_auditadas": [
+              "funcionalidad",
+              "seguridad",
+              "rendimiento",
+              "código",
+              "base de datos",
+              "documentación",
+              "pruebas"
+            ],
+            "hallazgos_totales": 0
+          },
+          "detalles": {
+            "funcionalidad": {
+              "category": "funcionalidad",
+              "target": "notificaciones",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "seguridad": {
+              "category": "seguridad",
+              "target": "notificaciones",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "rendimiento": {
+              "category": "rendimiento",
+              "target": "notificaciones",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "código": {
+              "category": "código",
+              "target": "notificaciones",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "base de datos": {
+              "category": "base de datos",
+              "target": "notificaciones",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "documentación": {
+              "category": "documentación",
+              "target": "notificaciones",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            },
+            "pruebas": {
+              "category": "pruebas",
+              "target": "notificaciones",
+              "status": "pending",
+              "findings": [],
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0
+              }
+            }
+          },
+          "recomendaciones": [
+            {
+              "id": "IMP-001",
+              "título": "Mejora de seguridad recomendada",
+              "descripción": "Se recomienda implementar validaciones adicionales",
+              "prioridad": "alta",
+              "impacto": "seguridad",
+              "esfuerzo_estimado": "medio",
+              "estado": "propuesto"
+            }
+          ]
+        },
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "título": "Mejora de seguridad recomendada",
+            "descripción": "Se recomienda implementar validaciones adicionales",
+            "prioridad": "alta",
+            "impacto": "seguridad",
+            "esfuerzo_estimado": "medio",
+            "estado": "propuesto"
+          }
+        ]
+      }
+    },
+    "code_quality": {
+      "total_python_files": 389,
+      "total_lines_of_code": 131678,
+      "avg_lines_per_file": 338,
+      "complexity_score": 0,
+      "code_smells": [],
+      "duplications": []
+    },
+    "security": {
+      "critical": [],
+      "high": [],
+      "medium": [
+        {
+          "type": "potential_credentials_file",
+          "file": ".env",
+          "description": "Archivo potencial con credenciales: .env"
+        }
+      ],
+      "low": [
+        {
+          "type": "dependency_scan",
+          "description": "Se recomienda ejecutar: pip-audit o safety check"
+        }
+      ]
+    },
+    "performance": {
+      "database_queries": [],
+      "large_files": [
+        {
+          "file": "scripts\\audit_code_quality.py",
+          "lines": 749,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "scripts\\temp_app.py",
+          "lines": 2437,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\run_comprehensive_test_suite.py",
+          "lines": 575,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\e2e\\test_workflows_completos.py",
+          "lines": 701,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\integration\\test_flujo_obra_completo.py",
+          "lines": 544,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\security\\test_security_complete.py",
+          "lines": 558,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\unit\\administracion\\test_model.py",
+          "lines": 531,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\unit\\auditoria\\test_auditoria_model.py",
+          "lines": 589,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\unit\\compras\\test_compras_view.py",
+          "lines": 561,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\unit\\inventario\\test_reportes_manager.py",
+          "lines": 539,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\unit\\logistica\\test_estadisticas_widget.py",
+          "lines": 522,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\unit\\logistica\\test_mapa_widget.py",
+          "lines": 623,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\unit\\logistica\\test_servicios_widget.py",
+          "lines": 514,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "tests\\unit\\usuarios\\test_usuarios_view.py",
+          "lines": 669,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\alerts_manager.py",
+          "lines": 719,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\backup_manager.py",
+          "lines": 643,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\business_rules.py",
+          "lines": 566,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\database_pool.py",
+          "lines": 537,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\inventory_integration.py",
+          "lines": 760,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\module_manager.py",
+          "lines": 518,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\rbac_database.py",
+          "lines": 852,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\rbac_system.py",
+          "lines": 705,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\secrets_manager.py",
+          "lines": 671,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\core\\security.py",
+          "lines": 1027,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\main\\app.py",
+          "lines": 2167,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\models\\productos_model.py",
+          "lines": 615,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\monitoring\\prometheus_metrics.py",
+          "lines": 556,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\services\\pedido_integracion.py",
+          "lines": 534,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\ui\\style_manager.py",
+          "lines": 830,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\contextual_error_system.py",
+          "lines": 581,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\data_sanitizers.py",
+          "lines": 657,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\diagnostic_widget.py",
+          "lines": 623,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\encrypted_cache.py",
+          "lines": 695,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\format_utils.py",
+          "lines": 594,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\input_validator.py",
+          "lines": 521,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\modern_form_components.py",
+          "lines": 615,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\pagination_manager.py",
+          "lines": 556,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\query_analyzer.py",
+          "lines": 507,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\query_optimizer.py",
+          "lines": 608,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\utils\\secure_config.py",
+          "lines": 555,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\01_obras\\controller.py",
+          "lines": 550,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\01_obras\\cronograma_view.py",
+          "lines": 758,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\01_obras\\model.py",
+          "lines": 801,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\01_obras\\view.py",
+          "lines": 1642,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\02_inventario\\controller.py",
+          "lines": 639,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\02_inventario\\view.py",
+          "lines": 912,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\03_herrajes\\improved_dialogs.py",
+          "lines": 558,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\03_herrajes\\model.py",
+          "lines": 636,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\03_herrajes\\view.py",
+          "lines": 1194,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\04_vidrios\\view.py",
+          "lines": 1061,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\05_logistica\\controller.py",
+          "lines": 593,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\05_logistica\\model.py",
+          "lines": 983,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\05_logistica\\view.py",
+          "lines": 1019,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\06_pedidos\\improved_dialogs.py",
+          "lines": 628,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\06_pedidos\\model.py",
+          "lines": 1024,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\06_pedidos\\view.py",
+          "lines": 722,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\06_pedidos\\view_complete.py",
+          "lines": 996,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\07_compras\\controller.py",
+          "lines": 817,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\07_compras\\detalle_model.py",
+          "lines": 507,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\07_compras\\model.py",
+          "lines": 877,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\07_compras\\proveedores_model.py",
+          "lines": 604,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\07_compras\\view_complete.py",
+          "lines": 1050,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\08_administracion\\controller.py",
+          "lines": 948,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\08_administracion\\model.py",
+          "lines": 1536,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\08_administracion\\view.py",
+          "lines": 735,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\09_mantenimiento\\model.py",
+          "lines": 579,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\09_mantenimiento\\programacion_model.py",
+          "lines": 777,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\09_mantenimiento\\view.py",
+          "lines": 1248,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\10_auditoria\\model.py",
+          "lines": 529,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\10_auditoria\\view.py",
+          "lines": 573,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\11_usuarios\\controller.py",
+          "lines": 677,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\11_usuarios\\model.py",
+          "lines": 1688,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\11_usuarios\\security_dialog.py",
+          "lines": 634,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\11_usuarios\\view.py",
+          "lines": 722,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\12_configuracion\\database_config_dialog.py",
+          "lines": 660,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\12_configuracion\\model.py",
+          "lines": 789,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\12_configuracion\\view.py",
+          "lines": 577,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\13_notificaciones\\model.py",
+          "lines": 532,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\11_usuarios\\submodules\\consultas_manager.py",
+          "lines": 525,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\11_usuarios\\submodules\\permissions_manager.py",
+          "lines": 532,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\11_usuarios\\submodules\\profiles_manager.py",
+          "lines": 604,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\11_usuarios\\submodules\\usuarios_manager.py",
+          "lines": 545,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\08_administracion\\contabilidad\\controller.py",
+          "lines": 616,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\08_administracion\\recursos_humanos\\controller.py",
+          "lines": 574,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\08_administracion\\recursos_humanos\\model.py",
+          "lines": 948,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\02_inventario\\submodules\\base_utilities.py",
+          "lines": 527,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\02_inventario\\submodules\\categorias_manager.py",
+          "lines": 962,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\02_inventario\\submodules\\reportes_manager.py",
+          "lines": 1105,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\02_inventario\\submodules\\reservas_manager.py",
+          "lines": 969,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\01_obras\\components\\enhanced_label_widget.py",
+          "lines": 593,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\modules\\01_obras\\components\\optimized_table_widget.py",
+          "lines": 617,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        },
+        {
+          "file": "rexus\\agents\\orchestrators\\master_orchestrator.py",
+          "lines": 582,
+          "recommendation": "Considerar dividir en módulos más pequeños"
+        }
+      ],
+      "optimization_opportunities": []
+    }
+  },
+  "prioritized_recommendations": [
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    },
+    {
+      "finding": {
+        "id": "IMP-001",
+        "título": "Mejora de seguridad recomendada",
+        "descripción": "Se recomienda implementar validaciones adicionales",
+        "prioridad": "alta",
+        "impacto": "seguridad",
+        "esfuerzo_estimado": "medio",
+        "estado": "propuesto"
+      },
+      "severity": "critical",
+      "priority_order": 0
+    }
+  ],
+  "action_plan": {
+    "immediate_actions": [
+      {
+        "action": "Revisar hallazgos críticos",
+        "priority": "alta",
+        "estimated_time": "1-2 días",
+        "resources": "Equipo de desarrollo"
+      },
+      {
+        "action": "Implementar correcciones de seguridad",
+        "priority": "crítica",
+        "estimated_time": "2-3 días",
+        "resources": "Equipo de seguridad + desarrollo"
+      }
+    ],
+    "short_term_goals": [
+      {
+        "goal": "Mejorar calidad de código",
+        "timeline": "2-4 semanas",
+        "metrics": [
+          "Reducir code smells",
+          "Aumentar cobertura de tests"
+        ]
+      },
+      {
+        "goal": "Optimizar rendimiento",
+        "timeline": "3-4 semanas",
+        "metrics": [
+          "Reducir tiempo de respuesta",
+          "Optimizar queries"
+        ]
+      }
+    ],
+    "long_term_goals": [
+      {
+        "goal": "Establecer cultura de calidad continua",
+        "timeline": "3-6 meses",
+        "initiatives": [
+          "CI/CD mejorado",
+          "Testing automatizado",
+          "Code reviews"
+        ]
+      }
+    ]
+  }
+}

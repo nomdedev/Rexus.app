@@ -1,0 +1,112 @@
+{
+  "agents": {
+    "version": "1.0.0",
+    "framework": "microsoft-agent-framework",
+    "orchestrator": {
+      "name": "RexusMainOrchestrator",
+      "log_level": "INFO",
+      "enable_tracing": true,
+      "enable_persistence": true
+    },
+    "default_config": {
+      "model": "claude-3-opus",
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "timeout": 300,
+      "retry_attempts": 3
+    },
+    "modules": [
+      {
+        "name": "obras",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "seguridad", "rendimiento", "código"]
+      },
+      {
+        "name": "inventario",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "rendimiento", "base de datos"]
+      },
+      {
+        "name": "herrajes",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "código"]
+      },
+      {
+        "name": "vidrios",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "código"]
+      },
+      {
+        "name": "logística",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "rendimiento"]
+      },
+      {
+        "name": "pedidos",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "seguridad"]
+      },
+      {
+        "name": "compras",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "código"]
+      },
+      {
+        "name": "administración",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "seguridad", "base de datos"]
+      },
+      {
+        "name": "mantenimiento",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad"]
+      },
+      {
+        "name": "auditoría",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "documentación"]
+      },
+      {
+        "name": "usuarios",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "seguridad"]
+      },
+      {
+        "name": "configuración",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad"]
+      },
+      {
+        "name": "notificaciones",
+        "enabled": true,
+        "agent_type": "audit",
+        "categories": ["funcionalidad", "rendimiento"]
+      }
+    ],
+    "audit_cycle": {
+      "enabled": true,
+      "schedule": "weekly",
+      "day": "monday",
+      "time": "02:00",
+      "generate_council_report": true
+    },
+    "reports": {
+      "output_format": "json",
+      "storage_path": "./reports/agents",
+      "retention_days": 90,
+      "compress_old_reports": true
+    }
+  }
+}
