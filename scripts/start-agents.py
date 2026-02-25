@@ -10,6 +10,8 @@ import asyncio
 import logging
 from pathlib import Path
 import os
+import json
+from datetime import datetime
 
 # Fijar encoding para Windows
 if sys.platform == 'win32':
@@ -91,6 +93,22 @@ async def main():
     """Función principal"""
     try:
         orchestrator = await initialize_agents()
+
+        print("\n[*] Ejecutando auditoría inicial de todos los módulos...")
+        audit_results = await orchestrator.run_audit_cycle(generate_council_report=True)
+        summary = audit_results.get('summary', {})
+
+        reports_dir = Path('reports/agents')
+        reports_dir.mkdir(parents=True, exist_ok=True)
+        report_file = reports_dir / f"startup_audit_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(report_file, 'w', encoding='utf-8') as handle:
+            json.dump(audit_results, handle, indent=2, ensure_ascii=False)
+
+        print("[OK] Auditoría inicial completada")
+        print(f"    - Agentes auditados: {summary.get('total_agents_auditados', 0)}")
+        print(f"    - Completadas: {summary.get('auditorías_completadas', 0)}")
+        print(f"    - Fallidas: {summary.get('auditorías_fallidas', 0)}")
+        print(f"    - Reporte: {report_file}")
         
         print("\n" + "="*80)
         print("[SUCCESS] SISTEMA DE AGENTES ACTIVO Y LISTO")

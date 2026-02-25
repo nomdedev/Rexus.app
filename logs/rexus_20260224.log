@@ -124,3 +124,1238 @@
 2026-02-24 14:33:02 | INFO     | rexus.orchestrator.MasterOrchestrator | Analizando rendimiento...
 2026-02-24 14:33:03 | INFO     | rexus.orchestrator.MasterOrchestrator | Generando reporte consolidado...
 2026-02-24 14:33:03 | INFO     | rexus.orchestrator.MasterOrchestrator | Reporte guardado en: D:\martin\Proyectos\Rexus.app\reports\audits\audit_20260224_143303.json
+2026-02-24 14:35:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:35:52 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:35:52 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:35:52 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-auditoría
+2026-02-24 14:35:52 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:35:52 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-logística
+2026-02-24 14:35:52 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Iniciando ciclo de auditoría para 5 agentes
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de audit-inventario
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-inventario | Auditar audit-inventario: success
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de audit-usuarios
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar audit-usuarios: success
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-auditoría | Iniciando auditoría de audit-auditoría
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-auditoría | Auditar audit-auditoría: success
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de audit-compras
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-compras | Auditar audit-compras: success
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-logística | Iniciando auditoría de audit-logística
+2026-02-24 14:35:52 | INFO     | rexus.agents.AuditAgent-logística | Auditar audit-logística: success
+2026-02-24 14:38:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:42:23 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:42:23 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de inventario
+2026-02-24 14:42:23 | INFO     | rexus.agents.AuditAgent-inventario | Auditar inventario: success
+2026-02-24 14:43:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:43:14 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:43:14 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:43:14 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-auditoría
+2026-02-24 14:43:14 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:43:14 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-logística
+2026-02-24 14:43:14 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Iniciando ciclo de auditoría para 5 agentes
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de audit-inventario
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-inventario | Auditar audit-inventario: success
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de audit-usuarios
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar audit-usuarios: success
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-auditoría | Iniciando auditoría de audit-auditoría
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-auditoría | Auditar audit-auditoría: success
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de audit-compras
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-compras | Auditar audit-compras: success
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-logística | Iniciando auditoría de audit-logística
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-logística | Auditar audit-logística: success
+2026-02-24 14:43:14 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Ejecutando 2 sets de decisiones del consejo
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-inventario | Ejecutando 1 cambios aprobados para inventario
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-inventario | Ejecutar cambios en inventario: success
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-usuarios | Ejecutando 1 cambios aprobados para usuarios
+2026-02-24 14:43:14 | INFO     | rexus.agents.AuditAgent-usuarios | Ejecutar cambios en usuarios: success
+2026-02-24 14:45:55 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-obras
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-logistica
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-administracion
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-auditoria
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-configuracion
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 14:45:55 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-obras | Iniciando auditoría de audit-obras
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-obras | Auditar audit-obras: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de audit-inventario
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-inventario | Auditar audit-inventario: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-herrajes | Iniciando auditoría de audit-herrajes
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-herrajes | Auditar audit-herrajes: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-vidrios | Iniciando auditoría de audit-vidrios
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-vidrios | Auditar audit-vidrios: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-logistica | Iniciando auditoría de audit-logistica
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-logistica | Auditar audit-logistica: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-pedidos | Iniciando auditoría de audit-pedidos
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-pedidos | Auditar audit-pedidos: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de audit-compras
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-compras | Auditar audit-compras: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-administracion | Iniciando auditoría de audit-administracion
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-administracion | Auditar audit-administracion: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-mantenimiento | Iniciando auditoría de audit-mantenimiento
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-mantenimiento | Auditar audit-mantenimiento: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-auditoria | Iniciando auditoría de audit-auditoria
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-auditoria | Auditar audit-auditoria: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de audit-usuarios
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar audit-usuarios: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-configuracion | Iniciando auditoría de audit-configuracion
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-configuracion | Auditar audit-configuracion: success
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-notificaciones | Iniciando auditoría de audit-notificaciones
+2026-02-24 14:45:55 | INFO     | rexus.agents.AuditAgent-notificaciones | Auditar audit-notificaciones: success
+2026-02-24 14:46:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:46:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:48:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-obras
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-inventario
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-logística
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-compras
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-administración
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-auditoría
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-configuración
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 14:48:32 | INFO     | rexus.orchestrator.RexusMainOrchestrator | Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-obras | Iniciando auditoría de audit-obras
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-obras | Auditar audit-obras: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de audit-inventario
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-inventario | Auditar audit-inventario: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-herrajes | Iniciando auditoría de audit-herrajes
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-herrajes | Auditar audit-herrajes: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-vidrios | Iniciando auditoría de audit-vidrios
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-vidrios | Auditar audit-vidrios: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-logística | Iniciando auditoría de audit-logística
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-logística | Auditar audit-logística: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-pedidos | Iniciando auditoría de audit-pedidos
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-pedidos | Auditar audit-pedidos: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de audit-compras
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-compras | Auditar audit-compras: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-administración | Iniciando auditoría de audit-administración
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-administración | Auditar audit-administración: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-mantenimiento | Iniciando auditoría de audit-mantenimiento
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-mantenimiento | Auditar audit-mantenimiento: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-auditoría | Iniciando auditoría de audit-auditoría
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-auditoría | Auditar audit-auditoría: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de audit-usuarios
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar audit-usuarios: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-configuración | Iniciando auditoría de audit-configuración
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-configuración | Auditar audit-configuración: success
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-notificaciones | Iniciando auditoría de audit-notificaciones
+2026-02-24 14:48:32 | INFO     | rexus.agents.AuditAgent-notificaciones | Auditar audit-notificaciones: success
+2026-02-24 15:56:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-obras
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-inventario
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-logistica
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-compras
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-administracion
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-auditoria
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-configuracion
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 15:56:10 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-obras | Iniciando auditoría de audit-obras
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-obras | Auditar audit-obras: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de audit-inventario
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-inventario | Auditar audit-inventario: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-herrajes | Iniciando auditoría de audit-herrajes
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-herrajes | Auditar audit-herrajes: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-vidrios | Iniciando auditoría de audit-vidrios
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-vidrios | Auditar audit-vidrios: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-logistica | Iniciando auditoría de audit-logistica
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-logistica | Auditar audit-logistica: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-pedidos | Iniciando auditoría de audit-pedidos
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-pedidos | Auditar audit-pedidos: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de audit-compras
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-compras | Auditar audit-compras: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-administracion | Iniciando auditoría de audit-administracion
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-administracion | Auditar audit-administracion: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-mantenimiento | Iniciando auditoría de audit-mantenimiento
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-mantenimiento | Auditar audit-mantenimiento: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-auditoria | Iniciando auditoría de audit-auditoria
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-auditoria | Auditar audit-auditoria: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de audit-usuarios
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar audit-usuarios: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-configuracion | Iniciando auditoría de audit-configuracion
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-configuracion | Auditar audit-configuracion: success
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-notificaciones | Iniciando auditoría de audit-notificaciones
+2026-02-24 15:56:10 | INFO     | rexus.agents.AuditAgent-notificaciones | Auditar audit-notificaciones: success
+2026-02-24 16:05:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-obras
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-inventario
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-logistica
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-compras
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-administracion
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-auditoria
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-configuracion
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 16:05:59 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-obras | Iniciando auditoría de audit-obras
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-obras | Auditar audit-obras: success
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de audit-inventario
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-inventario | Auditar audit-inventario: success
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-herrajes | Iniciando auditoría de audit-herrajes
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-herrajes | Auditar audit-herrajes: success
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-vidrios | Iniciando auditoría de audit-vidrios
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-vidrios | Auditar audit-vidrios: success
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-logistica | Iniciando auditoría de audit-logistica
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-logistica | Auditar audit-logistica: success
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-pedidos | Iniciando auditoría de audit-pedidos
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-pedidos | Auditar audit-pedidos: success
+2026-02-24 16:05:59 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de audit-compras
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-compras | Auditar audit-compras: success
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-administracion | Iniciando auditoría de audit-administracion
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-administracion | Auditar audit-administracion: success
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-mantenimiento | Iniciando auditoría de audit-mantenimiento
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-mantenimiento | Auditar audit-mantenimiento: success
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-auditoria | Iniciando auditoría de audit-auditoria
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-auditoria | Auditar audit-auditoria: success
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de audit-usuarios
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar audit-usuarios: success
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-configuracion | Iniciando auditoría de audit-configuracion
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-configuracion | Auditar audit-configuracion: success
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-notificaciones | Iniciando auditoría de audit-notificaciones
+2026-02-24 16:06:00 | INFO     | rexus.agents.AuditAgent-notificaciones | Auditar audit-notificaciones: success
+2026-02-24 16:10:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-obras
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-inventario
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-logistica
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-compras
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-administracion
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-auditoria
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-configuracion
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 16:10:21 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-obras | Iniciando auditoría de audit-obras
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-obras | Auditar audit-obras: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de audit-inventario
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-inventario | Auditar audit-inventario: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-herrajes | Iniciando auditoría de audit-herrajes
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-herrajes | Auditar audit-herrajes: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-vidrios | Iniciando auditoría de audit-vidrios
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-vidrios | Auditar audit-vidrios: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-logistica | Iniciando auditoría de audit-logistica
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-logistica | Auditar audit-logistica: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-pedidos | Iniciando auditoría de audit-pedidos
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-pedidos | Auditar audit-pedidos: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de audit-compras
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-compras | Auditar audit-compras: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-administracion | Iniciando auditoría de audit-administracion
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-administracion | Auditar audit-administracion: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-mantenimiento | Iniciando auditoría de audit-mantenimiento
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-mantenimiento | Auditar audit-mantenimiento: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-auditoria | Iniciando auditoría de audit-auditoria
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-auditoria | Auditar audit-auditoria: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de audit-usuarios
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar audit-usuarios: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-configuracion | Iniciando auditoría de audit-configuracion
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-configuracion | Auditar audit-configuracion: success
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-notificaciones | Iniciando auditoría de audit-notificaciones
+2026-02-24 16:10:21 | INFO     | rexus.agents.AuditAgent-notificaciones | Auditar audit-notificaciones: success
+2026-02-24 16:18:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-obras
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-inventario
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-herrajes
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-vidrios
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-logistica
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-pedidos
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-compras
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-administracion
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-mantenimiento
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-auditoria
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-usuarios
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-configuracion
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Agente registrado: audit-notificaciones
+2026-02-24 16:18:52 | INFO     | rexus.orchestrator.RexusFullAuditOrchestrator | Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-obras | Iniciando auditoría de audit-obras
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-obras | Auditar audit-obras: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-inventario | Iniciando auditoría de audit-inventario
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-inventario | Auditar audit-inventario: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-herrajes | Iniciando auditoría de audit-herrajes
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-herrajes | Auditar audit-herrajes: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-vidrios | Iniciando auditoría de audit-vidrios
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-vidrios | Auditar audit-vidrios: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-logistica | Iniciando auditoría de audit-logistica
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-logistica | Auditar audit-logistica: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-pedidos | Iniciando auditoría de audit-pedidos
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-pedidos | Auditar audit-pedidos: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-compras | Iniciando auditoría de audit-compras
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-compras | Auditar audit-compras: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-administracion | Iniciando auditoría de audit-administracion
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-administracion | Auditar audit-administracion: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-mantenimiento | Iniciando auditoría de audit-mantenimiento
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-mantenimiento | Auditar audit-mantenimiento: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-auditoria | Iniciando auditoría de audit-auditoria
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-auditoria | Auditar audit-auditoria: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-usuarios | Iniciando auditoría de audit-usuarios
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-usuarios | Auditar audit-usuarios: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-configuracion | Iniciando auditoría de audit-configuracion
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-configuracion | Auditar audit-configuracion: success
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-notificaciones | Iniciando auditoría de audit-notificaciones
+2026-02-24 16:18:52 | INFO     | rexus.agents.AuditAgent-notificaciones | Auditar audit-notificaciones: success
+2026-02-24 17:20:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:20:54 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:25:16 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:26:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:26:33 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:26:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:27:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:29:53 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:29:53 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2026-02-24 17:30:06 | INFO     | rexus.startup   | ============================================================
+2026-02-24 17:30:06 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2026-02-24 17:30:06 | INFO     | rexus.startup   | Versión Python: 3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]
+2026-02-24 17:30:06 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Proyectos\Rexus.app
+2026-02-24 17:30:06 | INFO     | rexus.startup   | Argumentos: ['main.py', '--dev']
+2026-02-24 17:30:06 | INFO     | rexus.startup   | ============================================================
+2026-02-24 17:30:06 | INFO     | rexus.startup   | Iniciando Rexus.app
+2026-02-24 17:30:06 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2026-02-24 17:42:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:43:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:44:33 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:54:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 17:54:53 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:03:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:05:58 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:06:55 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:20:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:20:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:22:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:24:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:27:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:28:04 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:28:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:30:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 18:31:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 19:37:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 19:39:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 19:40:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 19:42:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 19:54:05 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 19:54:06 | INFO     | rexus.core.secrets_manager | Using local encrypted backend for secrets
+2026-02-24 19:54:06 | DEBUG    | rexus.core.database | No se pudo obtener DB password desde SecretsManager: cryptography es obligatorio para LocalEncryptedBackend. Instalar dependencia o configurar Vault backend.
+2026-02-24 19:54:06 | WARNING  | rexus.core.database | Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.
+2026-02-24 19:54:55 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 19:54:56 | INFO     | rexus.core.secrets_manager | Using local encrypted backend for secrets
+2026-02-24 19:54:56 | DEBUG    | rexus.core.database | No se pudo obtener DB password desde SecretsManager: cryptography es obligatorio para LocalEncryptedBackend. Instalar dependencia o configurar Vault backend.
+2026-02-24 19:54:56 | WARNING  | rexus.core.database | Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.
+2026-02-24 20:03:23 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:03:29 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:03:30 | INFO     | rexus.core.secrets_manager | Using local encrypted backend for secrets
+2026-02-24 20:03:30 | DEBUG    | rexus.core.database | No se pudo obtener DB password desde SecretsManager: cryptography es obligatorio para LocalEncryptedBackend. Instalar dependencia o configurar Vault backend.
+2026-02-24 20:03:30 | WARNING  | rexus.core.database | Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.
+2026-02-24 20:04:22 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:04:22 | INFO     | rexus.core.secrets_manager | Using local encrypted backend for secrets
+2026-02-24 20:04:22 | DEBUG    | rexus.core.database | No se pudo obtener DB password desde SecretsManager: cryptography es obligatorio para LocalEncryptedBackend. Instalar dependencia o configurar Vault backend.
+2026-02-24 20:04:22 | WARNING  | rexus.core.database | Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.
+2026-02-24 20:04:23 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a generar_reporte_movimientos
+2026-02-24 20:04:23 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_reporte_movimientos: Permisos insuficientes
+2026-02-24 20:04:23 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a generar_analisis_abc
+2026-02-24 20:04:23 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_analisis_abc: Permisos insuficientes
+2026-02-24 20:04:23 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a generar_reporte_movimientos
+2026-02-24 20:04:23 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_reporte_movimientos: Permisos insuficientes
+2026-02-24 20:05:05 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:05:08 | INFO     | rexus.core.secrets_manager | Using local encrypted backend for secrets
+2026-02-24 20:05:08 | DEBUG    | rexus.core.database | No se pudo obtener DB password desde SecretsManager: cryptography es obligatorio para LocalEncryptedBackend. Instalar dependencia o configurar Vault backend.
+2026-02-24 20:05:08 | WARNING  | rexus.core.database | Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.
+2026-02-24 20:06:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:06:28 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:06:28 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:06:28 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:06:28 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:06:28 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:06:28 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:06:28 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 20:06:28 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:06:34 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:06:34 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:06:34 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:06:34 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:06:34 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:06:34 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:06:34 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:06:34 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 20:06:34 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:06:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:06:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:06:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:06:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:06:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:06:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:06:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:06:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 20:06:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:07:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 20:07:00 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a crear_obra
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Iniciando creación de obra para usuario: SISTEMA
+2026-02-24 20:07:00 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Validación de datos fallida para nueva obra
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:07:00 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 186, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'Mock' has no len()
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:07:00 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:07:00 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:07:00 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:12:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 20:12:32 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible, cargando datos solo en modelo
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no tiene método cargar_obras_en_tabla
+2026-02-24 20:12:32 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Cargadas 2 obras exitosamente
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a crear_obra
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Iniciando creación de obra para usuario: SISTEMA
+2026-02-24 20:12:32 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:12:32 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'Mock' has no len()
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:12:32 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:12:32 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:12:32 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:12:32 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:18:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 20:18:24 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible, cargando datos solo en modelo
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no tiene método cargar_obras_en_tabla
+2026-02-24 20:18:24 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Cargadas 2 obras exitosamente
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a crear_obra
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Iniciando creación de obra para usuario: SISTEMA
+2026-02-24 20:18:24 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:18:24 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'Mock' has no len()
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:18:24 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:18:24 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:18:24 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:18:24 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:18:33 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:18:33 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a generar_reporte_movimientos
+2026-02-24 20:18:33 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_reporte_movimientos: Permisos insuficientes
+2026-02-24 20:18:33 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a generar_analisis_abc
+2026-02-24 20:18:33 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_analisis_abc: Permisos insuficientes
+2026-02-24 20:18:33 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a generar_reporte_movimientos
+2026-02-24 20:18:33 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_reporte_movimientos: Permisos insuficientes
+2026-02-24 20:21:15 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:21:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 20:21:21 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible, cargando datos solo en modelo
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no tiene método cargar_obras_en_tabla
+2026-02-24 20:21:21 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Cargadas 2 obras exitosamente
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a crear_obra
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Iniciando creación de obra para usuario: SISTEMA
+2026-02-24 20:21:21 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:21:21 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'Mock' has no len()
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:21 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:21 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:21 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:21:21 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:21:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:21:42 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 20:21:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible, cargando datos solo en modelo
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no tiene método cargar_obras_en_tabla
+2026-02-24 20:21:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Cargadas 2 obras exitosamente
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a crear_obra
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Iniciando creación de obra para usuario: SISTEMA
+2026-02-24 20:21:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:21:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'InventarioController_Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'InventarioController_Mock' has no len()
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 20:21:42 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 20:21:42 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 20:21:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:21:42 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 20:21:42 | INFO     | rexus.core.secrets_manager | Using local encrypted backend for secrets
+2026-02-24 20:21:42 | DEBUG    | rexus.core.database | No se pudo obtener DB password desde SecretsManager: cryptography es obligatorio para LocalEncryptedBackend. Instalar dependencia o configurar Vault backend.
+2026-02-24 20:21:42 | WARNING  | rexus.core.database | Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.
+2026-02-24 23:58:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_obra
+2026-02-24 23:58:53 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible, cargando datos solo en modelo
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no tiene método cargar_obras_en_tabla
+2026-02-24 23:58:53 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Cargadas 2 obras exitosamente
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a crear_obra
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Iniciando creación de obra para usuario: SISTEMA
+2026-02-24 23:58:53 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 23:58:53 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a actualizar_estadisticas
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'InventarioController_Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'InventarioController_Mock' has no len()
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2026-02-24 23:58:53 | INFO     | rexus.obras.controller | Validación de componentes completada
+2026-02-24 23:58:53 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2026-02-24 23:58:53 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 23:58:53 | INFO     | rexus.core.auth_decorators | Usuario test_user accedió a validar_datos_obra
+2026-02-24 23:58:53 | INFO     | rexus.core.secrets_manager | Using local encrypted backend for secrets
+2026-02-24 23:58:53 | DEBUG    | rexus.core.database | No se pudo obtener DB password desde SecretsManager: cryptography es obligatorio para LocalEncryptedBackend. Instalar dependencia o configurar Vault backend.
+2026-02-24 23:58:53 | WARNING  | rexus.core.database | Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.
+2026-02-24 23:58:55 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2026-02-24 23:58:56 | INFO     | rexus.core.secrets_manager | Using local encrypted backend for secrets
+2026-02-24 23:58:56 | DEBUG    | rexus.core.database | No se pudo obtener DB password desde SecretsManager: cryptography es obligatorio para LocalEncryptedBackend. Instalar dependencia o configurar Vault backend.
+2026-02-24 23:58:56 | WARNING  | rexus.core.database | Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.

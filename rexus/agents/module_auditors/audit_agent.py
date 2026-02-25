@@ -66,7 +66,7 @@ class AuditAgent(BaseAgent):
             AgentResponse con resultados del análisis
         """
         # Registrar tarea en dashboard
-        task_idx = self.register_task(
+        self.register_task(
             module_name=self.module_name,
             task_type="audit",
             description=f"Auditando módulo {self.module_name}"

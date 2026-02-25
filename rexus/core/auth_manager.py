@@ -4,6 +4,7 @@ Controla permisos y acceso a funcionalidades
 """
 
 from enum import Enum
+import time
 from typing import Dict, List, Optional
 from rexus.utils.logging_config import get_logger
 
@@ -126,15 +127,26 @@ class AuthManager:
     def authenticate_user(cls, username: str, password: str):
         """Autentica un usuario contra la base de datos con rate limiting"""
         try:
+            start_time = time.perf_counter()
+
             # Importar conexión a base de datos y rate limiter
-            import hashlib
             import datetime
 
             from rexus.core.database import get_users_connection
             from rexus.core.rate_limiter import get_rate_limiter
             from rexus.utils.password_security import (
+                hash_password_secure,
                 verify_password_secure,
             )
+
+            def _enforce_failed_auth_delay() -> None:
+                min_failed_seconds = 0.35
+                elapsed = time.perf_counter() - start_time
+                if elapsed < min_failed_seconds:
+                    time.sleep(min_failed_seconds - elapsed)
+
+            # Hash dummy para equiparar costo de verificación ante usuario inexistente
+            dummy_hash = hash_password_secure("dummy-password-for-timing")
 
             # Verificar rate limiting antes de intentar autenticación
             rate_limiter = get_rate_limiter()
@@ -144,7 +156,7 @@ class AuthManager:
                 remaining_time = locked_until - datetime.datetime.now()
                 minutes_remaining = max(1, int(remaining_time.total_seconds() / 60))
                 error_msg = f"Usuario bloqueado por {minutes_remaining} minutos debido a demasiados intentos fallidos"
-                print(f"[ERROR] Rate limit: {error_msg}")
+                logger.warning(f"Rate limit aplicado para usuario '{username}'")
 
                 # Registrar intento en usuario bloqueado
                 rate_limiter._log_security_event(username, "blocked_attempt", minutes_remaining)
@@ -155,7 +167,7 @@ class AuthManager:
             db = get_users_connection()
 
             if not db.connection:
-                print("[ERROR] Error: No se pudo conectar a la base de datos de usuarios")
+                logger.error("No se pudo conectar a la base de datos de usuarios")
                 return False
 
             # Buscar usuario en la base de datos
@@ -172,10 +184,17 @@ class AuthManager:
                 # Usuario no encontrado - también registrar como intento fallido para prevenir enumeración
                 rate_limiter.record_failed_attempt(username)
 
+                try:
+                    verify_password_secure(password, dummy_hash)
+                except Exception:
+                    pass
+
+                _enforce_failed_auth_delay()
+
                 lockout_info = rate_limiter.get_lockout_info(username)
                 remaining_attempts = lockout_info['remaining_attempts']
 
-                print(f"[ERROR] Usuario '{username}' no encontrado o inactivo")
+                logger.warning("Intento de autenticación con credenciales inválidas")
                 return {"error": "Credenciales incorrectas", "remaining_attempts": remaining_attempts}
 
             user_data = result[0]
@@ -221,9 +240,7 @@ class AuthManager:
                     user_role.upper(), UserRole.VIEWER
                 )
 
-                print(
-                    f"[CHECK] Usuario autenticado: {username} (rol: {cls.current_user_role.value})"
-                )
+                logger.info(f"Usuario autenticado: {username} (rol: {cls.current_user_role.value})")
 
                 # Actualizar última conexión
                 db.execute_non_query(
@@ -254,15 +271,18 @@ class AuthManager:
                 remaining_attempts = lockout_info['remaining_attempts']
 
                 if remaining_attempts > 0:
-                    print(f"[ERROR] Contraseña incorrecta para usuario: {username} "
-                          f"(quedan {remaining_attempts} intentos)")
+                    logger.warning(
+                        f"Autenticación fallida para '{username}' (quedan {remaining_attempts} intentos)"
+                    )
                 else:
-                    print(f"[ERROR] Contraseña incorrecta para usuario: {username} - USUARIO BLOQUEADO")
+                    logger.warning(f"Autenticación fallida para '{username}' - usuario bloqueado")
+
+                _enforce_failed_auth_delay()
 
                 return {"error": "Credenciales incorrectas", "remaining_attempts": remaining_attempts}
 
         except Exception as e:
-            print(f"[ERROR] Error en autenticación: {e}")
+            logger.error(f"Error en autenticación: {e}")
             import traceback
 
             traceback.print_exc()

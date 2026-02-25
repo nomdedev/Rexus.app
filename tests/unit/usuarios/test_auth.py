@@ -110,7 +110,7 @@ class TestUsuariosAuth(unittest.TestCase):
         # Tests de passwords débiles
         for weak_pwd in test_cases['weak_patterns']:
             result = MockPasswordValidator.validate_password_strength(weak_pwd)
-            self.assertFalse(result['is_valid'], f)
+            self.assertFalse(result['is_valid'], f"Password débil debería fallar: {weak_pwd}")
             
         # Tests de passwords fuertes
         for strong_pwd in test_cases['strong_patterns']:

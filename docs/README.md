@@ -1,98 +1,113 @@
 # Documentación de Rexus.app
 
-**Última actualización:** 10 de Febrero 2025
-**Versión:** 2.0.0
+**Última actualización:** 24 de Febrero de 2026  
+**Versión:** 2.1.0  
 **Estado:** Producción
 
 ---
 
-## Propósito
+## 🎯 Propósito
 
 Esta carpeta contiene toda la documentación técnica y de desarrollo del proyecto Rexus.app, organizada por categorías para facilitar la navegación y el mantenimiento.
 
-## Estructura de Documentación
+## 📚 Estructura de Documentación
 
-```
-docs/
-├── README.md                           # Este archivo - Guía principal
-├── CROSSREFERENCES.md                  # Enlaces cruzados entre documentos
-│
-├── guias/                              # Guias para desarrolladores
-│   ├── DEVELOPER_GUIDE.md             # Guía completa de desarrollo
-│   ├── GUIA_N1_QUICKSTART.md          # Guía rápida de optimización N+1
-│   ├── CACHING_QUICKSTART.md          # Guía de implementación de caché
-│   ├── REPOSITORY_SERVICE_PATTERN.md  # Arquitectura Repository + Service
-│   └── MONITOREO_PROMETHEUS_GRAFANA.md # Sistema de monitoreo
-│
-├── tecnica/                            # Documentación técnica y configuración
-│   ├── ANALISIS_TECNICO_COMPLETO.md   # Análisis técnico del sistema
-│   ├── TECHNICAL_IMPLEMENTATION_GUIDE.md  # Guía de implementación técnica
-│   ├── CONFIGURACION_SEGURA.md        # Configuración segura del sistema
-│   └── CONFIGURACION_ANALISIS_CODIGO.md # Configuración de análisis de código
-│
-├── auditoria/                          # Reportes de auditoría y análisis
-│   ├── AUDITORIA_COMPLETA_EXPERTA_2025.md  # Auditoría completa
-│   ├── INFORME_FINAL_AUDITORIA_COMPLETA.md # Informe final de auditoría
-│   └── AUDITORIA_EXPERTA_2025/        # Auditorías detalladas por fase
-│       ├── FASE1_1_AUDITORIA_SEGURIDAD.md
-│       ├── FASE1_2_AUDITORIA_BASE_DE_DATOS.md
-│       ├── FASE2_1_AUDITORIA_PERFORMANCE.md
-│       ├── FASE2_2_AUDITORIA_TESTING.md
-│       ├── FASE2_3_AUDITORIA_ARQUITECTURA.md
-│       ├── FASE3_1_AUDITORIA_CODIGO.md
-│       ├── FASE3_2_AUDITORIA_LOGGING_MONITOREO.md
-│       ├── FASE3_3_AUDITORIA_CONFIGURACION.md
-│       ├── FASE4_1_AUDITORIA_MODULOS_NEGOCIO.md
-│       └── FASE4_2_4_5_AUDITORIAS_FUNCIONALES_CONSOLIDADAS.md
-│
-└── progreso/                           # Estado del proyecto y mejoras pendientes
-    ├── RESUMEN_FINAL_PROYECTO.md      # Resumen ejecutivo del proyecto
-    ├── PROGRESO_ACTUAL.md             # Estado actual del desarrollo
-    ├── REPORTE_FINAL_MEJORAS.md       # Reporte de mejoras implementadas
-    ├── REPORTE_IMPLEMENTACION_CORRECCIONES.md  # Implementación de correcciones
-    ├── PLAN_DE_IMPLEMENTACION_CONSOLIDADO.md  # Plan de implementación
-    └── PLAN_MEJORA_GOD_OBJECTS.md     # Plan de mejora God Objects
-```
+### 👥 [Documentación de Usuario](user/)
+- [Guía de Usuario Principal](user/user_guide.md) - Manual completo de uso
+- [Guías por Módulo](user/user_guide/README.md) - Documentación específica
+  - [Gestión de Obras](user/user_guide/obras_management.md)
+  - [Gestión de Inventario](user/user_guide/inventory_management.md)
+  - [Gestión de Pedidos](user/user_guide/orders_management.md)
+  - [Gestión de Compras](user/user_guide/purchases_management.md)
 
-## Guía Rápida para Encontrar Información
+### 🛠️ [Documentación para Desarrolladores](developer/)
+- [Componentes de UI](developer/ui_components.md) - Componentes de interfaz
+- [Base de Datos](developer/database/README.md)
+  - [Esquema de Base de Datos](developer/database/schema.md)
+  - [Referencia de Consultas SQL](developer/database/queries_reference.md)
+  - [Gestión de Migraciones](developer/database/migrations.md)
 
-### Para nuevos desarrolladores
-1. Lea **`guias/DEVELOPER_GUIDE.md`** - Guía completa de desarrollo
-2. Consulte **`tecnica/ANALISIS_TECNICO_COMPLETO.md`** - Arquitectura del sistema
-3. Revise **`CLAUDE.md`** (raíz) - Reglas críticas de desarrollo
+### 🚀 [Documentación de Operaciones](operations/)
+- [Guía de Despliegue](operations/deployment.md) - Despliegue en producción
+- [Monitoreo y Métricas](operations/monitoring.md) - Sistema de monitoreo
+- [Respaldo y Recuperación](operations/backup_recovery.md) - Estrategia de backups
 
-### Para entender la arquitectura
-- **`guias/REPOSITORY_SERVICE_PATTERN.md`** - Arquitectura de acceso a datos
-- **`tecnica/TECHNICAL_IMPLEMENTATION_GUIDE.md`** - Guía de implementación técnica
+### 🔒 [Seguridad y Auditorías](security/)
+- [Auditoría Consolidada 2026](security/AUDITORIA_CONSOLIDADA_2026.md) - Resumen completo
+- [Plan de Acción - Secrets Seguros](security/PLAN_ACCION_SECRETS_SEGUROS_20260224.md)
+- [Auditoría de Seguridad](security/security_audit_20260224.md)
+- [Matriz de Vulnerabilidades](security/MATRIZ_VULNERABILIDADES_ACTUALIZADA_20260224.md)
 
-### Para optimizar rendimiento
-- **`guias/GUIA_N1_QUICKSTART.md`** - Corrección de problemas N+1
-- **`guias/CACHING_QUICKSTART.md`** - Implementación de caché Redis
-- **`guias/MONITOREO_PROMETHEUS_GRAFANA.md`** - Sistema de monitoreo
+### 📊 [Reportes Técnicos](technical-reports/)
+- [Análisis de Calidad de Código](technical-reports/code_quality_20260224.md)
+- [Ejemplos de Calidad](technical-reports/code_quality_examples_20260224.md)
+- [Resumen de Cobertura](technical-reports/coverage/COVERAGE_SUMMARY.md)
 
-### Para auditorías y análisis de seguridad
-- **`auditoria/AUDITORIA_COMPLETA_EXPERTA_2025.md`** - Auditoría completa
-- **`auditoria/INFORME_FINAL_AUDITORIA_COMPLETA.md`** - Informe final
-- **`auditoria/AUDITORIA_EXPERTA_2025/`** - Auditorías detalladas por fase
+### 📖 [Guías Técnicas](guides/)
+- [Guía Completa de Desarrollo](guides/DEVELOPER_GUIDE.md)
+- [Guía Rápida de Optimización N+1](guides/GUIA_N1_QUICKSTART.md)
+- [Guía de Implementación de Caché](guides/CACHING_QUICKSTART.md)
+- [Arquitectura Repository + Service](guides/REPOSITORY_SERVICE_PATTERN.md)
+- [Sistema de Monitoreo](guides/MONITOREO_PROMETHEUS_GRAFANA.md)
 
-### Para estado del proyecto
-- **`progreso/RESUMEN_FINAL_PROYECTO.md`** - Resumen ejecutivo
-- **`progreso/PROGRESO_ACTUAL.md`** - Progreso actual
-- **`progreso/REPORTE_FINAL_MEJORAS.md`** - Mejoras implementadas
+### 🔧 [Documentación Técnica](tecnica/)
+- [Análisis Técnico Completo](tecnica/ANALISIS_TECNICO_COMPLETO.md)
+- [Guía de Implementación Técnica](tecnica/TECHNICAL_IMPLEMENTATION_GUIDE.md)
+- [Configuración Segura](tecnica/CONFIGURACION_SEGURA.md)
+- [Configuración de Análisis de Código](tecnica/CONFIGURACION_ANALISIS_CODIGO.md)
 
-## Documentos Principales
+### 📈 [Estado del Proyecto](progreso/)
+- [Resumen Ejecutivo del Proyecto](progreso/RESUMEN_FINAL_PROYECTO.md)
+- [Estado Actual del Desarrollo](progreso/ESTADO_ACTUAL_PROYECTO.md)
+- [Reporte de Mejoras Implementadas](progreso/REPORTE_FINAL_MEJORAS.md)
+- [Plan de Implementación Consolidado](progreso/PLAN_DE_IMPLEMENTACION_CONSOLIDADO.md)
 
-| Documento | Descripción | Categoría |
-|-----------|-------------|-----------|
-| **DEVELOPER_GUIDE.md** | Guía completa para desarrolladores | Guias |
-| **CLAUDE.md** | Reglas críticas de desarrollo (raíz) | Raíz |
-| **REPOSITORY_SERVICE_PATTERN.md** | Arquitectura Repository + Service | Guias |
-| **AUDITORIA_COMPLETA_EXPERTA_2025.md** | Auditoría completa del sistema | Auditoría |
-| **INFORME_FINAL_AUDITORIA_COMPLETA.md** | Informe final de auditoría | Auditoría |
-| **REPORTE_FINAL_MEJORAS.md** | Mejoras implementadas | Progreso |
-| **PLAN_DE_IMPLEMENTACION_CONSOLIDADO.md** | Plan de implementación | Progreso |
+---
 
-## Convenciones de Nomenclatura
+## 🗺️ Mapa de Documentación por Tipo de Usuario
+
+### 👤 Para Usuarios Finales
+1. **Inicio Rápido**: [Manual de Usuario Principal](user/user_guide.md)
+2. **Módulos Específicos**: [Guías de Módulos](user/user_guide/README.md)
+
+### 👨‍💻 Para Desarrolladores
+1. **Configuración Inicial**: [Guía de Desarrollo](guides/DEVELOPER_GUIDE.md)
+2. **Base de Datos**: [Documentación de BD](developer/database/README.md)
+3. **Componentes UI**: [Componentes de Interfaz](developer/ui_components.md)
+
+### 🔧 Para Administradores de Sistemas
+1. **Despliegue**: [Guía de Despliegue](operations/deployment.md)
+2. **Monitoreo**: [Monitoreo y Métricas](operations/monitoring.md)
+3. **Seguridad**: [Auditoría de Seguridad](security/AUDITORIA_CONSOLIDADA_2026.md)
+
+### 🔍 Para Auditores y Analistas
+1. **Auditoría Completa**: [Auditoría Consolidada](security/AUDITORIA_CONSOLIDADA_2026.md)
+2. **Reportes Técnicos**: [Reportes Técnicos](technical-reports/)
+3. **Estado del Proyecto**: [Resumen Ejecutivo](progreso/RESUMEN_FINAL_PROYECTO.md)
+
+---
+
+## 🚀 Rutas de Aprendizaje Recomendadas
+
+### 🆕 Ruta de Onboarding (Nuevo Desarrollador)
+1. [Manual de Usuario](user/user_guide.md) - Entender el sistema
+2. [Guía de Desarrollo](guides/DEVELOPER_GUIDE.md) - Prácticas de desarrollo
+3. [Base de Datos](developer/database/README.md) - Estructura de datos
+4. [Componentes UI](developer/ui_components.md) - Interfaz de usuario
+
+### ⚡ Ruta de Optimización (Performance)
+1. [Guía N+1 QuickStart](guides/GUIA_N1_QUICKSTART.md) - Entender problema N+1
+2. [Guía de Caching](guides/CACHING_QUICKSTART.md) - Implementar caché
+3. [Reportes de Performance](technical-reports/) - Análisis detallado
+
+### 🔒 Ruta de Seguridad
+1. [Auditoría Consolidada](security/AUDITORIA_CONSOLIDADA_2026.md) - Estado actual
+2. [Configuración Segura](tecnica/CONFIGURACION_SEGURA.md) - Prácticas seguras
+3. [Plan de Acción](security/PLAN_ACCION_SECRETS_SEGUROS_20260224.md) - Mejoras pendientes
+
+---
+
+## 📋 Convenciones de Nomenclatura
 
 ### Prefijos de Documentos
 - `GUIA_` - Tutoriales y guías paso a paso
@@ -108,58 +123,41 @@ docs/
 - `_CONSOLIDADO.md` - Documentos que consolidan información
 - `_FINAL.md` - Documentos finales de una fase o proyecto
 
-## Mantenimiento de la Documentación
+---
 
-### Cuándo actualizar
-- **Antes** de realizar cambios arquitectónicos importantes
-- **Después** de completar fases de desarrollo
-- **Cuando** se añaden nuevas funcionalidades
-- **Siempre** que se cambien reglas críticas (CLAUDE.md)
+## 🔍 Búsqueda Rápida
 
-### Proceso de actualización
-1. Actualizar el documento específico
-2. Revisar y actualizar `CROSSREFERENCES.md` si es necesario
-3. Actualizar la fecha de modificación en el documento
-4. Si es un cambio mayor, actualizar este README
+### Por Tema
+- **Seguridad**: Ver directorio [security/](security/)
+- **Performance**: Ver [guides/GUIA_N1_QUICKSTART.md](guides/GUIA_N1_QUICKSTART.md)
+- **Base de Datos**: Ver [developer/database/](developer/database/)
+- **Despliegue**: Ver [operations/](operations/)
 
-### Documentos que requieren actualización obligatoria
-- `CLAUDE.md` - Siempre debe reflejar el estado actual del proyecto
-- `README.md` (este archivo) - Cuando cambie la estructura
-- `CROSSREFERENCES.md` - Cuando se añadan o eliminen documentos
-
-## Temas Relacionados
-
-Los siguientes temas están conectados a través de múltiples documentos:
-
-### Seguridad
-- Auditoría de seguridad → `auditoria/FASE1_1_AUDITORIA_SEGURIDAD.md`
-- Configuración segura → `tecnica/CONFIGURACION_SEGURA.md`
-- Correcciones de seguridad → `auditoria/INFORME_FINAL_AUDITORIA_COMPLETA.md`
-
-### Performance
-- Optimización N+1 → `guias/GUIA_N1_QUICKSTART.md`
-- Caching → `guias/CACHING_QUICKSTART.md`
-- Auditoría de performance → `auditoria/FASE2_1_AUDITORIA_PERFORMANCE.md`
-
-### Arquitectura
-- Repository Pattern → `guias/REPOSITORY_SERVICE_PATTERN.md`
-- Análisis técnico → `tecnica/ANALISIS_TECNICO_COMPLETO.md`
-- Auditoría de arquitectura → `auditoria/FASE2_3_AUDITORIA_ARQUITECTURA.md`
-
-### Testing
-- Guía de desarrollo → `guias/DEVELOPER_GUIDE.md`
-- Auditoría de testing → `auditoria/FASE2_2_AUDITORIA_TESTING.md`
-- Tests críticos → `auditoria/INFORME_FINAL_AUDITORIA_COMPLETA.md`
-
-## Contacto y Soporte
-
-Para dudas sobre la documentación:
-1. Consulte primero `CROSSREFERENCES.md` para encontrar documentos relacionados
-2. Revise el documento específico de la categoría
-3. Consulte `CLAUDE.md` para reglas críticas
+### Por Rol
+- **Desarrollador**: [developer/](developer/) + [guides/](guides/)
+- **Administrador**: [operations/](operations/) + [security/](security/)
+- **Usuario Final**: [user/](user/)
+- **Auditor**: [security/](security/) + [technical-reports/](technical-reports/)
 
 ---
 
-**Versión de la documentación:** 2.0.0
-**Próxima revisión:** Abril 2025
-**Mantenedor:** Rexus.app Development Team
+## 📞 Soporte y Contacto
+
+Para consultas sobre la documentación:
+
+- **Equipo de Documentación:** docs@rexus.app
+- **Equipo de Desarrollo:** dev@rexus.app
+- **Equipo de Operaciones:** ops@rexus.app
+
+---
+
+## 🔄 Mantenimiento
+
+Esta documentación se mantiene activamente con:
+
+- **Actualizaciones semanales** de contenido
+- **Revisiones mensuales** de estructura
+- **Auditorías trimestrales** de completitud
+
+**Última revisión:** 24 de Febrero 2026  
+**Próxima revisión programada:** 3 de Marzo 2026

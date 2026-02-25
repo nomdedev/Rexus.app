@@ -12,11 +12,11 @@ import os
 
 logger = logging.getLogger(__name__)
 
-# Importar state manager para UI dashboard
+# Importar state manager para estado local (opcional)
 try:
     from ..state_manager import get_state_manager, TaskStatus
     HAS_STATE_MANAGER = True
-except (ImportError, ModuleNotFoundError):
+except ImportError:
     HAS_STATE_MANAGER = False
     def get_state_manager(): return None
     # Dummy TaskStatus si no está disponible
@@ -34,7 +34,7 @@ USE_STATE_MANAGER = os.getenv("REXUS_AGENT_STATE_MANAGER", "false").lower() == "
 try:
     from ..pixel_bridge import get_pixel_bridge
     HAS_PIXEL_BRIDGE = True
-except (ImportError, ModuleNotFoundError):
+except ImportError:
     HAS_PIXEL_BRIDGE = False
 
     def get_pixel_bridge():
@@ -51,7 +51,7 @@ class AgentConfig:
     max_tokens: int = 4096
     timeout: int = 300  # segundos
     retry_attempts: int = 3
-    tags: List[str] = None
+    tags: Optional[List[str]] = None
     
     def __post_init__(self):
         if self.tags is None:

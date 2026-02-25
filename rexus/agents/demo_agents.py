@@ -64,9 +64,10 @@ async def main():
     )
     
     # 5. Mostrar resultados
-    logger.info(f"\nResultados de auditoría:")
-    logger.info(f"  - Agentes auditados: {audit_results['summary']['agentes_auditados']}")
-    logger.info(f"  - Auditorías completadas: {audit_results['summary']['auditorías_completadas']}")
+    logger.info("\nResultados de auditoría:")
+    summary = audit_results['summary']
+    logger.info(f"  - Agentes auditados: {summary['total_agents_auditados']}")
+    logger.info(f"  - Auditorías completadas: {summary['auditorías_completadas']}")
     
     # 6. Mostrar reporte del consejo
     logger.info("\n" + "=" * 80)

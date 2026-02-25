@@ -1,0 +1,2625 @@
+{
+  "scan_metadata": {
+    "timestamp": "2026-02-24T23:46:15.013045",
+    "scanner_version": "1.0.0",
+    "base_path": ".",
+    "total_files_scanned": 5079,
+    "total_issues_found": 86
+  },
+  "summary": {
+    "total_issues": 86,
+    "by_severity": {
+      "CRITICAL": 80,
+      "HIGH": 0,
+      "MEDIUM": 6,
+      "LOW": 0
+    },
+    "by_type": {
+      "hardcoded_credentials": 4,
+      "command_injection": 65,
+      "sql_injection": 11,
+      "crypto_weaknesses": 6
+    },
+    "files_affected": 41
+  },
+  "issues_by_severity": {
+    "CRITICAL": [
+      {
+        "type": "hardcoded_credentials",
+        "file": "rexus\\core\\login_dialog.py",
+        "line": 304,
+        "content": "info_label = QLabel(\"Usuario de prueba: admin / admin\")",
+        "severity": "CRITICAL",
+        "description": "Credenciales admin/admin hardcodeadas",
+        "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+        "cwe": "CWE-798"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\core\\login_dialog.py",
+        "line": 439,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\core\\module_manager.py",
+        "line": 311,
+        "content": "msg.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "hardcoded_credentials",
+        "file": "rexus\\core\\rbac_system.py",
+        "line": 29,
+        "content": "RESET_PASSWORD = \"reset_password\"",
+        "severity": "CRITICAL",
+        "description": "Contrase\u00f1a hardcodeada",
+        "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+        "cwe": "CWE-798"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\core\\sql_query_manager.py",
+        "line": 222,
+        "content": "query += f\" WHERE {where_clause}\"",
+        "severity": "CRITICAL",
+        "description": "SQL injection en query din\u00e1mico",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\main\\app.py",
+        "line": 2163,
+        "content": "sys.exit(app.exec())",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\models\\productos_model.py",
+        "line": 317,
+        "content": "base_query += \" AND \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "hardcoded_credentials",
+        "file": "rexus\\security\\user_enumeration_protection.py",
+        "line": 183,
+        "content": "fake_password = \"fake_password_simulation\"",
+        "severity": "CRITICAL",
+        "description": "Contrase\u00f1a hardcodeada",
+        "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+        "cwe": "CWE-798"
+      },
+      {
+        "type": "hardcoded_credentials",
+        "file": "rexus\\utils\\contextual_error_manager.py",
+        "line": 55,
+        "content": "AUTH_WEAK_PASSWORD = \"AUTH_005\"  # nosec B105 - This is an error code, not a password",
+        "severity": "CRITICAL",
+        "description": "Contrase\u00f1a hardcodeada",
+        "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+        "cwe": "CWE-798"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\contextual_error_system.py",
+        "line": 473,
+        "content": "dialog.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\contextual_error_system.py",
+        "line": 493,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 43,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 58,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 73,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 88,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 107,
+        "content": "result = msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialog_utils.py",
+        "line": 334,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialog_utils.py",
+        "line": 387,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_handler.py",
+        "line": 41,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_manager.py",
+        "line": 260,
+        "content": "result = msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_manager.py",
+        "line": 294,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_manager.py",
+        "line": 367,
+        "content": "result = msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_notification_widget.py",
+        "line": 221,
+        "content": "details_dialog.show()  # Usar show() en lugar de exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_notification_widget.py",
+        "line": 424,
+        "content": "sys.exit(app.exec())",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 18,
+        "content": "msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 20,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 31,
+        "content": "msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 33,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 44,
+        "content": "msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 46,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 57,
+        "content": "msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 59,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 84,
+        "content": "response = msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 86,
+        "content": "response = msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\utils\\sql_security.py",
+        "line": 276,
+        "content": "query += f\" WHERE {where_clause}\"",
+        "severity": "CRITICAL",
+        "description": "SQL injection en query din\u00e1mico",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\repositories\\inventario\\productos_repository.py",
+        "line": 71,
+        "content": "query += f\" ORDER BY {order_by}\"",
+        "severity": "CRITICAL",
+        "description": "SQL injection en query din\u00e1mico",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1147,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1159,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1239,
+        "content": "if dialog.exec() == QPrintDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1313,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1326,
+        "content": "dialogo.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1368,
+        "content": "if dialog.exec() == QPrintDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\02_inventario\\view.py",
+        "line": 640,
+        "content": "dialog.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\03_herrajes\\improved_dialogs.py",
+        "line": 415,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\03_herrajes\\improved_dialogs.py",
+        "line": 526,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\04_vidrios\\view.py",
+        "line": 730,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\04_vidrios\\view.py",
+        "line": 744,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\05_logistica\\view.py",
+        "line": 300,
+        "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\05_logistica\\view.py",
+        "line": 384,
+        "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\05_logistica\\view.py",
+        "line": 774,
+        "content": "dialog.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\improved_dialogs.py",
+        "line": 418,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\improved_dialogs.py",
+        "line": 603,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\view.py",
+        "line": 305,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\view.py",
+        "line": 343,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\view_complete.py",
+        "line": 684,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\view_complete.py",
+        "line": 724,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\07_compras\\view_complete.py",
+        "line": 738,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\07_compras\\view_complete.py",
+        "line": 775,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 611,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 772,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 933,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 1109,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 1505,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\08_administracion\\view.py",
+        "line": 148,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\08_administracion\\view.py",
+        "line": 229,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\09_mantenimiento\\view.py",
+        "line": 1011,
+        "content": "if dialog.exec() == dialog.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\10_auditoria\\view.py",
+        "line": 318,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\improved_dialogs.py",
+        "line": 350,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\improved_dialogs.py",
+        "line": 428,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\security_dialog.py",
+        "line": 607,
+        "content": "return dialog.exec() == QDialog.DialogCode.Accepted",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\security_dialog.py",
+        "line": 634,
+        "content": "sys.exit(app.exec())",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\view.py",
+        "line": 322,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\12_configuracion\\view.py",
+        "line": 344,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\contabilidad\\model.py",
+        "line": 285,
+        "content": "cursor.execute(f\"SELECT COUNT(*) FROM {self.tabla_libro_contable}\")",
+        "severity": "CRITICAL",
+        "description": "SQL injection con f-string",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\contabilidad\\model.py",
+        "line": 289,
+        "content": "cursor.execute(f\"SELECT COUNT(*) FROM {self.tabla_recibos}\")",
+        "severity": "CRITICAL",
+        "description": "SQL injection con f-string",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\02_inventario\\dialogs\\modern_product_dialog.py",
+        "line": 454,
+        "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\02_inventario\\dialogs\\modern_product_dialog.py",
+        "line": 460,
+        "content": "app.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\components\\optimized_table_widget.py",
+        "line": 449,
+        "content": "menu.exec(self.mapToGlobal(position))",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\dialogs\\modern_obra_dialog.py",
+        "line": 469,
+        "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\dialogs\\modern_obra_dialog.py",
+        "line": 475,
+        "content": "app.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      }
+    ],
+    "HIGH": [],
+    "MEDIUM": [
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\cache_manager.py",
+        "line": 95,
+        "content": "return hashlib.md5(key.encode(CacheConfig.ENCODING)).hexdigest()",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\cache_manager.py",
+        "line": 95,
+        "content": "return hashlib.md5(key.encode(CacheConfig.ENCODING)).hexdigest()",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\intelligent_cache.py",
+        "line": 24,
+        "content": "return hashlib.md5(key_data.encode()).hexdigest()",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\intelligent_cache.py",
+        "line": 24,
+        "content": "return hashlib.md5(key_data.encode()).hexdigest()",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\query_analyzer.py",
+        "line": 197,
+        "content": "return hashlib.md5(normalized.encode()).hexdigest()[:16]",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\query_analyzer.py",
+        "line": 197,
+        "content": "return hashlib.md5(normalized.encode()).hexdigest()[:16]",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      }
+    ],
+    "LOW": []
+  },
+  "issues_by_type": {
+    "hardcoded_credentials": [
+      {
+        "type": "hardcoded_credentials",
+        "file": "rexus\\core\\login_dialog.py",
+        "line": 304,
+        "content": "info_label = QLabel(\"Usuario de prueba: admin / admin\")",
+        "severity": "CRITICAL",
+        "description": "Credenciales admin/admin hardcodeadas",
+        "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+        "cwe": "CWE-798"
+      },
+      {
+        "type": "hardcoded_credentials",
+        "file": "rexus\\core\\rbac_system.py",
+        "line": 29,
+        "content": "RESET_PASSWORD = \"reset_password\"",
+        "severity": "CRITICAL",
+        "description": "Contrase\u00f1a hardcodeada",
+        "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+        "cwe": "CWE-798"
+      },
+      {
+        "type": "hardcoded_credentials",
+        "file": "rexus\\security\\user_enumeration_protection.py",
+        "line": 183,
+        "content": "fake_password = \"fake_password_simulation\"",
+        "severity": "CRITICAL",
+        "description": "Contrase\u00f1a hardcodeada",
+        "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+        "cwe": "CWE-798"
+      },
+      {
+        "type": "hardcoded_credentials",
+        "file": "rexus\\utils\\contextual_error_manager.py",
+        "line": 55,
+        "content": "AUTH_WEAK_PASSWORD = \"AUTH_005\"  # nosec B105 - This is an error code, not a password",
+        "severity": "CRITICAL",
+        "description": "Contrase\u00f1a hardcodeada",
+        "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+        "cwe": "CWE-798"
+      }
+    ],
+    "command_injection": [
+      {
+        "type": "command_injection",
+        "file": "rexus\\core\\login_dialog.py",
+        "line": 439,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\core\\module_manager.py",
+        "line": 311,
+        "content": "msg.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\main\\app.py",
+        "line": 2163,
+        "content": "sys.exit(app.exec())",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\contextual_error_system.py",
+        "line": 473,
+        "content": "dialog.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\contextual_error_system.py",
+        "line": 493,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 43,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 58,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 73,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 88,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialogs.py",
+        "line": 107,
+        "content": "result = msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialog_utils.py",
+        "line": 334,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\dialog_utils.py",
+        "line": 387,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_handler.py",
+        "line": 41,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_manager.py",
+        "line": 260,
+        "content": "result = msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_manager.py",
+        "line": 294,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_manager.py",
+        "line": 367,
+        "content": "result = msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_notification_widget.py",
+        "line": 221,
+        "content": "details_dialog.show()  # Usar show() en lugar de exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\error_notification_widget.py",
+        "line": 424,
+        "content": "sys.exit(app.exec())",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 18,
+        "content": "msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 20,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 31,
+        "content": "msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 33,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 44,
+        "content": "msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 46,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 57,
+        "content": "msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 59,
+        "content": "msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 84,
+        "content": "response = msg_box.exec(parent)",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\utils\\message_system.py",
+        "line": 86,
+        "content": "response = msg_box.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1147,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1159,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1239,
+        "content": "if dialog.exec() == QPrintDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1313,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1326,
+        "content": "dialogo.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\view.py",
+        "line": 1368,
+        "content": "if dialog.exec() == QPrintDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\02_inventario\\view.py",
+        "line": 640,
+        "content": "dialog.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\03_herrajes\\improved_dialogs.py",
+        "line": 415,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\03_herrajes\\improved_dialogs.py",
+        "line": 526,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\04_vidrios\\view.py",
+        "line": 730,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\04_vidrios\\view.py",
+        "line": 744,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\05_logistica\\view.py",
+        "line": 300,
+        "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\05_logistica\\view.py",
+        "line": 384,
+        "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\05_logistica\\view.py",
+        "line": 774,
+        "content": "dialog.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\improved_dialogs.py",
+        "line": 418,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\improved_dialogs.py",
+        "line": 603,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\view.py",
+        "line": 305,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\view.py",
+        "line": 343,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\view_complete.py",
+        "line": 684,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\06_pedidos\\view_complete.py",
+        "line": 724,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\07_compras\\view_complete.py",
+        "line": 738,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\07_compras\\view_complete.py",
+        "line": 775,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\08_administracion\\view.py",
+        "line": 148,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\08_administracion\\view.py",
+        "line": 229,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\09_mantenimiento\\view.py",
+        "line": 1011,
+        "content": "if dialog.exec() == dialog.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\10_auditoria\\view.py",
+        "line": 318,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\improved_dialogs.py",
+        "line": 350,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\improved_dialogs.py",
+        "line": 428,
+        "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\security_dialog.py",
+        "line": 607,
+        "content": "return dialog.exec() == QDialog.DialogCode.Accepted",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\security_dialog.py",
+        "line": 634,
+        "content": "sys.exit(app.exec())",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\11_usuarios\\view.py",
+        "line": 322,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\12_configuracion\\view.py",
+        "line": 344,
+        "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\02_inventario\\dialogs\\modern_product_dialog.py",
+        "line": 454,
+        "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\02_inventario\\dialogs\\modern_product_dialog.py",
+        "line": 460,
+        "content": "app.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\components\\optimized_table_widget.py",
+        "line": 449,
+        "content": "menu.exec(self.mapToGlobal(position))",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\dialogs\\modern_obra_dialog.py",
+        "line": 469,
+        "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      },
+      {
+        "type": "command_injection",
+        "file": "rexus\\modules\\01_obras\\dialogs\\modern_obra_dialog.py",
+        "line": 475,
+        "content": "app.exec()",
+        "severity": "CRITICAL",
+        "description": "Code injection con exec",
+        "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+        "cwe": "CWE-78"
+      }
+    ],
+    "sql_injection": [
+      {
+        "type": "sql_injection",
+        "file": "rexus\\core\\sql_query_manager.py",
+        "line": 222,
+        "content": "query += f\" WHERE {where_clause}\"",
+        "severity": "CRITICAL",
+        "description": "SQL injection en query din\u00e1mico",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\models\\productos_model.py",
+        "line": 317,
+        "content": "base_query += \" AND \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\utils\\sql_security.py",
+        "line": 276,
+        "content": "query += f\" WHERE {where_clause}\"",
+        "severity": "CRITICAL",
+        "description": "SQL injection en query din\u00e1mico",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\repositories\\inventario\\productos_repository.py",
+        "line": 71,
+        "content": "query += f\" ORDER BY {order_by}\"",
+        "severity": "CRITICAL",
+        "description": "SQL injection en query din\u00e1mico",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 611,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 772,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 933,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 1109,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\model.py",
+        "line": 1505,
+        "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+        "severity": "CRITICAL",
+        "description": "SQL injection con concatenaci\u00f3n",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\contabilidad\\model.py",
+        "line": 285,
+        "content": "cursor.execute(f\"SELECT COUNT(*) FROM {self.tabla_libro_contable}\")",
+        "severity": "CRITICAL",
+        "description": "SQL injection con f-string",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      },
+      {
+        "type": "sql_injection",
+        "file": "rexus\\modules\\08_administracion\\contabilidad\\model.py",
+        "line": 289,
+        "content": "cursor.execute(f\"SELECT COUNT(*) FROM {self.tabla_recibos}\")",
+        "severity": "CRITICAL",
+        "description": "SQL injection con f-string",
+        "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+        "cwe": "CWE-89"
+      }
+    ],
+    "crypto_weaknesses": [
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\cache_manager.py",
+        "line": 95,
+        "content": "return hashlib.md5(key.encode(CacheConfig.ENCODING)).hexdigest()",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\cache_manager.py",
+        "line": 95,
+        "content": "return hashlib.md5(key.encode(CacheConfig.ENCODING)).hexdigest()",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\intelligent_cache.py",
+        "line": 24,
+        "content": "return hashlib.md5(key_data.encode()).hexdigest()",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\intelligent_cache.py",
+        "line": 24,
+        "content": "return hashlib.md5(key_data.encode()).hexdigest()",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\query_analyzer.py",
+        "line": 197,
+        "content": "return hashlib.md5(normalized.encode()).hexdigest()[:16]",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      },
+      {
+        "type": "crypto_weaknesses",
+        "file": "rexus\\utils\\query_analyzer.py",
+        "line": 197,
+        "content": "return hashlib.md5(normalized.encode()).hexdigest()[:16]",
+        "severity": "MEDIUM",
+        "description": "Hash MD5 d\u00e9bil",
+        "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+        "cwe": "CWE-327"
+      }
+    ]
+  },
+  "all_issues": [
+    {
+      "type": "hardcoded_credentials",
+      "file": "rexus\\core\\login_dialog.py",
+      "line": 304,
+      "content": "info_label = QLabel(\"Usuario de prueba: admin / admin\")",
+      "severity": "CRITICAL",
+      "description": "Credenciales admin/admin hardcodeadas",
+      "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+      "cwe": "CWE-798"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\core\\login_dialog.py",
+      "line": 439,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\core\\module_manager.py",
+      "line": 311,
+      "content": "msg.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "hardcoded_credentials",
+      "file": "rexus\\core\\rbac_system.py",
+      "line": 29,
+      "content": "RESET_PASSWORD = \"reset_password\"",
+      "severity": "CRITICAL",
+      "description": "Contrase\u00f1a hardcodeada",
+      "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+      "cwe": "CWE-798"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\core\\sql_query_manager.py",
+      "line": 222,
+      "content": "query += f\" WHERE {where_clause}\"",
+      "severity": "CRITICAL",
+      "description": "SQL injection en query din\u00e1mico",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\main\\app.py",
+      "line": 2163,
+      "content": "sys.exit(app.exec())",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\models\\productos_model.py",
+      "line": 317,
+      "content": "base_query += \" AND \" + \" AND \".join(conditions)",
+      "severity": "CRITICAL",
+      "description": "SQL injection con concatenaci\u00f3n",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "hardcoded_credentials",
+      "file": "rexus\\security\\user_enumeration_protection.py",
+      "line": 183,
+      "content": "fake_password = \"fake_password_simulation\"",
+      "severity": "CRITICAL",
+      "description": "Contrase\u00f1a hardcodeada",
+      "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+      "cwe": "CWE-798"
+    },
+    {
+      "type": "crypto_weaknesses",
+      "file": "rexus\\utils\\cache_manager.py",
+      "line": 95,
+      "content": "return hashlib.md5(key.encode(CacheConfig.ENCODING)).hexdigest()",
+      "severity": "MEDIUM",
+      "description": "Hash MD5 d\u00e9bil",
+      "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+      "cwe": "CWE-327"
+    },
+    {
+      "type": "crypto_weaknesses",
+      "file": "rexus\\utils\\cache_manager.py",
+      "line": 95,
+      "content": "return hashlib.md5(key.encode(CacheConfig.ENCODING)).hexdigest()",
+      "severity": "MEDIUM",
+      "description": "Hash MD5 d\u00e9bil",
+      "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+      "cwe": "CWE-327"
+    },
+    {
+      "type": "hardcoded_credentials",
+      "file": "rexus\\utils\\contextual_error_manager.py",
+      "line": 55,
+      "content": "AUTH_WEAK_PASSWORD = \"AUTH_005\"  # nosec B105 - This is an error code, not a password",
+      "severity": "CRITICAL",
+      "description": "Contrase\u00f1a hardcodeada",
+      "recommendation": "Eliminar credenciales hardcodeadas. Usar variables de entorno o gestor de secrets.",
+      "cwe": "CWE-798"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\contextual_error_system.py",
+      "line": 473,
+      "content": "dialog.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\contextual_error_system.py",
+      "line": 493,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\dialogs.py",
+      "line": 43,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\dialogs.py",
+      "line": 58,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\dialogs.py",
+      "line": 73,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\dialogs.py",
+      "line": 88,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\dialogs.py",
+      "line": 107,
+      "content": "result = msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\dialog_utils.py",
+      "line": 334,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\dialog_utils.py",
+      "line": 387,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\error_handler.py",
+      "line": 41,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\error_manager.py",
+      "line": 260,
+      "content": "result = msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\error_manager.py",
+      "line": 294,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\error_manager.py",
+      "line": 367,
+      "content": "result = msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\error_notification_widget.py",
+      "line": 221,
+      "content": "details_dialog.show()  # Usar show() en lugar de exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\error_notification_widget.py",
+      "line": 424,
+      "content": "sys.exit(app.exec())",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "crypto_weaknesses",
+      "file": "rexus\\utils\\intelligent_cache.py",
+      "line": 24,
+      "content": "return hashlib.md5(key_data.encode()).hexdigest()",
+      "severity": "MEDIUM",
+      "description": "Hash MD5 d\u00e9bil",
+      "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+      "cwe": "CWE-327"
+    },
+    {
+      "type": "crypto_weaknesses",
+      "file": "rexus\\utils\\intelligent_cache.py",
+      "line": 24,
+      "content": "return hashlib.md5(key_data.encode()).hexdigest()",
+      "severity": "MEDIUM",
+      "description": "Hash MD5 d\u00e9bil",
+      "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+      "cwe": "CWE-327"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 18,
+      "content": "msg_box.exec(parent)",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 20,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 31,
+      "content": "msg_box.exec(parent)",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 33,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 44,
+      "content": "msg_box.exec(parent)",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 46,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 57,
+      "content": "msg_box.exec(parent)",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 59,
+      "content": "msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 84,
+      "content": "response = msg_box.exec(parent)",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\utils\\message_system.py",
+      "line": 86,
+      "content": "response = msg_box.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "crypto_weaknesses",
+      "file": "rexus\\utils\\query_analyzer.py",
+      "line": 197,
+      "content": "return hashlib.md5(normalized.encode()).hexdigest()[:16]",
+      "severity": "MEDIUM",
+      "description": "Hash MD5 d\u00e9bil",
+      "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+      "cwe": "CWE-327"
+    },
+    {
+      "type": "crypto_weaknesses",
+      "file": "rexus\\utils\\query_analyzer.py",
+      "line": 197,
+      "content": "return hashlib.md5(normalized.encode()).hexdigest()[:16]",
+      "severity": "MEDIUM",
+      "description": "Hash MD5 d\u00e9bil",
+      "recommendation": "Usar algoritmos fuertes (bcrypt, Argon2, SHA-256+).",
+      "cwe": "CWE-327"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\utils\\sql_security.py",
+      "line": 276,
+      "content": "query += f\" WHERE {where_clause}\"",
+      "severity": "CRITICAL",
+      "description": "SQL injection en query din\u00e1mico",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\repositories\\inventario\\productos_repository.py",
+      "line": 71,
+      "content": "query += f\" ORDER BY {order_by}\"",
+      "severity": "CRITICAL",
+      "description": "SQL injection en query din\u00e1mico",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\view.py",
+      "line": 1147,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\view.py",
+      "line": 1159,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\view.py",
+      "line": 1239,
+      "content": "if dialog.exec() == QPrintDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\view.py",
+      "line": 1313,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\view.py",
+      "line": 1326,
+      "content": "dialogo.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\view.py",
+      "line": 1368,
+      "content": "if dialog.exec() == QPrintDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\02_inventario\\view.py",
+      "line": 640,
+      "content": "dialog.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\03_herrajes\\improved_dialogs.py",
+      "line": 415,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\03_herrajes\\improved_dialogs.py",
+      "line": 526,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\04_vidrios\\view.py",
+      "line": 730,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\04_vidrios\\view.py",
+      "line": 744,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\05_logistica\\view.py",
+      "line": 300,
+      "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\05_logistica\\view.py",
+      "line": 384,
+      "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\05_logistica\\view.py",
+      "line": 774,
+      "content": "dialog.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\06_pedidos\\improved_dialogs.py",
+      "line": 418,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\06_pedidos\\improved_dialogs.py",
+      "line": 603,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\06_pedidos\\view.py",
+      "line": 305,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\06_pedidos\\view.py",
+      "line": 343,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\06_pedidos\\view_complete.py",
+      "line": 684,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\06_pedidos\\view_complete.py",
+      "line": 724,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\07_compras\\view_complete.py",
+      "line": 738,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\07_compras\\view_complete.py",
+      "line": 775,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\modules\\08_administracion\\model.py",
+      "line": 611,
+      "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+      "severity": "CRITICAL",
+      "description": "SQL injection con concatenaci\u00f3n",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\modules\\08_administracion\\model.py",
+      "line": 772,
+      "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+      "severity": "CRITICAL",
+      "description": "SQL injection con concatenaci\u00f3n",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\modules\\08_administracion\\model.py",
+      "line": 933,
+      "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+      "severity": "CRITICAL",
+      "description": "SQL injection con concatenaci\u00f3n",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\modules\\08_administracion\\model.py",
+      "line": 1109,
+      "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+      "severity": "CRITICAL",
+      "description": "SQL injection con concatenaci\u00f3n",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\modules\\08_administracion\\model.py",
+      "line": 1505,
+      "content": "query += \" WHERE \" + \" AND \".join(conditions)",
+      "severity": "CRITICAL",
+      "description": "SQL injection con concatenaci\u00f3n",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\08_administracion\\view.py",
+      "line": 148,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\08_administracion\\view.py",
+      "line": 229,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\09_mantenimiento\\view.py",
+      "line": 1011,
+      "content": "if dialog.exec() == dialog.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\10_auditoria\\view.py",
+      "line": 318,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\11_usuarios\\improved_dialogs.py",
+      "line": 350,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\11_usuarios\\improved_dialogs.py",
+      "line": 428,
+      "content": "if dialog.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\11_usuarios\\security_dialog.py",
+      "line": 607,
+      "content": "return dialog.exec() == QDialog.DialogCode.Accepted",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\11_usuarios\\security_dialog.py",
+      "line": 634,
+      "content": "sys.exit(app.exec())",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\11_usuarios\\view.py",
+      "line": 322,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\12_configuracion\\view.py",
+      "line": 344,
+      "content": "if dialogo.exec() == QDialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\modules\\08_administracion\\contabilidad\\model.py",
+      "line": 285,
+      "content": "cursor.execute(f\"SELECT COUNT(*) FROM {self.tabla_libro_contable}\")",
+      "severity": "CRITICAL",
+      "description": "SQL injection con f-string",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "sql_injection",
+      "file": "rexus\\modules\\08_administracion\\contabilidad\\model.py",
+      "line": 289,
+      "content": "cursor.execute(f\"SELECT COUNT(*) FROM {self.tabla_recibos}\")",
+      "severity": "CRITICAL",
+      "description": "SQL injection con f-string",
+      "recommendation": "Usar prepared statements con par\u00e1metros. Nunca concatenar user input en queries SQL.",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\02_inventario\\dialogs\\modern_product_dialog.py",
+      "line": 454,
+      "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\02_inventario\\dialogs\\modern_product_dialog.py",
+      "line": 460,
+      "content": "app.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\components\\optimized_table_widget.py",
+      "line": 449,
+      "content": "menu.exec(self.mapToGlobal(position))",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\dialogs\\modern_obra_dialog.py",
+      "line": 469,
+      "content": "if dialog.exec() == dialog.DialogCode.Accepted:",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "command_injection",
+      "file": "rexus\\modules\\01_obras\\dialogs\\modern_obra_dialog.py",
+      "line": 475,
+      "content": "app.exec()",
+      "severity": "CRITICAL",
+      "description": "Code injection con exec",
+      "recommendation": "Validar y sanitizar todo input. Usar subprocess con lista de argumentos en lugar de strings.",
+      "cwe": "CWE-78"
+    }
+  ]
+}

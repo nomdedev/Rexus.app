@@ -2,6 +2,10 @@
 
 from .controller import ConfiguracionController
 from .model import ConfiguracionModel
-from .view import ConfiguracionView
+
+try:
+	from .view import ConfiguracionView
+except (ImportError, RuntimeError):
+	ConfiguracionView = None
 
 __all__ = ["ConfiguracionModel", "ConfiguracionView", "ConfiguracionController"]

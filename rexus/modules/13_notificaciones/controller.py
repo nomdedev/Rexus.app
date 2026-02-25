@@ -7,12 +7,15 @@ Coordina entre el modelo y la vista siguiendo el patrón MVC.
 
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
+from importlib import import_module
 
 # Importar logging centralizado
 from rexus.utils.app_logger import get_logger
 
 from rexus.core.auth_manager import admin_required, auth_required
-from rexus.modules.notificaciones.model import NotificacionesModel, TipoNotificacion
+_notificaciones_model = import_module("rexus.modules.13_notificaciones.model")
+NotificacionesModel = _notificaciones_model.NotificacionesModel
+TipoNotificacion = _notificaciones_model.TipoNotificacion
 
 # Configurar logger
 logger = get_logger("notificaciones.controller")
@@ -137,7 +140,7 @@ class NotificacionesController:
     def crear_notificacion(self, titulo: str, mensaje: str,
                           tipo: str = "info", prioridad: int = 2,
                           usuario_destino: Optional[int] = None,
-                          modulo_origen: str = None) -> bool:
+                          modulo_origen: Optional[str] = None) -> bool:
         """
         Crea una nueva notificación.
 
@@ -159,6 +162,13 @@ class NotificacionesController:
                     self.view.mostrar_error("Título y mensaje son requeridos")
                 return False
 
+            if not self._puede_crear_notificacion_para_destino(usuario_destino):
+                if self.view:
+                    self.view.mostrar_error(
+                        "No tiene permisos para crear notificaciones para otros usuarios"
+                    )
+                return False
+
             if tipo not in [t.value for t in TipoNotificacion]:
                 tipo = "info"
 
@@ -174,11 +184,10 @@ class NotificacionesController:
                 modulo_origen=modulo_origen
             )
 
-            if resultado:
-                if self.view:
-                    self.view.mostrar_mensaje("Notificación creada exitosamente", "success")
-                    # Refrescar la lista si está mostrando notificaciones
-                    self.obtener_notificaciones_usuario()
+            if resultado and self.view:
+                self.view.mostrar_mensaje("Notificación creada exitosamente", "success")
+                # Refrescar la lista si está mostrando notificaciones
+                self.obtener_notificaciones_usuario()
 
             return resultado
 
@@ -187,6 +196,32 @@ class NotificacionesController:
             if self.view:
                 self.view.mostrar_error(f"Error creando notificación: {str(e)}")
             return False
+
+    def _usuario_es_admin(self) -> bool:
+        """Determina si el usuario actual tiene rol administrador."""
+        rol = str(
+            self.usuario_actual.get('rol')
+            or self.usuario_actual.get('role')
+            or ''
+        ).upper()
+        return rol in {'ADMIN', 'ADMINISTRADOR'} or bool(
+            self.usuario_actual.get('is_admin')
+            or self.usuario_actual.get('es_admin')
+        )
+
+    def _puede_crear_notificacion_para_destino(
+        self, usuario_destino: Optional[int]
+    ) -> bool:
+        """Valida permisos para crear notificaciones dirigidas."""
+        usuario_actual_id = self.usuario_actual.get('id')
+
+        if usuario_destino is None or usuario_actual_id is None:
+            return True
+
+        if int(usuario_destino) == int(usuario_actual_id):
+            return True
+
+        return self._usuario_es_admin()
 
     @admin_required
     def eliminar_notificacion(self, notificacion_id: int) -> bool:
@@ -202,10 +237,9 @@ class NotificacionesController:
         try:
             resultado = self.model.eliminar_notificacion(notificacion_id)
 
-            if resultado:
-                if self.view:
-                    self.view.mostrar_mensaje("Notificación eliminada exitosamente", "success")
-                    self.view.remover_notificacion_de_lista(notificacion_id)
+            if resultado and self.view:
+                self.view.mostrar_mensaje("Notificación eliminada exitosamente", "success")
+                self.view.remover_notificacion_de_lista(notificacion_id)
 
             return resultado
 

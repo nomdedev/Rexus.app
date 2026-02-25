@@ -23,10 +23,10 @@ class ContabilidadModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
-        self.tabla_libro_contable = "libro_contable"
-        self.tabla_recibos = "recibos"
-        self.tabla_pagos_obra = "pagos_obra"
-        self.tabla_pagos_materiales = "pagos_materiales"
+        self.tabla_libro_contable = self._validate_table_name("libro_contable")
+        self.tabla_recibos = self._validate_table_name("recibos")
+        self.tabla_pagos_obra = self._validate_table_name("pagos_obra")
+        self.tabla_pagos_materiales = self._validate_table_name("pagos_materiales")
         
         if self.db_connection:
             self._verificar_tablas()
@@ -37,11 +37,14 @@ class ContabilidadModel:
             cursor = self.db_connection.cursor()
             
             # Verificar tabla principal
-            cursor.execute(f"""
-                SELECT COUNT(*) 
-                FROM information_schema.tables 
-                WHERE table_name = '{self.tabla_libro_contable}'
-            """)
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM information_schema.tables
+                WHERE table_name = ?
+                """,
+                (self.tabla_libro_contable,),
+            )
             
             if cursor.fetchone()[0] > 0:
                 logger.info(f"OK [CONTABILIDAD] Tabla '{self.tabla_libro_contable}' verificada correctamente.")

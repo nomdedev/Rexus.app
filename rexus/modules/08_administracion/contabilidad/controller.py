@@ -12,8 +12,12 @@ Maneja la lógica de control para:
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 from datetime import datetime
+import logging
 import csv
 import os
+
+
+logger = logging.getLogger(__name__)
 
 
 class ContabilidadController(QObject):
@@ -605,7 +609,7 @@ class ContabilidadController(QObject):
         """Muestra un mensaje de error."""
         if self.view:
             QMessageBox.critical(self.view, "Error - Contabilidad", mensaje)
-        print(f"[ERROR CONTABILIDAD] {mensaje}")
+        logger.error(f"[ERROR CONTABILIDAD] {mensaje}")
 
     def actualizar_datos(self):
         """Actualiza todos los datos de la interfaz."""

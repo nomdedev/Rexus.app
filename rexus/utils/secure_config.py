@@ -20,6 +20,38 @@ from enum import Enum
 logger = logging.getLogger(__name__)
 
 
+def _is_development_mode() -> bool:
+    return os.getenv("ENVIRONMENT", "development").lower() == "development"
+
+
+def _allow_env_secret_fallback() -> bool:
+    if _is_development_mode():
+        return True
+    return os.getenv("REXUS_ALLOW_ENV_SECRETS_FALLBACK", "false").lower() == "true"
+
+
+def _get_secret_value(secret_key: str, env_var: str) -> str:
+    """Obtiene valor sensible priorizando SecretsManager."""
+    try:
+        from rexus.core.secrets_manager import get_secrets_manager
+
+        secrets = get_secrets_manager()
+        value = secrets.get_secret(secret_key)
+        if value:
+            return value
+    except Exception as exc:
+        logger.debug(f"SecretsManager no disponible para {secret_key}: {exc}")
+
+    env_value = os.getenv(env_var, "")
+    if env_value and _allow_env_secret_fallback():
+        logger.warning(
+            f"Usando {env_var} desde entorno (modo transición). Migrar a secret '{secret_key}'."
+        )
+        return env_value
+
+    return ""
+
+
 class Environment(Enum):
     """Ambientes soportados."""
     DEVELOPMENT = "development"
@@ -59,13 +91,7 @@ class DatabaseConfig:
         if not (1024 <= port <= 65535):
             raise ConfigValidationError(f"DB_PORT debe estar entre 1024 y 65535, got {port}")
 
-        # Intentar obtener password desde SecretsManager primero
-        try:
-            from rexus.core.secrets_manager import get_secrets_manager
-            secrets = get_secrets_manager()
-            password = secrets.get_secret("database/db_password") or os.getenv("DB_PASSWORD", "")
-        except Exception:
-            password = os.getenv("DB_PASSWORD", "")
+        password = _get_secret_value("database/db_password", "DB_PASSWORD")
 
         if not password and not os.getenv("DB_TRUSTED_CONNECTION", "false").lower() == "true":
             raise ConfigValidationError("DB_PASSWORD es requerido cuando no se usa autenticación Windows")
@@ -109,16 +135,9 @@ class SecurityConfig:
     @staticmethod
     def from_env() -> 'SecurityConfig':
         """Crea configuración desde variables de entorno y SecretsManager."""
-        try:
-            from rexus.core.secrets_manager import get_secrets_manager
-            secrets = get_secrets_manager()
-            secret_key = secrets.get_secret("security/secret_key") or os.getenv("SECRET_KEY", "")
-            jwt_secret_key = secrets.get_secret("security/jwt_secret_key") or os.getenv("JWT_SECRET_KEY", "")
-            encryption_key = secrets.get_secret("security/encryption_key") or os.getenv("ENCRYPTION_KEY", "")
-        except Exception:
-            secret_key = os.getenv("SECRET_KEY", "")
-            jwt_secret_key = os.getenv("JWT_SECRET_KEY", "")
-            encryption_key = os.getenv("ENCRYPTION_KEY", "")
+        secret_key = _get_secret_value("security/secret_key", "SECRET_KEY")
+        jwt_secret_key = _get_secret_value("security/jwt_secret_key", "JWT_SECRET_KEY")
+        encryption_key = _get_secret_value("security/encryption_key", "ENCRYPTION_KEY")
 
         # Validar longitudes mínimas
         if len(secret_key) < 32:

@@ -10,7 +10,7 @@ services:
     container_name: rexus_prometheus
     restart: unless-stopped
     ports:
-      - "9090:9090"
+      - "127.0.0.1:9090:9090"
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
@@ -21,6 +21,8 @@ services:
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
       - '--web.enable-lifecycle'
+    security_opt:
+      - no-new-privileges:true
     networks:
       - monitoring
 
@@ -30,10 +32,10 @@ services:
     container_name: rexus_grafana
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD must be set}
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_SERVER_ROOT_URL=http://localhost:3000
       - GF_INSTALL_PLUGINS=redis-datasource
@@ -45,6 +47,8 @@ services:
       - monitoring
     depends_on:
       - prometheus
+    security_opt:
+      - no-new-privileges:true
 
   # Redis Exporter - Métricas de Redis
   redis_exporter:
@@ -52,13 +56,15 @@ services:
     container_name: rexus_redis_exporter
     restart: unless-stopped
     ports:
-      - "9121:9121"
+      - "127.0.0.1:9121:9121"
     environment:
-      - REDIS_ADDR=redis:6379
+      - REDIS_ADDR=redis://:${REDIS_PASSWORD}@redis:6379
     networks:
       - monitoring
     depends_on:
       - redis
+    security_opt:
+      - no-new-privileges:true
 
   # Redis - Caché (si no lo tienes ya)
   redis:
@@ -66,12 +72,16 @@ services:
     container_name: rexus_redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes
+      - "127.0.0.1:6379:6379"
+    command: >
+      redis-server --appendonly yes
+      --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD must be set}
     volumes:
       - redis_data:/data
     networks:
       - monitoring
+    security_opt:
+      - no-new-privileges:true
 
 volumes:
   prometheus_data:

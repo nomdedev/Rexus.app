@@ -4,6 +4,7 @@ from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
+
 # Definir data_sanitizer para compatibilidad
 try:
     from rexus.utils.unified_sanitizer import unified_sanitizer
@@ -44,7 +45,7 @@ try:
     sys.path.insert(0, str(root_dir))
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    logger.warning(f"Security utilities not available:{e}")
+    logger.warning(f"Security utilities not available: {e}")
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
@@ -61,6 +62,53 @@ except ImportError:
 
 
 class UsuariosModel:
+    """Modelo para gestión completa de usuarios y autenticación."""
+
+    # Configuración de seguridad avanzada
+    MAX_LOGIN_ATTEMPTS = 3  # Máximo de intentos de login
+    LOCKOUT_DURATION = 900  # 15 minutos en segundos
+    MIN_PASSWORD_LENGTH = 8
+    PASSWORD_COMPLEXITY_RULES = {
+        "uppercase": True,
+        "lowercase": True,
+        "digits": True,
+        "special_chars": True,
+    }
+
+    # Roles disponibles
+    ROLES = {
+        "ADMIN": "Administrador",
+        "SUPERVISOR": "Supervisor",
+        "OPERADOR": "Operador",
+        "USUARIO": "Usuario",
+        "INVITADO": "Invitado",
+    }
+
+    # Estados de usuario
+    ESTADOS = {
+        "ACTIVO": "Activo",
+        "INACTIVO": "Inactivo",
+        "SUSPENDIDO": "Suspendido",
+        "BLOQUEADO": "Bloqueado",
+    }
+
+    # Módulos del sistema
+    MODULOS_SISTEMA = [
+        "Obras",
+        "Inventario",
+        "Herrajes",
+        "Pedidos",
+        "Compras",
+        "Logística",
+        "Vidrios",
+        "Mantenimiento",
+        "Contabilidad",
+        "Auditoría",
+        "Usuarios",
+        "Configuración",
+        "Dashboard",
+    ]
+
     def __init__(self, db_connection=None):
         self.db_connection = db_connection
         self.tabla_usuarios = "usuarios"
@@ -70,14 +118,16 @@ class UsuariosModel:
 
         # Inicializar SQLQueryManager para consultas seguras
         self.sql_manager = SQLQueryManager()
+
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
         if self.security_available and data_sanitizer:
             self.data_sanitizer = data_sanitizer
-            print("OK [USUARIOS] Utilidades de seguridad cargadas")
+            logger.info("[USUARIOS] Utilidades de seguridad cargadas")
         else:
             self.data_sanitizer = None
-            print("WARNING [USUARIOS] Utilidades de seguridad no disponibles")
+            logger.warning("[USUARIOS] Utilidades de seguridad no disponibles")
+
         # Inicializar gestores de submódulos (opcional)
         try:
             from rexus.modules.usuarios.submodules.profiles_manager import ProfilesManager
@@ -110,23 +160,28 @@ class UsuariosModel:
             try:
                 return validate_table_name(table_name)
             except SQLSecurityError as e:
-                print(f"[ERROR SEGURIDAD USUARIOS] {str(e)}")
+                logger.error(f"[SEGURIDAD USUARIOS] {str(e)}")
                 # Fallback a verificación básica
 
         # Verificación básica si la utilidad no está disponible
         if not table_name or not isinstance(table_name, str):
             raise ValueError("Nombre de tabla inválido")
+
         # Eliminar espacios en blanco
         table_name = table_name.strip()
+
         # Verificar que solo contenga caracteres alfanuméricos y guiones bajos
         if not all(c.isalnum() or c == "_" for c in table_name):
             raise ValueError(
                 f"Nombre de tabla contiene caracteres no válidos: {table_name}"
+            )
 
         # Verificar longitud razonable
         if len(table_name) > 64:
             raise ValueError(f"Nombre de tabla demasiado largo: {table_name}")
+
         return table_name.lower()
+
     def validar_usuario_duplicado(
         self, username: str, email: str, id_usuario_actual: Optional[int] = None
     ) -> Dict[str, bool]:
@@ -137,6 +192,7 @@ class UsuariosModel:
             username: Nombre de usuario a verificar
             email: Email a verificar
             id_usuario_actual: ID del usuario actual (para edición)
+
         Returns:
             Dict[str, bool]: {"username_duplicado": bool, "email_duplicado": bool}
         """
@@ -153,9 +209,13 @@ class UsuariosModel:
             else:
                 username_limpio = username.strip()
                 email_limpio = email.strip()
+
             # Validar tabla
             self._validate_table_name(self.tabla_usuarios)
+
             cursor = self.db_connection.connection.cursor()
+
+
             # Usar SQL externo para verificar username duplicado
             if id_usuario_actual:
                 sql_username = self.sql_manager.get_query('usuarios', 'verificar_username_duplicado_edicion')
@@ -197,8 +257,10 @@ class UsuariosModel:
                 username_limpio = sanitize_string(username)
             else:
                 username_limpio = username.strip()
+
             cursor = self.db_connection.connection.cursor()
             self._validate_table_name(self.tabla_usuarios)
+
             if exitoso:
                 # Reset intentos fallidos si login exitoso
                 query = self.sql_manager.get_query('usuarios', 'actualizar_acceso_exitoso')
@@ -207,9 +269,12 @@ class UsuariosModel:
                 # Incrementar intentos fallidos
                 query = self.sql_manager.get_query('usuarios', 'incrementar_intentos_fallidos')
                 cursor.execute(query, (username_limpio.lower(),))
+
             self.db_connection.commit()
+
         except Exception as e:
             print(f"[ERROR USUARIOS] Error registrando intento login: {e}")
+
     def verificar_cuenta_bloqueada(self, username: str) -> bool:
         """
         Verifica si una cuenta está bloqueada por exceso de intentos fallidos.
@@ -229,12 +294,16 @@ class UsuariosModel:
                 username_limpio = sanitize_string(username)
             else:
                 username_limpio = username.strip()
+
             cursor = self.db_connection.connection.cursor()
             self._validate_table_name(self.tabla_usuarios)
+
             # Verificar intentos fallidos y tiempo transcurrido
             query = self.sql_manager.get_query('usuarios', 'verificar_bloqueo_cuenta')
+
             cursor.execute(query, (self.LOCKOUT_DURATION, username_limpio.lower()))
             resultado = cursor.fetchone()
+
             if not resultado:
                 return False
 
@@ -271,11 +340,14 @@ class UsuariosModel:
                 username_limpio = sanitize_string(username)
             else:
                 username_limpio = username.strip()
+
             cursor = self.db_connection.connection.cursor()
             self._validate_table_name(self.tabla_usuarios)
+
             query = self.sql_manager.get_query('usuarios', 'resetear_intentos_fallidos')
             cursor.execute(query, (username_limpio.lower(),))
             self.db_connection.commit()
+
             return cursor.rowcount > 0
 
         except Exception as e:
@@ -303,8 +375,8 @@ class UsuariosModel:
         if len(password) < self.MIN_PASSWORD_LENGTH:
             resultado["valida"] = False
             resultado["errores"].append(
-                f"La contraseña debe tener al menos {self.MIN_PASSWORD_LENGTH} caracteres
-            ""
+                f"La contraseña debe tener al menos {self.MIN_PASSWORD_LENGTH} caracteres"
+            )
         else:
             resultado["puntuacion"] += 1
 
@@ -314,7 +386,7 @@ class UsuariosModel:
                 resultado["valida"] = False
                 resultado["errores"].append(
                     "La contraseña debe contener al menos una letra mayúscula"
-
+                )
             else:
                 resultado["puntuacion"] += 1
 
@@ -324,7 +396,7 @@ class UsuariosModel:
                 resultado["valida"] = False
                 resultado["errores"].append(
                     "La contraseña debe contener al menos una letra minúscula"
-
+                )
             else:
                 resultado["puntuacion"] += 1
 
@@ -334,7 +406,7 @@ class UsuariosModel:
                 resultado["valida"] = False
                 resultado["errores"].append(
                     "La contraseña debe contener al menos un número"
-
+                )
             else:
                 resultado["puntuacion"] += 1
 
@@ -345,7 +417,7 @@ class UsuariosModel:
                 resultado["valida"] = False
                 resultado["errores"].append(
                     "La contraseña debe contener al menos un carácter especial"
-
+                )
             else:
                 resultado["puntuacion"] += 1
 
@@ -364,19 +436,15 @@ class UsuariosModel:
 
         Para crear las tablas, ejecutar el script: database/create_tables.sql
         """
-        print("ℹ️  [USUARIOS] Las tablas deben existir previamente en la base de datos")
-        print("   Para crear las tablas, ejecutar: database/create_tables.sql")
+        logger.info("[USUARIOS] Las tablas deben existir previamente en la base de datos")
+        logger.info("[USUARIOS] Para crear las tablas, ejecutar: database/create_tables.sql")
         return
 
     def crear_usuarios_iniciales(self):
         """ELIMINADO: RIESGO DE SEGURIDAD CRÍTICO - No crear usuarios por defecto"""
         logger.error("SEGURIDAD CRÍTICA: No se crean usuarios automáticamente")
-        print(
-            "   Los usuarios deben ser creados manualmente por el administrador del sistema"
-
-        print(
-            "   Usar script create_admin_simple.py para crear usuario admin manualmente"
-
+        logger.info("Los usuarios deben ser creados manualmente por el administrador del sistema")
+        logger.info("Usar script create_admin_simple.py para crear usuario admin manualmente")
         return
 
     @cached_query(ttl=60)  # Cache por 1 minuto - consulta muy frecuente en autenticación
@@ -407,10 +475,7 @@ class UsuariosModel:
             sql_select = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_nombre')
             cursor.execute(sql_select, (nombre_limpio,))
             row = cursor.fetchone()
-            print(
-                f"[DEBUG obtener_usuario_por_nombre] Buscando usuario: {nombre_usuario}
-            ""
-            print(f"[DEBUG obtener_usuario_por_nombre] Resultado row: {row}")
+            logger.debug(f"[USUARIOS] Consulta por username ejecutada: {nombre_limpio}")
             if row:
                 columns = [desc[0] for desc in cursor.description]
                 usuario_dict = dict(zip(columns, row))
@@ -436,14 +501,11 @@ class UsuariosModel:
                 for clave in claves_esperadas:
                     if clave not in usuario_dict:
                         usuario_dict[clave] = None
-                print(
-                    f"[DEBUG obtener_usuario_por_nombre] Usuario dict: {usuario_dict}
-                ""
                 return usuario_dict
-            print("[DEBUG obtener_usuario_por_nombre] No se encontró el usuario.")
+            logger.debug("[USUARIOS] Usuario no encontrado por username")
             return None
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error obteniendo usuario: {e}"
+            logger.error(f"[USUARIOS] Error obteniendo usuario: {e}")
             # Si hay error, devolver un dict vacío con todas las claves esperadas en None
             claves_esperadas = [
                 "id",
@@ -492,11 +554,12 @@ class UsuariosModel:
             sql_select = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_email')
             cursor.execute(sql_select, (email_limpio,))
             row = cursor.fetchone()
-            print(f"[DEBUG obtener_usuario_por_email] Buscando email: {email}"
-            print(f"[DEBUG obtener_usuario_por_email] Resultado row: {row}")
+            logger.debug("[USUARIOS] Consulta por email ejecutada")
+
             if row:
                 columns = [desc[0] for desc in cursor.description]
                 usuario_dict = dict(zip(columns, row))
+
                 # Definir todas las claves esperadas y asignar None si falta
                 claves_esperadas = [
                     "id",
@@ -520,25 +583,23 @@ class UsuariosModel:
                 for clave in claves_esperadas:
                     if clave not in usuario_dict:
                         usuario_dict[clave] = None
-
-                print(f"[DEBUG obtener_usuario_por_email] Usuario dict: {usuario_dict}"
                 return usuario_dict
-
-            print("[DEBUG obtener_usuario_por_email] No se encontró el usuario.")
+            logger.debug("[USUARIOS] Usuario no encontrado por email")
             return None
 
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error obteniendo usuario por email: {e}")
+            logger.error(f"[USUARIOS] Error obteniendo usuario por email: {e}")
             # Si hay error, devolver None
             return None
 
-    def verificar_unicidad_username(self, username, excluir_usuario_id=None":
+    def verificar_unicidad_username(self, username, excluir_usuario_id=None):
         """
         Verifica si un nombre de usuario ya existe en la base de datos.
 
         Args:
             username: Nombre de usuario a verificar
             excluir_usuario_id: ID de usuario a excluir de la búsqueda (para actualizaciones)
+
         Returns:
             bool: True si el username ya existe, False si está disponible
         """
@@ -555,22 +616,22 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
+
             if excluir_usuario_id:
                 sql_select = self.sql_manager.get_query('usuarios', 'count_username_duplicate_exclude')
                 cursor.execute(sql_select, (username_limpio, excluir_usuario_id))
             else:
                 sql_select = self.sql_manager.get_query('usuarios', 'count_username_duplicate')
                 cursor.execute(sql_select, (username_limpio,))
+
             count = cursor.fetchone()[0]
             existe = count > 0
 
-            print(
-                f"[DEBUG verificar_unicidad_username] Username '{username}' existe: {existe}
-            ""
+            logger.debug(f"[USUARIOS] Verificación unicidad username => {existe}")
             return existe
 
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error verificando unicidad de username: {e}")
+            logger.error(f"[USUARIOS] Error verificando unicidad de username: {e}")
             return True  # En caso de error, considerarlo como existente por seguridad
 
     def verificar_unicidad_email(self, email, excluir_usuario_id=None):
@@ -580,6 +641,7 @@ class UsuariosModel:
         Args:
             email: Email a verificar
             excluir_usuario_id: ID de usuario a excluir de la búsqueda (para actualizaciones)
+
         Returns:
             bool: True si el email ya existe, False si está disponible
         """
@@ -596,20 +658,22 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
+
             if excluir_usuario_id:
                 sql_select = self.sql_manager.get_query('usuarios', 'count_email_duplicate_exclude')
                 cursor.execute(sql_select, (email_limpio, excluir_usuario_id))
             else:
                 sql_select = self.sql_manager.get_query('usuarios', 'count_email_duplicate')
                 cursor.execute(sql_select, (email_limpio,))
+
             count = cursor.fetchone()[0]
             existe = count > 0
 
-            print(f"[DEBUG verificar_unicidad_email] Email '{email}' existe: {existe}"
+            logger.debug(f"[USUARIOS] Verificación unicidad email => {existe}")
             return existe
 
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error verificando unicidad de email: {e}")
+            logger.error(f"[USUARIOS] Error verificando unicidad de email: {e}")
             return True  # En caso de error, considerarlo como existente por seguridad
 
     def verificar_usuario_bloqueado(self, username):
@@ -629,7 +693,7 @@ class UsuariosModel:
         if self.security_available:
             username_limpio = sanitize_string(
                 username, max_length=50
-
+            )
             if not username_limpio:
                 return True, 999  # Si no se puede sanitizar, bloquear por seguridad
         else:
@@ -640,6 +704,7 @@ class UsuariosModel:
             sql_select = self.sql_manager.get_query('usuarios', 'verificar_bloqueo_cuenta_detallado')
             cursor.execute(sql_select, (username_limpio,))
             row = cursor.fetchone()
+
             if not row:
                 return False, 0  # Usuario no existe
 
@@ -657,10 +722,10 @@ class UsuariosModel:
                 try:
                     bloqueado_hasta = datetime.fromisoformat(
                         bloqueado_hasta.replace("Z", "+00:00")
-
+                    )
                 except (ValueError, TypeError, AttributeError) as e:
                     # Si no se puede parsear, asumir que no está bloqueado
-                    logger.warning(f"Error parseando fecha de bloqueo:{e}")
+                    print(f"[WARNING] Error parseando fecha de bloqueo: {e}")
                     return False, 0
 
             ahora = datetime.now()
@@ -672,15 +737,15 @@ class UsuariosModel:
                 # Calcular tiempo restante en minutos
                 tiempo_restante = int((bloqueado_hasta - ahora).total_seconds() / 60)
                 print(
-                    f)
-
+                    f"[SECURITY] Usuario '{username}' bloqueado. Tiempo restante: {tiempo_restante} minutos"
+                )
                 return True, tiempo_restante
 
         except Exception as e:
             print(f"[ERROR USUARIOS] Error verificando bloqueo de usuario: {e}")
             return True, 999  # En caso de error, bloquear por seguridad
 
-    def incrementar_intentos_fallidos(self, username":
+    def incrementar_intentos_fallidos(self, username):
         """
         Incrementa el contador de intentos fallidos para un usuario y lo bloquea si es necesario.
 
@@ -697,7 +762,7 @@ class UsuariosModel:
         if self.security_available:
             username_limpio = sanitize_string(
                 username, max_length=50
-
+            )
             if not username_limpio:
                 return True, 999, 999
         else:
@@ -709,10 +774,12 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
+
             # Obtener intentos actuales
             sql_select = self.sql_manager.get_query('usuarios', 'obtener_intentos_fallidos')
             cursor.execute(sql_select, (username_limpio,))
             row = cursor.fetchone()
+
             if not row:
                 return False, 0, 0  # Usuario no existe
 
@@ -725,6 +792,7 @@ class UsuariosModel:
 
                 bloqueado_hasta = datetime.now() + timedelta(
                     minutes=TIEMPO_BLOQUEO_MINUTOS
+                )
 
                 sql_update = self.sql_manager.get_query('usuarios', 'actualizar_bloqueo_usuario')
                 cursor.execute(
@@ -732,21 +800,25 @@ class UsuariosModel:
 (intentos_nuevos,
                         bloqueado_hasta,
                         username_limpio)
-
+                )
                 self.db_connection.connection.commit()
+
                 print(
-                    f"[LOCK] [SECURITY] Usuario '{username}' BLOQUEADO después de {intentos_nuevos} intentos fallidos
-                ""
+                    f"[LOCK] [SECURITY] Usuario '{username}' BLOQUEADO después de {intentos_nuevos} intentos fallidos"
+                )
                 print(f"[LOCK] [SECURITY] Bloqueo hasta: {bloqueado_hasta}")
+
                 return True, intentos_nuevos, TIEMPO_BLOQUEO_MINUTOS
             else:
                 # Solo incrementar contador
                 sql_update = self.sql_manager.get_query('usuarios', 'actualizar_intentos_fallidos')
                 cursor.execute(sql_update, (intentos_nuevos, username_limpio))
                 self.db_connection.connection.commit()
+
                 print(
-                    f"[WARN] [SECURITY] Intento fallido #{intentos_nuevos} para usuario '{username}'
-                ""
+                    f"[WARN] [SECURITY] Intento fallido #{intentos_nuevos} para usuario '{username}'"
+                )
+
                 return False, intentos_nuevos, 0
 
         except Exception as e:
@@ -767,7 +839,7 @@ class UsuariosModel:
         if self.security_available:
             username_limpio = sanitize_string(
                 username, max_length=50
-
+            )
             if not username_limpio:
                 return
         else:
@@ -778,11 +850,14 @@ class UsuariosModel:
             sql_update = self.sql_manager.get_query('usuarios', 'limpiar_intentos_bloqueo')
             cursor.execute(sql_update, (username_limpio,))
             self.db_connection.connection.commit()
+
             print(
-                f"[CHECK] [SECURITY] Intentos fallidos limpiados para usuario '{username}'
-            ""
+                f"[CHECK] [SECURITY] Intentos fallidos limpiados para usuario '{username}'"
+            )
+
         except Exception as e:
             print(f"[ERROR USUARIOS] Error limpiando intentos fallidos: {e}")
+
     def _limpiar_bloqueo_usuario(self, username):
         """
         Método interno para limpiar el bloqueo de un usuario cuando ha expirado.
@@ -798,16 +873,19 @@ class UsuariosModel:
             sql_update = self.sql_manager.get_query('usuarios', 'limpiar_intentos_bloqueo')
             cursor.execute(sql_update, (username,))
             self.db_connection.connection.commit()
-            print(f"[CHECK] [SECURITY] Bloqueo expirado limpiado para usuario '{username}'"
+
+            print(f"[CHECK] [SECURITY] Bloqueo expirado limpiado para usuario '{username}'")
 
         except Exception as e:
             print(f"[ERROR USUARIOS] Error limpiando bloqueo expirado: {e}")
+
     def obtener_modulos_permitidos(self, usuario_data):
         """Obtiene los módulos permitidos para un usuario."""
         if not usuario_data or not isinstance(usuario_data, dict):
             return ["Configuración"]
 
         permisos = usuario_data.get("permisos_modulos", "")
+
         if permisos == "ALL":
             return [
                 "Obras",
@@ -865,16 +943,16 @@ username: str,
             # 1. Verificar si la cuenta está bloqueada
             if self.verificar_cuenta_bloqueada(username):
                 resultado["message"] = (
-                    f"Cuenta bloqueada por exceso de intentos fallidos. Intente después de {self.LOCKOUT_DURATION // 60} minutos
-
+                    f"Cuenta bloqueada por exceso de intentos fallidos. Intente después de {self.LOCKOUT_DURATION // 60} minutos"
+                )
                 return resultado
 
             # 2. Obtener datos del usuario
-            usuario_data = self.obtener_usuario_por_nombre(username"
+            usuario_data = self.obtener_usuario_por_nombre(username)
 
             if not usuario_data:
                 # Registrar intento fallido para prevenir enumeración de usuarios
-                self.registrar_intento_login(username, exitoso=False"
+                self.registrar_intento_login(username, exitoso=False)
                 resultado["message"] = "Credenciales inválidas"
                 return resultado
 
@@ -890,26 +968,31 @@ username: str,
             ):
                 # Registrar intento fallido
                 self.registrar_intento_login(username, exitoso=False)
+
                 # Calcular intentos restantes
                 intentos_actuales = (usuario_data.get("intentos_fallidos") or 0) + 1
                 intentos_restantes = max(0, self.MAX_LOGIN_ATTEMPTS - intentos_actuales)
+
                 resultado["attempts_remaining"] = intentos_restantes
 
                 if intentos_restantes <= 0:
                     resultado["message"] = (
-                        f"Cuenta bloqueada por exceso de intentos. Intente después de {self.LOCKOUT_DURATION // 60} minutos
-                    ""
+                        f"Cuenta bloqueada por exceso de intentos. Intente después de {self.LOCKOUT_DURATION // 60} minutos"
+                    )
                 else:
                     resultado["message"] = (
-                        f"Credenciales inválidas. {intentos_restantes} intentos restantes
+                        f"Credenciales inválidas. {intentos_restantes} intentos restantes"
+                    )
 
                 return resultado
 
             # 5. Login exitoso - limpiar intentos fallidos
             self.registrar_intento_login(username, exitoso=True)
-            # 6. Preparar datos del usuario para la sesión (sin password_hash"
-            user_session_data = usuario_data.copy("
+
+            # 6. Preparar datos del usuario para la sesión (sin password_hash)
+            user_session_data = usuario_data.copy()
             user_session_data.pop("password_hash", None)
+
             resultado.update(
                 {
                     "success": True,
@@ -917,11 +1000,12 @@ username: str,
                     "message": "Autenticación exitosa",
                     "attempts_remaining": self.MAX_LOGIN_ATTEMPTS,
                 }
+            )
 
             return resultado
 
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error en autenticación segura: {e}"
+            print(f"[ERROR USUARIOS] Error en autenticación segura: {e}")
             resultado["message"] = "Error interno en la autenticación"
             return resultado
 
@@ -949,6 +1033,7 @@ username: str,
             elif self.security_available and self.data_sanitizer:
                 # Fallback a sanitizador legacy
                 datos_limpios = self.data_sanitizer.sanitize_dict(datos_usuario)
+
                 # Validaciones específicas
                 if not datos_limpios.get("usuario"):
                     return False, "El nombre de usuario es requerido"
@@ -962,7 +1047,7 @@ username: str,
                     try:
                         email_limpio = sanitize_string(
                             datos_limpios["email"]
-
+                        )
                         if (
                             not email_limpio
                             or len(email_limpio) < 5
@@ -971,12 +1056,14 @@ username: str,
                             return False, "Formato de email inválido"
                         datos_limpios["email"] = email_limpio
                     except (ValueError, AttributeError, TypeError) as e:
-                        logger.warning(f"Error validando email:{e}")
-                        return False, )
+                        print(f"[WARNING] Error validando email: {e}")
+                        return False, "Formato de email inválido"
+
+                # Validar teléfono si se proporciona
                 if datos_limpios.get("telefono"):
                     telefono_limpio = sanitize_string(
                         datos_limpios["telefono"]
-
+                    )
                     datos_limpios["telefono"] = telefono_limpio
 
             else:
@@ -984,13 +1071,15 @@ username: str,
                 datos_limpios = datos_usuario.copy()
                 print(
                     "WARNING [USUARIOS] Creando usuario sin sanitización de seguridad"
+                )
 
             cursor = self.db_connection.connection.cursor()
+
             # Verificar que el usuario no exista
             sql_count_usuario = self.sql_manager.get_query('usuarios', 'count_usuario_by_name')
             cursor.execute(sql_count_usuario, (datos_limpios["usuario"],))
             if cursor.fetchone()[0] > 0:
-                return False, f"El usuario '{datos_limpios['usuario']}' ya existe
+                return False, f"El usuario '{datos_limpios['usuario']}' ya existe"
 
             # Verificar que el email no exista
             if datos_limpios.get("email"):
@@ -999,10 +1088,12 @@ username: str,
                 if cursor.fetchone()[0] > 0:
                     return (
                         False,
-                        f"El email '{datos_limpios['email']}' ya está registrado,
-                    ""
+                        f"El email '{datos_limpios['email']}' ya está registrado",
+                    )
+
             # Hashear la contraseña
             password_hash = self._hashear_password(datos_limpios["password"])
+
             # Insertar usuario con datos sanitizados
             sql_insertar = self.sql_manager.get_query('usuarios', 'insertar_usuario')
             cursor.execute(
@@ -1016,6 +1107,7 @@ username: str,
                     datos_limpios.get("rol", "USUARIO"),
                     datos_limpios.get("estado", "ACTIVO"),
                 ),
+            )
 
             # Obtener ID del usuario creado
             sql_ultimo_id = self.sql_manager.get_query('usuarios', 'obtener_ultimo_id')
@@ -1029,19 +1121,21 @@ username: str,
                 cursor.execute(
                     sql_permiso,
                     (usuario_id, modulo, "leer"),
+                )
 
             self.db_connection.connection.commit()
             # Invalidar cache después de crear usuario
             self._invalidar_cache_usuarios()
+
             print(
-                f"[USUARIOS] Usuario '{datos_usuario['usuario']}' creado exitosamente
-            ""
+                f"[USUARIOS] Usuario '{datos_usuario['usuario']}' creado exitosamente"
+            )
             return True, f"Usuario '{datos_usuario['usuario']}' creado exitosamente"
 
         except Exception as e:
             print(f"[ERROR USUARIOS] Error creando usuario: {e}")
             if self.db_connection:
-                self.db_connection.connection.rollback("
+                self.db_connection.connection.rollback()
             return False, f"Error creando usuario: {str(e)}"
 
     @cached_query(ttl=120)  # Cache por 2 minutos - listado completo de usuarios
@@ -1049,11 +1143,14 @@ username: str,
         """Obtiene todos los usuarios del sistema con permisos optimizados (sin consultas N+1)."""
         if not self.db_connection:
             return self._get_usuarios_demo()
+
         try:
             cursor = self.db_connection.connection.cursor()
+
             # Query optimizada con JOIN para eliminar consultas N+1
             sql = self.sql_manager.get_query('usuarios', 'obtener_usuarios_con_permisos')
             cursor.execute(sql)
+
             # Procesar resultados agrupando permisos por usuario
             usuarios_dict = {}
 
@@ -1079,17 +1176,20 @@ username: str,
                     # Agregar textos descriptivos
                     usuarios_dict[user_id]["rol_texto"] = self.ROLES.get(row[5], row[5])
                     usuarios_dict[user_id]["estado_texto"] = self.ESTADOS.get(row[6], row[6])
+
                 # Agregar permiso si existe
                 if row[10]:  # permiso no es NULL
                     usuarios_dict[user_id]["permisos"].append(row[10])
+
             # Convertir dict a lista manteniendo orden
             usuarios = list(usuarios_dict.values())
             return usuarios
 
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error obteniendo usuarios optimizado: {e}"
-            return self._get_usuarios_demo(")
-    def buscar_usuarios(self, termino_busqueda: str" -> List[Dict[str, Any]]:
+            print(f"[ERROR USUARIOS] Error obteniendo usuarios optimizado: {e}")
+            return self._get_usuarios_demo()
+
+    def buscar_usuarios(self, termino_busqueda: str) -> List[Dict[str, Any]]:
         """
         Busca usuarios por nombre, username o email.
 
@@ -1112,9 +1212,11 @@ username: str,
 
         try:
             cursor = self.db_connection.connection.cursor()
+
             # Query optimizada con JOIN para eliminar consultas N+1 en búsqueda
             sql = self.sql_manager.get_query('usuarios', 'buscar_usuarios_con_permisos')
             cursor.execute(sql, (f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%'))
+
             # Procesar resultados agrupando permisos por usuario
             usuarios_dict = {}
 
@@ -1140,9 +1242,11 @@ username: str,
                     # Agregar textos descriptivos
                     usuarios_dict[user_id]["rol_texto"] = self.ROLES.get(row[5], row[5])
                     usuarios_dict[user_id]["estado_texto"] = self.ESTADOS.get(row[6], row[6])
+
                 # Agregar permiso si existe
                 if row[10]:  # permiso no es NULL
                     usuarios_dict[user_id]["permisos"].append(row[10])
+
             # Convertir dict a lista manteniendo orden
             usuarios = list(usuarios_dict.values())
             return usuarios
@@ -1151,7 +1255,7 @@ username: str,
             print(f"[ERROR USUARIOS] Error buscando usuarios optimizado: {e}")
             return []
 
-    def obtener_usuario_por_id(self, usuario_id: int" -> Optional[Dict[str, Any]]:
+    def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene un usuario por su ID."""
         if not self.db_connection:
             return None
@@ -1167,6 +1271,7 @@ username: str,
                 WHERE id = ? AND activo = 1
             """,
                 (usuario_id,),
+            )
 
             row = cursor.fetchone()
             if row:
@@ -1185,7 +1290,7 @@ username: str,
         self,
         usuario_id: int,
         datos_usuario: Dict[str, Any],
-    " -> Tuple[bool, str]:"
+    ) -> Tuple[bool, str]:
         """
         Actualiza los datos de un usuario.
 
@@ -1201,6 +1306,7 @@ username: str,
 
         try:
             cursor = self.db_connection.connection.cursor()
+
             # Verificar que el usuario exista
             sql_count_id = self.sql_manager.get_query('usuarios', 'count_usuario_by_id')
             cursor.execute(sql_count_id, (usuario_id,))
@@ -1223,6 +1329,7 @@ username: str,
                     datos_usuario.get("estado", "ACTIVO"),
                     usuario_id,
                 ),
+            )
 
             # Actualizar contraseña si se proporciona
             if datos_usuario.get("password"):
@@ -1234,16 +1341,21 @@ username: str,
                     WHERE id = ?
                 """,
                     (password_hash, usuario_id),
+                )
 
             # Actualizar permisos
             if "permisos" in datos_usuario:
-                cursor.execute(self.sql_manager.get_query("usuarios", "delete_usuarios_1"), params),
+                cursor.execute(
+                    "DELETE FROM permisos_usuario WHERE usuario_id = ?",
+                    (usuario_id,),
+                )
 
                 for modulo in datos_usuario["permisos"]:
                     sql_permiso = self.sql_manager.get_query('usuarios', 'insertar_permiso')
                     cursor.execute(
                         sql_permiso,
                         (usuario_id, modulo, "leer,escribir"),
+                    )
 
             self.db_connection.connection.commit()
             return True, "Usuario actualizado exitosamente"
@@ -1251,7 +1363,7 @@ username: str,
         except Exception as e:
             print(f"[ERROR USUARIOS] Error actualizando usuario: {e}")
             if self.db_connection:
-                self.db_connection.connection.rollback("
+                self.db_connection.connection.rollback()
             return False, f"Error actualizando usuario: {str(e)}"
 
     def eliminar_usuario(
@@ -1272,6 +1384,7 @@ username: str,
 
         try:
             cursor = self.db_connection.connection.cursor()
+
             # Verificar que el usuario exista
             sql_get_usuario = self.sql_manager.get_query('usuarios', 'obtener_usuario_by_id')
             cursor.execute(sql_get_usuario, (usuario_id,))
@@ -1293,6 +1406,7 @@ username: str,
                 WHERE id = ?
             """,
                 (usuario_id,),
+            )
 
             # Cerrar sesiones activas
             cursor.execute(
@@ -1302,18 +1416,19 @@ username: str,
                 WHERE usuario_id = ? AND activa = 1
             """,
                 (usuario_id,),
+            )
 
             self.db_connection.connection.commit()
-            return True, f"Usuario '{nombre_usuario}' eliminado exitosamente
+            return True, f"Usuario '{nombre_usuario}' eliminado exitosamente"
 
         except Exception as e:
             print(f"[ERROR USUARIOS] Error eliminando usuario: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
-            return False, f"Error eliminando usuario: {str(e)}
+            return False, f"Error eliminando usuario: {str(e)}"
 
-    @cached_query(ttl=300"  # Cache por 5 minutos - permisos cambian poco frecuentemente
-    def obtener_permisos_usuario(self, usuario_id: int" -> List[str]:
+    @cached_query(ttl=300)  # Cache por 5 minutos - permisos cambian poco frecuentemente
+    def obtener_permisos_usuario(self, usuario_id: int) -> List[str]:
         """Obtiene los permisos de un usuario."""
         if not self.db_connection:
             return ["Configuración"]
@@ -1326,11 +1441,12 @@ username: str,
                 WHERE usuario_id = ?
             """,
                 (usuario_id,),
+            )
 
             return [row[0] for row in cursor.fetchall()]
 
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error obteniendo permisos: {e}"
+            print(f"[ERROR USUARIOS] Error obteniendo permisos: {e}")
             return ["Configuración"]
 
     def cambiar_password(
@@ -1355,6 +1471,7 @@ username: str,
 
         try:
             cursor = self.db_connection.connection.cursor()
+
             # Verificar contraseña actual
             sql_get_password = self.sql_manager.get_query('usuarios', 'obtener_password_hash')
             cursor.execute(sql_get_password, (usuario_id,))
@@ -1375,6 +1492,7 @@ username: str,
                 WHERE id = ?
             """,
                 (nueva_hash, usuario_id),
+            )
 
             self.db_connection.connection.commit()
             return True, "Contraseña cambiada exitosamente"
@@ -1382,81 +1500,75 @@ username: str,
         except Exception as e:
             print(f"[ERROR USUARIOS] Error cambiando contraseña: {e}")
             if self.db_connection:
-                self.db_connection.connection.rollback("
+                self.db_connection.connection.rollback()
             return False, f"Error cambiando contraseña: {str(e)}"
 
     def obtener_estadisticas_usuarios(self) -> Dict[str, Any]:
-        """Obtiene estadísticas de usuarios optimizada con CTEs.
-
-        ⚡ Optimización N+1: 5 queries → 2 queries (-60% carga BD)
-        📈 Mejora: 2.5x más rápido
-        """
+        """Obtiene estadísticas de usuarios."""
         if not self.db_connection:
             return self._get_estadisticas_demo()
+
         try:
             cursor = self.db_connection.connection.cursor()
+
             stats = {}
 
-            # ⚡ Query 1: Obtener valores escalares optimizados con CTEs
-            # Combina: total_usuarios, activos_mes, creados_mes en una sola query
-            cursor.execute("""
-                WITH
-                total_usuarios AS (
-                    SELECT COUNT(*) AS total FROM usuarios WHERE activo = 1
-                ),
-                activos_mes AS (
-                    SELECT COUNT(*) AS activos FROM usuarios
-                    WHERE activo = 1 AND ultimo_acceso >= DATEADD(MONTH, -1, GETDATE())
-                ),
-                creados_mes AS (
-                    SELECT COUNT(*) AS creados FROM usuarios
-                    WHERE activo = 1
-                      AND MONTH(fecha_creacion) = MONTH(GETDATE())
-                      AND YEAR(fecha_creacion) = YEAR(GETDATE())
+            # Total de usuarios
+            sql_count_activos = self.sql_manager.get_query('usuarios', 'count_usuarios_activos')
+            cursor.execute(sql_count_activos)
+            stats["total_usuarios"] = cursor.fetchone()[0]
 
-                SELECT t.total, a.activos, c.creados
-                FROM total_usuarios t CROSS JOIN activos_mes a CROSS JOIN creados_mes c
-            """)
-            row = cursor.fetchone()
-            stats["total_usuarios"] = row[0]
-            stats["activos_mes"] = row[1]
-            stats["creados_mes"] = row[2]
-
-            # ⚡ Query 2: Usuarios por estado y por rol combinados con UNION ALL
+            # Usuarios por estado
             cursor.execute("""
-                SELECT 'ESTADO_' + estado as tipo, estado as valor, COUNT(*) as cantidad
-                FROM usuarios WHERE activo = 1
+                SELECT estado, COUNT(*)
+                FROM usuarios
+                WHERE activo = 1
                 GROUP BY estado
-                UNION ALL
-                SELECT 'ROL_' + rol as tipo, rol as valor, COUNT(*) as cantidad
-                FROM usuarios WHERE activo = 1
+            """)
+            stats["por_estado"] = {row[0]: row[1] for row in cursor.fetchall()}
+
+            # Usuarios por rol
+            cursor.execute("""
+                SELECT rol, COUNT(*)
+                FROM usuarios
+                WHERE activo = 1
                 GROUP BY rol
             """)
-            # Procesar resultados combinados
-            stats["por_estado"] = {}
-            stats["por_rol"] = {}
-            for row in cursor.fetchall():
-                tipo, valor, cantidad = row
-                if tipo.startswith('ESTADO_'):
-                    stats["por_estado"][valor] = cantidad
-                elif tipo.startswith('ROL_'):
-                    stats["por_rol"][valor] = cantidad
+            stats["por_rol"] = {row[0]: row[1] for row in cursor.fetchall()}
+
+            # Usuarios activos en el último mes
+            cursor.execute("""
+                SELECT COUNT(*) FROM usuarios
+                WHERE activo = 1 AND ultimo_acceso >= DATEADD(MONTH, -1, GETDATE())
+            """)
+            stats["activos_mes"] = cursor.fetchone()[0]
+
+            # Usuarios creados este mes
+            cursor.execute("""
+                SELECT COUNT(*) FROM usuarios
+                WHERE activo = 1 AND MONTH(fecha_creacion) = MONTH(GETDATE())
+                AND YEAR(fecha_creacion) = YEAR(GETDATE())
+            """)
+            stats["creados_mes"] = cursor.fetchone()[0]
 
             return stats
 
         except Exception as e:
             print(f"[ERROR USUARIOS] Error obteniendo estadísticas: {e}")
             return self._get_estadisticas_demo()
+
     def _hashear_password(self, password: str) -> str:
         """Hashea una contraseña usando sistema seguro."""
         from rexus.utils.password_security import hash_password_secure
 
         return hash_password_secure(password)
+
     def _verificar_password(self, password: str, hash_almacenado: str) -> bool:
         """Verifica una contraseña contra su hash usando sistema seguro."""
         from rexus.utils.password_security import verify_password_secure
 
         return verify_password_secure(password, hash_almacenado)
+
     def _get_usuarios_demo(self) -> List[Dict[str, Any]]:
         """Datos demo cuando no hay conexión a BD."""
         return [
@@ -1524,9 +1636,11 @@ username: str,
                 return [], 0
 
             cursor = self.db_connection.connection.cursor()
+
             # Query base
             base_query = self._get_base_query()
             count_query = self._get_count_query()
+
             # Aplicar filtros si existen
             where_clause = ""
             params = []
@@ -1535,37 +1649,50 @@ username: str,
                 where_conditions = []
                 for campo, valor in filtros.items():
                     if valor:
-                        where_conditions.append(f"{campo} LIKE ?"
+                        where_conditions.append(f"{campo} LIKE ?")
                         params.append(f"%{valor}%")
+
                 if where_conditions:
                     where_clause = " WHERE " + " AND ".join(where_conditions)
+
             # Obtener total de registros
             full_count_query = count_query + where_clause
             cursor.execute(full_count_query, params)
             total_registros = cursor.fetchone()[0]
 
             # Obtener datos paginados
-            paginated_query = f"{base_query}{where_clause} ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+            paginated_query = f"{base_query}{where_clause} ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
             cursor.execute(paginated_query, params + [offset, limit])
+
             datos = []
             for row in cursor.fetchall():
-                datos.append(self._row_to_dict(row, cursor.description""
+                datos.append(self._row_to_dict(row, cursor.description))
 
             return datos, total_registros
 
         except Exception as e:
-            logger.error(")
+            print(f"[ERROR] Error obteniendo datos paginados: {e}")
             return [], 0
 
     def obtener_total_registros(self, filtros=None):
-
+        """Obtiene el total de registros disponibles"""
+        try:
+            _, total = self.obtener_datos_paginados(offset=0,
+                                                   limit=1,
                                                    filtros=filtros)
             return total
         except Exception as e:
-            logger.error(f"Error obteniendo total de registros: {e}")
+            print(f"[ERROR] Error obteniendo total de registros: {e}")
             return 0
 
     def _get_base_query(self):
+        """Obtiene la query base para paginación usando SQL externo."""
+        # White-list de tablas permitidas para paginación
+        tabla_queries = {
+            'usuarios': 'get_base_query_usuarios',
+            'roles': 'get_base_query_roles',
+            'permisos_usuario': 'get_base_query_permisos'
+        }
 
         tabla_principal = getattr(self, "tabla_principal", "usuarios")
         if tabla_principal in tabla_queries:
@@ -1573,6 +1700,7 @@ username: str,
         else:
             # Fallback seguro para tabla por defecto
             return self.sql_manager.get_query('usuarios', 'get_base_query_usuarios')
+
     def _get_count_query(self):
         """Obtiene la query de conteo usando SQL externo."""
         # White-list de tablas permitidas para conteo
@@ -1588,6 +1716,7 @@ username: str,
         else:
             # Fallback seguro para tabla por defecto
             return self.sql_manager.get_query('usuarios', 'get_count_query_usuarios')
+
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""
         return {desc[0]: row[i] for i, desc in enumerate(description)}
@@ -1648,6 +1777,7 @@ usuario_id: int,
         if self.profiles_manager:
             return self.profiles_manager.obtener_todos_usuarios(incluir_inactivos)
         return self.obtener_todos_usuarios()
+
     def actualizar_usuario_con_gestores(self,
 usuario_id: int,
         datos_actualizados: Dict[str,
@@ -1664,14 +1794,18 @@ usuario_id: int,
         if self.auth_manager:
             return self.auth_manager.validar_fortaleza_password(password)
         return self.validar_fortaleza_password(password)
+
     def obtener_estadisticas_completas(self) -> Dict[str, Any]:
         """Obtiene estadísticas completas del sistema de usuarios."""
         estadisticas = self.obtener_estadisticas_usuarios()
+
         # Agregar estadísticas de gestores especializados
         if self.sessions_manager:
             estadisticas['sesiones'] = self.sessions_manager.obtener_estadisticas_sesiones()
+
         if self.permissions_manager:
             estadisticas['permisos'] = self.permissions_manager.obtener_estadisticas_permisos()
+
         return estadisticas
 
     def _invalidar_cache_usuarios(self) -> None:

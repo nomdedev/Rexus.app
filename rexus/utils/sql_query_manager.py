@@ -20,9 +20,15 @@ class SQLQueryManager:
             sql_base_path: Ruta base donde se encuentran los archivos SQL
         """
         if sql_base_path is None:
-            # Usar la estructura existente en scripts/sql
             current_dir = Path(__file__).parent.parent.parent
-            self.sql_base_path = current_dir / "scripts" / "sql"
+            candidate_paths = [
+                current_dir / "scripts" / "sql",
+                current_dir / "sql",
+            ]
+            self.sql_base_path = next(
+                (path for path in candidate_paths if path.exists()),
+                candidate_paths[0],
+            )
         else:
             self.sql_base_path = Path(sql_base_path)
 

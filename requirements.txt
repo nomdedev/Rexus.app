@@ -41,6 +41,18 @@ schedule>=1.2.0
 # Requests for API integrations
 requests>=2.31.0
 
+# Security features (2FA)
+pyotp>=2.9.0
+
+# API & Middleware support
+flask>=3.0.0
+fastapi>=0.111.0
+starlette>=0.37.0
+
+# Monitoring & map features
+prometheus-client>=0.20.0
+folium>=0.17.0
+
 # Development & Testing
 pytest>=7.4.0
 pytest-qt>=4.2.0

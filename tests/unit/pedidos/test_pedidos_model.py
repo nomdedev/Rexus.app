@@ -64,17 +64,8 @@ class TestPedidosModel(unittest.TestCase):
         model_with_db = PedidosModel(db_connection=mock_db)
         self.assertEqual(model_with_db.db_connection, mock_db)
 
-    @patch('rexus.modules.06_pedidos.model.unified_sanitizer')
-    def test_crear_pedido(self, mock_sanitizer):
+    def test_crear_pedido(self):
         """Test de creación de pedido."""
-        # Mock sanitizer
-        mock_sanitizer.sanitize_dict.return_value = {
-            'numero_pedido': 'PED-001',
-            'cliente': 'Test Cliente',
-            'estado': 'PENDIENTE',
-            'productos': []
-        }
-        
         # Mock cursor
         mock_cursor = Mock()
         self.mock_db.cursor.return_value = mock_cursor
@@ -249,14 +240,8 @@ class TestPedidosModel(unittest.TestCase):
         result = self.model.crear_pedido(datos)
         self.assertFalse(result)
 
-    @patch('rexus.modules.06_pedidos.model.unified_sanitizer')
-    def test_sanitizacion_datos(self, mock_sanitizer):
+    def test_sanitizacion_datos(self):
         """Test de sanitización de datos."""
-        mock_sanitizer.sanitize_dict.return_value = {
-            'numero_pedido': 'PED-001',
-            'cliente': 'Safe Cliente'
-        }
-        
         mock_cursor = Mock()
         self.mock_db.cursor.return_value = mock_cursor
         

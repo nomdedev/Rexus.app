@@ -6,7 +6,11 @@ Maneja la programación automática y calendario de mantenimientos.
 
 from datetime import date, timedelta
 from typing import Dict, List, Optional, Any
+import logging
 from rexus.utils.security import SecurityUtils
+
+
+logger = logging.getLogger(__name__)
 
 
 class ProgramacionMantenimientoModel:
@@ -39,12 +43,12 @@ class ProgramacionMantenimientoModel:
                     (tabla,),
                 )
                 if cursor.fetchone():
-                    print(f"[PROGRAMACION] Tabla '{tabla}' verificada.")
+                    logger.debug(f"[PROGRAMACION] Tabla '{tabla}' verificada.")
                 else:
-                    print(f"[ADVERTENCIA] Tabla '{tabla}' no existe.")
+                    logger.warning(f"[ADVERTENCIA] Tabla '{tabla}' no existe.")
 
         except Exception as e:
-            print(f"[ERROR PROGRAMACION] Error verificando tablas: {e}")
+            logger.error(f"[ERROR PROGRAMACION] Error verificando tablas: {e}")
 
     def crear_programacion(
         self,
@@ -76,7 +80,7 @@ class ProgramacionMantenimientoModel:
             bool: True si se creó exitosamente
         """
         if not self.db_connection:
-            print("[WARN PROGRAMACION] Sin conexión BD")
+            logger.warning("[WARN PROGRAMACION] Sin conexión BD")
             return False
 
         try:
@@ -118,11 +122,13 @@ class ProgramacionMantenimientoModel:
             )
 
             self.db_connection.commit()
-            print(f"[PROGRAMACION] Programación creada para equipo {equipo_id}")
+            logger.info(f"[PROGRAMACION] Programación creada para equipo {equipo_id}")
             return True
 
         except Exception as e:
-            print(f"[ERROR PROGRAMACION] Error creando programación: {e}")
+            logger.error(f"[ERROR PROGRAMACION] Error creando programación: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
             return False
 
     def obtener_programaciones_activas(self) -> List[Dict]:
@@ -173,11 +179,11 @@ class ProgramacionMantenimientoModel:
 
                 programaciones.append(programacion)
 
-            print(f"[PROGRAMACION] Obtenidas {len(programaciones)} programaciones activas")
+            logger.info(f"[PROGRAMACION] Obtenidas {len(programaciones)} programaciones activas")
             return programaciones
 
         except Exception as e:
-            print(f"[ERROR PROGRAMACION] Error obteniendo programaciones: {e}")
+            logger.error(f"[ERROR PROGRAMACION] Error obteniendo programaciones: {e}")
             return self._get_programaciones_demo()
 
     def generar_mantenimientos_pendientes(self) -> List[Dict]:

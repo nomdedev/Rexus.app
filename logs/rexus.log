@@ -1182,3 +1182,473 @@ NameError: name 'USE_STATE_MANAGER' is not defined. Did you mean: 'HAS_STATE_MAN
 2026-02-24 14:33:02 - rexus.orchestrator.MasterOrchestrator - INFO - Analizando rendimiento...
 2026-02-24 14:33:03 - rexus.orchestrator.MasterOrchestrator - INFO - Generando reporte consolidado...
 2026-02-24 14:33:03 - rexus.orchestrator.MasterOrchestrator - INFO - Reporte guardado en: D:\martin\Proyectos\Rexus.app\reports\audits\audit_20260224_143303.json
+2026-02-24 14:35:52 - __main__ - INFO - ================================================================================
+2026-02-24 14:35:52 - __main__ - INFO - INICIANDO SISTEMA DE AGENTES REXUS.APP
+2026-02-24 14:35:52 - __main__ - INFO - ================================================================================
+2026-02-24 14:35:52 - __main__ - INFO - Orquestador creado: RexusMainOrchestrator
+2026-02-24 14:35:52 - __main__ - INFO - 
+Registrando 5 agentes de auditoría...
+2026-02-24 14:35:52 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-inventario
+2026-02-24 14:35:52 - __main__ - INFO -   ✓ audit-inventario registrado
+2026-02-24 14:35:52 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-usuarios
+2026-02-24 14:35:52 - __main__ - INFO -   ✓ audit-usuarios registrado
+2026-02-24 14:35:52 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-auditoría
+2026-02-24 14:35:52 - __main__ - INFO -   ✓ audit-auditoría registrado
+2026-02-24 14:35:52 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-compras
+2026-02-24 14:35:52 - __main__ - INFO -   ✓ audit-compras registrado
+2026-02-24 14:35:52 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-logística
+2026-02-24 14:35:52 - __main__ - INFO -   ✓ audit-logística registrado
+2026-02-24 14:35:52 - __main__ - INFO - 
+Orcuestador Status: {'nombre': 'RexusMainOrchestrator', 'agentes_registrados': ['audit-inventario', 'audit-usuarios', 'audit-auditoría', 'audit-compras', 'audit-logística'], 'total_agentes': 5, 'aprobaciones_procesadas': 0, 'última_auditoría': None}
+2026-02-24 14:35:52 - __main__ - INFO - 
+================================================================================
+2026-02-24 14:35:52 - __main__ - INFO - EJECUTANDO CICLO DE AUDITORÍA
+2026-02-24 14:35:52 - __main__ - INFO - ================================================================================
+2026-02-24 14:35:52 - rexus.orchestrator.RexusMainOrchestrator - INFO - Iniciando ciclo de auditoría para 5 agentes
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de audit-inventario
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-inventario - INFO - Auditar audit-inventario: success
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-usuarios - INFO - Iniciando auditoría de audit-usuarios
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-usuarios - INFO - Auditar audit-usuarios: success
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-auditoría - INFO - Iniciando auditoría de audit-auditoría
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-auditoría - INFO - Auditar audit-auditoría: success
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-compras - INFO - Iniciando auditoría de audit-compras
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-compras - INFO - Auditar audit-compras: success
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-logística - INFO - Iniciando auditoría de audit-logística
+2026-02-24 14:35:52 - rexus.agents.AuditAgent-logística - INFO - Auditar audit-logística: success
+2026-02-24 14:35:52 - __main__ - INFO - 
+Resultados de auditoría:
+2026-02-24 14:35:52 - errors - ERROR - Uncaught exception: KeyError: 'agentes_auditados'
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\martin\Proyectos\Rexus.app\rexus\agents\demo_agents.py", line 119, in <module>
+    results = asyncio.run(main())
+  File "C:\Program Files\Python314\Lib\asyncio\runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Program Files\Python314\Lib\asyncio\runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Program Files\Python314\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "D:\martin\Proyectos\Rexus.app\rexus\agents\demo_agents.py", line 68, in main
+    logger.info(f"  - Agentes auditados: {audit_results['summary']['agentes_auditados']}")
+                                          ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'agentes_auditados'
+2026-02-24 14:42:23 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de inventario
+2026-02-24 14:42:23 - rexus.agents.AuditAgent-inventario - INFO - Auditar inventario: success
+2026-02-24 14:43:14 - __main__ - INFO - ================================================================================
+2026-02-24 14:43:14 - __main__ - INFO - INICIANDO SISTEMA DE AGENTES REXUS.APP
+2026-02-24 14:43:14 - __main__ - INFO - ================================================================================
+2026-02-24 14:43:14 - __main__ - INFO - Orquestador creado: RexusMainOrchestrator
+2026-02-24 14:43:14 - __main__ - INFO - 
+Registrando 5 agentes de auditoría...
+2026-02-24 14:43:14 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-inventario
+2026-02-24 14:43:14 - __main__ - INFO -   ✓ audit-inventario registrado
+2026-02-24 14:43:14 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-usuarios
+2026-02-24 14:43:14 - __main__ - INFO -   ✓ audit-usuarios registrado
+2026-02-24 14:43:14 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-auditoría
+2026-02-24 14:43:14 - __main__ - INFO -   ✓ audit-auditoría registrado
+2026-02-24 14:43:14 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-compras
+2026-02-24 14:43:14 - __main__ - INFO -   ✓ audit-compras registrado
+2026-02-24 14:43:14 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-logística
+2026-02-24 14:43:14 - __main__ - INFO -   ✓ audit-logística registrado
+2026-02-24 14:43:14 - __main__ - INFO - 
+Orcuestador Status: {'nombre': 'RexusMainOrchestrator', 'agentes_registrados': ['audit-inventario', 'audit-usuarios', 'audit-auditoría', 'audit-compras', 'audit-logística'], 'total_agentes': 5, 'aprobaciones_procesadas': 0, 'última_auditoría': None}
+2026-02-24 14:43:14 - __main__ - INFO - 
+================================================================================
+2026-02-24 14:43:14 - __main__ - INFO - EJECUTANDO CICLO DE AUDITORÍA
+2026-02-24 14:43:14 - __main__ - INFO - ================================================================================
+2026-02-24 14:43:14 - rexus.orchestrator.RexusMainOrchestrator - INFO - Iniciando ciclo de auditoría para 5 agentes
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de audit-inventario
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-inventario - INFO - Auditar audit-inventario: success
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-usuarios - INFO - Iniciando auditoría de audit-usuarios
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-usuarios - INFO - Auditar audit-usuarios: success
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-auditoría - INFO - Iniciando auditoría de audit-auditoría
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-auditoría - INFO - Auditar audit-auditoría: success
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-compras - INFO - Iniciando auditoría de audit-compras
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-compras - INFO - Auditar audit-compras: success
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-logística - INFO - Iniciando auditoría de audit-logística
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-logística - INFO - Auditar audit-logística: success
+2026-02-24 14:43:14 - __main__ - INFO - 
+Resultados de auditoría:
+2026-02-24 14:43:14 - __main__ - INFO -   - Agentes auditados: 5
+2026-02-24 14:43:14 - __main__ - INFO -   - Auditorías completadas: 5
+2026-02-24 14:43:14 - __main__ - INFO - 
+================================================================================
+2026-02-24 14:43:14 - __main__ - INFO - REPORTE PARA CONSEJO SUPERIOR
+2026-02-24 14:43:14 - __main__ - INFO - ================================================================================
+2026-02-24 14:43:14 - __main__ - INFO - {
+  "tipo_documento": "REPORTE_DE_CONSEJO",
+  "fecha": "2026-02-24T14:43:14.627385",
+  "resumen_ejecutivo": {
+    "total_agents_auditados": 5,
+    "auditorías_completadas": 5,
+    "auditorías_fallidas": 0,
+    "timestamp": "2026-02-24T14:43:14.608739"
+  },
+  "módulos_auditados": {
+    "audit-inventario": {
+      "estado": "Auditado",
+      "reporte_disponible": true
+    },
+    "audit-usuarios": {
+      "estado": "Auditado",
+      "reporte_disponible": true
+    },
+    "audit-auditoría": {
+      "estado": "Auditado",
+      "reporte_disponible": true
+    },
+    "audit-compras": {
+      "estado": "Auditado",
+      "reporte_disponible": true
+    },
+    "audit-logística": {
+      "estado": "Auditado",
+      "reporte_disponible": true
+    }
+  },
+  "instrucciones": "Revise los hallazgos de cada módulo. Apruebe o rechace las mejoras propuestas. El consejo debe autorizar cambios significativos."
+}
+2026-02-24 14:43:14 - __main__ - INFO - 
+================================================================================
+2026-02-24 14:43:14 - __main__ - INFO - EJECUTANDO CAMBIOS APROBADOS POR CONSEJO
+2026-02-24 14:43:14 - __main__ - INFO - ================================================================================
+2026-02-24 14:43:14 - rexus.orchestrator.RexusMainOrchestrator - INFO - Ejecutando 2 sets de decisiones del consejo
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-inventario - INFO - Ejecutando 1 cambios aprobados para inventario
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-inventario - INFO - Ejecutar cambios en inventario: success
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-usuarios - INFO - Ejecutando 1 cambios aprobados para usuarios
+2026-02-24 14:43:14 - rexus.agents.AuditAgent-usuarios - INFO - Ejecutar cambios en usuarios: success
+2026-02-24 14:43:14 - __main__ - INFO - 
+Cambios ejecutados: 2
+2026-02-24 14:43:14 - __main__ - INFO - Cambios fallidos: 0
+2026-02-24 14:43:14 - __main__ - INFO - 
+================================================================================
+2026-02-24 14:43:14 - __main__ - INFO - SISTEMA DE AGENTES INICIALIZADO CORRECTAMENTE
+2026-02-24 14:43:14 - __main__ - INFO - ================================================================================
+2026-02-24 14:43:14 - __main__ - INFO - 
+✓ Los agentes están activos y listos para trabajar
+2026-02-24 14:43:14 - __main__ - INFO - ✓ Puedes enviar tareas específicas a través del orquestador
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-obras
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-inventario
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-herrajes
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-vidrios
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-logistica
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-pedidos
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-compras
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-administracion
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-mantenimiento
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-auditoria
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-usuarios
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-configuracion
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-notificaciones
+2026-02-24 14:45:55 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-obras - INFO - Iniciando auditoría de audit-obras
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-obras - INFO - Auditar audit-obras: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de audit-inventario
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-inventario - INFO - Auditar audit-inventario: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-herrajes - INFO - Iniciando auditoría de audit-herrajes
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-herrajes - INFO - Auditar audit-herrajes: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-vidrios - INFO - Iniciando auditoría de audit-vidrios
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-vidrios - INFO - Auditar audit-vidrios: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-logistica - INFO - Iniciando auditoría de audit-logistica
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-logistica - INFO - Auditar audit-logistica: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-pedidos - INFO - Iniciando auditoría de audit-pedidos
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-pedidos - INFO - Auditar audit-pedidos: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-compras - INFO - Iniciando auditoría de audit-compras
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-compras - INFO - Auditar audit-compras: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-administracion - INFO - Iniciando auditoría de audit-administracion
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-administracion - INFO - Auditar audit-administracion: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-mantenimiento - INFO - Iniciando auditoría de audit-mantenimiento
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-mantenimiento - INFO - Auditar audit-mantenimiento: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-auditoria - INFO - Iniciando auditoría de audit-auditoria
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-auditoria - INFO - Auditar audit-auditoria: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-usuarios - INFO - Iniciando auditoría de audit-usuarios
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-usuarios - INFO - Auditar audit-usuarios: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-configuracion - INFO - Iniciando auditoría de audit-configuracion
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-configuracion - INFO - Auditar audit-configuracion: success
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-notificaciones - INFO - Iniciando auditoría de audit-notificaciones
+2026-02-24 14:45:55 - rexus.agents.AuditAgent-notificaciones - INFO - Auditar audit-notificaciones: success
+2026-02-24 14:48:32 - __main__ - INFO - [OK] Orquestador creado: RexusMainOrchestrator
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-obras
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-inventario
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-herrajes
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-vidrios
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-logística
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-pedidos
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-compras
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-administración
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-mantenimiento
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-auditoría
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-usuarios
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-configuración
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Agente registrado: audit-notificaciones
+2026-02-24 14:48:32 - __main__ - INFO - Sistema de agentes inicializado
+2026-02-24 14:48:32 - rexus.orchestrator.RexusMainOrchestrator - INFO - Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-obras - INFO - Iniciando auditoría de audit-obras
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-obras - INFO - Auditar audit-obras: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de audit-inventario
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-inventario - INFO - Auditar audit-inventario: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-herrajes - INFO - Iniciando auditoría de audit-herrajes
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-herrajes - INFO - Auditar audit-herrajes: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-vidrios - INFO - Iniciando auditoría de audit-vidrios
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-vidrios - INFO - Auditar audit-vidrios: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-logística - INFO - Iniciando auditoría de audit-logística
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-logística - INFO - Auditar audit-logística: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-pedidos - INFO - Iniciando auditoría de audit-pedidos
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-pedidos - INFO - Auditar audit-pedidos: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-compras - INFO - Iniciando auditoría de audit-compras
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-compras - INFO - Auditar audit-compras: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-administración - INFO - Iniciando auditoría de audit-administración
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-administración - INFO - Auditar audit-administración: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-mantenimiento - INFO - Iniciando auditoría de audit-mantenimiento
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-mantenimiento - INFO - Auditar audit-mantenimiento: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-auditoría - INFO - Iniciando auditoría de audit-auditoría
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-auditoría - INFO - Auditar audit-auditoría: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-usuarios - INFO - Iniciando auditoría de audit-usuarios
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-usuarios - INFO - Auditar audit-usuarios: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-configuración - INFO - Iniciando auditoría de audit-configuración
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-configuración - INFO - Auditar audit-configuración: success
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-notificaciones - INFO - Iniciando auditoría de audit-notificaciones
+2026-02-24 14:48:32 - rexus.agents.AuditAgent-notificaciones - INFO - Auditar audit-notificaciones: success
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-obras
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-inventario
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-herrajes
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-vidrios
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-logistica
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-pedidos
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-compras
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-administracion
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-mantenimiento
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-auditoria
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-usuarios
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-configuracion
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-notificaciones
+2026-02-24 15:56:10 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-obras - INFO - Iniciando auditoría de audit-obras
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-obras - INFO - Auditar audit-obras: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de audit-inventario
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-inventario - INFO - Auditar audit-inventario: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-herrajes - INFO - Iniciando auditoría de audit-herrajes
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-herrajes - INFO - Auditar audit-herrajes: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-vidrios - INFO - Iniciando auditoría de audit-vidrios
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-vidrios - INFO - Auditar audit-vidrios: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-logistica - INFO - Iniciando auditoría de audit-logistica
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-logistica - INFO - Auditar audit-logistica: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-pedidos - INFO - Iniciando auditoría de audit-pedidos
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-pedidos - INFO - Auditar audit-pedidos: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-compras - INFO - Iniciando auditoría de audit-compras
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-compras - INFO - Auditar audit-compras: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-administracion - INFO - Iniciando auditoría de audit-administracion
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-administracion - INFO - Auditar audit-administracion: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-mantenimiento - INFO - Iniciando auditoría de audit-mantenimiento
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-mantenimiento - INFO - Auditar audit-mantenimiento: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-auditoria - INFO - Iniciando auditoría de audit-auditoria
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-auditoria - INFO - Auditar audit-auditoria: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-usuarios - INFO - Iniciando auditoría de audit-usuarios
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-usuarios - INFO - Auditar audit-usuarios: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-configuracion - INFO - Iniciando auditoría de audit-configuracion
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-configuracion - INFO - Auditar audit-configuracion: success
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-notificaciones - INFO - Iniciando auditoría de audit-notificaciones
+2026-02-24 15:56:10 - rexus.agents.AuditAgent-notificaciones - INFO - Auditar audit-notificaciones: success
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-obras
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-inventario
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-herrajes
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-vidrios
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-logistica
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-pedidos
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-compras
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-administracion
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-mantenimiento
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-auditoria
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-usuarios
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-configuracion
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-notificaciones
+2026-02-24 16:05:59 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-obras - INFO - Iniciando auditoría de audit-obras
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-obras - INFO - Auditar audit-obras: success
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de audit-inventario
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-inventario - INFO - Auditar audit-inventario: success
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-herrajes - INFO - Iniciando auditoría de audit-herrajes
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-herrajes - INFO - Auditar audit-herrajes: success
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-vidrios - INFO - Iniciando auditoría de audit-vidrios
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-vidrios - INFO - Auditar audit-vidrios: success
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-logistica - INFO - Iniciando auditoría de audit-logistica
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-logistica - INFO - Auditar audit-logistica: success
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-pedidos - INFO - Iniciando auditoría de audit-pedidos
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-pedidos - INFO - Auditar audit-pedidos: success
+2026-02-24 16:05:59 - rexus.agents.AuditAgent-compras - INFO - Iniciando auditoría de audit-compras
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-compras - INFO - Auditar audit-compras: success
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-administracion - INFO - Iniciando auditoría de audit-administracion
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-administracion - INFO - Auditar audit-administracion: success
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-mantenimiento - INFO - Iniciando auditoría de audit-mantenimiento
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-mantenimiento - INFO - Auditar audit-mantenimiento: success
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-auditoria - INFO - Iniciando auditoría de audit-auditoria
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-auditoria - INFO - Auditar audit-auditoria: success
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-usuarios - INFO - Iniciando auditoría de audit-usuarios
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-usuarios - INFO - Auditar audit-usuarios: success
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-configuracion - INFO - Iniciando auditoría de audit-configuracion
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-configuracion - INFO - Auditar audit-configuracion: success
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-notificaciones - INFO - Iniciando auditoría de audit-notificaciones
+2026-02-24 16:06:00 - rexus.agents.AuditAgent-notificaciones - INFO - Auditar audit-notificaciones: success
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-obras
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-inventario
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-herrajes
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-vidrios
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-logistica
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-pedidos
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-compras
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-administracion
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-mantenimiento
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-auditoria
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-usuarios
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-configuracion
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-notificaciones
+2026-02-24 16:10:21 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-obras - INFO - Iniciando auditoría de audit-obras
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-obras - INFO - Auditar audit-obras: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de audit-inventario
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-inventario - INFO - Auditar audit-inventario: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-herrajes - INFO - Iniciando auditoría de audit-herrajes
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-herrajes - INFO - Auditar audit-herrajes: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-vidrios - INFO - Iniciando auditoría de audit-vidrios
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-vidrios - INFO - Auditar audit-vidrios: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-logistica - INFO - Iniciando auditoría de audit-logistica
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-logistica - INFO - Auditar audit-logistica: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-pedidos - INFO - Iniciando auditoría de audit-pedidos
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-pedidos - INFO - Auditar audit-pedidos: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-compras - INFO - Iniciando auditoría de audit-compras
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-compras - INFO - Auditar audit-compras: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-administracion - INFO - Iniciando auditoría de audit-administracion
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-administracion - INFO - Auditar audit-administracion: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-mantenimiento - INFO - Iniciando auditoría de audit-mantenimiento
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-mantenimiento - INFO - Auditar audit-mantenimiento: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-auditoria - INFO - Iniciando auditoría de audit-auditoria
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-auditoria - INFO - Auditar audit-auditoria: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-usuarios - INFO - Iniciando auditoría de audit-usuarios
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-usuarios - INFO - Auditar audit-usuarios: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-configuracion - INFO - Iniciando auditoría de audit-configuracion
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-configuracion - INFO - Auditar audit-configuracion: success
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-notificaciones - INFO - Iniciando auditoría de audit-notificaciones
+2026-02-24 16:10:21 - rexus.agents.AuditAgent-notificaciones - INFO - Auditar audit-notificaciones: success
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-obras
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-inventario
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-herrajes
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-vidrios
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-logistica
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-pedidos
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-compras
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-administracion
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-mantenimiento
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-auditoria
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-usuarios
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-configuracion
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Agente registrado: audit-notificaciones
+2026-02-24 16:18:52 - rexus.orchestrator.RexusFullAuditOrchestrator - INFO - Iniciando ciclo de auditoría para 13 agentes
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-obras - INFO - Iniciando auditoría de audit-obras
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-obras - INFO - Auditar audit-obras: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-inventario - INFO - Iniciando auditoría de audit-inventario
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-inventario - INFO - Auditar audit-inventario: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-herrajes - INFO - Iniciando auditoría de audit-herrajes
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-herrajes - INFO - Auditar audit-herrajes: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-vidrios - INFO - Iniciando auditoría de audit-vidrios
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-vidrios - INFO - Auditar audit-vidrios: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-logistica - INFO - Iniciando auditoría de audit-logistica
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-logistica - INFO - Auditar audit-logistica: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-pedidos - INFO - Iniciando auditoría de audit-pedidos
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-pedidos - INFO - Auditar audit-pedidos: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-compras - INFO - Iniciando auditoría de audit-compras
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-compras - INFO - Auditar audit-compras: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-administracion - INFO - Iniciando auditoría de audit-administracion
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-administracion - INFO - Auditar audit-administracion: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-mantenimiento - INFO - Iniciando auditoría de audit-mantenimiento
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-mantenimiento - INFO - Auditar audit-mantenimiento: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-auditoria - INFO - Iniciando auditoría de audit-auditoria
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-auditoria - INFO - Auditar audit-auditoria: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-usuarios - INFO - Iniciando auditoría de audit-usuarios
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-usuarios - INFO - Auditar audit-usuarios: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-configuracion - INFO - Iniciando auditoría de audit-configuracion
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-configuracion - INFO - Auditar audit-configuracion: success
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-notificaciones - INFO - Iniciando auditoría de audit-notificaciones
+2026-02-24 16:18:52 - rexus.agents.AuditAgent-notificaciones - INFO - Auditar audit-notificaciones: success
+2026-02-24 17:30:06 - rexus.startup - INFO - ============================================================
+2026-02-24 17:30:06 - rexus.startup - INFO - REXUS.APP - INICIO DE APLICACIÓN
+2026-02-24 17:30:06 - rexus.startup - INFO - Versión Python: 3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]
+2026-02-24 17:30:06 - rexus.startup - INFO - Directorio de trabajo: D:\martin\Proyectos\Rexus.app
+2026-02-24 17:30:06 - rexus.startup - INFO - Argumentos: ['main.py', '--dev']
+2026-02-24 17:30:06 - rexus.startup - INFO - ============================================================
+2026-02-24 17:30:06 - rexus.startup - INFO - Iniciando Rexus.app
+2026-02-24 17:30:06 - rexus.startup - INFO - Validando dependencias críticas del sistema
+2026-02-24 17:43:25 - errors - ERROR - Uncaught exception: ImportError: cannot import name 'RexusLineEdit' from 'rexus.ui.components.base_components' (D:\martin\Proyectos\Rexus.app\rexus\ui\components\base_components.py)
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; mmod=importlib.import_module('rexus.modules.12_configuracion.model'); M=getattr(mmod,'ConfiguracionModel'); m=M(db_connection=None); ok,msg=m.establecer_valor('sistema_timeout_sesion','7200','AUDIT'); print('SET_OK=',ok); print('MSG=',msg); print('VAL=',m.obtener_valor('sistema_timeout_sesion'))
+                           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\12_configuracion\__init__.py", line 5, in <module>
+    from .view import ConfiguracionView
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\12_configuracion\view.py", line 43, in <module>
+    from rexus.ui.components.base_components import (
+    ...<5 lines>...
+    )
+ImportError: cannot import name 'RexusLineEdit' from 'rexus.ui.components.base_components' (D:\martin\Proyectos\Rexus.app\rexus\ui\components\base_components.py)
+2026-02-24 17:54:33 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.utils.xss_protection'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; importlib.import_module('rexus.modules.08_administracion.controller'); importlib.import_module('rexus.modules.08_administracion.contabilidad.model'); importlib.import_module('rexus.modules.08_administracion.contabilidad.controller'); print('OK')
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\08_administracion\__init__.py", line 5, in <module>
+    from .view import AdministracionView
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\08_administracion\view.py", line 18, in <module>
+    from rexus.utils.xss_protection import FormProtector
+ModuleNotFoundError: No module named 'rexus.utils.xss_protection'
+2026-02-24 18:03:31 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.core.base_controller'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; importlib.import_module('rexus.modules.11_usuarios.model'); print('OK')
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\__init__.py", line 3, in <module>
+    from .controller import UsuariosController
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\controller.py", line 11, in <module>
+    from rexus.core.base_controller import BaseController
+ModuleNotFoundError: No module named 'rexus.core.base_controller'

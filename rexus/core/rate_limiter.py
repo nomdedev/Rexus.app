@@ -6,6 +6,7 @@ Bloquea temporalmente usuarios después de múltiples intentos fallidos.
 """
 
 from datetime import datetime, timedelta
+import math
 from typing import Optional, Tuple
 
 
@@ -19,7 +20,13 @@ class RateLimiter:
         attempts (dict): Diccionario que rastrea intentos por usuario
     """
 
-    def __init__(self, max_attempts: int = 3, lockout_minutes: int = 15):
+    def __init__(
+        self,
+        max_attempts: int = 3,
+        lockout_minutes: int = 15,
+        max_requests: Optional[int] = None,
+        window_seconds: Optional[int] = None,
+    ):
         """
         Inicializa el RateLimiter.
 
@@ -27,9 +34,34 @@ class RateLimiter:
             max_attempts: Máximo número de intentos fallidos permitidos (default: 3)
             lockout_minutes: Minutos a bloquear después de exceder intentos (default: 15)
         """
+        if max_requests is not None:
+            max_attempts = max_requests
+        if window_seconds is not None:
+            lockout_minutes = max(1, math.ceil(window_seconds / 60))
+
         self.max_attempts = max_attempts
         self.lockout_minutes = lockout_minutes
+        self.window_seconds = int(window_seconds) if window_seconds is not None else lockout_minutes * 60
         self.attempts = {}  # {username: {"count": int, "last_attempt": datetime}}
+        self._request_buckets = {}  # {(action, identifier): [datetime, ...]}
+
+    def is_allowed(self, action: str, identifier: str) -> bool:
+        """Compatibilidad para control de tasa genérico por acción+identificador."""
+        now = datetime.now()
+        key = (action, identifier)
+
+        if key not in self._request_buckets:
+            self._request_buckets[key] = []
+
+        window_start = now - timedelta(seconds=self.window_seconds)
+        recent_requests = [ts for ts in self._request_buckets[key] if ts >= window_start]
+        self._request_buckets[key] = recent_requests
+
+        if len(recent_requests) >= self.max_attempts:
+            return False
+
+        self._request_buckets[key].append(now)
+        return True
 
     def is_blocked(self, username: str) -> Tuple[bool, Optional[datetime]]:
         """

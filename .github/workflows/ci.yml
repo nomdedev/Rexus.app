@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, 0.1.0 ]
+    branches: [ main, develop, 1.0.4 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
   test:
@@ -26,4 +26,12 @@ jobs:
           pip install -r requirements.txt
       - name: Run tests
         run: |
-          python -m pytest -q
+          python -m pytest tests/unit/obras tests/unit/vidrios tests/unit/inventario -q -o addopts='' --import-mode=importlib
+
+      - name: Run strict auth security suite
+        run: |
+          python -m pytest -o addopts='' tests_strict/security/test_auth_decorators_strict.py -q
+
+      - name: Run stable e2e workflows
+        run: |
+          python -m pytest -o addopts='' tests/e2e/test_workflows_completos.py tests/e2e/test_workflow_compra_completo.py -q

@@ -4,15 +4,19 @@ Submódulos de Inventario - Rexus.app
 Importa submódulos refactorizados para mayor compatibilidad.
 """
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Importar submódulos disponibles
 try:
     from .consultas_manager import ConsultasManager
     from .movimientos_manager import MovimientosManager
     from .productos_manager import ProductosManager
 
-    print("[SUBMODULOS INVENTARIO] OK - Submodulos cargados correctamente")
+    logger.info("[SUBMODULOS INVENTARIO] OK - Submodulos cargados correctamente")
 except ImportError as e:
-    print(f"[SUBMODULOS INVENTARIO] ERROR - Error importando submodulos: {e}")
+    logger.error(f"[SUBMODULOS INVENTARIO] ERROR - Error importando submodulos: {e}")
 
     # Crear clases dummy para evitar errores
     class ConsultasManager:

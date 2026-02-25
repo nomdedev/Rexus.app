@@ -1369,3 +1369,220 @@ ERRORES CRÍTICOS:
 2026-02-12 11:40:54 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
 2026-02-12 11:43:30 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
 2026-02-12 11:44:45 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2026-02-24 20:04:23 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_reporte_movimientos: Permisos insuficientes
+2026-02-24 20:04:23 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_analisis_abc: Permisos insuficientes
+2026-02-24 20:04:23 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_reporte_movimientos: Permisos insuficientes
+2026-02-24 20:06:28 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:06:34 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:06:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 186, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'Mock' has no len()
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:07:00 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'Mock' has no len()
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:12:32 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'Mock' has no len()
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:24 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:18:33 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_reporte_movimientos: Permisos insuficientes
+2026-02-24 20:18:33 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_analisis_abc: Permisos insuficientes
+2026-02-24 20:18:33 | ERROR    | rexus.core.auth_decorators | Acceso denegado a generar_reporte_movimientos: Permisos insuficientes
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'Mock' has no len()
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:21 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'InventarioController_Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'InventarioController_Mock' has no len()
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 20:21:42 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | Vista no disponible para cargar obras
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'InventarioController_Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 200, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+                            ~~~^^^^^^^
+TypeError: object of type 'InventarioController_Mock' has no len()
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | Error cargando obras: Error de base de datos
+Traceback (most recent call last):
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\01_obras\controller.py", line 189, in cargar_obras
+    obras = self.model.obtener_obras()
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1175, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1179, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\unittest\mock.py", line 1234, in _execute_mock_call
+    raise effect
+Exception: Error de base de datos
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2026-02-24 23:58:53 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible

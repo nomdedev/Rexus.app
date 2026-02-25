@@ -13,21 +13,25 @@ services:
     container_name: rexus-redis-dev
     restart: unless-stopped
     ports:
-      - "6379:6379"  # Puerto estándar de Redis
+      - "127.0.0.1:6379:6379"  # Exposición solo local
     volumes:
       # Persistir datos de caché
       - redis_data:/data
       # Configuración custom de Redis
       - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf
+    command: >
+      redis-server /usr/local/etc/redis/redis.conf
+      --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD must be set}
     environment:
       - REDIS_MAXMEMORY=256mb
       - REDIS_MAXMEMORY_POLICY=allkeys-lru  # Evict keys menos usados
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping"]
       interval: 10s
       timeout: 3s
       retries: 5
+    security_opt:
+      - no-new-privileges:true
     networks:
       - rexus-network
 
@@ -39,11 +43,15 @@ services:
     container_name: rexus-redis-ui
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
     environment:
-      - REDIS_HOSTS=local:redis:6379
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD}
+      - HTTP_USER=${REDIS_COMMANDER_USER:-admin}
+      - HTTP_PASSWORD=${REDIS_COMMANDER_PASSWORD:?REDIS_COMMANDER_PASSWORD must be set}
     depends_on:
       - redis
+    security_opt:
+      - no-new-privileges:true
     networks:
       - rexus-network
 
@@ -56,12 +64,14 @@ services:
     restart: unless-stopped
     environment:
       ACCEPT_EULA: Y
-      SA_PASSWORD: YourStrong@Passw0rd
+      SA_PASSWORD: ${MSSQL_SA_PASSWORD:?MSSQL_SA_PASSWORD must be set}
       MSSQL_PID: Developer
     ports:
-      - "1433:1433"
+      - "127.0.0.1:1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
+    security_opt:
+      - no-new-privileges:true
     networks:
       - rexus-network
 

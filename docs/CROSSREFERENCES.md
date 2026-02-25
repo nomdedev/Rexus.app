@@ -1,7 +1,7 @@
 # Referencias Cruzadas - Documentación Rexus.app
 
-**Última actualización:** 10 de Febrero 2025
-**Versión:** 2.0.0
+**Última actualización:** 24 de Febrero 2026
+**Versión:** 2.1.0
 
 ---
 
@@ -19,6 +19,8 @@ Este documento conecta temas relacionados que se encuentran dispersos en diferen
 - [Desarrollo y Guías](#desarrollo-y-guías)
 - [Monitoreo y Logging](#monitoreo-y-logging)
 - [Configuración](#configuración)
+- [Documentación y Mantenimiento](#documentación-y-mantenimiento)
+- [Reportes de Auditoría](#reportes-de-auditoría)
 
 ---
 
@@ -323,6 +325,74 @@ Este documento conecta temas relacionados que se encuentran dispersos en diferen
 
 ---
 
-**Versión:** 2.0.0
-**Próxima revisión:** Abril 2025
+## Documentación y Mantenimiento
+
+### Documentos principales de documentación
+
+| Documento | Ruta | Descripción |
+|-----------|------|-------------|
+| **Resumen Ejecutivo** | `RESUMEN_EJECUTIVO_DOCUMENTACION.md` | Vista general y estadísticas completas |
+| **Guía de Mantenimiento** | `MANTENIMIENTO_DOCUMENTACION.md` | Procesos y responsabilidades de mantenimiento |
+| **Informe de Revisión** | `INFORME_REVISION_DOCUMENTACION_20260224.md` | Estado actual de la documentación |
+
+### Temas relacionados
+
+#### Gestión de Documentación
+- **Resumen Ejecutivo:** `RESUMEN_EJECUTIVO_DOCUMENTACION.md` - Estadísticas y mapas de navegación
+- **Mantenimiento:** `MANTENIMIENTO_DOCUMENTACION.md` - Procesos de mantenimiento
+- **Guías de Estilo:** `MANTENIMIENTO_DOCUMENTACION.md#plantillas-y-estándares` - Plantillas y formatos
+
+#### Automatización de Documentación
+- **Scripts de Validación:** `MANTENIMIENTO_DOCUMENTACION.md#scripts-de-automatización` - Scripts automáticos
+- **Integración CI/CD:** `MANTENIMIENTO_DOCUMENTACION.md#integración-con-cicd` - Integración continua
+- **Métricas de Calidad:** `MANTENIMIENTO_DOCUMENTACION.md#métricas-y-kpis` - Indicadores de calidad
+
+---
+
+## Reportes de Auditoría
+
+### Documentos principales de auditoría
+
+| Documento | Ruta | Descripción |
+|-----------|------|-------------|
+| **Análisis Completo** | `../reports/ANALISIS_COMPLETO_REXUS_20260224.md` | Análisis integral de todos los módulos |
+| **Metodología** | `../reports/METODOLOGIA_ANALISIS_20260224.md` | Metodología utilizada para auditorías |
+| **Reporte de Seguridad** | `../reports/security_audit_20260224.md` | Análisis de seguridad exhaustivo |
+| **Matriz de Trazabilidad** | `../reports/MATRIZ_TRAZABILIDAD_AUDITORIA_20260224.md` | Trazabilidad completa de requisitos |
+
+### Auditorías por Módulo
+
+#### Módulos Principales
+- **Obras:** `../reports/obras_audit_20260224.md` - Auditoría completa del módulo de obras
+- **Inventario:** `../reports/inventario_audit_20260224.md` - Auditoría completa del módulo de inventario
+- **Pedidos:** `../reports/pedidos_audit_20260224.md` - Auditoría completa del módulo de pedidos
+- **Compras:** `../reports/compras_audit_20260224.md` - Auditoría completa del módulo de compras
+- **Logística:** `../reports/logistica_audit_20260224.md` - Auditoría completa del módulo de logística
+- **Usuarios:** `../reports/usuarios_audit_20260224.md` - Auditoría completa del módulo de usuarios
+
+#### Módulos de Soporte
+- **Configuración:** `../reports/configuracion_audit_20260224.md` - Auditoría del módulo de configuración
+- **Notificaciones:** `../reports/notificaciones_audit_20260224.md` - Auditoría del módulo de notificaciones
+- **Mantenimiento:** `../reports/mantenimiento_audit_20260224.md` - Auditoría del módulo de mantenimiento
+- **Recursos Humanos:** `../reports/administracion_audit_20260224.md` - Auditoría del módulo de RRHH
+- **Contabilidad:** No disponible - Pendiente de auditoría
+- **Herrajes:** `../reports/herrajes_audit_20260224.md` - Auditoría del módulo de herrajes
+- **Vidrios:** `../reports/vidrios_audit_20260224.md` - Auditoría del módulo de vidrios
+
+### Temas relacionados
+
+#### Integración con Documentación Técnica
+- **Conexión Bidireccional:** `RESUMEN_EJECUTIVO_DOCUMENTACION.md#conexiones-con-documentación-existente` - Integración completa
+- **Referencias Cruzadas:** `CROSSREFERENCES.md` - Enlaces entre auditorías y documentación
+- **Implementación de Recomendaciones:** `progreso/REPORTE_FINAL_MEJORAS.md` - Mejoras implementadas
+
+#### Análisis y Reportes
+- **Análisis de Base de Datos:** `../reports/database_audit_20260224.md` - Auditoría de base de datos
+- **Análisis de Calidad de Código:** `../reports/code_quality_20260224.md` - Auditoría de código
+- **Análisis de Testing:** `../reports/testing_audit_20260224.md` - Auditoría de pruebas
+
+---
+
+**Versión:** 2.1.0
+**Próxima revisión:** 24 de Marzo 2026
 **Mantenedor:** Rexus.app Documentation Team

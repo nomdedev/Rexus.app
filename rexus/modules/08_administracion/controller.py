@@ -9,6 +9,7 @@ Integrado con el sistema de seguridad global
 
 import json
 import os
+import logging
 from datetime import datetime
 
 from PyQt6.QtCore import QObject, QTimer, pyqtSlot
@@ -18,12 +19,7 @@ try:
     from rexus.utils.app_logger import get_logger
     logger = get_logger("administracion.controller")
 except ImportError:
-    class DummyLogger:
-        def info(self, msg): logger.debug(f"[INFO] {msg}")
-        def warning(self, msg): logger.warning(f"[WARNING] {msg}")
-        def error(self, msg): logger.error(f"[ERROR] {msg}")
-        def debug(self, msg): logger.debug(f"[DEBUG] {msg}")
-    logger = DummyLogger()
+    logger = logging.getLogger("administracion.controller")
 
 
 from rexus.core.security import get_security_manager

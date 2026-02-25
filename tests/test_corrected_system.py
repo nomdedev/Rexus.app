@@ -35,7 +35,7 @@ def test_login_dialog():
 
         # Verificar configuración de desarrollo
         assert login_dialog.dev_user == 'admin', f"Usuario dev incorrecto: {login_dialog.dev_user}"
-        assert login_dialog.dev_password == 'admin123', f"Password dev incorrecto: {login_dialog.dev_password}"
+        assert login_dialog.dev_password != 'admin123', "No debe existir contraseña hardcodeada en entorno de desarrollo"
         assert not login_dialog.auto_login, f"Auto-login debería ser False: {login_dialog.auto_login}"
         print("✅ Configuración de desarrollo correcta")
 

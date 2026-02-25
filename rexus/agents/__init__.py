@@ -24,6 +24,9 @@ from .state_manager import (
     TaskStatus
 )
 
+# Importar bridge de Pixel Agents
+from .pixel_bridge import PixelAgentsBridge, get_pixel_bridge
+
 # Importar agentes de módulos
 from .module_specialists.inventario_agent import InventarioAgent
 from .module_specialists.obras_agent import ObrasAgent
@@ -71,6 +74,10 @@ __all__ = [
     'AgentStateManager',
     'get_state_manager',
     'TaskStatus',
+
+    # Pixel bridge
+    'PixelAgentsBridge',
+    'get_pixel_bridge',
 
     # Agentes de módulos
     'InventarioAgent',

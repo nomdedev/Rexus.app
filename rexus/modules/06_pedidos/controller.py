@@ -5,6 +5,7 @@ Maneja la lógica de negocio entre la vista y el modelo de pedidos.
 """
 
 import datetime
+import os
 from typing import Any, Dict, List, Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -40,8 +41,21 @@ except ImportError:
 try:
     from rexus.core.auth_decorators import auth_required, admin_required
 except ImportError:
-    def auth_required(func): return func
-    def admin_required(func): return func
+    def _allow_auth_bypass_for_tests() -> bool:
+        bypass_auth = os.getenv("BYPASS_AUTH", "").strip().lower() == "true"
+        pytest_running = bool(os.getenv("PYTEST_CURRENT_TEST"))
+        return bypass_auth and pytest_running
+
+    def _fallback_auth_decorator(func):
+        def wrapper(*args, **kwargs):
+            if _allow_auth_bypass_for_tests():
+                return func(*args, **kwargs)
+            raise RuntimeError("Auth decorators unavailable: acceso bloqueado (fail-closed)")
+
+        return wrapper
+
+    auth_required = _fallback_auth_decorator
+    admin_required = _fallback_auth_decorator
 
 
 class PedidosController(QObject):
@@ -140,7 +154,8 @@ class PedidosController(QObject):
     def actualizar_pedido(self, datos_pedido:Dict[str, Any]):
         """Actualiza un pedido existente."""
         try:
-            if not datos_pedido.get("id"):
+            pedido_id = datos_pedido.get("id")
+            if not pedido_id:
                 self.mostrar_error("ID de pedido requerido para actualización")
                 return
 
@@ -206,6 +221,7 @@ class PedidosController(QObject):
             logger.error(f"Error eliminando pedido: {e}", exc_info=True)
             self.mostrar_error(f"Error eliminando pedido: {str(e)}")
 
+    @auth_required
     def cambiar_estado(self, pedido_id:str, nuevo_estado: str):
         """Cambia el estado de un pedido."""
         try:

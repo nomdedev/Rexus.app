@@ -217,3 +217,93 @@ Traceback (most recent call last):
     self.state_manager = get_state_manager() if (HAS_STATE_MANAGER and USE_STATE_MANAGER) else None
                                                                        ^^^^^^^^^^^^^^^^^
 NameError: name 'USE_STATE_MANAGER' is not defined. Did you mean: 'HAS_STATE_MANAGER'?
+2026-02-24 14:35:52 - errors - ERROR - Uncaught exception: KeyError: 'agentes_auditados'
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\martin\Proyectos\Rexus.app\rexus\agents\demo_agents.py", line 119, in <module>
+    results = asyncio.run(main())
+  File "C:\Program Files\Python314\Lib\asyncio\runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Program Files\Python314\Lib\asyncio\runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Program Files\Python314\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "D:\martin\Proyectos\Rexus.app\rexus\agents\demo_agents.py", line 68, in main
+    logger.info(f"  - Agentes auditados: {audit_results['summary']['agentes_auditados']}")
+                                          ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'agentes_auditados'
+2026-02-24 17:43:25 - errors - ERROR - Uncaught exception: ImportError: cannot import name 'RexusLineEdit' from 'rexus.ui.components.base_components' (D:\martin\Proyectos\Rexus.app\rexus\ui\components\base_components.py)
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; mmod=importlib.import_module('rexus.modules.12_configuracion.model'); M=getattr(mmod,'ConfiguracionModel'); m=M(db_connection=None); ok,msg=m.establecer_valor('sistema_timeout_sesion','7200','AUDIT'); print('SET_OK=',ok); print('MSG=',msg); print('VAL=',m.obtener_valor('sistema_timeout_sesion'))
+                           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\12_configuracion\__init__.py", line 5, in <module>
+    from .view import ConfiguracionView
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\12_configuracion\view.py", line 43, in <module>
+    from rexus.ui.components.base_components import (
+    ...<5 lines>...
+    )
+ImportError: cannot import name 'RexusLineEdit' from 'rexus.ui.components.base_components' (D:\martin\Proyectos\Rexus.app\rexus\ui\components\base_components.py)
+2026-02-24 17:54:33 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.utils.xss_protection'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; importlib.import_module('rexus.modules.08_administracion.controller'); importlib.import_module('rexus.modules.08_administracion.contabilidad.model'); importlib.import_module('rexus.modules.08_administracion.contabilidad.controller'); print('OK')
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\08_administracion\__init__.py", line 5, in <module>
+    from .view import AdministracionView
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\08_administracion\view.py", line 18, in <module>
+    from rexus.utils.xss_protection import FormProtector
+ModuleNotFoundError: No module named 'rexus.utils.xss_protection'
+2026-02-24 18:03:31 - errors - ERROR - Uncaught exception: ModuleNotFoundError: No module named 'rexus.core.base_controller'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import importlib; importlib.import_module('rexus.modules.11_usuarios.model'); print('OK')
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\__init__.py", line 3, in <module>
+    from .controller import UsuariosController
+  File "D:\martin\Proyectos\Rexus.app\rexus\modules\11_usuarios\controller.py", line 11, in <module>
+    from rexus.core.base_controller import BaseController
+ModuleNotFoundError: No module named 'rexus.core.base_controller'

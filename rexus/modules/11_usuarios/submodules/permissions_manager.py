@@ -10,11 +10,27 @@ Responsabilidades:
 """
 
 import logging
+import os
 from typing import Dict, Any, List
 from enum import Enum
 
 # Configurar logging
 logger = logging.getLogger(__name__)
+
+
+def _allow_auth_bypass_for_tests() -> bool:
+    bypass_auth = os.getenv("BYPASS_AUTH", "").strip().lower() == "true"
+    pytest_running = bool(os.getenv("PYTEST_CURRENT_TEST"))
+    return bypass_auth and pytest_running
+
+
+def _fallback_auth_decorator(func):
+    def wrapper(*args, **kwargs):
+        if _allow_auth_bypass_for_tests():
+            return func(*args, **kwargs)
+        raise RuntimeError("Auth decorators unavailable: acceso bloqueado (fail-closed)")
+
+    return wrapper
 
 # Importar utilidades de seguridad
 try:
@@ -22,8 +38,8 @@ try:
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None
-    admin_required = lambda x: x
-    auth_required = lambda x: x
+    admin_required = _fallback_auth_decorator
+    auth_required = _fallback_auth_decorator
 
 
 

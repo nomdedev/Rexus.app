@@ -54,7 +54,10 @@
       "Bash(git config:*)",
       "Bash(do echo \"=== $file ===\")",
       "Bash(do touch:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(Get-ChildItem:*)",
+      "Bash(Select-Object:*)",
+      "Bash(tee:*)"
     ],
     "deny": [],
     "ask": [],

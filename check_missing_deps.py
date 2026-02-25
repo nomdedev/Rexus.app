@@ -6,6 +6,11 @@ import subprocess
 import sys
 from typing import List, Tuple
 
+
+def normalize_package_name(name: str) -> str:
+    """Normaliza nombre de paquete para comparación robusta."""
+    return name.strip().lower().replace("_", "-")
+
 # Dependencias requeridas en requirements.txt
 REQUIRED_PACKAGES = [
     "PyQt6>=6.6.0",
@@ -28,6 +33,12 @@ REQUIRED_PACKAGES = [
     "Pillow>=10.0.0",
     "schedule>=1.2.0",
     "requests>=2.31.0",
+    "pyotp>=2.9.0",
+    "flask>=3.0.0",
+    "fastapi>=0.111.0",
+    "starlette>=0.37.0",
+    "prometheus-client>=0.20.0",
+    "folium>=0.17.0",
     "pytest>=7.4.0",
     "pytest-qt>=4.2.0",
     "pytest-cov>=4.1.0",
@@ -53,7 +64,7 @@ def get_installed_packages() -> List[str]:
         for line in result.stdout.strip().split('\n'):
             if '==' in line:
                 name, version = line.split('==', 1)
-                installed[name.lower()] = version
+                installed[normalize_package_name(name)] = version
         return installed
     except subprocess.CalledProcessError:
         return {}
@@ -70,7 +81,7 @@ def check_package(package_spec: str, installed: dict) -> Tuple[bool, str, str]:
         name = package_spec
 
     # Buscar paquete instalado (case-insensitive)
-    installed_version = installed.get(name.lower())
+    installed_version = installed.get(normalize_package_name(name))
 
     if installed_version:
         status = f"[OK] {name} ({installed_version} instalado)"

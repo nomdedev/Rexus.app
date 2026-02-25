@@ -12,6 +12,7 @@ Responsabilidades:
 import datetime
 import secrets
 import logging
+import os
 from typing import Dict, Any, List
 from dataclasses import dataclass
 import sqlite3
@@ -21,15 +22,30 @@ logger = get_logger(__name__)
 
 # Configurar logging
 logger = logging.getLogger(__name__)
+DataSanitizer = None
+
+
+def _allow_auth_bypass_for_tests() -> bool:
+    bypass_auth = os.getenv("BYPASS_AUTH", "").strip().lower() == "true"
+    pytest_running = bool(os.getenv("PYTEST_CURRENT_TEST"))
+    return bypass_auth and pytest_running
+
+
+def _fallback_auth_decorator(func):
+    def wrapper(*args, **kwargs):
+        if _allow_auth_bypass_for_tests():
+            return func(*args, **kwargs)
+        raise RuntimeError("Auth decorators unavailable: acceso bloqueado (fail-closed)")
+
+    return wrapper
 
 # Importar utilidades de seguridad
 try:
     from rexus.core.auth_decorators import admin_required, auth_required
 except ImportError:
     logger.warning("Auth decorators not available - features disabled")
-    DataSanitizer = None
-    admin_required = lambda x: x
-    auth_required = lambda x: x
+    admin_required = _fallback_auth_decorator
+    auth_required = _fallback_auth_decorator
 
 
 @dataclass

@@ -19,7 +19,7 @@
   "sistema_modo_debug": "false",
   "sistema_logs_nivel": "INFO",
   "sistema_max_backups": "30",
-  "sistema_timeout_sesion": "3600",
+  "sistema_timeout_sesion": "7200",
   "sistema_max_intentos_login": "3",
   "sistema_idioma": "es",
   "sistema_zona_horaria": "America/Bogota",

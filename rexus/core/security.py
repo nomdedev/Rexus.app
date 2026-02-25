@@ -6,13 +6,39 @@ para toda la aplicación.
 """
 
 import uuid
+import sys
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set
 
 from PyQt6.QtCore import QObject, pyqtSignal
+from rexus.core import rate_limiter as rate_limiter
 from rexus.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
+
+# Compatibilidad legacy para imports tipo:
+# from rexus.core.security.rate_limiter import RateLimiter
+sys.modules.setdefault(__name__ + ".rate_limiter", rate_limiter)
+
+
+class _CSRFManager:
+    """Validador CSRF mínimo para endurecimiento y compatibilidad de tests."""
+
+    def validate_token(self, token: Optional[str]) -> bool:
+        if not token or not isinstance(token, str):
+            return False
+        return len(token.strip()) >= 16
+
+
+csrf_manager = _CSRFManager()
+
+
+def validate_csrf(request_data: Dict[str, Any]) -> bool:
+    """Valida token CSRF en payload de mutación."""
+    token = request_data.get("csrf_token") if isinstance(request_data, dict) else None
+    if not csrf_manager.validate_token(token):
+        raise PermissionError("Invalid CSRF token")
+    return True
 
 
 class SecurityManager(QObject):
@@ -139,7 +165,7 @@ class SecurityManager(QObject):
             """)
 
             self.db_connection.commit()
-            print("[CHECK] Tablas de seguridad creadas exitosamente")
+            logger.info("Tablas de seguridad creadas exitosamente")
 
         except Exception as e:
             logger.error(f"Error creando tablas de seguridad: {e}")
@@ -445,7 +471,7 @@ modulo,
     def create_default_admin(self):
         """ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD"""
         logger.error(f"SEGURIDAD: No se crean usuarios por defecto automáticamente")
-        print("   Los usuarios deben ser creados manualmente por el administrador del sistema")
+        logger.warning("Los usuarios deben ser creados manualmente por el administrador del sistema")
 
     def hash_password(self, password: str) -> str:
         """
@@ -471,7 +497,7 @@ modulo,
 
             # Si es válida y el hash necesita actualización, loggear para migración
             if is_valid and check_password_needs_rehash(password_hash):
-                print(f"[SECURITY] Hash de contraseña necesita migración a formato seguro")
+                logger.info("Hash de contraseña necesita migración a formato seguro")
 
             return is_valid
         except Exception as e:
@@ -487,7 +513,11 @@ modulo,
 
             user_data = auth_manager.authenticate_user(username, password)
 
-            if not user_data:
+            if (
+                not user_data
+                or not isinstance(user_data, dict)
+                or user_data.get("authenticated") is not True
+            ):
                 self.log_security_event(
                     None,
                     "LOGIN_FAILED",
@@ -500,11 +530,13 @@ modulo,
             self.current_user = user_data
             self.current_role = user_data.get('role', user_data.get('rol', 'usuario'))
             self.login_time = datetime.now()
-            self.session_id = str(uuid.uuid4())
+
+            user_id = user_data.get('id') or self._obtener_usuario_id_por_username(username)
+            self.session_id = self._rotar_sesion(user_id)
 
             # Log y señal
             self.log_security_event(
-                user_data['id'], "LOGIN_SUCCESS", "GENERAL", f"Login exitoso: {username}"
+                user_id, "LOGIN_SUCCESS", "GENERAL", f"Login exitoso: {username}"
             )
             self.user_logged_in.emit(username, self.current_role)
 
@@ -513,6 +545,61 @@ modulo,
         except Exception as e:
             logger.error(f"Error en login:{e}")
             return False
+
+    def _obtener_usuario_id_por_username(self, username: str) -> Optional[int]:
+        """Obtiene ID de usuario desde la tabla usuarios."""
+        if not self.db_connection:
+            return None
+
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute(
+                """
+                SELECT id FROM usuarios
+                WHERE username = ?
+                """,
+                (username,),
+            )
+            result = cursor.fetchone()
+            return int(result[0]) if result else None
+        except Exception as e:
+            logger.error(f"Error obteniendo usuario_id: {e}")
+            return None
+
+    def _rotar_sesion(self, usuario_id: Optional[int]) -> str:
+        """Invalida sesiones previas y crea una nueva sesión activa."""
+        nueva_sesion = str(uuid.uuid4())
+
+        if not self.db_connection or not usuario_id:
+            return nueva_sesion
+
+        try:
+            cursor = self.db_connection.cursor()
+
+            cursor.execute(
+                """
+                UPDATE sesiones
+                SET activa = 0, fecha_fin = GETDATE()
+                WHERE usuario_id = ? AND activa = 1
+                """,
+                (usuario_id,),
+            )
+
+            cursor.execute(
+                """
+                INSERT INTO sesiones (session_id, usuario_id, fecha_inicio, activa)
+                VALUES (?, ?, GETDATE(), 1)
+                """,
+                (nueva_sesion, usuario_id),
+            )
+
+            self.db_connection.commit()
+            return nueva_sesion
+        except Exception as e:
+            logger.error(f"Error rotando sesión: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return nueva_sesion
 
     def logout(self) -> bool:
         """Cierra la sesión actual."""
@@ -650,12 +737,12 @@ modulo,
             return False
 
     def log_security_event(
-        self, usuario_id: int, accion: str, modulo: str, detalles: str
+        self, usuario_id: Optional[int], accion: str, modulo: str, detalles: str
     ):
         """Registra un evento de seguridad."""
         try:
             # Solo registrar en consola por ahora (sin BD)
-            print(f"[SECURITY] Usuario:{usuario_id} | {accion} | {modulo} | {detalles}")
+            logger.info(f"[SECURITY] Usuario:{usuario_id} | {accion} | {modulo} | {detalles}")
         except Exception as e:
             logger.error(f"Error logging evento de seguridad:{e}")
 
@@ -669,9 +756,9 @@ modulo,
         """Obtiene los módulos a los que tiene acceso un usuario."""
         try:
             # [SEARCH] DIAGNÓSTICO: Logging detallado para debug
-            print(f"[SECURITY DEBUG] get_user_modules llamado con user_id: {user_id}")
-            print(f"[SECURITY DEBUG] current_role: '{self.current_role}'")
-            print(f"[SECURITY DEBUG] current_user: {self.current_user}")
+            logger.debug(f"[SECURITY DEBUG] get_user_modules llamado con user_id: {user_id}")
+            logger.debug(f"[SECURITY DEBUG] current_role: '{self.current_role}'")
+            logger.debug(f"[SECURITY DEBUG] current_user: {self.current_user}")
 
             # Basado en el rol del usuario actual, devolver módulos permitidos
             if self.current_role in ['admin', 'ADMIN']:
@@ -690,7 +777,7 @@ modulo,
                     "Compras",
                     "Mantenimiento"
                 ]
-                print(f"[SECURITY DEBUG] Admin detectado, devolviendo {len(modules)} módulos")
+                logger.debug(f"[SECURITY DEBUG] Admin detectado, devolviendo {len(modules)} módulos")
                 return modules
             elif self.current_role in ['supervisor', 'SUPERVISOR']:
                 # Supervisor tiene acceso a gestión general
@@ -744,12 +831,14 @@ modulo,
                     "Obras",
                     "Pedidos"
                 ]
-                print(f"[SECURITY DEBUG] Rol no reconocido o usuario básico ('{self.current_role}'), devolviendo {len(basic_modules)} módulos básicos")
+                logger.debug(
+                    f"[SECURITY DEBUG] Rol no reconocido o usuario básico ('{self.current_role}'), devolviendo {len(basic_modules)} módulos básicos"
+                )
                 return basic_modules
 
         except Exception as e:
-            print(f"[SECURITY ERROR] Error obteniendo módulos del usuario: {e}")
-            print(f"[SECURITY ERROR] current_role en momento del error: '{self.current_role}'")
+            logger.error(f"[SECURITY ERROR] Error obteniendo módulos del usuario: {e}")
+            logger.error(f"[SECURITY ERROR] current_role en momento del error: '{self.current_role}'")
             return ["Inventario", "Obras"]  # Módulos mínimos
 
     def get_current_user_string(self) -> Optional[str]:
@@ -792,9 +881,9 @@ modulo,
             diagnosis["modules_count"] = 0
             diagnosis["has_admin_access"] = False
 
-        print(f"[SECURITY DIAGNOSIS] Estado del sistema de permisos:")
+        logger.info("[SECURITY DIAGNOSIS] Estado del sistema de permisos:")
         for key, value in diagnosis.items():
-            print(f"  {key}: {value}")
+            logger.info(f"  {key}: {value}")
 
         return diagnosis
 

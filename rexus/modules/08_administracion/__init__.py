@@ -2,6 +2,10 @@
 
 from .controller import AdministracionController
 from .model import AdministracionModel
-from .view import AdministracionView
+
+try:
+	from .view import AdministracionView
+except Exception:
+	AdministracionView = None
 
 __all__ = ["AdministracionModel", "AdministracionView", "AdministracionController"]

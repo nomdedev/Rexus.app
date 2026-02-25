@@ -19,9 +19,6 @@ from rexus.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
-# Configurar logging
-logger = logging.getLogger(__name__)
-
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string

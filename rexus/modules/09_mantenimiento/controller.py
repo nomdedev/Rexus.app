@@ -11,20 +11,12 @@ try:
     from rexus.utils.app_logger import get_logger
     logger = get_logger("mantenimiento.controller")
 except ImportError:
-    class DummyLogger:
-        def info(self, msg): logger.debug(f"[INFO] {msg}")
-        def warning(self, msg): logger.warning(f"[WARNING] {msg}")
-        def error(self, msg): logger.error(f"[ERROR] {msg}")
-        def debug(self, msg): logger.debug(f"[DEBUG] {msg}")
-    logger = DummyLogger()
+    logger = logging.getLogger("mantenimiento.controller")
 
 
 from rexus.core.auth_decorators import auth_required
 from rexus.utils.message_system import show_success, show_error
 from rexus.modules.mantenimiento.programacion_model import ProgramacionMantenimientoModel
-
-logger = logging.getLogger(__name__)
-
 
 class MantenimientoController(QObject):
     """Controlador para el módulo de mantenimiento."""
@@ -127,17 +119,18 @@ model=None,
             bool: True si se programó exitosamente
         """
         try:
-            datos_programacion = {
-                'equipo_id': equipo_id,
-                'tipo_mantenimiento': tipo_mantenimiento,
-                'fecha_programada': fecha_programada,
-                'observaciones': observaciones,
-                'estado': 'PROGRAMADO',
-                'usuario_creacion': self.usuario_actual,
-                'fecha_creacion': datetime.now()
-            }
+            dias_hasta_programacion = max((fecha_programada - date.today()).days, 1)
 
-            exito = self.programacion_model.crear_programacion(**datos_programacion)
+            exito = self.programacion_model.crear_programacion(
+                equipo_id=equipo_id,
+                tipo_mantenimiento=tipo_mantenimiento,
+                frecuencia_dias=dias_hasta_programacion,
+                descripcion=f"Mantenimiento programado para {fecha_programada.isoformat()}",
+                fecha_inicio=date.today(),
+                activo=True,
+                responsable=self.usuario_actual,
+                observaciones=observaciones,
+            )
 
             if exito:
                 show_success(self.view, "Éxito", "Mantenimiento programado exitosamente")

@@ -640,7 +640,7 @@ class TestEdgeCasesE2E:
         Verifica: Manejo gracioso de errores, fallback a caché, mensajes apropiados.
         """
         # Simular BD caída
-        with patch('rexus.core.db.DatabaseConnection') as DB:
+        with patch('rexus.core.database.DatabaseConnection') as DB:
             DB.side_effect = Exception("Database connection failed")
 
             # from rexus.modules.inventario.model.InventarioModel  # TODO: Import no necesario

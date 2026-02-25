@@ -28,7 +28,7 @@ try:
     CRYPTO_AVAILABLE = True
 except ImportError:
     CRYPTO_AVAILABLE = False
-    logging.warning("cryptography no disponible, usando fallback")
+    logging.error("cryptography no disponible; backend local cifrado queda bloqueado por seguridad")
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +89,12 @@ class LocalEncryptedBackend(SecretsBackend):
         )
         self.master_key = master_key or os.getenv("SECRETS_MASTER_KEY")
 
+        if not CRYPTO_AVAILABLE:
+            raise RuntimeError(
+                "cryptography es obligatorio para LocalEncryptedBackend. "
+                "Instalar dependencia o configurar Vault backend."
+            )
+
         if not self.master_key:
             logger.warning("No se proporcionó SECRETS_MASTER_KEY. Generando una temporal.")
             self.master_key = os.urandom(32).hex()
@@ -104,10 +110,6 @@ class LocalEncryptedBackend(SecretsBackend):
 
     def _derive_key(self, salt: bytes) -> bytes:
         """Deriva una clave de cifrado desde la master key."""
-        if not CRYPTO_AVAILABLE:
-            # Fallback simple
-            return hashlib.sha256(self.master_key.encode() + salt).digest()
-
         kdf = PBKDF2(
             algorithm=hashes.SHA256(),
             length=32,
@@ -119,13 +121,6 @@ class LocalEncryptedBackend(SecretsBackend):
 
     def _encrypt(self, data: str) -> Dict[str, str]:
         """Cifra datos usando AES-256-GCM."""
-        if not CRYPTO_AVAILABLE:
-            # Fallback: codificar en base64 (no es seguro, solo para desarrollo)
-            return {
-                "data": base64.b64encode(data.encode()).decode(),
-                "method": "base64"
-            }
-
         # Generar salt y nonce
         salt = os.urandom(16)
         nonce = os.urandom(12)
@@ -149,7 +144,12 @@ class LocalEncryptedBackend(SecretsBackend):
         method = encrypted_data.get("method")
 
         if method == "base64":
-            # Fallback para desarrollo
+            if os.getenv("REXUS_ALLOW_LEGACY_BASE64_DECRYPT", "false").lower() != "true":
+                raise RuntimeError(
+                    "Se detectó secret en formato base64 legacy no seguro. "
+                    "Habilite temporalmente REXUS_ALLOW_LEGACY_BASE64_DECRYPT=true para migrar y re-cifrar."
+                )
+            logger.warning("Descifrado legacy base64 habilitado temporalmente para migración")
             return base64.b64decode(encrypted_data["data"]).decode()
 
         if method == "aes-256-gcm":
@@ -641,6 +641,18 @@ def migrate_env_to_secrets(prefix: str = "REXUS") -> Dict[str, bool]:
         if key.startswith(prefix):
             secret_key = key.lower().replace("_", "/")
             results[key] = manager.set_secret(secret_key, value)
+
+    # Migración explícita de claves críticas legacy
+    critical_mapping = {
+        "DB_PASSWORD": "database/db_password",
+        "SECRET_KEY": "security/secret_key",
+        "JWT_SECRET_KEY": "security/jwt_secret_key",
+        "ENCRYPTION_KEY": "security/encryption_key",
+    }
+    for env_key, secret_key in critical_mapping.items():
+        env_value = os.getenv(env_key)
+        if env_value:
+            results[env_key] = manager.set_secret(secret_key, env_value)
 
     return results
 

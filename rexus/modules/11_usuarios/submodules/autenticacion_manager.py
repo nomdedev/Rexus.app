@@ -10,6 +10,7 @@ Responsabilidades:
 """
 
 import datetime
+import hmac
 import hashlib
 from typing import Any, Dict
 
@@ -131,7 +132,7 @@ username: str,
 
             # Verificar contraseña
             password_hash = self._hash_password(password, usuario[2])  # salt
-            if password_hash != usuario[1]:  # password_hash
+            if not hmac.compare_digest(password_hash, usuario[1]):  # password_hash
                 self.registrar_intento_login(username_safe, exitoso=False)
                 return {"success": False, "error": "Contraseña incorrecta"}
 
@@ -314,7 +315,7 @@ username: str,
             password_hash_actual = self._hash_password(
                 password_actual, usuario[1]
             )  # salt
-            if password_hash_actual != usuario[0]:  # password_hash
+            if not hmac.compare_digest(password_hash_actual, usuario[0]):  # password_hash
                 return {"success": False, "error": "Contraseña actual incorrecta"}
 
             # Generar nuevo hash y salt

@@ -12,7 +12,7 @@ from typing import Dict, Tuple
 # Cargar variables de entorno desde .env
 try:
     from dotenv import load_dotenv
-    load_dotenv(Path(__file__).parent / ".env")
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
     print("✅ Archivo .env cargado correctamente")
 except ImportError:
     print("⚠️  python-dotenv no instalado, usando variables del sistema")
@@ -20,25 +20,21 @@ except Exception as e:
     print(f"⚠️  Error cargando .env: {e}, usando variables del sistema")
 
 # Agregar el directorio raíz al path
-root_dir = Path(__file__).parent
+root_dir = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(root_dir))
 
 class EnvironmentValidator:
     """Validador de variables de entorno para Rexus.app"""
 
     def __init__(self):
+        self.sensitive_vars = ['DB_PASSWORD', 'SECRET_KEY', 'JWT_SECRET_KEY', 'ENCRYPTION_KEY']
+
         self.required_vars = {
             # Base de datos
             'DB_SERVER': 'Servidor de SQL Server',
             'DB_DRIVER': 'Driver ODBC para SQL Server',
             'DB_USERS': 'Nombre de la base de datos de usuarios',
             'DB_USERNAME': 'Usuario de la base de datos',
-            'DB_PASSWORD': 'Contraseña de la base de datos',
-
-            # Seguridad
-            'SECRET_KEY': 'Clave secreta para encriptación',
-            'JWT_SECRET_KEY': 'Clave secreta para JWT',
-            'ENCRYPTION_KEY': 'Clave de encriptación de datos',
 
             # API
             'API_ENABLED': 'Habilitar API',
@@ -70,6 +66,24 @@ class EnvironmentValidator:
             'DB_AUDITORIA': 'Base de datos de auditoría'
         }
 
+    def _check_secret_presence(self, secret_key: str) -> bool:
+        try:
+            from rexus.core.secrets_manager import get_secrets_manager
+            manager = get_secrets_manager()
+            return bool(manager.get_secret(secret_key))
+        except Exception:
+            return False
+
+    def _is_sensitive_resolved(self, env_var: str) -> bool:
+        key_mapping = {
+            'DB_PASSWORD': 'database/db_password',
+            'SECRET_KEY': 'security/secret_key',
+            'JWT_SECRET_KEY': 'security/jwt_secret_key',
+            'ENCRYPTION_KEY': 'security/encryption_key',
+        }
+        secret_key = key_mapping.get(env_var)
+        return bool(os.getenv(env_var)) or (secret_key and self._check_secret_presence(secret_key))
+
     def validate_all(self) -> Tuple[bool, Dict[str, str]]:
         """Valida todas las variables de entorno requeridas."""
         results = {}
@@ -89,6 +103,17 @@ class EnvironmentValidator:
                 results[var_name] = f"✅ OK: {description}"
                 print(f"   ✅ {var_name}: {description} - CONFIGURADO")
 
+        print("\n🔐 Variables Sensibles (SecretsManager o entorno en transición):")
+        for var_name in self.sensitive_vars:
+            if self._is_sensitive_resolved(var_name):
+                source = "entorno" if os.getenv(var_name) else "SecretsManager"
+                results[var_name] = f"✅ OK: {var_name} resuelto desde {source}"
+                print(f"   ✅ {var_name}: RESUELTO desde {source}")
+            else:
+                results[var_name] = f"❌ FALTA: {var_name} no disponible ni en entorno ni en SecretsManager"
+                all_valid = False
+                print(f"   ❌ {var_name}: NO DISPONIBLE")
+
         print("\n📋 Variables Opcionales:")
         for var_name, description in self.optional_vars.items():
             value = os.getenv(var_name)
@@ -105,12 +130,16 @@ class EnvironmentValidator:
         """Valida específicamente la conexión a la base de datos."""
         print("\n🗄️  VALIDANDO CONEXIÓN A BASE DE DATOS...")
 
-        required_db_vars = ['DB_SERVER', 'DB_USERS', 'DB_USERNAME', 'DB_PASSWORD']
+        required_db_vars = ['DB_SERVER', 'DB_USERS', 'DB_USERNAME']
 
         for var in required_db_vars:
             if not os.getenv(var):
                 print(f"   ❌ Variable {var} no configurada")
                 return False
+
+        if not self._is_sensitive_resolved('DB_PASSWORD'):
+            print("   ❌ DB_PASSWORD no disponible ni en entorno ni en SecretsManager")
+            return False
 
         # Intentar importar y crear conexión
         try:
@@ -159,8 +188,8 @@ class EnvironmentValidator:
             from rexus.utils.sql_query_manager import SQLQueryManager
             sql_manager = SQLQueryManager()
 
-            # Verificar que tenga los métodos necesarios
-            required_methods = ['execute_query', 'get_user_permissions', 'get_user_by_username']
+            # Verificar API pública actual
+            required_methods = ['get_query', 'execute_query', 'get_cache_info']
             for method in required_methods:
                 if not hasattr(sql_manager, method):
                     print(f"   ❌ Método {method} no encontrado")
@@ -185,10 +214,10 @@ class EnvironmentValidator:
                 template += f"# {description}\n{var_name}={current_value}\n\n"
 
         template += "# ===== SEGURIDAD =====\n"
-        for var_name, description in self.required_vars.items():
-            if var_name in ['SECRET_KEY', 'JWT_SECRET_KEY', 'ENCRYPTION_KEY']:
-                current_value = os.getenv(var_name, '')
-                template += f"# {description}\n{var_name}={current_value}\n\n"
+        for var_name in ['SECRET_KEY', 'JWT_SECRET_KEY', 'ENCRYPTION_KEY']:
+            description = self.optional_vars[var_name]
+            current_value = os.getenv(var_name, '')
+            template += f"# {description}\n# Preferir SecretsManager, usar entorno solo en transición\n{var_name}={current_value}\n\n"
 
         template += "# ===== API =====\n"
         for var_name, description in self.required_vars.items():

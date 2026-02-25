@@ -61,6 +61,35 @@ class ConsultasManager(PaginatedTableMixin):
             return {"items": [], "total": 0, "offset": offset, "limit": limit}
 
         try:
+            # Sanitizar paginación
+            offset = max(0, int(offset or 0))
+            limit = max(1, min(int(limit or 50), 1000))
+
+            # Sanitizar ordenamiento para prevenir inyección SQL en ORDER BY
+            columnas_permitidas = {
+                "id",
+                "codigo",
+                "descripcion",
+                "categoria",
+                "unidad_medida",
+                "precio_compra",
+                "precio_venta",
+                "stock_actual",
+                "stock_minimo",
+                "ubicacion",
+                "fecha_creacion",
+                "fecha_modificacion",
+            }
+
+            orden_limpio = "descripcion ASC"
+            if orden:
+                partes_orden = str(orden).strip().split()
+                columna = partes_orden[0].lower() if partes_orden else "descripcion"
+                direccion = partes_orden[1].upper() if len(partes_orden) > 1 else "ASC"
+
+                if columna in columnas_permitidas and direccion in {"ASC", "DESC"}:
+                    orden_limpio = f"{columna} {direccion}"
+
             # Sanitizar filtros
             filtros_sanitizados = {}
             if filtros:
@@ -106,7 +135,7 @@ class ConsultasManager(PaginatedTableMixin):
             total = cursor.fetchone()[0]
 
             # Aplicar ordenamiento y paginación
-            query_base += f" ORDER BY {orden}"
+            query_base += f" ORDER BY {orden_limpio}"
             query_base += f" OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY"
 
             # Ejecutar consulta principal

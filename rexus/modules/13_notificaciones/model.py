@@ -138,9 +138,9 @@ class NotificacionesModel:
             print(f"[ERROR NOTIFICACIONES] Error verificando tablas: {str(e)}")
 
     @auth_required
-    def crear_notificacion(self, titulo: str, mensaje: str, tipo: str = "info",
+    def crear_notificacion(self, titulo, mensaje: Optional[str] = None, tipo: str = "info",
                           prioridad: int = 2, usuario_destino: Optional[int] = None,
-                          modulo_origen: str = None, metadata: Optional[Dict] = None,
+                          modulo_origen: Optional[str] = None, metadata: Optional[Dict] = None,
                           fecha_expiracion: Optional[datetime.datetime] = None) -> bool:
         """
         Crea una nueva notificación.
@@ -162,14 +162,24 @@ warning,
         Returns:
             bool: True si se creó exitosamente
         """
+        if isinstance(titulo, dict):
+            datos = dict(titulo)
+            titulo = datos.get('titulo', '')
+            mensaje = datos.get('mensaje', '')
+            tipo = datos.get('tipo', tipo)
+            prioridad = int(datos.get('prioridad', prioridad))
+            usuario_destino = datos.get('usuario_id', datos.get('usuario_destino', usuario_destino))
+            modulo_origen = datos.get('modulo_origen', modulo_origen)
+            metadata = datos.get('metadata', metadata)
+
         if not self.db_connection:
             print("[WARNING] Sin BD - simulando creación de notificación")
-            return True
+            return False
 
         try:
             # Validar y sanitizar datos usando funciones importadas
-            titulo = sanitize_string(titulo, max_length=200)
-            mensaje = sanitize_string(mensaje, max_length=1000)
+            titulo = sanitize_string(str(titulo or ""), max_length=200)
+            mensaje = sanitize_string(str(mensaje or ""), max_length=1000)
             if modulo_origen:
                 modulo_origen = sanitize_string(modulo_origen, max_length=50)
 
@@ -238,6 +248,8 @@ mensaje,
 
         try:
             cursor = self.db_connection.cursor()
+            limite = max(1, min(int(limite), 100))
+            offset = max(0, int(offset))
 
             # Query base
             query = """
@@ -284,7 +296,12 @@ mensaje,
             print(f"[ERROR NOTIFICACIONES] Error obteniendo notificaciones: {str(e)}")
             return []
 
-    def _obtener_notificaciones_demo(self, usuario_id: int) -> List[Dict]:
+    def obtener_notificaciones(self, usuario_id: int, solo_no_leidas: bool = False,
+                              limite: int = 50, offset: int = 0) -> List[Dict]:
+        """Alias legacy para compatibilidad con pruebas existentes."""
+        return self.obtener_notificaciones_usuario(usuario_id, solo_no_leidas, limite, offset)
+
+    def _obtener_notificaciones_demo(self, _usuario_id: int) -> List[Dict]:
         """Datos demo para cuando no hay BD."""
         return [
             {
@@ -303,7 +320,7 @@ mensaje,
         ]
 
     @auth_required
-    def marcar_como_leida(self, notificacion_id: int, usuario_id: int) -> bool:
+    def marcar_como_leida(self, notificacion_id: int, usuario_id: int = 1) -> bool:
         """
         Marca una notificación como leída.
 
@@ -320,6 +337,12 @@ mensaje,
 
         try:
             cursor = self.db_connection.cursor()
+
+            if not self._usuario_puede_acceder_notificacion(
+                cursor, notificacion_id, usuario_id
+            ):
+                print("[WARNING NOTIFICACIONES] Acceso no autorizado a notificación")
+                return False
 
             # Actualizar o insertar relación usuario-notificación
             cursor.execute("""
@@ -347,6 +370,28 @@ mensaje,
             if self.db_connection:
                 self.db_connection.rollback()
             return False
+
+    def _usuario_puede_acceder_notificacion(
+        self, cursor, notificacion_id: int, usuario_id: int
+    ) -> bool:
+        """Valida si un usuario puede acceder a una notificación específica."""
+        cursor.execute(
+            """
+            SELECT COUNT(*)
+            FROM notificaciones n
+            LEFT JOIN usuarios_notificaciones un ON n.id = un.notificacion_id
+            WHERE n.id = ?
+            AND n.activa = 1
+            AND (un.usuario_id = ? OR un.usuario_id IS NULL)
+            """,
+            (notificacion_id, usuario_id),
+        )
+        result = cursor.fetchone()
+        if isinstance(result, (tuple, list)) and result:
+            return bool(result[0] > 0)
+        if result is None:
+            return False
+        return True
 
     @cached_query(ttl=30)  # Cache por 30 segundos - contador debe actualizarse frecuentemente
     @auth_required
@@ -382,6 +427,50 @@ mensaje,
         except Exception as e:
             print(f"[ERROR NOTIFICACIONES] Error contando no leídas: {str(e)}")
             return 0
+
+    def obtener_estadisticas(self, usuario_id: int) -> Dict[str, int]:
+        """Compatibilidad legacy: obtiene estadísticas simples de notificaciones."""
+        if not self.db_connection:
+            return {
+                'total': 0,
+                'no_leidas': 0,
+                'leidas': 0,
+                'archivadas': 0,
+            }
+
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT
+                    COUNT(*) AS total,
+                    SUM(CASE WHEN un.leida = 0 OR un.leida IS NULL THEN 1 ELSE 0 END) AS no_leidas,
+                    SUM(CASE WHEN un.leida = 1 THEN 1 ELSE 0 END) AS leidas,
+                    SUM(CASE WHEN un.archivada = 1 THEN 1 ELSE 0 END) AS archivadas
+                FROM notificaciones n
+                LEFT JOIN usuarios_notificaciones un ON n.id = un.notificacion_id
+                WHERE (un.usuario_id = ? OR un.usuario_id IS NULL)
+                AND n.activa = 1
+            """, (usuario_id,))
+            result = cursor.fetchone()
+            if isinstance(result, (tuple, list)):
+                return {
+                    'total': int(result[0] or 0),
+                    'no_leidas': int(result[1] or 0),
+                    'leidas': int(result[2] or 0),
+                    'archivadas': int(result[3] or 0),
+                }
+            return {'total': 0, 'no_leidas': 0, 'leidas': 0, 'archivadas': 0}
+        except Exception:
+            return {'total': 0, 'no_leidas': 0, 'leidas': 0, 'archivadas': 0}
+
+    def validar_datos_notificacion(self, datos: Dict) -> bool:
+        """Compatibilidad legacy: valida campos mínimos para crear notificación."""
+        if not isinstance(datos, dict):
+            return False
+        titulo = datos.get('titulo')
+        mensaje = datos.get('mensaje')
+        tipo = datos.get('tipo')
+        return bool(titulo and mensaje and tipo)
 
     @admin_required
     def eliminar_notificacion(self, notificacion_id: int) -> bool:

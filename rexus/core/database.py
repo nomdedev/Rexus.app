@@ -26,22 +26,43 @@ NO mezclar tablas de negocio en 'users'. NO usar 'inventario' para login o permi
 """
 
 import os
+import logging
 from typing import Optional
 
 import pyodbc
+
+logger = logging.getLogger(__name__)
 
 # Cargar variables de entorno
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
-    print("[WARNING] python-dotenv no disponible. Usando variables de sistema únicamente.")
+    logger.warning("python-dotenv no disponible. Usando variables de sistema únicamente.")
+
+
+def _resolve_db_password() -> Optional[str]:
+    """Resuelve la contraseña de BD priorizando SecretsManager."""
+    try:
+        from rexus.core.secrets_manager import get_secrets_manager
+
+        manager = get_secrets_manager()
+        secret_password = manager.get_secret("database/db_password")
+        if secret_password:
+            return secret_password
+    except Exception as exc:
+        logger.debug(f"No se pudo obtener DB password desde SecretsManager: {exc}")
+
+    env_password = os.getenv("DB_PASSWORD")
+    if env_password:
+        logger.warning("Usando DB_PASSWORD desde entorno (modo transición). Migrar a SecretsManager.")
+    return env_password
 
 # Configuración desde variables de entorno (sin valores por defecto)
 DB_SERVER = os.getenv("DB_SERVER")
 DB_DRIVER = os.getenv("DB_DRIVER")
 DB_USERNAME = os.getenv("DB_USERNAME")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_PASSWORD = _resolve_db_password()
 
 # Bases de datos desde variables de entorno
 DB_USERS = os.getenv("DB_USERS")
@@ -63,7 +84,7 @@ def validate_environment():
 
     missing = [var for var, value in required_vars.items() if not value]
     if missing:
-        print(f"[WARNING] Variables de entorno faltantes: {', '.join(missing)}. Los módulos funcionarán en modo demo.")
+        logger.warning(f"Variables de entorno faltantes: {', '.join(missing)}. Los módulos funcionarán en modo demo.")
         return False
     return True
 
@@ -85,6 +106,8 @@ class DatabaseConnection:
         self.username = DB_USERNAME
         self.password = DB_PASSWORD
         self.trusted = False  # Siempre autenticación SQL Server
+        self.encrypt = os.getenv("DB_ENCRYPT", "yes").lower() in {"yes", "true", "1"}
+        self.trust_server_certificate = os.getenv("DB_TRUST_SERVER_CERTIFICATE", "no").lower() in {"yes", "true", "1"}
         self._connection: Optional[pyodbc.Connection] = None
         if auto_connect:
             self.connect()
@@ -106,13 +129,13 @@ class DatabaseConnection:
         """
         # Validate database name to prevent SQL injection
         if not new_database or not isinstance(new_database, str):
-            print(f"[DB ERROR] Invalid database name: {new_database}")
+            logger.error(f"Invalid database name: {new_database}")
             return False
 
         # Sanitize database name - only allow alphanumeric, underscore, and hyphen
         import re
         if not re.match(r'^[a-zA-Z0-9_-]+$', new_database):
-            print(f"[DB ERROR] Database name contains invalid characters: {new_database}")
+            logger.error(f"Database name contains invalid characters: {new_database}")
             return False
 
         if not self._connection:
@@ -126,19 +149,19 @@ class DatabaseConnection:
             cursor.execute(query)
             self.database = new_database
             cursor.close()
-            print(f"[DB] Cambiado a base de datos: {new_database}")
+            logger.info(f"Cambiado a base de datos: {new_database}")
             return True
         except Exception as e:
-            print(f"[DB ERROR] No se pudo cambiar a la base de datos {new_database}: {e}")
+            logger.error(f"No se pudo cambiar a la base de datos {new_database}: {e}")
             return False
 
     def connect(self):
         """Establece la conexión a la base de datos y muestra el flujo en consola"""
-        print("\n[DB] Intentando conectar a la base de datos...")
-        print(f"[DB] Servidor: {self.server}")
-        print(f"[DB] Base de datos: {self.database}")
-        print(f"[DB] Driver: {self.driver}")
-        print(
+        logger.info("[DB] Intentando conectar a la base de datos...")
+        logger.info(f"[DB] Servidor: {self.server}")
+        logger.info(f"[DB] Base de datos: {self.database}")
+        logger.info(f"[DB] Driver: {self.driver}")
+        logger.info(
             f"[DB] Usuario: {self.username if not self.trusted else '[Trusted_Connection]'}"
         )
         try:
@@ -148,6 +171,8 @@ class DatabaseConnection:
                     "SERVER=" + self.server + ";"
                     "DATABASE=" + self.database + ";"
                     "Trusted_Connection=yes;"
+                    f"Encrypt={'yes' if self.encrypt else 'no'};"
+                    f"TrustServerCertificate={'yes' if self.trust_server_certificate else 'no'};"
                 )
             else:
                 # String de conexión real (con contraseña)
@@ -157,7 +182,8 @@ class DatabaseConnection:
                     "DATABASE=" + self.database + ";"
                     "UID=" + self.username + ";"
                     "PWD=" + self.password + ";"
-                    "TrustServerCertificate=yes;"
+                    f"Encrypt={'yes' if self.encrypt else 'no'};"
+                    f"TrustServerCertificate={'yes' if self.trust_server_certificate else 'no'};"
                 )
                 # String para mostrar (sin contraseña)
                 display_connection_string = (
@@ -166,20 +192,21 @@ class DatabaseConnection:
                     "DATABASE=" + self.database + ";"
                     "UID=" + self.username + ";"
                     "PWD=******;"
-                    "TrustServerCertificate=yes;"
+                    f"Encrypt={'yes' if self.encrypt else 'no'};"
+                    f"TrustServerCertificate={'yes' if self.trust_server_certificate else 'no'};"
                 )
             if self.trusted:
-                print(f"[DB] String de conexión: {connection_string}")
+                logger.info(f"[DB] String de conexión: {connection_string}")
                 self._connection = pyodbc.connect(connection_string)
             else:
-                print(f"[DB] String de conexión: {display_connection_string}")
+                logger.info(f"[DB] String de conexión: {display_connection_string}")
                 self._connection = pyodbc.connect(real_connection_string)
-            print("[DB] Conexión exitosa OK\n")
+            logger.info("[DB] Conexión exitosa OK")
             return True
         except Exception as e:
-            print(f"[DB ERROR] No se pudo conectar: {e}")
+            logger.error(f"[DB ERROR] No se pudo conectar: {e}")
             self._connection = None
-            print("[DB] ERROR: Error al intentar conectar.\n")
+            logger.error("[DB] ERROR: Error al intentar conectar.")
             return False
 
     def disconnect(self):
@@ -188,7 +215,7 @@ class DatabaseConnection:
             try:
                 self._connection.close()
             except Exception as e:
-                print(f"[DB ERROR] No se pudo cerrar la conexión: {e}")
+                logger.error(f"[DB ERROR] No se pudo cerrar la conexión: {e}")
             self._connection = None
 
     def close(self):
@@ -224,7 +251,7 @@ class DatabaseConnection:
             cursor.close()
             return result
         except Exception as e:
-            print(f"[DB ERROR] Consulta fallida: {e}\nQuery: {query}\nParams: {params}")
+            logger.error(f"[DB ERROR] Consulta fallida: {e} | Query: {query} | Params: {params}")
             return []
 
     def execute_non_query(self, query: str, params: tuple = ()) -> bool:
@@ -239,7 +266,7 @@ class DatabaseConnection:
             cursor.close()
             return True
         except Exception as e:
-            print(f"[DB ERROR] Comando fallido: {e}\nQuery: {query}\nParams: {params}")
+            logger.error(f"[DB ERROR] Comando fallido: {e} | Query: {query} | Params: {params}")
             return False
 
 
