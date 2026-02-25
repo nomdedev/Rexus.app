@@ -10,6 +10,11 @@ from rexus.core.auth_decorators import auth_required, admin_required
 # Importar sistema moderno de mensajes
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
 
+try:
+    from .model import ObrasModel
+except Exception:
+    ObrasModel = None
+
 # Importar logging centralizado
 try:
     from rexus.utils.app_logger import get_logger
@@ -46,6 +51,12 @@ class ObrasController(QObject):
 
         # Inicializar current_user para compatibilidad con @auth_required
         self.current_user = self._get_current_auth_user()
+
+        if self.model is None and ObrasModel is not None:
+            try:
+                self.model = ObrasModel(db_connection=self.db_connection)
+            except Exception as e:
+                logger.warning(f"No se pudo inicializar ObrasModel automáticamente: {e}")
 
         # Validar y conectar componentes de forma segura
         self._validate_components()
@@ -119,12 +130,15 @@ class ObrasController(QObject):
             from rexus.core.auth_manager import AuthManager
 
             # Si hay un usuario actual en AuthManager, usarlo
-            if AuthManager.current_user and AuthManager.current_user_role:
+            current_user = getattr(AuthManager, 'current_user', None)
+            current_user_role = getattr(AuthManager, 'current_user_role', None)
+
+            if current_user and current_user_role:
                 return {
                     'id': 1,  # ID por defecto
-                    'username': AuthManager.current_user,
-                    'role': AuthManager.current_user_role.value,
-                    'name': AuthManager.current_user
+                    'username': current_user,
+                    'role': current_user_role.value,
+                    'name': current_user
                 }
             else:
                 # ✅ CORREGIDO: Fallback con rol MÍNIMO (viewer) en lugar de admin
@@ -171,7 +185,10 @@ class ObrasController(QObject):
             if not self._ensure_view_available("cargar obras"):
                 logger.warning("Vista no disponible, cargando datos solo en modelo")
             
-            obras = self.model.obtener_todas_obras()
+            if hasattr(self.model, 'obtener_obras'):
+                obras = self.model.obtener_obras()
+            else:
+                obras = self.model.obtener_todas_obras()
             
             # Solo actualizar vista si está disponible
             if self.view and hasattr(self.view, 'cargar_obras_en_tabla'):
@@ -342,15 +359,31 @@ obra_id: int,
             print(f"[ERROR OBRAS CONTROLLER] Error eliminando obra: {e}")
             self.mostrar_mensaje_error(f"Error eliminando obra: {str(e)}")
 
-    def cambiar_estado_obra(self):
-        """Cambia el estado de la obra seleccionada."""
+    def cambiar_estado_obra(
+        self,
+        obra_id: Optional[int] = None,
+        nuevo_estado: Optional[str] = None,
+        usuario: Optional[str] = None,
+    ):
+        """Cambia el estado de una obra (seleccionada en UI o por parámetros)."""
         try:
+            if obra_id is not None and nuevo_estado is not None:
+                usuario_final = usuario or self.usuario_actual
+                exito, mensaje = self.model.cambiar_estado_obra(
+                    obra_id, nuevo_estado, usuario_final
+                )
+                if exito:
+                    self.mostrar_mensaje_exito(mensaje)
+                    return True
+                self.mostrar_mensaje_error(mensaje)
+                return False
+
             obra_seleccionada = self.view.obtener_obra_seleccionada()
             if not obra_seleccionada:
                 self.mostrar_mensaje_advertencia(
                     "Debe seleccionar una obra para cambiar el estado"
                 )
-                return
+                return False
 
             if hasattr(self.view, "mostrar_dialogo_cambiar_estado"):
                 nuevo_estado = self.view.mostrar_dialogo_cambiar_estado(
@@ -367,10 +400,14 @@ obra_id: int,
                         self.cargar_obras()  # Recargar la tabla
                     else:
                         self.mostrar_mensaje_error(mensaje)
+                    return exito
+
+            return False
 
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error cambiando estado: {e}")
             self.mostrar_mensaje_error(f"Error cambiando estado: {str(e)}")
+            return False
 
     def aplicar_filtros(self, filtros):
         """Aplica filtros a las obras."""
@@ -441,7 +478,7 @@ obra_id: int,
         if not datos_obra.get("cliente"):
             errores.append("El cliente es obligatorio")
 
-        if not datos_obra.get("responsable"):
+        if "responsable" in datos_obra and not datos_obra.get("responsable"):
             errores.append("El responsable es obligatorio")
 
         # Validar fechas
@@ -487,6 +524,75 @@ obra_id: int,
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error obteniendo obra: {e}")
             return None
+
+    def eliminar_obra(self, obra_id: int, usuario: str) -> bool:
+        """Compatibilidad legacy: elimina obra por ID/usuario sin selección en UI."""
+        try:
+            exito, mensaje = self.model.eliminar_obra(obra_id, usuario)
+            if exito:
+                self.mostrar_mensaje_exito(mensaje)
+                return True
+            self.mostrar_mensaje_error(mensaje)
+            return False
+        except Exception as e:
+            self.mostrar_mensaje_error(f"Error eliminando obra: {str(e)}")
+            return False
+
+    def obtener_obra_por_id(self, obra_id: int) -> Optional[Dict[str, Any]]:
+        """Compatibilidad legacy: obtiene una obra por ID."""
+        try:
+            return self.model.obtener_obra_por_id(obra_id)
+        except Exception:
+            return None
+
+    def buscar_obras(self, filtros: Dict[str, Any]):
+        """Compatibilidad legacy: busca obras por filtros."""
+        try:
+            return self.model.obtener_obras_filtradas(filtros)
+        except Exception:
+            return []
+
+    def obtener_estadisticas(self):
+        """Compatibilidad legacy: retorna estadísticas de obras."""
+        try:
+            return self.model.obtener_estadisticas_obras()
+        except Exception:
+            return {}
+
+    def obtener_obras_por_estado(self, estado: str):
+        """Compatibilidad legacy: retorna obras filtradas por estado."""
+        try:
+            return self.model.obtener_obras_filtradas({'estado': estado})
+        except Exception:
+            return []
+
+    def calcular_progreso_obra(self, obra_id: int):
+        """Compatibilidad legacy: delega cálculo de progreso al modelo."""
+        try:
+            return self.model.calcular_progreso_obra(obra_id)
+        except Exception:
+            return None
+
+    def asignar_recursos(self, obra_id: int, recursos: Dict[str, Any]):
+        """Compatibilidad legacy: delega asignación de recursos al modelo."""
+        try:
+            return self.model.asignar_recursos(obra_id, recursos)
+        except Exception as e:
+            return False, f"Error asignando recursos: {str(e)}"
+
+    def generar_cronograma(self, obra_id: int):
+        """Compatibilidad legacy: delega generación de cronograma al modelo."""
+        try:
+            return self.model.generar_cronograma(obra_id)
+        except Exception:
+            return None
+
+    def validar_codigo_obra_duplicado(self, codigo: str) -> bool:
+        """Compatibilidad legacy: valida código de obra duplicado."""
+        try:
+            return self.model.validar_obra_duplicada(codigo)
+        except Exception:
+            return False
 
     def set_usuario_actual(self, usuario: str):
         """Establece el usuario actual del sistema."""

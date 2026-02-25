@@ -9,11 +9,6 @@ from unittest.mock import Mock, patch, MagicMock
 import sys
 from pathlib import Path
 
-# Patch global para message_system
-show_error_patch = patch('rexus.utils.message_system.show_error')
-show_success_patch = patch('rexus.utils.message_system.show_success')
-show_warning_patch = patch('rexus.utils.message_system.show_warning')
-
 # Agregar el directorio raíz al path
 root_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_dir))
@@ -51,10 +46,13 @@ class TestObrasController(unittest.TestCase):
 
     def setUp(self):
         """Configuración inicial para cada test."""
-        # Iniciar patches globales
-        self.mock_show_error = show_error_patch.start()
-        self.mock_show_success = show_success_patch.start()
-        self.mock_show_warning = show_warning_patch.start()
+        self._show_error_patch = patch.object(obras_module, 'show_error')
+        self._show_success_patch = patch.object(obras_module, 'show_success')
+        self._show_warning_patch = patch.object(obras_module, 'show_warning')
+
+        self.mock_show_error = self._show_error_patch.start()
+        self.mock_show_success = self._show_success_patch.start()
+        self.mock_show_warning = self._show_warning_patch.start()
         
         self.mock_model = Mock()
         self.mock_view = Mock()
@@ -64,10 +62,9 @@ class TestObrasController(unittest.TestCase):
 
     def tearDown(self):
         """Limpieza después de cada test."""
-        # Detener patches globales
-        show_error_patch.stop()
-        show_success_patch.stop()  
-        show_warning_patch.stop()
+        self._show_error_patch.stop()
+        self._show_success_patch.stop()
+        self._show_warning_patch.stop()
         self.controller = None
 
     def test_init_controller(self):
@@ -75,7 +72,7 @@ class TestObrasController(unittest.TestCase):
         controller = ObrasController()
         self.assertIsNotNone(controller)
 
-    @patch('rexus.modules.01_obras.controller.ObrasModel')
+    @patch.object(obras_module, 'ObrasModel')
     def test_cargar_obras(self, mock_model_class):
         """Test de carga de obras."""
         # Mock del modelo

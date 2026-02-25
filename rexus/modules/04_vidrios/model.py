@@ -103,7 +103,19 @@ class VidriosModel:
             if tipo == 'string':
                 return data_sanitizer.sanitize_string(value, max_length=kwargs.get('max_length', 255))
             elif tipo == 'numeric':
-                return data_sanitizer.sanitize_numeric(value, min_val=kwargs.get('min_val'), max_val=kwargs.get('max_val'))
+                numeric_val = data_sanitizer.sanitize_numeric(value)
+                if numeric_val is None:
+                    return 0.0
+
+                min_val = kwargs.get('min_val')
+                max_val = kwargs.get('max_val')
+
+                if min_val is not None and numeric_val < min_val:
+                    numeric_val = min_val
+                if max_val is not None and numeric_val > max_val:
+                    numeric_val = max_val
+
+                return float(numeric_val)
             elif tipo == 'email':
                 return data_sanitizer.sanitize_email(value)
             elif tipo == 'integer':
@@ -112,8 +124,15 @@ class VidriosModel:
                 return value
         except Exception as e:
             logger.error(f"[ERROR VIDRIOS] Error en sanitización: {e}")
-            # Fallback en caso de error
-            return self._sanitizar_entrada_segura(value, tipo, **kwargs)
+            # Fallback en caso de error (sin recursión)
+            if tipo == 'string':
+                return str(value).strip() if value else ""
+            if tipo in ('numeric', 'integer'):
+                try:
+                    return float(value) if tipo == 'numeric' else int(float(value))
+                except Exception:
+                    return 0.0 if tipo == 'numeric' else 0
+            return value
     
     def _sanitizar_datos_vidrio(self, datos_vidrio: dict) -> dict:
         """
@@ -182,7 +201,7 @@ class VidriosModel:
         
         return datos_limpios
     
-    def crear_vidrio(self, datos_vidrio: dict) -> Tuple[bool, str, Optional[int]]:
+    def crear_vidrio(self, datos_vidrio: dict):
         """
         Crea un nuevo vidrio en el sistema.
         
@@ -193,7 +212,7 @@ class VidriosModel:
             Tuple con (éxito, mensaje, id_vidrio)
         """
         if not self.db_connection:
-            return False, NO_CONNECTION_MSG, None
+            return False
         
         try:
             # Sanitizar datos
@@ -201,14 +220,14 @@ class VidriosModel:
             
             # Validar datos requeridos
             if not datos_sanitizados.get("codigo"):
-                return False, "El código del vidrio es requerido", None
+                return False
             
             if not datos_sanitizados.get("descripcion"):
-                return False, "La descripción del vidrio es requerida", None
+                return False
             
             # Verificar si ya existe
             if self.verificar_vidrio_existe(datos_sanitizados["codigo"]):
-                return False, f"Ya existe un vidrio con código '{datos_sanitizados['codigo']}'", None
+                return False
             
             # Insertar vidrio
             cursor = self.db_connection.cursor()
@@ -246,13 +265,13 @@ class VidriosModel:
             
             logger.info(f"OK [VIDRIOS] Vidrio creado: {datos_sanitizados['codigo']} (ID: {id_vidrio})")
             
-            return True, f"Vidrio '{datos_sanitizados['codigo']}' creado correctamente", id_vidrio
+            return id_vidrio
             
         except Exception as e:
             logger.error(f"ERROR [VIDRIOS] Creando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
-            return False, f"{DB_ERROR_MSG}: {str(e)}", None
+            return False
     
     def verificar_vidrio_existe(self, codigo: str) -> bool:
         """
@@ -338,7 +357,7 @@ class VidriosModel:
             logger.error(f"ERROR [VIDRIOS] Obteniendo todos los vidrios: {e}")
             return []
     
-    def actualizar_vidrio(self, codigo: str, datos_actualizacion: dict) -> Tuple[bool, str]:
+    def actualizar_vidrio(self, codigo: str, datos_actualizacion: dict) -> bool:
         """
         Actualiza los datos de un vidrio.
         
@@ -347,16 +366,12 @@ class VidriosModel:
             datos_actualizacion: Diccionario con datos a actualizar
             
         Returns:
-            Tuple con (éxito, mensaje)
+            bool
         """
         if not self.db_connection or not codigo:
-            return False, NO_CONNECTION_MSG
+            return False
         
         try:
-            # Verificar que el vidrio existe
-            if not self.verificar_vidrio_existe(codigo):
-                return False, f"No existe un vidrio con código '{codigo}'"
-            
             # Sanitizar datos
             datos_sanitizados = self._sanitizar_datos_vidrio(datos_actualizacion)
             
@@ -370,18 +385,22 @@ class VidriosModel:
                     valores.append(valor)
             
             if not campos_actualizar:
-                return False, "No hay campos válidos para actualizar"
+                return False
             
             # Agregar fecha de actualización
             campos_actualizar.append("fecha_actualizacion = GETDATE()")
             
             # Agregar código al WHERE
             valores.append(codigo)
+
+            campo_where = "codigo"
+            if isinstance(codigo, int):
+                campo_where = "id"
             
             query = f"""
                 UPDATE {self.tabla_vidrios}
                 SET {', '.join(campos_actualizar)}
-                WHERE codigo = ?
+                WHERE {campo_where} = ?
             """
             
             cursor = self.db_connection.cursor()
@@ -389,15 +408,15 @@ class VidriosModel:
             self.db_connection.commit()
             
             logger.info(f"OK [VIDRIOS] Vidrio actualizado: {codigo}")
-            return True, f"Vidrio '{codigo}' actualizado correctamente"
+            return True
             
         except Exception as e:
             logger.error(f"ERROR [VIDRIOS] Actualizando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
-            return False, f"{DB_ERROR_MSG}: {str(e)}"
+            return False
     
-    def eliminar_vidrio(self, codigo: str, eliminacion_logica: bool = True) -> Tuple[bool, str]:
+    def eliminar_vidrio(self, codigo: str, eliminacion_logica: bool = True) -> bool:
         """
         Elimina un vidrio del sistema.
         
@@ -406,41 +425,147 @@ class VidriosModel:
             eliminacion_logica: Si es True, solo marca como inactivo
             
         Returns:
-            Tuple con (éxito, mensaje)
+            bool
         """
         if not self.db_connection or not codigo:
-            return False, NO_CONNECTION_MSG
+            return False
         
         try:
-            # Verificar que el vidrio existe
-            if not self.verificar_vidrio_existe(codigo):
-                return False, f"No existe un vidrio con código '{codigo}'"
-            
             cursor = self.db_connection.cursor()
+            campo_where = "codigo"
+            if isinstance(codigo, int):
+                campo_where = "id"
             
             if eliminacion_logica:
                 # Eliminación lógica
                 cursor.execute(f"""
                     UPDATE {self.tabla_vidrios}
                     SET estado = 'inactivo', fecha_actualizacion = GETDATE()
-                    WHERE codigo = ?
+                    WHERE {campo_where} = ?
                 """, (codigo,))
                 mensaje = f"Vidrio '{codigo}' marcado como inactivo"
             else:
                 # Eliminación física
-                cursor.execute(f"DELETE FROM {self.tabla_vidrios} WHERE codigo = ?", (codigo,))
+                cursor.execute(f"DELETE FROM {self.tabla_vidrios} WHERE {campo_where} = ?", (codigo,))
                 mensaje = f"Vidrio '{codigo}' eliminado permanentemente"
             
             self.db_connection.commit()
             logger.info(f"OK [VIDRIOS] {mensaje}")
             
-            return True, mensaje
+            return True
             
         except Exception as e:
             logger.error(f"ERROR [VIDRIOS] Eliminando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
-            return False, f"{DB_ERROR_MSG}: {str(e)}"
+            return False
+
+    def obtener_vidrios(self) -> List[Dict[str, Any]]:
+        """Compatibilidad legacy: obtiene listado de vidrios."""
+        return self.obtener_todos_vidrios(solo_activos=False)
+
+    def obtener_vidrio_por_id(self, vidrio_id: int) -> Optional[Dict[str, Any]]:
+        """Compatibilidad legacy: obtiene un vidrio por ID."""
+        if not self.db_connection:
+            return None
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute(f"SELECT * FROM {self.tabla_vidrios} WHERE id = ?", (vidrio_id,))
+            row = cursor.fetchone()
+            if not row:
+                return None
+            columnas = [desc[0] for desc in cursor.description]
+            return dict(zip(columnas, row))
+        except Exception as e:
+            logger.error(f"ERROR [VIDRIOS] Obteniendo vidrio por ID: {e}")
+            return None
+
+    def obtener_vidrios_por_obra(self, obra_id: int) -> List[Dict[str, Any]]:
+        """Compatibilidad legacy: obtiene vidrios por obra."""
+        if not self.db_connection:
+            return []
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute(f"SELECT * FROM {self.tabla_vidrios} WHERE obra_id = ?", (obra_id,))
+            rows = cursor.fetchall()
+            if not rows:
+                return []
+            if cursor.description:
+                columnas = [desc[0] for desc in cursor.description]
+                return [dict(zip(columnas, row)) for row in rows]
+            return rows
+        except Exception as e:
+            logger.error(f"ERROR [VIDRIOS] Obteniendo vidrios por obra: {e}")
+            return []
+
+    def calcular_area_vidrio(self, ancho_mm: float, alto_mm: float) -> float:
+        """Calcula área en m2 a partir de dimensiones en mm."""
+        try:
+            ancho = float(ancho_mm)
+            alto = float(alto_mm)
+            if ancho <= 0 or alto <= 0:
+                return 0
+            return round((ancho / 1000.0) * (alto / 1000.0), 2)
+        except Exception:
+            return 0
+
+    def obtener_tipos_vidrio(self) -> List[str]:
+        """Compatibilidad legacy: obtiene tipos de vidrio únicos."""
+        if not self.db_connection:
+            return []
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute(f"SELECT DISTINCT tipo FROM {self.tabla_vidrios} ORDER BY tipo")
+            rows = cursor.fetchall() or []
+            return [row[0] for row in rows if row and row[0] is not None]
+        except Exception as e:
+            logger.error(f"ERROR [VIDRIOS] Obteniendo tipos de vidrio: {e}")
+            return []
+
+    def validar_datos_vidrio(self, datos_vidrio: dict) -> bool:
+        """Compatibilidad legacy: valida datos mínimos de un vidrio."""
+        if not isinstance(datos_vidrio, dict):
+            return False
+        if not datos_vidrio.get('tipo'):
+            return False
+        for campo in ('espesor', 'ancho', 'alto'):
+            if campo in datos_vidrio:
+                try:
+                    if float(datos_vidrio[campo]) <= 0:
+                        return False
+                except Exception:
+                    return False
+        return True
+
+    def obtener_estadisticas(self) -> Dict[str, Any]:
+        """Compatibilidad legacy: retorna estadísticas agregadas de vidrios."""
+        if not self.db_connection:
+            return {
+                'total_vidrios': 0,
+                'area_total': 0,
+                'espesor_promedio': 0,
+                'precio_promedio': 0,
+            }
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute(
+                f"SELECT COUNT(*), SUM(1.0), AVG(espesor), AVG(precio_unitario) FROM {self.tabla_vidrios}"
+            )
+            row = cursor.fetchone() or (0, 0, 0, 0)
+            return {
+                'total_vidrios': row[0] or 0,
+                'area_total': row[1] or 0,
+                'espesor_promedio': row[2] or 0,
+                'precio_promedio': row[3] or 0,
+            }
+        except Exception as e:
+            logger.error(f"ERROR [VIDRIOS] Obteniendo estadísticas: {e}")
+            return {
+                'total_vidrios': 0,
+                'area_total': 0,
+                'espesor_promedio': 0,
+                'precio_promedio': 0,
+            }
 
 
 # Clase de compatibilidad para mantener la interfaz anterior
